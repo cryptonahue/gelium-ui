@@ -12,33 +12,35 @@ import (
 )
 
 type pageView struct {
-	Title          string
-	Content        template.HTML
-	Nav            []navLink
-	CTA            *buttonView
-	Buttons        []buttonView
-	TextFields     []textFieldView
-	ValidationForm *validationFormView
-	Dialog         *dialogView
-	Toasts         []toastView
-	ToastDemo      *toastDemoView
-	ElevationDemo  *elevationDemo
-	FocusRingDemo  *focusRingDemo
-	IconDemo       *iconDemo
-	DividerDemo    *dividerDemo
-	CardDemo       *cardDemo
-	BadgeDemo      *badgeDemo
-	CheckboxDemo   *checkboxDemo
-	RadioDemo      *radioDemo
-	SwitchDemo     *switchDemo
-	SelectDemo     *selectDemo
-	SelectMenuDemo *selectMenuDemo
-	SliderDemo     *sliderDemo
-	ProgressDemo   *progressDemo
-	IconButtonDemo *iconButtonDemo
-	FabDemo        *fabDemo
-	ListDemo       *listDemo
-	ChipsDemo      *chipsDemo
+	Title             string
+	Content           template.HTML
+	Nav               []navLink
+	CTA               *buttonView
+	Buttons           []buttonView
+	TextFields        []textFieldView
+	ValidationForm    *validationFormView
+	Dialog            *dialogView
+	Toasts            []toastView
+	ToastDemo         *toastDemoView
+	ElevationDemo     *elevationDemo
+	FocusRingDemo     *focusRingDemo
+	IconDemo          *iconDemo
+	DividerDemo       *dividerDemo
+	CardDemo          *cardDemo
+	BadgeDemo         *badgeDemo
+	CheckboxDemo      *checkboxDemo
+	RadioDemo         *radioDemo
+	SwitchDemo        *switchDemo
+	SelectDemo        *selectDemo
+	SelectMenuDemo    *selectMenuDemo
+	SliderDemo        *sliderDemo
+	ProgressDemo      *progressDemo
+	IconButtonDemo    *iconButtonDemo
+	FabDemo           *fabDemo
+	ListDemo          *listDemo
+	ChipsDemo         *chipsDemo
+	TabsDemo          *tabsDemo
+	NavigationBarDemo *navigationBarDemo
 }
 
 type server struct {

@@ -22,6 +22,8 @@
 @import "./fab.css";
 @import "./list.css";
 @import "./chips.css";
+@import "./tabs.css";
+@import "./navigation-bar.css";
 
 @source "../templates";
 @source "../content";

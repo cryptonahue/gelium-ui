@@ -1,0 +1,25 @@
+{{define "navigation-bar-demo"}}
+<div class="navigation-bar-demo-grid">
+  {{range .Bars}}
+  <section class="navigation-bar-demo-group">
+    <h4 class="navigation-bar-demo-heading">{{.Heading}}</h4>
+    <nav class="ui-nav-bar{{if .HideInactiveLabels}} ui-nav-bar--hide-inactive-labels{{end}}" aria-label="{{.Label}}">
+      <ul class="ui-nav-bar-list">
+        {{range .Destinations}}
+        <li class="ui-nav-bar-item">
+          <a class="ui-nav-bar-destination{{if .Active}} ui-nav-bar-destination--active{{end}}" href="{{.Href}}"{{if .Active}} aria-current="page"{{end}}>
+            <span class="ui-nav-bar-icon" aria-hidden="true">
+              <span class="ui-nav-bar-indicator"></span>
+              {{.InactiveSVG}}{{.ActiveSVG}}
+              {{if .HasBadge}}{{if .BadgeDot}}<span class="ui-badge" aria-hidden="true"></span>{{else}}<span class="ui-badge ui-badge-large">{{.BadgeValue}}</span>{{end}}{{end}}
+            </span>
+            <span class="ui-nav-bar-label">{{.Label}}</span>
+          </a>
+        </li>
+        {{end}}
+      </ul>
+    </nav>
+  </section>
+  {{end}}
+</div>
+{{end}}

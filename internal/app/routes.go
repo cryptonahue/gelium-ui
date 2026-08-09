@@ -35,6 +35,8 @@ func componentRoutes() []componentRoute {
 		{Path: "/components/fab", Label: "FAB", Handler: (*server).fabDocs},
 		{Path: "/components/list", Label: "List", Handler: (*server).listDocs},
 		{Path: "/components/chips", Label: "Chips", Handler: (*server).chipsDocs},
+		{Path: "/components/tabs", Label: "Tabs", Handler: (*server).tabsDocs},
+		{Path: "/components/navigation-bar", Label: "Navigation bar", Handler: (*server).navigationBarDocs},
 	}
 }
 

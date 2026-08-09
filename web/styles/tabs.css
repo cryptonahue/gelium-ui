@@ -1,0 +1,159 @@
+@layer components {
+  /* Tabs: a server-rendered Material 3 tab bar reimplemented as real
+     navigation links. The bar is a <nav> with a <ul>; every tab is an <a href>
+     to its own section and the selected tab is marked server-side with
+     aria-current="page". There is deliberately no role="tablist", no roving
+     focus and no component JavaScript: the native link keyboard contract
+     (Tab to move, Enter to activate) already satisfies accessibility, so the
+     simplest semantics wins. Primary tabs (ui-tab-primary) stack icon+label
+     by default (48px, or 64px with ui-tab-stacked); secondary tabs
+     (ui-tab-secondary) keep the icon inline. The active indicator is 3px for
+     primary and 2px for secondary. */
+  .ui-tabs {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    width: 100%;
+    background: var(--ui-color-surface);
+    border-bottom: 1px solid var(--ui-color-border);
+  }
+  .ui-tabs-list {
+    display: flex;
+    align-items: end;
+    justify-content: space-between;
+    width: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ui-tabs-item {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+  }
+
+  .ui-tab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex: 1;
+    height: 48px;
+    padding: 0 16px;
+    gap: 8px;
+    color: var(--ui-color-fg-muted);
+    font-family: var(--ui-font-sans);
+    font-size: .875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    letter-spacing: .00625rem;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+
+  /* State layer, painted with the shared state-opacity tokens. The color
+     follows the Material split: inactive tabs use on-surface, selected tabs
+     use the variant's active state-layer color (primary for primary, on-surface
+     for secondary). The overlay is a full-bleed ::before so states never
+     affect geometry or move focus. */
+  .ui-tab::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: var(--ui-color-fg);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-tab:hover::before { opacity: var(--ui-state-hover-opacity); }
+  .ui-tab:focus-visible::before { opacity: var(--ui-state-focus-opacity); }
+  .ui-tab:active::before { opacity: var(--ui-state-pressed-opacity); }
+  .ui-tab[aria-current="page"]::before { background: var(--ui-color-primary); }
+  .ui-tab-secondary[aria-current="page"]::before { background: var(--ui-color-fg); }
+
+  .ui-tab-icon,
+  .ui-tab-label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .ui-tab-icon {
+    width: 24px;
+    height: 24px;
+    flex: none;
+    fill: currentColor;
+    color: inherit;
+  }
+  .ui-tab-icon svg { width: 24px; height: 24px; }
+
+  /* Active indicator, hidden unless the tab is selected. */
+  .ui-tab-indicator {
+    position: absolute;
+    inset-inline: 0;
+    bottom: 0;
+    height: 3px;
+    border-radius: 3px 3px 0 0;
+    background: var(--ui-color-primary);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-tab-secondary .ui-tab-indicator {
+    height: 2px;
+    border-radius: 0;
+  }
+  .ui-tab[aria-current="page"] .ui-tab-indicator { opacity: 1; }
+
+  /* Selection: the server marks the current tab with aria-current="page". */
+  .ui-tab[aria-current="page"] { color: var(--ui-color-primary); }
+  .ui-tab-secondary[aria-current="page"] { color: var(--ui-color-fg); }
+
+  .ui-tab:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Primary tabs with both icon and label stack vertically and grow to 64px,
+     matching the Material with-icon-and-label container height. */
+  .ui-tab-stacked {
+    flex-direction: column;
+    gap: 2px;
+    height: 64px;
+  }
+
+  /* Demo preview composition. */
+  .tabs-demo-grid {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+  }
+  .tabs-demo-group { display: grid; gap: .5rem; }
+  .tabs-demo-caption {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .tabs-demo-panel {
+    margin: 0;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-md);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-tab::before,
+  .ui-tab-indicator { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-tab { color: CanvasText; }
+  .ui-tab-indicator { background: CanvasText; forced-color-adjust: auto; }
+  .ui-tab[aria-current="page"] { color: Highlight; }
+  .ui-tab[aria-current="page"] .ui-tab-indicator { background: Highlight; }
+  .ui-tab:focus-visible { outline-color: Highlight; }
+  .ui-tabs { border-bottom-color: CanvasText; }
+}

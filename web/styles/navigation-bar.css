@@ -1,0 +1,239 @@
+@layer components {
+  /* Navigation bar (Labs): a Material 3 bottom navigation bar reimplemented
+     over server-rendered HTML. The root is a real <nav>; destinations are real
+     <a href> links (the roadmap's "navegación real con links"), so the active
+     destination is derived server-side from the current page and marked with
+     aria-current="page" — no component JavaScript. Geometry follows the
+     Material contract: an 80px container, equal flex cells of at least 48px, a
+     64x32 icon slot holding the 32px active-indicator pill behind the 24px
+     glyph, and a 12px label. Material's active/inactive icon pair is two glyphs
+     in the icon slot and only the active one is painted when the destination is
+     selected. The upstream hideInactiveLabels option is the
+     --hide-inactive-labels modifier: inactive destinations collapse to
+     icon-only while the active one keeps its label and indicator. Badges on
+     destinations compose the existing .ui-badge primitive (not reinvented). */
+  .ui-nav-bar {
+    --ui-nav-bar-container: var(--ui-color-surface);
+    --ui-nav-bar-container-elevation: var(--ui-shadow-2);
+    --ui-nav-bar-height: 80px;
+    --ui-nav-bar-icon-size: 24px;
+    --ui-nav-bar-icon-container-width: 64px;
+    --ui-nav-bar-icon-container-height: 32px;
+    --ui-nav-bar-indicator-size: 32px;
+    --ui-nav-bar-indicator-color: var(--ui-color-secondary);
+    --ui-nav-bar-active-icon-color: var(--ui-color-secondary-fg);
+    --ui-nav-bar-active-label-color: var(--ui-color-fg);
+    --ui-nav-bar-active-label-weight: 700;
+    --ui-nav-bar-inactive-icon-color: var(--ui-color-fg-muted);
+    --ui-nav-bar-inactive-hover-icon-color: var(--ui-color-fg);
+    --ui-nav-bar-inactive-label-color: var(--ui-color-fg-muted);
+    --ui-nav-bar-label-height: 16px;
+    --ui-nav-bar-label-space: 4px;
+    --ui-nav-bar-state-layer-color: var(--ui-color-fg);
+    --ui-nav-bar-hover-opacity: var(--ui-state-hover-opacity);
+    --ui-nav-bar-focus-opacity: var(--ui-state-focus-opacity);
+    --ui-nav-bar-pressed-opacity: var(--ui-state-pressed-opacity);
+
+    display: flex;
+    box-sizing: border-box;
+    width: 100%;
+    height: var(--ui-nav-bar-height);
+    padding: 0;
+    background: var(--ui-nav-bar-container);
+    box-shadow: var(--ui-nav-bar-container-elevation);
+  }
+
+  /* The list is the semantic <ul>; items share the 80px height and divide the
+     bar evenly. */
+  .ui-nav-bar-list {
+    display: flex;
+    flex: 1;
+    align-items: stretch;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .ui-nav-bar-item {
+    display: flex;
+    flex: 1;
+    min-width: 48px;
+    height: 100%;
+  }
+
+  /* Destination: the interactive flex-column cell. It is a real <a href> so
+     activation and tab order are native; focus never changes geometry. The
+     destination's color drives the glyphs (fill: currentColor) while the label
+     sets its own color, mirroring Material's separate icon/label tokens. */
+  .ui-nav-bar-destination {
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 8px 0 12px;
+    color: var(--ui-nav-bar-inactive-icon-color);
+    font: var(--ui-type-label-sm);
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    transition: color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-nav-bar-destination:hover,
+  .ui-nav-bar-destination:focus-visible,
+  .ui-nav-bar-destination:active {
+    color: var(--ui-nav-bar-inactive-hover-icon-color);
+  }
+  .ui-nav-bar-destination--active {
+    color: var(--ui-nav-bar-active-icon-color);
+    font-weight: var(--ui-nav-bar-active-label-weight);
+  }
+  .ui-nav-bar-destination--active:hover,
+  .ui-nav-bar-destination--active:focus-visible,
+  .ui-nav-bar-destination--active:active {
+    color: var(--ui-nav-bar-active-icon-color);
+  }
+
+  /* Material state layer: a full-bleed ::before at the shared --ui-state-*
+     opacities, painted without affecting geometry or moving focus. The radius
+     follows the cell (rectangular, like the upstream tab/ripple). */
+  .ui-nav-bar-destination::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ui-nav-bar-state-layer-color);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-nav-bar-destination:hover::before { opacity: var(--ui-nav-bar-hover-opacity); }
+  .ui-nav-bar-destination:focus-visible::before { opacity: var(--ui-nav-bar-focus-opacity); }
+  .ui-nav-bar-destination:active::before { opacity: var(--ui-nav-bar-pressed-opacity); }
+  .ui-nav-bar-destination:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Icon slot: the 64x32 box that carries the active-indicator pill, the two
+     glyphs, and any badge. It is aria-hidden in the template; the label is the
+     accessible name. */
+  .ui-nav-bar-icon {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-nav-bar-icon-container-width);
+    height: var(--ui-nav-bar-icon-container-height);
+  }
+
+  /* Active indicator: the 32px secondary-container pill centered behind the
+     icon, faded out until the destination is selected. */
+  .ui-nav-bar-indicator {
+    position: absolute;
+    width: var(--ui-nav-bar-indicator-size);
+    height: var(--ui-nav-bar-indicator-size);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-nav-bar-indicator-color);
+    opacity: 0;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), width var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-nav-bar-destination--active .ui-nav-bar-indicator { opacity: 1; }
+
+  /* Glyphs: the inactive and active slots both live in the icon box; CSS swaps
+     them when the destination is selected, mirroring Material's
+     active/inactive icon pair with no JavaScript. */
+  .ui-nav-bar-glyph {
+    display: inline-block;
+    width: var(--ui-nav-bar-icon-size);
+    height: var(--ui-nav-bar-icon-size);
+    fill: currentColor;
+  }
+  .ui-nav-bar-glyph--active { display: none; }
+  .ui-nav-bar-destination--active .ui-nav-bar-glyph { display: none; }
+  .ui-nav-bar-destination--active .ui-nav-bar-glyph--active { display: inline-block; }
+
+  /* Label: the 16px label-medium text below the icon. In icon-only mode it
+     collapses to zero height while staying in the DOM, so the accessible name
+     is always present. */
+  .ui-nav-bar-label {
+    position: relative;
+    z-index: 1;
+    height: var(--ui-nav-bar-label-height);
+    margin-top: var(--ui-nav-bar-label-space);
+    color: var(--ui-nav-bar-inactive-label-color);
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), height var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-nav-bar-destination:hover .ui-nav-bar-label,
+  .ui-nav-bar-destination:focus-visible .ui-nav-bar-label,
+  .ui-nav-bar-destination:active .ui-nav-bar-label {
+    color: var(--ui-nav-bar-inactive-hover-icon-color);
+  }
+  .ui-nav-bar-destination--active .ui-nav-bar-label {
+    color: var(--ui-nav-bar-active-label-color);
+  }
+
+  /* Upstream hideInactiveLabels: inactive destinations collapse to icon-only,
+     the active one keeps its label. */
+  .ui-nav-bar--hide-inactive-labels .ui-nav-bar-label {
+    height: 0;
+    opacity: 0;
+  }
+  .ui-nav-bar--hide-inactive-labels .ui-nav-bar-destination--active .ui-nav-bar-label {
+    height: var(--ui-nav-bar-label-height);
+    opacity: 1;
+  }
+
+  /* Badge: destinations compose the existing .ui-badge primitive, anchored to
+     the icon's top-end corner (the upstream badge placement inside the
+     aria-hidden icon slot). */
+  .ui-nav-bar .ui-badge {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    margin-inline-start: .375rem;
+    margin-block-start: .25rem;
+  }
+  .ui-nav-bar .ui-badge.ui-badge-large {
+    margin-inline-start: .125rem;
+    margin-block-start: 1px;
+  }
+
+  /* Demo preview composition. */
+  .navigation-bar-demo-grid {
+    display: grid;
+    gap: 2rem;
+    width: 100%;
+  }
+  .navigation-bar-demo-group {
+    display: grid;
+    gap: .5rem;
+    max-width: 28rem;
+  }
+  .navigation-bar-demo-heading {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-nav-bar-destination,
+  .ui-nav-bar-destination::before,
+  .ui-nav-bar-label,
+  .ui-nav-bar-indicator { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-nav-bar { box-shadow: none; border: 1px solid CanvasText; forced-color-adjust: auto; }
+  .ui-nav-bar-destination { color: CanvasText; forced-color-adjust: auto; }
+  .ui-nav-bar-destination--active { color: HighlightText; }
+  .ui-nav-bar-destination--active .ui-nav-bar-label { color: HighlightText; }
+  .ui-nav-bar-indicator { border: 1px solid Highlight; }
+  .ui-nav-bar-destination:focus-visible { outline-color: Highlight; }
+}

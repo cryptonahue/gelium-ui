@@ -1,0 +1,23 @@
+{{define "tabs-demo"}}
+<div class="tabs-demo-grid">
+  {{range $bar := .Bars}}
+  <section class="tabs-demo-group" aria-label="{{$bar.AriaLabel}}">
+    <h4 class="tabs-demo-caption">{{$bar.Heading}}</h4>
+    <nav class="ui-tabs" aria-label="{{$bar.AriaLabel}}">
+      <ul class="ui-tabs-list">
+        {{range $tab := $bar.Tabs}}
+        <li class="ui-tabs-item">
+          <a class="ui-tab ui-tab-{{$bar.Variant}}{{if $tab.Stacked}} ui-tab-stacked{{end}}" href="{{$tab.Href}}"{{if $tab.Active}} aria-current="page"{{end}}{{if $tab.AriaLabel}} aria-label="{{$tab.AriaLabel}}"{{end}}>
+            {{if $tab.Icon}}<span class="ui-tab-icon" aria-hidden="true">{{$tab.Icon}}</span>{{end}}
+            {{if $tab.Label}}<span class="ui-tab-label">{{$tab.Label}}</span>{{end}}
+            <span class="ui-tab-indicator" aria-hidden="true"></span>
+          </a>
+        </li>
+        {{end}}
+      </ul>
+    </nav>
+    {{if $bar.Panel}}<div class="tabs-demo-panel">{{$bar.Panel}}</div>{{end}}
+  </section>
+  {{end}}
+</div>
+{{end}}
