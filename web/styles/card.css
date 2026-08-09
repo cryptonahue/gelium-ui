@@ -1,0 +1,38 @@
+@layer components {
+  /* Card: a Material container that groups content. The base .ui-card supplies
+     layout and shape; the variant class picks the surface and boundary:
+     elevated (shadow level 1), filled (raised surface, no shadow), outlined
+     (surface + 1px outline). The semantic root stays native: <article> for a
+     static group, <a> for navigation, <button> for an action. Card must never
+     be the sole carrier of meaning; interactive roots keep focus-visible. */
+  .ui-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+    border-radius: var(--ui-card-radius);
+    padding: 1rem;
+    min-width: 0;
+    color: var(--ui-color-fg);
+    text-align: start;
+    text-decoration: none;
+    font: var(--ui-type-body-lg);
+  }
+  .ui-card-elevated { background: var(--ui-card-container-elevated); box-shadow: var(--ui-shadow-1); }
+  .ui-card-filled { background: var(--ui-card-container-filled); }
+  .ui-card-outlined { background: var(--ui-card-container-outlined); border: 1px solid var(--ui-card-outline-color); }
+  .ui-card:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset); }
+  .ui-card-title { margin: 0 0 .25rem; font: var(--ui-type-headline-sm); }
+  .ui-card-action { margin-top: 1rem; }
+  .card-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .card-demo-grid .ui-card { min-height: 8rem; }
+}

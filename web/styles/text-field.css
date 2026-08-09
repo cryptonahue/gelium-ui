@@ -1,0 +1,162 @@
+@layer components {
+  .ui-text-field {
+    display: grid;
+    width: min(100%, 24rem);
+    gap: 0;
+  }
+  .ui-text-field-control {
+    position: relative;
+    display: grid;
+    height: 3.5rem;
+    box-sizing: border-box;
+    border-radius: var(--ui-radius-xs);
+    color: var(--ui-field-label);
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-text-field-control > label {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    inset-inline-start: 1rem;
+    max-width: calc(100% - 2rem);
+    overflow: hidden;
+    color: var(--ui-field-label);
+    cursor: text;
+    font: var(--ui-type-body-lg);
+    text-overflow: ellipsis;
+    transform: translateY(-50%);
+    transform-origin: left top;
+    white-space: nowrap;
+    transition: color var(--ui-motion-short) var(--ui-easing-standard), font-size var(--ui-motion-short) var(--ui-easing-standard), top var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-text-field-control:focus-within > label,
+  .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label {
+    font: var(--ui-type-label-sm);
+  }
+  .ui-text-field-control:dir(rtl) > label { transform-origin: right top; }
+  .ui-text-field-control:focus-within > label { color: var(--ui-color-primary); }
+  .ui-text-field input,
+  .ui-text-field textarea {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-lg);
+    outline: 0;
+  }
+  .ui-text-field input { height: 100%; box-sizing: border-box; padding: 1rem 1rem; }
+  .ui-text-field textarea { padding: 1.5rem 1rem .5rem; }
+  .ui-text-field-filled .ui-text-field input { padding: 1.5rem 1rem .5rem; }
+  .ui-text-field input::placeholder,
+  .ui-text-field textarea::placeholder { color: transparent; }
+  .ui-text-field-error input,
+  .ui-text-field-error textarea { padding-inline-end: 3.5rem; }
+  .ui-text-field-error .ui-text-field-control > label { max-width: calc(100% - 3.5rem); }
+  .ui-text-field-error-icon {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--ui-field-error);
+    fill: currentColor;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+  .ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label { top: 1rem; transform: none; }
+  .ui-text-field-control:has(textarea) { height: auto; min-height: 7rem; }
+  .ui-text-field textarea { min-height: 7rem; resize: vertical; }
+  .ui-text-field-outlined .ui-text-field-control {
+    border: 1px solid var(--ui-field-border);
+    background: var(--ui-color-surface);
+  }
+  .ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: var(--ui-color-primary);
+    box-shadow: inset 0 0 0 2px var(--ui-color-primary);
+  }
+  .ui-text-field-outlined .ui-text-field-control:focus-within > label,
+  .ui-text-field-outlined .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-outlined .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label {
+    top: 0;
+    padding: 0 .25rem;
+    background: var(--ui-color-surface);
+    transform: translate(-.25rem, -50%);
+  }
+  .ui-text-field-outlined .ui-text-field-control:dir(rtl):focus-within > label,
+  .ui-text-field-outlined .ui-text-field-control:dir(rtl):has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-outlined .ui-text-field-control:dir(rtl):has(textarea:not(:placeholder-shown)) > label {
+    transform: translate(.25rem, -50%);
+  }
+  .ui-text-field-filled .ui-text-field-control {
+    border-bottom: 1px solid var(--ui-field-border);
+    border-radius: var(--ui-radius-xs) var(--ui-radius-xs) var(--ui-radius-none) var(--ui-radius-none);
+    background: var(--ui-field-container);
+  }
+  .ui-text-field-filled .ui-text-field-control:focus-within {
+    border-bottom-color: var(--ui-color-primary);
+    box-shadow: inset 0 -2px 0 var(--ui-color-primary);
+  }
+  .ui-text-field-filled .ui-text-field-control:focus-within > label,
+  .ui-text-field-filled .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-filled .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label {
+    top: .5rem;
+    transform: none;
+  }
+  .ui-text-field input:hover:not(:disabled),
+  .ui-text-field textarea:hover:not(:disabled) { cursor: text; }
+  .ui-text-field-control:hover:not(:focus-within):has(input:not(:disabled)),
+  .ui-text-field-control:hover:not(:focus-within):has(textarea:not(:disabled)) { border-color: var(--ui-field-border-hover); }
+  .ui-text-field input:focus-visible,
+  .ui-text-field textarea:focus-visible { outline: none; }
+  .ui-text-field-error .ui-text-field-control > label,
+  .ui-text-field-error .ui-text-field-message { color: var(--ui-field-error); }
+  .ui-text-field-error .ui-text-field-control { border-color: var(--ui-field-error); }
+  .ui-text-field-error .ui-text-field-control:focus-within > label { color: var(--ui-field-error); }
+  .ui-text-field-error .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-error .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label { color: var(--ui-field-error); }
+  .ui-text-field-error.ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: var(--ui-field-error);
+    box-shadow: inset 0 0 0 2px var(--ui-field-error);
+  }
+  .ui-text-field-error.ui-text-field-outlined .ui-text-field-control:hover:not(:focus-within):has(input:not(:disabled)),
+  .ui-text-field-error.ui-text-field-outlined .ui-text-field-control:hover:not(:focus-within):has(textarea:not(:disabled)) { border-color: var(--ui-field-error); }
+  .ui-text-field-error.ui-text-field-filled .ui-text-field-control:focus-within {
+    border-color: var(--ui-field-error);
+    box-shadow: inset 0 -2px 0 var(--ui-field-error);
+  }
+  .ui-text-field-error.ui-text-field-filled .ui-text-field-control:hover:not(:focus-within):has(input:not(:disabled)),
+  .ui-text-field-error.ui-text-field-filled .ui-text-field-control:hover:not(:focus-within):has(textarea:not(:disabled)) { border-color: var(--ui-field-error); }
+  .ui-text-field-message { margin: 0; padding: .25rem 1rem 0; color: var(--ui-color-fg-muted); font: var(--ui-type-body-sm); }
+  .ui-text-field-disabled .ui-text-field-control > label,
+  .ui-text-field-disabled input,
+  .ui-text-field-disabled textarea,
+  .ui-text-field-disabled .ui-text-field-message,
+  .ui-text-field-disabled .ui-text-field-error-icon { opacity: var(--ui-state-disabled-opacity); }
+  .ui-text-field-disabled .ui-text-field-control { box-shadow: none; }
+  .ui-text-field-disabled.ui-text-field-outlined .ui-text-field-control {
+    border-color: color-mix(in srgb, var(--ui-color-fg) 12%, transparent);
+  }
+  .ui-text-field-disabled.ui-text-field-filled .ui-text-field-control {
+    background: color-mix(in srgb, var(--ui-color-fg) 4%, var(--ui-color-surface));
+    border-bottom-color: color-mix(in srgb, var(--ui-color-fg) 38%, transparent);
+  }
+  .ui-text-field :disabled {
+    cursor: not-allowed;
+  }
+  .ui-text-field-error.ui-text-field-disabled .ui-text-field-control {
+    border-color: color-mix(in srgb, var(--ui-color-fg) 12%, transparent);
+    box-shadow: none;
+  }
+  .ui-text-field-error.ui-text-field-disabled .ui-text-field-control > label {
+    color: var(--ui-field-label);
+  }
+  form:has(> .ui-text-field) { display: grid; width: min(100%, 24rem); gap: 1rem; }
+  form:has(> .ui-text-field) .ui-button { justify-self: start; }
+}
+
+@media (max-width: 48rem) {
+  .text-field-preview { grid-template-columns: 1fr; }
+}

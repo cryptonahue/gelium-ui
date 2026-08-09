@@ -1,0 +1,47 @@
+@layer components {
+  /* Progress: a native <progress> element enhanced with CSS. appearance: none
+     strips the browser default so Loom paints the 4px Material track and the
+     primary indicator from --ui-progress-* tokens. A value attribute renders a
+     determinate bar; omitting value renders the native indeterminate animation,
+     which assistive technology announces without JavaScript. */
+  .ui-progress {
+    display: block;
+    width: min(100%, 24rem);
+  }
+  .ui-progress progress {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: var(--ui-progress-track-height);
+    box-sizing: border-box;
+    border: 0;
+    border-radius: var(--ui-progress-radius);
+    background: var(--ui-progress-track);
+    color: var(--ui-progress-indicator);
+    overflow: hidden;
+  }
+  .ui-progress progress::-webkit-progress-bar {
+    background: var(--ui-progress-track);
+    border-radius: var(--ui-progress-radius);
+  }
+  .ui-progress progress::-webkit-progress-value {
+    background: var(--ui-progress-indicator);
+    border-radius: var(--ui-progress-radius);
+  }
+  .ui-progress progress::-moz-progress-bar {
+    background: var(--ui-progress-indicator);
+    border-radius: var(--ui-progress-radius);
+  }
+  .progress-demo-grid {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 32rem;
+  }
+  .progress-demo-item { display: grid; gap: 0; }
+  .progress-demo-caption {
+    margin-top: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+}

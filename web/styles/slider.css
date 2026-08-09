@@ -1,0 +1,96 @@
+@layer components {
+  /* Slider: a native input[type="range"] enhanced with CSS. appearance: none
+     removes the browser chrome; Loom paints the 4px Material track whose active
+     portion fills from the start to --ui-slider-fill (a percentage custom
+     property), the inactive remainder, and the 20px primary handle that grows
+     to 24px while pressed. WebKit has no progress pseudo-element, so the fill
+     is a linear-gradient keyed to --ui-slider-fill; Firefox fills natively
+     through ::-moz-range-progress. The optional data-ui-slider enhancement in
+     app.js keeps the custom property in sync while dragging; without
+     JavaScript the fill shows the server-rendered value and the native control
+     stays fully operable. */
+  .ui-slider {
+    display: block;
+    width: min(100%, 24rem);
+  }
+  .ui-slider input[type="range"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: var(--ui-slider-handle-size);
+    margin: calc((var(--ui-slider-handle-size) - var(--ui-slider-track-height)) / 2) 0 0;
+    background: transparent;
+    cursor: pointer;
+  }
+  .ui-slider input[type="range"]:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-slider input[type="range"]::-webkit-slider-runnable-track {
+    height: var(--ui-slider-track-height);
+    border-radius: var(--ui-slider-track-radius);
+    background: linear-gradient(to right, var(--ui-slider-active) 0 var(--ui-slider-fill, 0%), var(--ui-slider-inactive) var(--ui-slider-fill, 0%) 100%);
+  }
+  .ui-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: var(--ui-slider-handle-size);
+    height: var(--ui-slider-handle-size);
+    box-sizing: border-box;
+    margin-top: calc((var(--ui-slider-track-height) - var(--ui-slider-handle-size)) / 2);
+    border: 0;
+    border-radius: var(--ui-slider-track-radius);
+    background: var(--ui-slider-handle);
+    box-shadow: var(--ui-slider-handle-elevation);
+    cursor: pointer;
+  }
+  .ui-slider input[type="range"]::-moz-range-track {
+    height: var(--ui-slider-track-height);
+    border-radius: var(--ui-slider-track-radius);
+    background: var(--ui-slider-inactive);
+  }
+  .ui-slider input[type="range"]::-moz-range-progress {
+    height: var(--ui-slider-track-height);
+    border-radius: var(--ui-slider-track-radius);
+    background: var(--ui-slider-active);
+  }
+  .ui-slider input[type="range"]::-moz-range-thumb {
+    width: var(--ui-slider-handle-size);
+    height: var(--ui-slider-handle-size);
+    border: 0;
+    border-radius: var(--ui-slider-track-radius);
+    background: var(--ui-slider-handle);
+    box-shadow: var(--ui-slider-handle-elevation);
+    cursor: pointer;
+  }
+  .ui-slider input[type="range"]:active:not(:disabled)::-webkit-slider-thumb,
+  .ui-slider input[type="range"]:active:not(:disabled)::-moz-range-thumb {
+    width: var(--ui-slider-handle-pressed-size);
+    height: var(--ui-slider-handle-pressed-size);
+  }
+  .ui-slider input[type="range"]:disabled {
+    cursor: not-allowed;
+  }
+  .ui-slider input[type="range"]:disabled::-webkit-slider-runnable-track,
+  .ui-slider input[type="range"]:disabled::-moz-range-track,
+  .ui-slider input[type="range"]:disabled::-moz-range-progress {
+    background: var(--ui-slider-disabled);
+    opacity: var(--ui-slider-disabled-opacity);
+  }
+  .ui-slider input[type="range"]:disabled::-webkit-slider-thumb,
+  .ui-slider input[type="range"]:disabled::-moz-range-thumb {
+    background: var(--ui-slider-disabled);
+    opacity: var(--ui-slider-disabled-opacity);
+  }
+  .slider-demo-grid {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 32rem;
+  }
+  .slider-demo-item { display: grid; gap: 0; }
+  .slider-demo-caption {
+    margin-top: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+}

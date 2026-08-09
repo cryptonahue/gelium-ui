@@ -1,0 +1,32 @@
+@layer components {
+  /* Elevation: visual-only utilities mapped to the theme shadow tokens.
+     Elevation must never be the sole carrier of meaning or state. */
+  .ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 {
+    transition: box-shadow var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-elevation-0 { box-shadow: var(--ui-shadow-0); }
+  .ui-elevation-1 { box-shadow: var(--ui-shadow-1); }
+  .ui-elevation-2 { box-shadow: var(--ui-shadow-2); }
+  .ui-elevation-3 { box-shadow: var(--ui-shadow-3); }
+  .ui-elevation-4 { box-shadow: var(--ui-shadow-4); }
+  .ui-elevation-5 { box-shadow: var(--ui-shadow-5); }
+  .elevation-demo-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+  }
+  .elevation-demo-list li {
+    min-height: 6rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-md);
+    padding: 1rem;
+    background: var(--ui-color-surface);
+    color: var(--ui-color-fg);
+    font: var(--ui-type-label-lg);
+    text-align: center;
+  }
+}

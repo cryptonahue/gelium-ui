@@ -1,0 +1,28 @@
+@layer components {
+  /* ---- System primitives (Wave 1A) ---- */
+  /* Focus ring: shared :focus-visible contract. The broad rule is a robust
+     default so no focusable element loses its indicator; .ui-focus-ring is the
+     explicit utility for custom focusable elements. Both keep the component
+     specific focus-visible rules intact and never change geometry. */
+  :focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-focus-ring:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .focus-demo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .focus-demo-link {
+    padding: .625rem 1rem;
+    border-radius: var(--ui-radius-sm);
+    background: var(--ui-color-surface);
+    color: var(--ui-color-primary);
+    font: var(--ui-type-label-lg);
+    text-decoration: none;
+  }
+}

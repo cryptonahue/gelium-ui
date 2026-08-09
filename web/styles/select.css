@@ -1,0 +1,111 @@
+@layer components {
+/* Select: a native <select> enhanced with CSS. The element stays the focusable,
+      operable control; appearance: none removes the browser chrome so Loom paints
+      the Material 3 field from --ui-select-* tokens. Filled uses a surface-container-
+      highest background with a top-only 4px radius and a bottom active indicator;
+      outlined uses a transparent field with a full 4px radius and a 1px outline that
+      tightens to the primary color. The label floats from body-large to body-sm when
+      focused or when a non-placeholder option is chosen. The first disabled option
+      keeps its visible picker text (so the native popup row is never blank) but the
+      field paints it transparent while empty, leaving the resting label as the only
+      prompt. */
+  .ui-select {
+    position: relative;
+    display: grid;
+    width: min(100%, 24rem);
+    gap: 0;
+  }
+  .ui-select select {
+    appearance: none;
+    width: 100%;
+    height: var(--ui-select-height);
+    box-sizing: border-box;
+    padding: 1rem 2.5rem 0 1rem;
+    border-radius: var(--ui-select-radius);
+    background: transparent;
+    color: var(--ui-select-fg);
+    font: var(--ui-type-body-lg);
+    cursor: pointer;
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-select select:not(:has(option:checked:not([value=""]))) {
+    color: transparent;
+  }
+  .ui-select select:hover:not(:disabled):not([aria-invalid="true"]) {
+    border-color: var(--ui-select-hover-outline);
+  }
+  .ui-select select:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-select select:disabled {
+    cursor: not-allowed;
+    opacity: var(--ui-select-disabled-opacity);
+  }
+  .ui-select select[aria-invalid="true"] { border-color: var(--ui-select-error); }
+  .ui-select select[aria-invalid="true"] ~ .ui-select-label,
+  .ui-select select[aria-invalid="true"] ~ .ui-select-caret { color: var(--ui-select-error); }
+  .ui-select-filled select {
+    background: var(--ui-select-container-filled);
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--ui-select-outline);
+    border-radius: var(--ui-select-radius-top);
+  }
+  .ui-select-filled select:focus-visible { border-bottom-color: var(--ui-select-focus); }
+  .ui-select-outlined select {
+    background: transparent;
+    border: 1px solid var(--ui-select-outline);
+  }
+  .ui-select-outlined select:focus-visible { border-color: var(--ui-select-focus); }
+  .ui-select-label {
+    position: absolute;
+    inset-inline-start: 1rem;
+    top: 50%;
+    color: var(--ui-select-label);
+    font: var(--ui-type-body-lg);
+    transform: translateY(-50%);
+    transition: font var(--ui-motion-short) var(--ui-easing-standard), color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-select:focus-within .ui-select-label,
+  .ui-select:has(select option:checked:not([value=""])) .ui-select-label {
+    top: .375rem;
+    color: var(--ui-select-label);
+    font: var(--ui-type-body-sm);
+    transform: none;
+    transition: font var(--ui-motion-short) var(--ui-easing-standard), color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-select:focus-within .ui-select-label { color: var(--ui-select-focus); }
+  .ui-select-caret {
+    position: absolute;
+    inset-inline-end: 1rem;
+    top: 50%;
+    color: var(--ui-select-caret);
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+.ui-select select:disabled + .ui-select-label,
+.ui-select:has(select:disabled) .ui-select-caret { opacity: var(--ui-select-disabled-opacity); }
+  .ui-select select option {
+    background: var(--ui-select-list-bg);
+    color: var(--ui-select-list-fg);
+  }
+  .ui-select select option:checked {
+    background: var(--ui-select-list-bg);
+    color: var(--ui-select-list-fg);
+  }
+  .select-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 2rem;
+    width: 100%;
+  }
+  .select-demo-group { display: grid; gap: 1rem; width: 100%; }
+  .select-demo-group h3 {
+    margin: 0;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-label-lg);
+  }
+  @media (max-width: 48rem) { .select-demo-grid { grid-template-columns: 1fr; } }
+}

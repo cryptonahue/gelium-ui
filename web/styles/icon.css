@@ -1,0 +1,25 @@
+@layer components {
+  /* Icon: consistent 24px sizing and currentColor fill for trusted inline SVG.
+     Markup integrity (aria-hidden + focusable=false for decorative icons, a
+     visible text name for meaningful icons) stays an HTML/Go contract. */
+  .ui-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    fill: currentColor;
+  }
+  .icon-demo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .icon-demo-token {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .icon-demo-token .ui-icon { color: var(--ui-color-primary); }
+}

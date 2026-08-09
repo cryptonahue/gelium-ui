@@ -1,0 +1,42 @@
+@layer components {
+  /* Badge: a compact error-tinted marker for counts and short labels. The dot
+     form is decorative and must always pair with visible or accessible text
+     ("not color-only"); the large form carries the label itself. The marker is
+     error-colored by theme token so it follows light and dark schemes. */
+  .ui-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex: none;
+    width: var(--ui-badge-size);
+    height: var(--ui-badge-size);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-badge-container);
+    color: var(--ui-badge-fg);
+  }
+  .ui-badge-large {
+    width: auto;
+    min-width: var(--ui-badge-large-size);
+    height: var(--ui-badge-large-size);
+    padding-inline: .25rem;
+    font: var(--ui-type-label-sm);
+    line-height: 1rem;
+  }
+  .badge-demo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .badge-demo-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+}

@@ -1,0 +1,97 @@
+@layer components {
+  /* Radio: a native input[type="radio"] enhanced with CSS. The real control
+     stays the focusable, operable element; appearance: none removes the
+     browser default so Loom paints the 20px Material ring and the inner
+     checked dot from --ui-radio-* tokens. All paints are token-driven so
+     states survive light and dark schemes. */
+  .ui-radio {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+    font: var(--ui-type-body-md);
+  }
+  .ui-radio:hover { --ui-radio-outline: var(--ui-radio-hover-outline); }
+  .ui-radio:active:not(:disabled) input[type="radio"] { transform: scale(.92); }
+  .ui-radio input[type="radio"] {
+    appearance: none;
+    width: var(--ui-radio-size);
+    height: var(--ui-radio-size);
+    border-radius: var(--ui-radio-radius);
+    border: var(--ui-radio-outline-width) solid var(--ui-radio-outline);
+    margin: 0;
+    flex: none;
+    cursor: pointer;
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-radio input:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-radio input:checked + .ui-radio-mark { opacity: 1; }
+  .ui-radio input:checked { border-color: var(--ui-radio-checked); }
+  .ui-radio input[type="radio"][aria-invalid="true"] { border-color: var(--ui-color-danger); }
+  .ui-radio:hover input[type="radio"][aria-invalid="true"] { border-color: var(--ui-color-danger); }
+  .ui-radio input[type="radio"][aria-invalid="true"]:checked + .ui-radio-mark::after { background: var(--ui-color-danger); }
+  .ui-radio input:disabled {
+    cursor: not-allowed;
+    opacity: var(--ui-state-disabled-opacity);
+  }
+  .ui-radio input:disabled + .ui-radio-mark { opacity: var(--ui-state-disabled-opacity); }
+  .ui-radio input:disabled + .ui-radio-mark::after { background: var(--ui-radio-disabled); }
+  .ui-radio-mark {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-radio-size);
+    height: var(--ui-radio-size);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ui-radio-mark::after {
+    content: "";
+    box-sizing: border-box;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ui-radio-checked);
+    transition: background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-radio-label { color: var(--ui-color-fg); }
+  .radio-demo-fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+  }
+  .radio-demo-fieldset legend {
+    margin-bottom: .5rem;
+    padding: 0;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-label-lg);
+  }
+  .radio-demo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .radio-demo-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+}

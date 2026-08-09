@@ -1,0 +1,83 @@
+@layer components {
+  /* Checkbox: a native input[type="checkbox"] enhanced with CSS. The real
+     control stays the focusable, operable element; appearance: none removes
+     the browser default so Loom paints the 18x18 Material box, its outline,
+     and the checked chevron from --ui-checkbox-* tokens. All paints are
+     token-driven so states survive light and dark schemes. */
+.ui-checkbox {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+    font: var(--ui-type-body-md);
+  }
+  .ui-checkbox:hover { --ui-checkbox-outline: var(--ui-checkbox-hover-outline); }
+  .ui-checkbox:active:not(:disabled) input[type="checkbox"] { transform: scale(.92); }
+  .ui-checkbox input[type="checkbox"] {
+    appearance: none;
+    width: var(--ui-checkbox-size);
+    height: var(--ui-checkbox-size);
+    border-radius: var(--ui-checkbox-radius);
+    border: var(--ui-checkbox-outline-width) solid var(--ui-checkbox-outline);
+    margin: 0;
+    flex: none;
+    cursor: pointer;
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-checkbox input:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-checkbox input:checked + .ui-checkbox-mark { opacity: 1; }
+  .ui-checkbox input:checked ~ .ui-checkbox-label { color: var(--ui-color-fg); }
+  .ui-checkbox input:checked { background: var(--ui-checkbox-container); border-color: transparent; }
+  .ui-checkbox input[type="checkbox"][aria-invalid="true"] { border-color: var(--ui-checkbox-error); }
+  .ui-checkbox:hover input[type="checkbox"][aria-invalid="true"] { border-color: var(--ui-checkbox-error); }
+  .ui-checkbox input[type="checkbox"][aria-invalid="true"]:checked { background: var(--ui-checkbox-error); }
+  .ui-checkbox input:disabled {
+    cursor: not-allowed;
+    opacity: var(--ui-state-disabled-opacity);
+  }
+  .ui-checkbox input:disabled:checked { background: var(--ui-checkbox-checked-disabled-container); }
+  .ui-checkbox-mark {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-checkbox-size);
+    height: var(--ui-checkbox-size);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ui-checkbox-mark::after {
+    content: "";
+    box-sizing: border-box;
+    width: 6px;
+    height: 11px;
+    border-right: 2px solid var(--ui-checkbox-icon);
+    border-bottom: 2px solid var(--ui-checkbox-icon);
+    transform: rotate(45deg);
+    transform-origin: center;
+  }
+  .ui-checkbox-label { color: var(--ui-color-fg); }
+  .checkbox-demo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .checkbox-demo-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+}

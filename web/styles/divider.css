@@ -1,0 +1,36 @@
+@layer components {
+  /* Divider: a 1px thematic break mapped to the divider tokens. The paint is
+     clipped to the content box so the inset variants shorten the visible line
+     without fading it. Decorative by default: it carries no accessible role
+     unless a consumer opts in with role="separator" on a semantic break. */
+  .ui-divider {
+    display: block;
+    height: var(--ui-divider-thickness);
+    background: var(--ui-divider-color);
+    background-clip: content-box;
+    border: 0;
+    margin: 0;
+  }
+  .ui-divider-inset { padding-inline: 1rem; }
+  .ui-divider-inset-start { padding-inline-start: 1rem; }
+  .ui-divider-inset-end { padding-inline-end: 1rem; }
+  .divider-demo-list {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  .divider-demo-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .divider-demo-label {
+    flex: none;
+    min-width: 6rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-sm);
+  }
+  .divider-demo-row .ui-divider { flex: 1 1 auto; }
+}
