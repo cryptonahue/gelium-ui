@@ -75,3 +75,28 @@ document.addEventListener("htmx:beforeSwap", function (event) {
     schedule(el, el._timeoutMs);
   });
 })();
+
+(function () {
+  "use strict";
+
+  // Minimal, framework-free enhancement for the Slider component: it keeps the
+  // --ui-slider-fill percentage custom property in sync with the native range
+  // while dragging, so the WebKit active-track fill follows the handle. Firefox
+  // fills natively through ::-moz-range-progress. The no-JS flow is complete
+  // without this: the fill shows the served value and the native input stays
+  // fully operable.
+  var toPercent = function (input) {
+    var min = input.min === "" ? 0 : Number(input.min);
+    var max = input.max === "" ? 100 : Number(input.max);
+    var span = max - min || 1;
+    return ((Number(input.value) - min) / span) * 100;
+  };
+
+  document.addEventListener("input", function (event) {
+    var input = event.target;
+    if (!input || input.type !== "range") return;
+    var slider = input.closest(".ui-slider[data-ui-slider]");
+    if (!slider) return;
+    slider.style.setProperty("--ui-slider-fill", toPercent(input) + "%");
+  });
+})();

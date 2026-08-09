@@ -11,7 +11,7 @@
 <body>
   <header class="site-header">
     <a class="brand" href="/">Loom UI</a>
-    <nav aria-label="Primary"><a href="/components/button">Button</a> <a href="/components/text-field">Text field</a> <a href="/components/dialog">Dialog</a> <a href="/components/toast">Toast</a> <a href="/components/elevation">Elevation</a> <a href="/components/focus-ring">Focus ring</a> <a href="/components/icon">Icon</a> <a href="/components/divider">Divider</a> <a href="/components/card">Card</a> <a href="/components/badge">Badge</a> <a href="/components/checkbox">Checkbox</a> <a href="/components/radio">Radio</a> <a href="/components/switch">Switch</a> <a href="/components/select">Select</a></nav>
+    <nav aria-label="Primary"><a href="/components/button">Button</a> <a href="/components/text-field">Text field</a> <a href="/components/dialog">Dialog</a> <a href="/components/toast">Toast</a> <a href="/components/elevation">Elevation</a> <a href="/components/focus-ring">Focus ring</a> <a href="/components/icon">Icon</a> <a href="/components/divider">Divider</a> <a href="/components/card">Card</a> <a href="/components/badge">Badge</a> <a href="/components/checkbox">Checkbox</a> <a href="/components/radio">Radio</a> <a href="/components/switch">Switch</a> <a href="/components/select">Select</a> <a href="/components/slider">Slider</a> <a href="/components/progress">Progress</a></nav>
   </header>
   <main class="docs-shell">
     <article class="prose">{{.Content}}</article>
@@ -32,6 +32,9 @@
     {{if .RadioDemo}}<section class="component-preview" aria-label="Radio examples">{{template "radio-demo" .RadioDemo}}</section>{{end}}
     {{if .SwitchDemo}}<section class="component-preview" aria-label="Switch examples">{{template "switch-demo" .SwitchDemo}}</section>{{end}}
     {{if .SelectDemo}}<section class="component-preview" aria-label="Select examples">{{template "select-demo" .SelectDemo}}</section>{{end}}
+    {{if .SelectMenuDemo}}<section class="component-preview select-menu-preview" aria-label="Select menu example">{{template "select-menu-demo" .SelectMenuDemo}}</section>{{end}}
+    {{if .SliderDemo}}<section class="component-preview" aria-label="Slider examples">{{template "slider-demo" .SliderDemo}}</section>{{end}}
+    {{if .ProgressDemo}}<section class="component-preview" aria-label="Progress examples">{{template "progress-demo" .ProgressDemo}}</section>{{end}}
   </main>
   {{template "toast-region"}}
 </body>

@@ -7,7 +7,7 @@ The Select component wraps a native [`<select>`](https://developer.mozilla.org/e
 ```html
 <div class="ui-select ui-select-filled">
   <select id="plan" name="plan">
-    <option value="" selected disabled>Choose a plan</option>
+<option value="" selected disabled>Choose a plan</option>
     <option value="standard">Standard</option>
     <option value="priority">Priority</option>
   </select>
@@ -34,7 +34,7 @@ Wrap with `ui-select-filled` or `ui-select-outlined` to pick the variant.
 - **Disabled** — add `disabled` to the native element. The field dims its content and stops interaction.
 - **Error** — add `aria-invalid="true"` to the select (plus an error message in the form, beyond color). The outline and label turn to the error color.
 
-Use the placeholder option pattern (`<option value="" selected disabled>`) to keep the floating label resting until the user chooses.
+The label doubles as the placeholder. The first `<option value="" selected disabled>` keeps its visible picker text (for example `Choose a plan`) so the native popup row reads clearly, while the field paints that text `transparent` until a real option is chosen — the resting label is the only prompt in the closed field. The label floats once the field is focused or a real option is selected.
 
 ## Design tokens
 

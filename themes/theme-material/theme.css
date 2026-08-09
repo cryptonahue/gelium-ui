@@ -129,6 +129,24 @@
   --ui-switch-disabled-handle-opacity: .38;
   --ui-switch-disabled-handle: var(--ui-color-fg);
 
+  /* Slider */
+  --ui-slider-track-height: 4px;
+  --ui-slider-track-radius: var(--ui-radius-full);
+  --ui-slider-handle-size: 20px;
+  --ui-slider-handle-pressed-size: 24px;
+  --ui-slider-active: var(--ui-color-primary);
+  --ui-slider-inactive: #e6e0e9;
+  --ui-slider-handle: var(--ui-color-primary);
+  --ui-slider-handle-elevation: var(--ui-shadow-1);
+  --ui-slider-disabled: var(--ui-color-fg);
+  --ui-slider-disabled-opacity: var(--ui-state-disabled-opacity);
+
+  /* Progress */
+  --ui-progress-track-height: 4px;
+  --ui-progress-radius: var(--ui-radius-full);
+  --ui-progress-track: #e6e0e9;
+  --ui-progress-indicator: var(--ui-color-primary);
+
   /* Select */
   --ui-select-height: 3.5rem;
   --ui-select-radius: 4px;
@@ -188,9 +206,13 @@
   --ui-field-border-hover: #e6e0e9;
   --ui-field-label: #cac4d0;
   --ui-field-error: #f2b8b5;
-  --ui-switch-track-unselected: #4a4458;
+--ui-switch-track-unselected: #4a4458;
+--ui-slider-inactive: #49454f;
+  --ui-progress-track: #49454f;
   --ui-card-container-filled: #36343b;
   --ui-select-container-filled: #4a4458;
+  --ui-select-menu-container: #36343b;
+  --ui-select-menu-item-selected: #4a4458;
   --ui-dialog-container: #2b2930;
   --ui-dialog-fg: #e6e0e9;
   --ui-dialog-body: #cac4d0;
@@ -227,7 +249,11 @@
     --ui-field-label: #cac4d0;
     --ui-field-error: #f2b8b5;
     --ui-card-container-filled: #36343b;
+    --ui-slider-inactive: #49454f;
+    --ui-progress-track: #49454f;
     --ui-select-container-filled: #4a4458;
+    --ui-select-menu-container: #36343b;
+    --ui-select-menu-item-selected: #4a4458;
     --ui-dialog-container: #2b2930;
     --ui-dialog-fg: #e6e0e9;
     --ui-dialog-body: #cac4d0;

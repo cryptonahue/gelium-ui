@@ -840,13 +840,16 @@
     color: var(--ui-color-fg-muted);
     font: var(--ui-type-label-lg);
   }
-  /* Select: a native <select> enhanced with CSS. The element stays the focusable,
-     operable control; appearance: none removes the browser chrome so Loom paints
-     the Material 3 field from --ui-select-* tokens. Filled uses a surface-container-
-     highest background with a top-only 4px radius and a bottom active indicator;
-     outlined uses a transparent field with a full 4px radius and a 1px outline that
-     tightens to the primary color. The label floats from body-large to body-sm when
-     focused or when a non-placeholder option is chosen. */
+/* Select: a native <select> enhanced with CSS. The element stays the focusable,
+      operable control; appearance: none removes the browser chrome so Loom paints
+      the Material 3 field from --ui-select-* tokens. Filled uses a surface-container-
+      highest background with a top-only 4px radius and a bottom active indicator;
+      outlined uses a transparent field with a full 4px radius and a 1px outline that
+      tightens to the primary color. The label floats from body-large to body-sm when
+      focused or when a non-placeholder option is chosen. The first disabled option
+      keeps its visible picker text (so the native popup row is never blank) but the
+      field paints it transparent while empty, leaving the resting label as the only
+      prompt. */
   .ui-select {
     position: relative;
     display: grid;
@@ -865,6 +868,9 @@
     font: var(--ui-type-body-lg);
     cursor: pointer;
     transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-select select:not(:has(option:checked:not([value=""]))) {
+    color: transparent;
   }
   .ui-select select:hover:not(:disabled):not([aria-invalid="true"]) {
     border-color: var(--ui-select-hover-outline);
@@ -925,6 +931,10 @@
     background: var(--ui-select-list-bg);
     color: var(--ui-select-list-fg);
   }
+  .ui-select select option:checked {
+    background: var(--ui-select-list-bg);
+    color: var(--ui-select-list-fg);
+  }
   .select-demo-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -939,6 +949,241 @@
     font: var(--ui-type-label-lg);
   }
   @media (max-width: 48rem) { .select-demo-grid { grid-template-columns: 1fr; } }
+  /* Select menu: a progressive enhancement over the native <dialog>. When the
+     dialog command invoker is available the browser opens the Material 3 menu
+     surface anchored below the trigger via CSS anchor positioning; the menu
+     items are submit buttons that post the chosen value back to the server.
+     Browsers without anchor support fall back to a centered field-sized menu,
+     and without command support the dialog stays closed so the native
+     <select> field remains the fallback control. */
+  .ui-select-menu {
+    position: fixed;
+    inset-inline-start: 50vw;
+    inset-block-start: 50vh;
+    translate: -50% -50%;
+    min-width: var(--ui-select-menu-min-width);
+    border: 0;
+    border-radius: var(--ui-select-menu-radius);
+    background: var(--ui-select-menu-container);
+    box-shadow: var(--ui-select-menu-elevation);
+    padding: .5rem 0;
+    color: var(--ui-select-menu-item-fg);
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .m3-select-trigger {
+    anchor-name: --select-menu-trigger;
+  }
+  @supports (anchor-name: --select-menu-trigger) {
+    .ui-select-menu {
+      position: absolute;
+      position-anchor: --select-menu-trigger;
+      inset-block-start: anchor(bottom);
+      inset-inline-start: anchor(left);
+      translate: none;
+      margin-block-start: .25rem;
+    }
+  }
+  .ui-select-menu[open] {
+    opacity: 1;
+    transform: none;
+  }
+  .ui-select-menu-item {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
+    width: 100%;
+    min-height: var(--ui-select-menu-item-height);
+    box-sizing: border-box;
+    border: 0;
+    padding: 0 1rem;
+    background: transparent;
+    color: var(--ui-select-menu-item-fg);
+    font: var(--ui-type-label-lg);
+    text-align: start;
+    cursor: pointer;
+  }
+  .ui-select-menu-item:hover {
+    background: color-mix(in srgb, var(--ui-color-fg) var(--ui-state-hover-opacity), transparent);
+  }
+  .ui-select-menu-item[aria-selected="true"] {
+    background: var(--ui-select-menu-item-selected);
+  }
+  .ui-select-menu-divider {
+    height: 1px;
+    margin: .5rem 0;
+    border: 0;
+    background: var(--ui-select-menu-divider);
+  }
+  .ui-select-menu-error {
+    margin: 0;
+    padding: .5rem 1rem;
+    color: var(--ui-select-error);
+    font: var(--ui-type-body-sm);
+  }
+  /* The menu demo trigger reuses the filled field look so the server-driven
+     menu demo dogfoods Select's own field surface. */
+  .m3-select-trigger {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: min(100%, 24rem);
+    min-height: var(--ui-select-height);
+    box-sizing: border-box;
+    padding: 1rem 1rem 0;
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--ui-select-outline);
+    border-radius: var(--ui-select-radius-top);
+    background: var(--ui-select-container-filled);
+    color: var(--ui-select-fg);
+    font: var(--ui-type-body-md);
+    text-align: start;
+    cursor: pointer;
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .m3-select-trigger:hover { border-bottom-color: var(--ui-select-hover-outline); }
+  .m3-select-trigger:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  /* Slider: a native input[type="range"] enhanced with CSS. appearance: none
+     removes the browser chrome; Loom paints the 4px Material track whose active
+     portion fills from the start to --ui-slider-fill (a percentage custom
+     property), the inactive remainder, and the 20px primary handle that grows
+     to 24px while pressed. WebKit has no progress pseudo-element, so the fill
+     is a linear-gradient keyed to --ui-slider-fill; Firefox fills natively
+     through ::-moz-range-progress. The optional data-ui-slider enhancement in
+     app.js keeps the custom property in sync while dragging; without
+     JavaScript the fill shows the server-rendered value and the native control
+     stays fully operable. */
+  .ui-slider {
+    display: block;
+    width: min(100%, 24rem);
+  }
+  .ui-slider input[type="range"] {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: var(--ui-slider-handle-size);
+    margin: calc((var(--ui-slider-handle-size) - var(--ui-slider-track-height)) / 2) 0 0;
+    background: transparent;
+    cursor: pointer;
+  }
+  .ui-slider input[type="range"]:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-slider input[type="range"]::-webkit-slider-runnable-track {
+    height: var(--ui-slider-track-height);
+    border-radius: var(--ui-slider-track-radius);
+    background: linear-gradient(to right, var(--ui-slider-active) 0 var(--ui-slider-fill, 0%), var(--ui-slider-inactive) var(--ui-slider-fill, 0%) 100%);
+  }
+  .ui-slider input[type="range"]::-webkit-slider-thumb {
+    -webkit-appearance: none;
+    width: var(--ui-slider-handle-size);
+    height: var(--ui-slider-handle-size);
+    box-sizing: border-box;
+    margin-top: calc((var(--ui-slider-track-height) - var(--ui-slider-handle-size)) / 2);
+    border: 0;
+    border-radius: var(--ui-slider-track-radius);
+    background: var(--ui-slider-handle);
+    box-shadow: var(--ui-slider-handle-elevation);
+    cursor: pointer;
+  }
+  .ui-slider input[type="range"]::-moz-range-track {
+    height: var(--ui-slider-track-height);
+    border-radius: var(--ui-slider-track-radius);
+    background: var(--ui-slider-inactive);
+  }
+  .ui-slider input[type="range"]::-moz-range-progress {
+    height: var(--ui-slider-track-height);
+    border-radius: var(--ui-slider-track-radius);
+    background: var(--ui-slider-active);
+  }
+  .ui-slider input[type="range"]::-moz-range-thumb {
+    width: var(--ui-slider-handle-size);
+    height: var(--ui-slider-handle-size);
+    border: 0;
+    border-radius: var(--ui-slider-track-radius);
+    background: var(--ui-slider-handle);
+    box-shadow: var(--ui-slider-handle-elevation);
+    cursor: pointer;
+  }
+  .ui-slider input[type="range"]:active:not(:disabled)::-webkit-slider-thumb,
+  .ui-slider input[type="range"]:active:not(:disabled)::-moz-range-thumb {
+    width: var(--ui-slider-handle-pressed-size);
+    height: var(--ui-slider-handle-pressed-size);
+  }
+  .ui-slider input[type="range"]:disabled {
+    cursor: not-allowed;
+  }
+  .ui-slider input[type="range"]:disabled::-webkit-slider-runnable-track,
+  .ui-slider input[type="range"]:disabled::-moz-range-track,
+  .ui-slider input[type="range"]:disabled::-moz-range-progress {
+    background: var(--ui-slider-disabled);
+    opacity: var(--ui-slider-disabled-opacity);
+  }
+  .ui-slider input[type="range"]:disabled::-webkit-slider-thumb,
+  .ui-slider input[type="range"]:disabled::-moz-range-thumb {
+    background: var(--ui-slider-disabled);
+    opacity: var(--ui-slider-disabled-opacity);
+  }
+  .slider-demo-grid {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 32rem;
+  }
+  .slider-demo-item { display: grid; gap: 0; }
+  .slider-demo-caption {
+    margin-top: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  /* Progress: a native <progress> element enhanced with CSS. appearance: none
+     strips the browser default so Loom paints the 4px Material track and the
+     primary indicator from --ui-progress-* tokens. A value attribute renders a
+     determinate bar; omitting value renders the native indeterminate animation,
+     which assistive technology announces without JavaScript. */
+  .ui-progress {
+    display: block;
+    width: min(100%, 24rem);
+  }
+  .ui-progress progress {
+    appearance: none;
+    -webkit-appearance: none;
+    width: 100%;
+    height: var(--ui-progress-track-height);
+    box-sizing: border-box;
+    border: 0;
+    border-radius: var(--ui-progress-radius);
+    background: var(--ui-progress-track);
+    color: var(--ui-progress-indicator);
+    overflow: hidden;
+  }
+  .ui-progress progress::-webkit-progress-bar {
+    background: var(--ui-progress-track);
+    border-radius: var(--ui-progress-radius);
+  }
+  .ui-progress progress::-webkit-progress-value {
+    background: var(--ui-progress-indicator);
+    border-radius: var(--ui-progress-radius);
+  }
+  .ui-progress progress::-moz-progress-bar {
+    background: var(--ui-progress-indicator);
+    border-radius: var(--ui-progress-radius);
+  }
+  .progress-demo-grid {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 32rem;
+  }
+  .progress-demo-item { display: grid; gap: 0; }
+  .progress-demo-caption {
+    margin-top: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
 }
 
 @keyframes ui-spin { to { transform: rotate(360deg); } }
@@ -956,6 +1201,10 @@
   .ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 { transition: none; }
   .ui-switch input[type="checkbox"], .ui-switch-track, .ui-switch-handle { transition: none; }
   .ui-select select, .ui-select-label, .ui-select-caret { transition: none; }
+  .ui-select-menu, .ui-select-menu-item, .m3-select-trigger { transition: none; }
+  .ui-slider input[type="range"]::-webkit-slider-thumb,
+  .ui-slider input[type="range"]::-moz-range-thumb { transition: none; }
+  .ui-progress progress { transition: none; }
 }
 @media (forced-colors: active) {
   .ui-button { border: 1px solid ButtonText; }
@@ -1054,4 +1303,40 @@
   }
   .ui-select select[aria-invalid="true"] ~ .ui-select-label,
   .ui-select select[aria-invalid="true"] ~ .ui-select-caret { color: Mark; }
+  .ui-select-menu { border: 1px solid CanvasText; background: Canvas; color: CanvasText; }
+  .ui-select-menu-item { color: CanvasText; }
+  .ui-select-menu-item[aria-selected="true"] { background: Highlight; color: HighlightText; }
+  .ui-select-menu-error { color: CanvasText; }
+  .m3-select-trigger {
+    border-color: CanvasText;
+    background: Canvas;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .m3-select-trigger:focus-visible { outline-color: Highlight; }
+  .ui-slider input[type="range"]::-webkit-slider-runnable-track,
+  .ui-slider input[type="range"]::-webkit-slider-thumb,
+  .ui-slider input[type="range"]::-moz-range-track,
+  .ui-slider input[type="range"]::-moz-range-progress,
+  .ui-slider input[type="range"]::-moz-range-thumb {
+    background: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-slider input[type="range"]:disabled::-webkit-slider-runnable-track,
+  .ui-slider input[type="range"]:disabled::-webkit-slider-thumb,
+  .ui-slider input[type="range"]:disabled::-moz-range-track,
+  .ui-slider input[type="range"]:disabled::-moz-range-progress,
+  .ui-slider input[type="range"]:disabled::-moz-range-thumb {
+    background: GrayText;
+  }
+  .ui-slider input[type="range"]:focus-visible { outline-color: Highlight; }
+  .ui-progress progress {
+    forced-color-adjust: auto;
+    color: CanvasText;
+  }
+  .ui-progress progress::-webkit-progress-bar { background: Canvas; }
+  .ui-progress progress::-webkit-progress-value { background: CanvasText; }
+  .ui-progress progress::-moz-progress-bar { background: CanvasText; }
+  .ui-progress progress:indeterminate::-webkit-progress-bar { background: CanvasText; }
+  .ui-progress progress:indeterminate::-moz-progress-bar { background: CanvasText; }
 }

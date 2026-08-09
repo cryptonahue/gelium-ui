@@ -1,0 +1,22 @@
+{{define "slider-demo"}}
+<div class="slider-demo-grid">
+  <div class="slider-demo-item">
+    <div class="ui-slider" data-ui-slider style="--ui-slider-fill: 0%">
+      <input type="range" id="slider-unselected" min="0" max="100" value="0" aria-label="Unselected slider">
+      <label class="slider-demo-caption" for="slider-unselected">Unselected</label>
+    </div>
+  </div>
+  <div class="slider-demo-item">
+    <div class="ui-slider" data-ui-slider style="--ui-slider-fill: 65%">
+      <input type="range" id="slider-populated" min="0" max="100" value="65" aria-label="Populated slider">
+      <label class="slider-demo-caption" for="slider-populated">Populated</label>
+    </div>
+  </div>
+  <div class="slider-demo-item">
+    <div class="ui-slider" data-ui-slider style="--ui-slider-fill: 40%">
+      <input type="range" id="slider-disabled" min="0" max="100" value="40" disabled aria-label="Disabled slider">
+      <label class="slider-demo-caption" for="slider-disabled">Disabled</label>
+    </div>
+  </div>
+</div>
+{{end}}

@@ -1,0 +1,28 @@
+{{define "progress-demo"}}
+<div class="progress-demo-grid">
+  <div class="progress-demo-item">
+    <div class="ui-progress">
+      <progress id="progress-30" max="100" value="30" aria-label="Progress 30 percent"></progress>
+      <label class="progress-demo-caption" for="progress-30">30%</label>
+    </div>
+  </div>
+  <div class="progress-demo-item">
+    <div class="ui-progress">
+      <progress id="progress-65" max="100" value="65" aria-label="Progress 65 percent"></progress>
+      <label class="progress-demo-caption" for="progress-65">65%</label>
+    </div>
+  </div>
+  <div class="progress-demo-item">
+    <div class="ui-progress">
+      <progress id="progress-100" max="100" value="100" aria-label="Progress 100 percent"></progress>
+      <label class="progress-demo-caption" for="progress-100">100%</label>
+    </div>
+  </div>
+  <div class="progress-demo-item">
+    <div class="ui-progress">
+      <progress id="progress-indeterminate" aria-label="Indeterminate progress"></progress>
+      <label class="progress-demo-caption" for="progress-indeterminate">Indeterminate</label>
+    </div>
+  </div>
+</div>
+{{end}}
