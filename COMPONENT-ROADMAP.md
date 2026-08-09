@@ -131,11 +131,11 @@ Familia upstream: assist, filter, input y suggestion chips. Debe implementarse p
 
 #### 4A. Navegación
 
-| Componente | Dependencias | Base/fallback |
-|---|---|---|
-| Tabs | Focus | links/páginas como fallback; tablist ARIA sólo si teclado completo está resuelto |
-| Navigation bar (Labs) | Icon, Focus, Badge opcional | navegación real con links |
-| Navigation tab (Labs) | contrato Tabs/Nav bar | link semántico, no tab falso |
+| Componente | Dependencias | Base/fallback | Estado |
+|---|---|---|---|
+| Tabs | Focus | links/páginas como fallback; tablist ARIA sólo si teclado completo está resuelto | ✅ Entregado (Wave 4A, commit 8e7c741): links reales `<a href>` con selección server-side `aria-current="page"`, primary/secondary, sin roving focus (sin brecha JS demostrada) |
+| Navigation bar (Labs) | Icon, Focus, Badge opcional | navegación real con links | ✅ Entregado (Wave 4A, commit 8e7c741): `<nav>` + destinos `<a href>` con activo server-side, reusa `.ui-badge` |
+| Navigation tab (Labs) | contrato Tabs/Nav bar | link semántico, no tab falso | 🔲 Pendiente — contrato de Tabs/Nav bar ya definido, se puede implementar |
 
 HTMX puede cambiar paneles y history, pero el fallback debe navegar normalmente. Roving focus y flechas requieren una brecha JS demostrada.
 
