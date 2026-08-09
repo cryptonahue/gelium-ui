@@ -116,6 +116,7 @@ Submit y validación deben funcionar con HTML normal. HTMX es opcional.
 - `<ul>`, `<ol>`, `<nav>` o colección semántica según contenido.
 - Depende de Icon y Focus.
 - Debe distinguir navegación, selección y contenido estático.
+- ✅ Entregado y aceptado (Wave 3, commit 2352f53): one/two/three-line, navegación con `<a href>`, selección multi con checkboxes nativos no-JS, iconos leading/trailing.
 
 #### Chips
 
@@ -124,6 +125,7 @@ Familia upstream: assist, filter, input y suggestion chips. Debe implementarse p
 - links, buttons o checkboxes según semántica;
 - remove/selection puede requerir round-trip server-side o JS mínimo;
 - depende de Icon, Icon button, Button y Focus.
+- ✅ Entregado y aceptado (Wave 3, commit 2352f53): assist/suggestion como buttons/links, filter como checkboxes nativos, input chip con remoción server-side en `POST /examples/chips/remove`.
 
 ### Wave 4 — navegación y selección agrupada
 
