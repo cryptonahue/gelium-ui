@@ -73,24 +73,19 @@
     box-shadow: none;
   }
 
-  .ui-icon-button-label {
-    margin-inline-start: .5rem;
-    font: var(--ui-type-label-lg);
-    margin-inline-end: -.5rem;
-  }
-  .ui-icon-button-demo-grid {
+  .icon-button-demo-grid {
     display: flex;
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
   }
-  .ui-icon-button-demo-item {
+  .icon-button-demo-item {
     display: flex;
     flex-direction: column;
     align-items: center;
     gap: .25rem;
   }
-  .ui-icon-button-demo-caption {
+  .icon-button-demo-caption {
     font: var(--ui-type-label-sm);
     color: var(--ui-color-fg-muted);
   }

@@ -43,16 +43,6 @@ func TestIconButtonRendersNativeActionButtonWithAccessibleName(t *testing.T) {
 }
 
 func TestIconButtonRequiresAccessibleName(t *testing.T) {
-	named := renderIconButton(t, iconButtonView{
-		Label:        "Add to favorites",
-		Variant:      "standard",
-		IconSVG:      template.HTML(`<svg aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M0 0h24v24H0z"/></svg>`),
-		VisibleLabel: true,
-	})
-	if !strings.Contains(named, `<span class="ui-icon-button-label">Add to favorites</span>`) {
-		t.Errorf("standard icon button = %q, visible label must carry the accessible name", named)
-	}
-
 	iconOnly := renderIconButton(t, iconButtonView{
 		Label:   "Add to favorites",
 		Variant: "filled",
@@ -60,6 +50,9 @@ func TestIconButtonRequiresAccessibleName(t *testing.T) {
 	})
 	if !strings.Contains(iconOnly, `aria-label="Add to favorites"`) {
 		t.Errorf("icon-only icon button = %q, must carry a non-empty aria-label", iconOnly)
+	}
+	if strings.Contains(iconOnly, "ui-icon-button-label") {
+		t.Errorf("icon-only icon button = %q, must not render a visible label (Material icon button is icon-only)", iconOnly)
 	}
 
 	unlabelled := renderIconButton(t, iconButtonView{

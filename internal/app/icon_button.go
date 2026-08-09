@@ -18,7 +18,6 @@ type iconButtonView struct {
 	Toggle            bool
 	Selected          bool
 	AriaLabelSelected string
-	VisibleLabel      bool
 }
 
 type iconButtonDemo struct {
@@ -30,12 +29,12 @@ func (s *server) iconButtonDocs(w http.ResponseWriter, _ *http.Request) {
 		Title: "Icon button",
 		IconButtonDemo: &iconButtonDemo{
 			Buttons: []iconButtonView{
-				{Label: "Add to favorites", Variant: "standard", IconSVG: iconButtonFavoriteSVG, VisibleLabel: true},
+				{Label: "Add to favorites", Variant: "standard", IconSVG: iconButtonFavoriteSVG},
 				{Label: "Add to favorites", Variant: "filled", IconSVG: iconButtonFavoriteSVG},
 				{Label: "Add to favorites", Variant: "filled-tonal", IconSVG: iconButtonFavoriteSVG},
 				{Label: "Add to favorites", Variant: "outlined", IconSVG: iconButtonFavoriteSVG},
 				{Label: "Add to favorites", Variant: "filled", IconSVG: iconButtonFavoriteSVG, Disabled: true},
-				{Label: "Navigate to home", Variant: "standard", IconSVG: iconButtonFavoriteSVG, Href: "/"},
+				{Label: "Navigate to home", Variant: "standard", IconSVG: iconButtonHomeSVG, Href: "/"},
 				{Label: "Add to favorites", Variant: "filled", IconSVG: iconButtonFavoriteSVG, Toggle: true},
 				{Label: "Add to favorites", Variant: "filled", IconSVG: iconButtonFavoriteSVG, SelectedIcon: iconButtonCheckSVG, Toggle: true, Selected: true, AriaLabelSelected: "Remove from favorites"},
 			},

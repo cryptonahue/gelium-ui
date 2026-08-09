@@ -103,11 +103,11 @@ Submit y validación deben funcionar con HTML normal. HTMX es opcional.
 
 #### 2B. Estado y acciones
 
-| Componente | Dependencias | Estrategia |
-|---|---|---|
-| Progress | Theme | `<progress>` para determinate; indeterminate accesible; SSE/polling sólo para progreso remoto |
-| Icon button | Icon + Focus + Button contracts | `<button>`/`<a>` con nombre accesible obligatorio |
-| FAB | Icon + Focus + Button contracts | acción primaria flotante, semántica nativa |
+| Componente | Dependencias | Estrategia | Estado |
+|---|---|---|---|
+| Progress | Theme | `<progress>` para determinate; indeterminate accesible; SSE/polling sólo para progreso remoto | ✅ Entregado y aceptado |
+| Icon button | Icon + Focus + Button contracts | `<button>`/`<a>` con nombre accesible obligatorio | ✅ Entregado y aceptado |
+| FAB | Icon + Focus + Button contracts | acción primaria flotante, semántica nativa | ✅ Entregado y aceptado |
 
 ### Wave 3 — composición
 

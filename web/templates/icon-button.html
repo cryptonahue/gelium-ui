@@ -6,7 +6,7 @@
 <a class="ui-icon-button ui-icon-button-{{.Variant}}" href="{{.Href}}"{{if .Toggle}} aria-pressed="{{if .Selected}}true{{else}}false{{end}}"{{end}}{{if and .Toggle .AriaLabelSelected}} aria-label="{{.AriaLabelSelected}}"{{else if .Label}} aria-label="{{.Label}}"{{end}}>{{if and .Toggle .Selected}}{{if .SelectedIcon}}{{.SelectedIcon}}{{else}}{{.IconSVG}}{{end}}{{else}}{{.IconSVG}}{{end}}</a>
 {{- end -}}
 {{- else -}}
-<button type="button" class="ui-icon-button ui-icon-button-{{.Variant}}"{{if .Disabled}} disabled aria-disabled="true"{{else}}{{if and .Command .CommandFor}} command="{{.Command}}" commandfor="{{.CommandFor}}"{{end}}{{if .Value}} value="{{.Value}}"{{end}}{{end}}{{if .Toggle}} aria-pressed="{{if .Selected}}true{{else}}false{{end}}"{{end}}{{if and .Toggle .AriaLabelSelected}} aria-label="{{.AriaLabelSelected}}"{{else if .Label}} aria-label="{{.Label}}"{{end}}>{{if and .Toggle .Selected}}{{if .SelectedIcon}}{{.SelectedIcon}}{{else}}{{.IconSVG}}{{end}}{{else}}{{.IconSVG}}{{end}}{{if .VisibleLabel}}<span class="ui-icon-button-label">{{.Label}}</span>{{end}}</button>
+<button type="button" class="ui-icon-button ui-icon-button-{{.Variant}}"{{if .Disabled}} disabled aria-disabled="true"{{else}}{{if and .Command .CommandFor}} command="{{.Command}}" commandfor="{{.CommandFor}}"{{end}}{{if .Value}} value="{{.Value}}"{{end}}{{end}}{{if .Toggle}} aria-pressed="{{if .Selected}}true{{else}}false{{end}}"{{end}}{{if and .Toggle .AriaLabelSelected}} aria-label="{{.AriaLabelSelected}}"{{else if .Label}} aria-label="{{.Label}}"{{end}}>{{if and .Toggle .Selected}}{{if .SelectedIcon}}{{.SelectedIcon}}{{else}}{{.IconSVG}}{{end}}{{else}}{{.IconSVG}}{{end}}</button>
 {{- end -}}
 {{end}}
 
