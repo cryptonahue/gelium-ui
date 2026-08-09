@@ -10,7 +10,9 @@ import (
 // boolean derived server-side from the current page, never from JavaScript.
 // InactiveSVG/ActiveSVG carry the trusted internal decorative glyphs; the two
 // slots mirror Material's active/inactive icon pair and the active one is
-// swapped in with CSS only.
+// swapped in with CSS only. When both slots carry the same glyph, the template
+// renders a single glyph and skips the redundant second copy (there is nothing
+// to swap).
 type navigationBarDestination struct {
 	Href        string
 	Label       string
@@ -20,6 +22,14 @@ type navigationBarDestination struct {
 	BadgeValue  string
 	InactiveSVG template.HTML
 	ActiveSVG   template.HTML
+}
+
+// HasDistinctActiveGlyph reports whether the destination swaps between two
+// different glyphs. When inactive and active are the same trusted SVG, the
+// template renders one copy only — the CSS swap would otherwise show the icon
+// twice.
+func (d navigationBarDestination) HasDistinctActiveGlyph() bool {
+	return d.InactiveSVG != d.ActiveSVG
 }
 
 // navigationBarDemoView is one <nav> instance: its accessible label, optional

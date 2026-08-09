@@ -81,6 +81,35 @@ func TestNavBarDocsRouteServerDerivesActiveDestination(t *testing.T) {
 	}
 }
 
+func TestNavBarSingleGlyphRenderedWhenSlotsMatch(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/navigation-bar", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("navigation-bar docs status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+
+	// The "Home" destination uses the same trusted glyph for inactive and
+	// active slots; the template must render exactly ONE copy per demo bar.
+	// Rendering both would show the icon twice because there is nothing to
+	// swap. There are three demo bars, so expect three copies total — never six.
+	homeSVG := string(navBarHomeSVG)
+	if got := strings.Count(body, homeSVG); got != 3 {
+		t.Errorf("home destination must render its glyph once per demo bar (inactive==active), got %d copies, want 3", got)
+	}
+
+	// The "Navigation bar" destination uses DISTINCT inactive/active glyphs
+	// (navBarMenuSVG / navBarAppsSVG); both copies must render so the CSS swap
+	// can hide one based on the active state.
+	if !strings.Contains(body, string(navBarMenuSVG)) {
+		t.Error("navigation-bar destination must render its inactive glyph")
+	}
+	if !strings.Contains(body, string(navBarAppsSVG)) {
+		t.Error("navigation-bar destination must render its distinct active glyph for the CSS swap")
+	}
+}
+
 func TestNavBarDocsRouteDogfoodsNavSemantics(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/navigation-bar", nil))

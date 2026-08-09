@@ -10,7 +10,7 @@
           <a class="ui-nav-bar-destination{{if .Active}} ui-nav-bar-destination--active{{end}}" href="{{.Href}}"{{if .Active}} aria-current="page"{{end}}>
             <span class="ui-nav-bar-icon" aria-hidden="true">
               <span class="ui-nav-bar-indicator"></span>
-              {{.InactiveSVG}}{{.ActiveSVG}}
+              {{.InactiveSVG}}{{if .HasDistinctActiveGlyph}}{{.ActiveSVG}}{{end}}
               {{if .HasBadge}}{{if .BadgeDot}}<span class="ui-badge" aria-hidden="true"></span>{{else}}<span class="ui-badge ui-badge-large">{{.BadgeValue}}</span>{{end}}{{end}}
             </span>
             <span class="ui-nav-bar-label">{{.Label}}</span>
