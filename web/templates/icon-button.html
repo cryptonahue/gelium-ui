@@ -1,0 +1,22 @@
+{{define "icon-button"}}
+{{- if .Href -}}
+{{- if .Disabled -}}
+<a class="ui-icon-button ui-icon-button-{{.Variant}}" role="link" aria-disabled="true" tabindex="-1"{{if .Toggle}} aria-pressed="{{if .Selected}}true{{else}}false{{end}}"{{end}}{{if and .Toggle .AriaLabelSelected}} aria-label="{{.AriaLabelSelected}}"{{else if .Label}} aria-label="{{.Label}}"{{end}}>{{if and .Toggle .Selected}}{{if .SelectedIcon}}{{.SelectedIcon}}{{else}}{{.IconSVG}}{{end}}{{else}}{{.IconSVG}}{{end}}</a>
+{{- else -}}
+<a class="ui-icon-button ui-icon-button-{{.Variant}}" href="{{.Href}}"{{if .Toggle}} aria-pressed="{{if .Selected}}true{{else}}false{{end}}"{{end}}{{if and .Toggle .AriaLabelSelected}} aria-label="{{.AriaLabelSelected}}"{{else if .Label}} aria-label="{{.Label}}"{{end}}>{{if and .Toggle .Selected}}{{if .SelectedIcon}}{{.SelectedIcon}}{{else}}{{.IconSVG}}{{end}}{{else}}{{.IconSVG}}{{end}}</a>
+{{- end -}}
+{{- else -}}
+<button type="button" class="ui-icon-button ui-icon-button-{{.Variant}}"{{if .Disabled}} disabled aria-disabled="true"{{else}}{{if and .Command .CommandFor}} command="{{.Command}}" commandfor="{{.CommandFor}}"{{end}}{{if .Value}} value="{{.Value}}"{{end}}{{end}}{{if .Toggle}} aria-pressed="{{if .Selected}}true{{else}}false{{end}}"{{end}}{{if and .Toggle .AriaLabelSelected}} aria-label="{{.AriaLabelSelected}}"{{else if .Label}} aria-label="{{.Label}}"{{end}}>{{if and .Toggle .Selected}}{{if .SelectedIcon}}{{.SelectedIcon}}{{else}}{{.IconSVG}}{{end}}{{else}}{{.IconSVG}}{{end}}{{if .VisibleLabel}}<span class="ui-icon-button-label">{{.Label}}</span>{{end}}</button>
+{{- end -}}
+{{end}}
+
+{{define "icon-button-demo"}}
+<div class="icon-button-demo-grid">
+  {{range .Buttons}}
+  <div class="icon-button-demo-item">
+    {{template "icon-button" .}}
+    <span class="icon-button-demo-caption">{{if .Disabled}}Disabled {{end}}{{.Variant}}{{if .Toggle}} toggle{{if .Selected}} selected{{end}}{{end}}</span>
+  </div>
+  {{end}}
+</div>
+{{end}}

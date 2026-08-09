@@ -1,0 +1,31 @@
+{{define "fab"}}
+{{- if .Label -}}
+{{- if .Href -}}
+{{- if .Disabled -}}
+<a class="{{.Class}}" role="link" aria-disabled="true" tabindex="-1"{{if .AriaLabel}} aria-label="{{.AriaLabel}}"{{end}}>{{if .IconSVG}}<span class="ui-fab-icon" aria-hidden="true">{{.IconSVG}}</span>{{end}}<span class="ui-fab-label">{{.Label}}</span></a>
+{{- else -}}
+<a class="{{.Class}}" href="{{.Href}}"{{if .AriaLabel}} aria-label="{{.AriaLabel}}"{{end}}>{{if .IconSVG}}<span class="ui-fab-icon" aria-hidden="true">{{.IconSVG}}</span>{{end}}<span class="ui-fab-label">{{.Label}}</span></a>
+{{- end -}}
+{{- else -}}
+<button class="{{.Class}}" type="button"{{if .Disabled}} disabled aria-disabled="true"{{else}}{{if and .Command .CommandFor}} command="{{.Command}}" commandfor="{{.CommandFor}}"{{end}}{{if .Value}} value="{{.Value}}"{{end}}{{end}}{{if .AriaLabel}} aria-label="{{.AriaLabel}}"{{end}}>{{if .IconSVG}}<span class="ui-fab-icon" aria-hidden="true">{{.IconSVG}}</span>{{end}}<span class="ui-fab-label">{{.Label}}</span></button>
+{{- end -}}
+{{- else -}}
+{{- if .Href -}}
+{{- if .Disabled -}}
+<a class="{{.Class}}" role="link" aria-disabled="true" tabindex="-1"{{if .AriaLabel}} aria-label="{{.AriaLabel}}"{{end}}>{{if .IconSVG}}<span class="ui-fab-icon" aria-hidden="true">{{.IconSVG}}</span>{{end}}</a>
+{{- else -}}
+<a class="{{.Class}}" href="{{.Href}}"{{if .AriaLabel}} aria-label="{{.AriaLabel}}"{{end}}>{{if .IconSVG}}<span class="ui-fab-icon" aria-hidden="true">{{.IconSVG}}</span>{{end}}</a>
+{{- end -}}
+{{- else -}}
+<button class="{{.Class}}" type="button"{{if .Disabled}} disabled aria-disabled="true"{{else}}{{if and .Command .CommandFor}} command="{{.Command}}" commandfor="{{.CommandFor}}"{{end}}{{if .Value}} value="{{.Value}}"{{end}}{{end}}{{if .AriaLabel}} aria-label="{{.AriaLabel}}"{{end}}>{{if .IconSVG}}<span class="ui-fab-icon" aria-hidden="true">{{.IconSVG}}</span>{{end}}</button>
+{{- end -}}
+{{- end -}}
+{{end}}
+
+{{define "fab-demo"}}
+<div class="fab-demo-row">
+  <div class="fab-demo-group" aria-label="FAB examples">
+    {{range $i, $v := .FabDemoViews}}{{template "fab" $v}}{{end}}
+  </div>
+</div>
+{{end}}

@@ -1,0 +1,109 @@
+@layer components {
+  .ui-icon-button {
+    position: relative;
+    display: inline-flex;
+    width: 2.5rem;
+    height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    border: 1px solid transparent;
+    border-radius: var(--ui-radius-full);
+    padding: 0;
+    flex: none;
+    cursor: pointer;
+    text-decoration: none;
+    transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard), border-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-icon-button .ui-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+  }
+  .ui-icon-button:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: inset 0 0 0 999px rgb(255 255 255 / var(--ui-state-hover-opacity));
+  }
+  .ui-icon-button:active:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: inset 0 0 0 999px rgb(255 255 255 / var(--ui-state-pressed-opacity));
+  }
+  .ui-icon-button:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  .ui-icon-button-standard {
+    background: transparent;
+    color: var(--ui-color-fg-muted);
+  }
+  .ui-icon-button-filled {
+    background: var(--ui-color-primary);
+    color: var(--ui-color-primary-fg);
+  }
+  .ui-icon-button-filled-tonal {
+    background: var(--ui-color-secondary);
+    color: var(--ui-color-secondary-fg);
+  }
+  .ui-icon-button-outlined {
+    border-color: var(--ui-color-border-strong);
+    background: transparent;
+    color: var(--ui-color-fg-muted);
+  }
+
+  /* Toggle selected state: selected standard raises emphasis to primary, and
+     selected filled/tonal/outlined rest on a primary container. */
+  .ui-icon-button[aria-pressed="true"] {
+    color: var(--ui-color-primary);
+  }
+  .ui-icon-button-filled[aria-pressed="true"] {
+    background: var(--ui-color-primary);
+    color: var(--ui-color-primary-fg);
+  }
+  .ui-icon-button-filled-tonal[aria-pressed="true"] {
+    background: var(--ui-color-primary);
+    color: var(--ui-color-primary-fg);
+  }
+  .ui-icon-button-outlined[aria-pressed="true"] {
+    border-color: var(--ui-color-primary);
+    background: var(--ui-color-primary);
+    color: var(--ui-color-primary-fg);
+  }
+
+  .ui-icon-button:disabled,
+  .ui-icon-button[aria-disabled="true"] {
+    opacity: var(--ui-state-disabled-opacity);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  .ui-icon-button-label {
+    margin-inline-start: .5rem;
+    font: var(--ui-type-label-lg);
+    margin-inline-end: -.5rem;
+  }
+  .ui-icon-button-demo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .ui-icon-button-demo-item {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .25rem;
+  }
+  .ui-icon-button-demo-caption {
+    font: var(--ui-type-label-sm);
+    color: var(--ui-color-fg-muted);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-icon-button { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-icon-button { border: 1px solid ButtonText; forced-color-adjust: auto; }
+  .ui-icon-button[aria-pressed="true"] { border-color: ButtonText; }
+  .ui-icon-button:focus-visible { outline-color: Highlight; }
+  .ui-icon-button:disabled,
+  .ui-icon-button[aria-disabled="true"] { opacity: 1; color: GrayText; }
+}

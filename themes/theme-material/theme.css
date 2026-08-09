@@ -147,6 +147,22 @@
   --ui-progress-track: #e6e0e9;
   --ui-progress-indicator: var(--ui-color-primary);
 
+  /* FAB */
+  --ui-fab-primary-container: #eaddff;
+  --ui-fab-primary-fg: #21005d;
+  --ui-fab-surface-container: #ece6f0;
+  --ui-fab-surface-fg: #49454f;
+  --ui-fab-secondary-container: #e8def8;
+  --ui-fab-secondary-fg: #1d192b;
+  --ui-fab-container-shape: 16px;
+  --ui-fab-container-shape-small: 12px;
+  --ui-fab-container-shape-large: 28px;
+  --ui-fab-extended-shape: 20px;
+  --ui-fab-icon-size: 24px;
+  --ui-fab-icon-size-large: 36px;
+  --ui-fab-icon-size-extended: 28px;
+  --ui-fab-extension-gap: 12px;
+
   /* Select */
   --ui-select-height: 3.5rem;
   --ui-select-radius: 4px;
@@ -225,6 +241,13 @@
   --ui-toast-icon-warning: #7a5700;
   --ui-toast-icon-error: #b3261e;
 
+  --ui-fab-primary-container: #4f378b;
+  --ui-fab-primary-fg: #eaddff;
+  --ui-fab-surface-container: #36343b;
+  --ui-fab-surface-fg: #cac4d0;
+  --ui-fab-secondary-container: #4a4458;
+  --ui-fab-secondary-fg: #e8def8;
+
 }
 
 @media (prefers-color-scheme: dark) {
@@ -265,6 +288,13 @@
     --ui-toast-icon-success: #2e7d32;
     --ui-toast-icon-warning: #7a5700;
     --ui-toast-icon-error: #b3261e;
+
+    --ui-fab-primary-container: #4f378b;
+    --ui-fab-primary-fg: #eaddff;
+    --ui-fab-surface-container: #36343b;
+    --ui-fab-surface-fg: #cac4d0;
+    --ui-fab-secondary-container: #4a4458;
+    --ui-fab-secondary-fg: #e8def8;
 
   }
 }

@@ -1,0 +1,100 @@
+@layer components {
+  /* FAB: a circular (or rounded-pill when extended) elevated action button that
+     surfaces the single most important action on a screen. Material anatomy:
+     medium 56px, small 40px, large 96px, extended 48px tall with a visible
+     label. The container uses a theme container color with an on-container
+     icon/label; hover/focus/pressed apply an inset state layer of the on-
+     container color. Icon-only FABs carry their accessible name in aria-label;
+     extended FABs add visible text. */
+  .ui-fab {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex: none;
+    border: none;
+    border-radius: var(--ui-fab-container-shape);
+    text-decoration: none;
+    cursor: pointer;
+    transition: box-shadow var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-fab .ui-fab-icon svg {
+    display: block;
+    flex: none;
+    width: var(--ui-fab-icon-size);
+    height: var(--ui-fab-icon-size);
+  }
+  .ui-fab-medium {
+    width: 56px;
+    height: 56px;
+    border-radius: var(--ui-fab-container-shape);
+    box-shadow: var(--ui-shadow-3);
+  }
+  .ui-fab-small {
+    width: 40px;
+    height: 40px;
+    border-radius: var(--ui-fab-container-shape-small);
+    box-shadow: var(--ui-shadow-3);
+  }
+  .ui-fab-large {
+    width: 96px;
+    height: 96px;
+    border-radius: var(--ui-fab-container-shape-large);
+    box-shadow: var(--ui-shadow-3);
+  }
+  .ui-fab-large .ui-fab-icon svg {
+    width: var(--ui-fab-icon-size-large);
+    height: var(--ui-fab-icon-size-large);
+  }
+
+  /* Extended FAB: taller target with a visible label and optional leading icon.
+     The container is a rounded pill whose label uses the label-large type. */
+  .ui-fab-extended {
+    height: 48px;
+    padding-inline: 1.25rem;
+    gap: var(--ui-fab-extension-gap);
+    border-radius: var(--ui-fab-extended-shape);
+    box-shadow: var(--ui-shadow-3);
+    font: var(--ui-type-label-lg);
+  }
+  .ui-fab-extended .ui-fab-icon svg {
+    width: var(--ui-fab-icon-size-extended);
+    height: var(--ui-fab-icon-size-extended);
+  }
+  .ui-fab-label { font: inherit; }
+
+  /* Lowered: a FAB at reduced elevation (surface elevation 1/2). */
+  .ui-fab-lowered {
+    box-shadow: var(--ui-shadow-1);
+  }
+
+  /* Color variants map to Material container + on-container tokens. */
+  .ui-fab-primary { background: var(--ui-fab-primary-container); color: var(--ui-fab-primary-fg); }
+  .ui-fab-surface { background: var(--ui-fab-surface-container); color: var(--ui-fab-surface-fg); }
+  .ui-fab-secondary { background: var(--ui-fab-secondary-container); color: var(--ui-fab-secondary-fg); }
+
+  /* State layers use the on-container color so hover/focus/pressed read on the
+     filled container and are never color-only. */
+  .ui-fab:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent);
+  }
+  .ui-fab:active:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+  }
+  .ui-fab:focus-visible:not(:disabled):not([aria-disabled="true"]) {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+    box-shadow: var(--ui-shadow-3), inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-focus-opacity) * 100%), transparent);
+  }
+  .ui-fab:disabled, .ui-fab[aria-disabled="true"] {
+    opacity: var(--ui-state-disabled-opacity);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+
+  /* Demo preview composition. */
+  .fab-preview { align-items: center; gap: 1rem; }
+  .fab-demo-row { display: flex; flex-wrap: wrap; gap: 1.5rem; flex: 1 1 100%; }
+  .fab-demo-group { display: flex; flex-wrap: wrap; align-items: center; gap: 1.5rem; }
+}

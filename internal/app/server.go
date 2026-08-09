@@ -35,6 +35,8 @@ type pageView struct {
 	SelectMenuDemo *selectMenuDemo
 	SliderDemo     *sliderDemo
 	ProgressDemo   *progressDemo
+	IconButtonDemo *iconButtonDemo
+	FabDemo        *fabDemo
 }
 
 type server struct {

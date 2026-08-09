@@ -18,6 +18,8 @@
 @import "./select-menu.css";
 @import "./slider.css";
 @import "./progress.css";
+@import "./icon-button.css";
+@import "./fab.css";
 
 @source "../templates";
 @source "../content";
@@ -51,6 +53,7 @@
   .ui-slider input[type="range"]::-webkit-slider-thumb,
   .ui-slider input[type="range"]::-moz-range-thumb { transition: none; }
   .ui-progress progress { transition: none; }
+  .ui-fab { transition: none; }
 }
 
 @media (forced-colors: active) {
@@ -109,6 +112,8 @@
   .ui-divider { background: CanvasText; }
   .ui-card { border: 1px solid CanvasText; }
   .ui-badge { border: 1px solid CanvasText; }
+  .ui-fab { border: 1px solid CanvasText; }
+  .ui-fab:focus-visible { outline-color: Highlight; }
   .ui-checkbox input[type="checkbox"] {
     border-color: CanvasText;
     forced-color-adjust: auto;

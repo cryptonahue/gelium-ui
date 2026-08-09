@@ -31,6 +31,8 @@ func componentRoutes() []componentRoute {
 		{Path: "/components/select", Label: "Select", Handler: (*server).selectDocs},
 		{Path: "/components/slider", Label: "Slider", Handler: (*server).sliderDocs},
 		{Path: "/components/progress", Label: "Progress", Handler: (*server).progressDocs},
+		{Path: "/components/icon-button", Label: "Icon button", Handler: (*server).iconButtonDocs},
+		{Path: "/components/fab", Label: "FAB", Handler: (*server).fabDocs},
 	}
 }
 
