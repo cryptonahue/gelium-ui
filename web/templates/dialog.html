@@ -1,0 +1,11 @@
+{{define "dialog"}}
+{{template "button" .Trigger}}
+<dialog class="ui-dialog" id="confirm-dialog" closedby="any" aria-labelledby="confirm-dialog-title" aria-describedby="confirm-dialog-description">
+  <h2 class="ui-dialog-headline" id="confirm-dialog-title">Confirm action</h2>
+  <div class="ui-dialog-content"><p id="confirm-dialog-description">This action will apply the selected changes. Do you want to continue?</p></div>
+  <div class="ui-dialog-actions">
+    {{template "button" .Cancel}}
+    {{template "button" .Confirm}}
+  </div>
+</dialog>
+{{end}}

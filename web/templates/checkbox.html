@@ -1,0 +1,39 @@
+{{define "checkbox-demo"}}
+<ol class="checkbox-demo-list">
+  <li class="checkbox-demo-item">
+    <label class="ui-checkbox">
+      <input type="checkbox" id="checkbox-unchecked" name="preferences" value="newsletter">
+      <span class="ui-checkbox-mark"></span>
+      <span class="ui-checkbox-label">Unchecked</span>
+    </label>
+  </li>
+  <li class="checkbox-demo-item">
+    <label class="ui-checkbox">
+      <input type="checkbox" id="checkbox-checked" name="preferences" value="updates" checked>
+      <span class="ui-checkbox-mark"></span>
+      <span class="ui-checkbox-label">Checked</span>
+    </label>
+  </li>
+  <li class="checkbox-demo-item">
+    <label class="ui-checkbox">
+      <input type="checkbox" id="checkbox-disabled" name="preferences" value="legacy" disabled>
+      <span class="ui-checkbox-mark"></span>
+      <span class="ui-checkbox-label">Disabled</span>
+    </label>
+  </li>
+  <li class="checkbox-demo-item">
+    <label class="ui-checkbox">
+      <input type="checkbox" id="checkbox-disabled-checked" name="preferences" value="locked" disabled checked>
+      <span class="ui-checkbox-mark"></span>
+      <span class="ui-checkbox-label">Disabled checked</span>
+    </label>
+  </li>
+  <li class="checkbox-demo-item">
+    <label class="ui-checkbox">
+      <input type="checkbox" id="checkbox-error" name="preferences" value="terms" aria-invalid="true">
+      <span class="ui-checkbox-mark"></span>
+      <span class="ui-checkbox-label">Error</span>
+    </label>
+  </li>
+</ol>
+{{end}}

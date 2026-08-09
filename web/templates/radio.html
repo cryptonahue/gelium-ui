@@ -1,0 +1,42 @@
+{{define "radio-demo"}}
+<fieldset class="radio-demo-fieldset">
+  <legend>Plan</legend>
+  <ol class="radio-demo-list">
+    <li class="radio-demo-item">
+      <label class="ui-radio">
+        <input type="radio" id="radio-unchecked" name="plan" value="standard">
+        <span class="ui-radio-mark"></span>
+        <span class="ui-radio-label">Unchecked</span>
+      </label>
+    </li>
+    <li class="radio-demo-item">
+      <label class="ui-radio">
+        <input type="radio" id="radio-checked" name="plan" value="priority" checked>
+        <span class="ui-radio-mark"></span>
+        <span class="ui-radio-label">Checked</span>
+      </label>
+    </li>
+    <li class="radio-demo-item">
+      <label class="ui-radio">
+        <input type="radio" id="radio-disabled" name="plan" value="legacy" disabled>
+        <span class="ui-radio-mark"></span>
+        <span class="ui-radio-label">Disabled</span>
+      </label>
+    </li>
+    <li class="radio-demo-item">
+      <label class="ui-radio">
+        <input type="radio" id="radio-disabled-checked" name="plan" value="locked" disabled checked>
+        <span class="ui-radio-mark"></span>
+        <span class="ui-radio-label">Disabled checked</span>
+      </label>
+    </li>
+    <li class="radio-demo-item">
+      <label class="ui-radio">
+        <input type="radio" id="radio-error" name="plan" value="risky" aria-invalid="true">
+        <span class="ui-radio-mark"></span>
+        <span class="ui-radio-label">Error</span>
+      </label>
+    </li>
+  </ol>
+</fieldset>
+{{end}}

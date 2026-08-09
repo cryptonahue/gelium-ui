@@ -1,0 +1,23 @@
+{{define "toast"}}
+<div class="ui-toast ui-toast-{{.Type}}" id="{{.ID}}" role="{{.Role}}">
+  {{.IconSVG}}
+  <span class="ui-toast-message">{{.Message}}</span>
+  {{if .Dismiss}}<button class="ui-toast-action" type="button" data-loom-toast-dismiss aria-label="Dismiss notification">Dismiss</button>{{end}}
+</div>
+{{end}}
+
+{{define "toast-region"}}
+<div id="loom-toast-region" class="ui-toast-region" aria-live="polite" aria-atomic="false" aria-relevant="additions text"></div>
+{{end}}
+
+{{define "toast-demo-form"}}
+<form class="toast-demo-form" method="post" action="/examples/toast/demo#toast-demo" novalidate hx-post="/examples/toast/demo" hx-target="this" hx-swap="outerHTML">
+  {{template "text-field" .Field}}
+  <label class="toast-demo-type-label" for="toast-type">Type</label>
+  <select id="toast-type" name="type" class="toast-demo-type">
+    {{range .Types}}<option value="{{.Value}}"{{if eq $.Type .Value}} selected{{end}}>{{.Label}}</option>{{end}}
+  </select>
+  <div class="toast-demo-submit">{{template "button" .Submit}}</div>
+  {{if .Toast}}{{template "toast" .Toast}}{{end}}
+</form>
+{{end}}

@@ -1,0 +1,38 @@
+{{define "layout"}}<!doctype html>
+<html lang="en" class="theme-material">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Title}} · Loom UI</title>
+  <link rel="stylesheet" href="/static/app.css?v=0.4.0">
+  <script defer src="/static/htmx.min.js?v=0.4.0"></script>
+  <script defer src="/static/app.js?v=0.4.0"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">Loom UI</a>
+    <nav aria-label="Primary"><a href="/components/button">Button</a> <a href="/components/text-field">Text field</a> <a href="/components/dialog">Dialog</a> <a href="/components/toast">Toast</a> <a href="/components/elevation">Elevation</a> <a href="/components/focus-ring">Focus ring</a> <a href="/components/icon">Icon</a> <a href="/components/divider">Divider</a> <a href="/components/card">Card</a> <a href="/components/badge">Badge</a> <a href="/components/checkbox">Checkbox</a> <a href="/components/radio">Radio</a> <a href="/components/switch">Switch</a> <a href="/components/select">Select</a></nav>
+  </header>
+  <main class="docs-shell">
+    <article class="prose">{{.Content}}</article>
+    {{if .CTA}}<div class="hero-action">{{template "button" .CTA}}</div>{{end}}
+    {{if .Buttons}}<section class="component-preview" aria-label="Button examples">{{range .Buttons}}{{template "button" .}}{{end}}</section>{{end}}
+    {{if .TextFields}}<section class="component-preview text-field-preview" aria-label="Text field examples">{{range .TextFields}}{{template "text-field" .}}{{end}}</section>{{end}}
+    {{if .ValidationForm}}<section class="component-preview" aria-label="Text field validation example" id="validation-example">{{template "validation-form" .ValidationForm}}</section>{{end}}
+    {{if .Dialog}}<section class="component-preview dialog-preview" aria-label="Dialog example">{{template "dialog" .Dialog}}</section>{{end}}
+    {{if .Toasts}}<section class="component-preview toast-preview" aria-label="Toast examples">{{range .Toasts}}{{template "toast" .}}{{end}}</section>{{end}}
+    {{if .ToastDemo}}<section class="component-preview toast-demo-preview" aria-label="Toast demo" id="toast-demo">{{template "toast-demo-form" .ToastDemo}}</section>{{end}}
+    {{if .ElevationDemo}}<section class="component-preview" aria-label="Elevation example">{{template "elevation-demo" .ElevationDemo}}</section>{{end}}
+    {{if .FocusRingDemo}}<section class="component-preview" aria-label="Focus ring example">{{template "focus-ring-demo" .FocusRingDemo}}</section>{{end}}
+    {{if .IconDemo}}<section class="component-preview" aria-label="Icon examples">{{template "icon-demo" .IconDemo}}</section>{{end}}
+    {{if .DividerDemo}}<section class="component-preview" aria-label="Divider examples">{{template "divider-demo" .DividerDemo}}</section>{{end}}
+    {{if .CardDemo}}<section class="component-preview" aria-label="Card examples">{{template "card-demo" .CardDemo}}</section>{{end}}
+    {{if .BadgeDemo}}<section class="component-preview" aria-label="Badge examples">{{template "badge-demo" .BadgeDemo}}</section>{{end}}
+    {{if .CheckboxDemo}}<section class="component-preview" aria-label="Checkbox examples">{{template "checkbox-demo" .CheckboxDemo}}</section>{{end}}
+    {{if .RadioDemo}}<section class="component-preview" aria-label="Radio examples">{{template "radio-demo" .RadioDemo}}</section>{{end}}
+    {{if .SwitchDemo}}<section class="component-preview" aria-label="Switch examples">{{template "switch-demo" .SwitchDemo}}</section>{{end}}
+    {{if .SelectDemo}}<section class="component-preview" aria-label="Select examples">{{template "select-demo" .SelectDemo}}</section>{{end}}
+  </main>
+  {{template "toast-region"}}
+</body>
+</html>{{end}}

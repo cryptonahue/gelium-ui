@@ -1,0 +1,11 @@
+{{define "button"}}
+{{- if .Href -}}
+{{- if or .Disabled .Loading -}}
+<a class="ui-button ui-button-{{.Variant}}" role="link" aria-disabled="true" tabindex="-1"{{if .Loading}} aria-busy="true"{{end}}>{{.IconSVG}}{{if .Loading}}<span class="ui-button-spinner" aria-hidden="true"></span><span class="sr-only">Loading {{.Label}}</span><span aria-hidden="true">{{.Label}}</span>{{else}}<span>{{.Label}}</span>{{end}}</a>
+{{- else -}}
+<a class="ui-button ui-button-{{.Variant}}" href="{{.Href}}">{{.IconSVG}}<span>{{.Label}}</span></a>
+{{- end -}}
+{{- else -}}
+<button class="ui-button ui-button-{{.Variant}}" type="{{if .Submit}}submit{{else}}button{{end}}"{{if or .Disabled .Loading}} disabled aria-disabled="true"{{else}}{{if and .Command .CommandFor}} command="{{.Command}}" commandfor="{{.CommandFor}}"{{end}}{{if .Autofocus}} autofocus{{end}}{{if .Value}} value="{{.Value}}"{{end}}{{end}}{{if .Loading}} aria-busy="true"{{end}}>{{.IconSVG}}{{if .Loading}}<span class="ui-button-spinner" aria-hidden="true"></span><span class="sr-only">Loading {{.Label}}</span><span aria-hidden="true">{{.Label}}</span>{{else}}<span>{{.Label}}</span>{{end}}</button>
+{{- end -}}
+{{end}}

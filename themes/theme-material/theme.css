@@ -1,0 +1,244 @@
+/*
+ * Loom UI Material theme.
+ * Conceptually audited against Material Web's public token families; this is
+ * an original semantic --ui-* mapping, not copied from the legacy CSS port.
+ */
+.theme-material {
+  color-scheme: light;
+
+  /* Color */
+  --ui-color-canvas: #fff7ff;
+  --ui-color-surface: #f7f2fa;
+  --ui-color-fg: #1d1b20;
+  --ui-color-fg-muted: #49454f;
+  --ui-color-primary: #6750a4;
+  --ui-color-primary-fg: #ffffff;
+  --ui-color-secondary: #e8def8;
+  --ui-color-secondary-fg: #1d192b;
+  --ui-color-border: #cac4d0;
+  --ui-color-border-strong: #79747e;
+  --ui-color-danger: #b3261e;
+  --ui-color-danger-fg: #ffffff;
+  --ui-color-focus-ring: #4f378b;
+
+  /* Text field */
+  --ui-field-container: #f3edf7;
+  --ui-field-border: #79747e;
+  --ui-field-border-hover: #1d1b20;
+  --ui-field-label: #49454f;
+  --ui-field-error: #b3261e;
+
+  /* Dialog */
+  --ui-dialog-container: #ece6f0;
+  --ui-dialog-fg: #1d1b20;
+  --ui-dialog-body: #49454f;
+  --ui-dialog-scrim: rgb(0 0 0 / .32);
+
+  /* Toast */
+  --ui-toast-container: #322f35;
+  --ui-toast-fg: #f3edf7;
+  --ui-toast-radius: 4px;
+  --ui-toast-action: #d0bcff;
+  --ui-toast-icon-info: #d0bcff;
+  --ui-toast-icon-success: #81c995;
+  --ui-toast-icon-warning: #fdd663;
+  --ui-toast-icon-error: #f2b8b5;
+
+  /* Typescale */
+  --ui-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ui-type-display-sm: 400 2.25rem/2.75rem var(--ui-font-sans);
+  --ui-type-headline-sm: 400 1.5rem/2rem var(--ui-font-sans);
+  --ui-type-title-lg: 500 1.375rem/1.75rem var(--ui-font-sans);
+  --ui-type-body-lg: 400 1rem/1.5rem var(--ui-font-sans);
+  --ui-type-body-md: 400 1rem/1.5rem var(--ui-font-sans);
+  --ui-type-body-sm: 400 .75rem/1rem var(--ui-font-sans);
+  --ui-type-label-lg: 600 .875rem/1.25rem var(--ui-font-sans);
+  --ui-type-label-sm: 500 .75rem/1rem var(--ui-font-sans);
+  --ui-type-dialog-headline: 400 1.5rem/2rem var(--ui-font-sans);
+  --ui-type-dialog-body: 400 .875rem/1.25rem var(--ui-font-sans);
+
+  /* Shape */
+  --ui-radius-none: 0;
+  --ui-radius-xs: .25rem;
+  --ui-radius-sm: .5rem;
+  --ui-radius-md: .75rem;
+  --ui-radius-lg: 1rem;
+  --ui-radius-xl: 1.75rem;
+  --ui-radius-full: 9999px;
+  --ui-dialog-radius: 28px;
+
+  /* Elevation */
+  --ui-shadow-0: none;
+  --ui-shadow-1: 0 1px 2px rgb(0 0 0 / .14), 0 1px 3px rgb(0 0 0 / .10);
+  --ui-shadow-2: 0 2px 6px rgb(0 0 0 / .16), 0 1px 2px rgb(0 0 0 / .12);
+  --ui-shadow-3: 0 4px 8px rgb(0 0 0 / .16), 0 2px 4px rgb(0 0 0 / .12);
+  --ui-shadow-4: 0 8px 12px rgb(0 0 0 / .16), 0 3px 6px rgb(0 0 0 / .12);
+  --ui-shadow-5: 0 12px 20px rgb(0 0 0 / .18), 0 4px 8px rgb(0 0 0 / .12);
+
+  /* Divider */
+  --ui-divider-color: var(--ui-color-border);
+  --ui-divider-thickness: 1px;
+
+  /* Card */
+  --ui-card-radius: 12px;
+  --ui-card-container-elevated: var(--ui-color-surface);
+  --ui-card-container-filled: #e6e0e9;
+  --ui-card-container-outlined: var(--ui-color-canvas);
+  --ui-card-outline-color: var(--ui-color-border-strong);
+
+  /* Badge */
+  --ui-badge-size: 6px;
+  --ui-badge-large-size: 16px;
+  --ui-badge-container: var(--ui-color-danger);
+  --ui-badge-fg: var(--ui-color-danger-fg);
+
+  /* Checkbox */
+  --ui-checkbox-size: 18px;
+  --ui-checkbox-radius: 2px;
+  --ui-checkbox-outline-width: 2px;
+  --ui-checkbox-outline: var(--ui-color-fg-muted);
+  --ui-checkbox-hover-outline: var(--ui-color-fg);
+  --ui-checkbox-container: var(--ui-color-primary);
+  --ui-checkbox-icon: var(--ui-color-primary-fg);
+  --ui-checkbox-error: var(--ui-color-danger);
+  --ui-checkbox-checked-disabled-container: var(--ui-color-fg);
+
+  /* Radio */
+  --ui-radio-size: 20px;
+  --ui-radio-radius: 50%;
+  --ui-radio-outline-width: 2px;
+  --ui-radio-outline: var(--ui-color-fg-muted);
+  --ui-radio-hover-outline: var(--ui-color-fg);
+  --ui-radio-checked: var(--ui-color-primary);
+  --ui-radio-disabled: var(--ui-color-fg);
+
+  /* Switch */
+  --ui-switch-width: 52px;
+  --ui-switch-height: 32px;
+  --ui-switch-radius: var(--ui-radius-full);
+  --ui-switch-outline-width: 2px;
+  --ui-switch-track: var(--ui-color-primary);
+  --ui-switch-track-unselected: #e6e0e9;
+  --ui-switch-track-outline: var(--ui-color-border-strong);
+  --ui-switch-handle: var(--ui-color-border-strong);
+  --ui-switch-handle-selected: var(--ui-color-primary-fg);
+  --ui-switch-handle-size: 16px;
+  --ui-switch-handle-selected-size: 24px;
+  --ui-switch-handle-pressed-size: 28px;
+  --ui-switch-disabled-track-opacity: .12;
+  --ui-switch-disabled-handle-opacity: .38;
+  --ui-switch-disabled-handle: var(--ui-color-fg);
+
+  /* Select */
+  --ui-select-height: 3.5rem;
+  --ui-select-radius: 4px;
+  --ui-select-radius-top: 4px 4px 0 0;
+  --ui-select-caret: var(--ui-color-fg-muted);
+  --ui-select-fg: var(--ui-color-fg);
+  --ui-select-label: var(--ui-color-fg-muted);
+  --ui-select-outline: var(--ui-field-border);
+  --ui-select-container-filled: #e6e0e9;
+  --ui-select-hover-outline: var(--ui-color-fg);
+  --ui-select-focus: var(--ui-color-primary);
+  --ui-select-error: var(--ui-field-error);
+  --ui-select-disabled-opacity: var(--ui-state-disabled-opacity);
+  --ui-select-list-bg: var(--ui-color-canvas);
+  --ui-select-list-fg: var(--ui-color-fg);
+  --ui-select-menu-container: #ece6f0;
+  --ui-select-menu-radius: 4px;
+  --ui-select-menu-elevation: var(--ui-shadow-2);
+  --ui-select-menu-min-width: 210px;
+  --ui-select-menu-item-height: 48px;
+  --ui-select-menu-item-fg: var(--ui-color-fg);
+  --ui-select-menu-item-icon: var(--ui-color-fg-muted);
+  --ui-select-menu-item-selected: #e6e0e9;
+  --ui-select-menu-divider: var(--ui-color-border);
+
+  /* State, focus, and motion */
+  --ui-state-hover-opacity: .08;
+  --ui-state-focus-opacity: .10;
+  --ui-state-pressed-opacity: .10;
+  --ui-state-dragged-opacity: .16;
+  --ui-state-disabled-opacity: .38;
+  --ui-focus-thickness: 3px;
+  --ui-focus-offset: 2px;
+  --ui-motion-short: 150ms;
+  --ui-easing-standard: cubic-bezier(.2, 0, 0, 1);
+}
+
+.theme-material.theme-dark,
+.theme-material.dark,
+.theme-material[data-theme="dark"] {
+  color-scheme: dark;
+  --ui-color-canvas: #141218;
+  --ui-color-surface: #211f26;
+  --ui-color-fg: #e6e0e9;
+  --ui-color-fg-muted: #cac4d0;
+  --ui-color-primary: #d0bcff;
+  --ui-color-primary-fg: #381e72;
+  --ui-color-secondary: #4a4458;
+  --ui-color-secondary-fg: #e8def8;
+  --ui-color-border: #49454f;
+  --ui-color-border-strong: #938f99;
+  --ui-color-danger: #f2b8b5;
+  --ui-color-danger-fg: #601410;
+  --ui-color-focus-ring: #e8def8;
+  --ui-field-container: #36343b;
+  --ui-field-border: #938f99;
+  --ui-field-border-hover: #e6e0e9;
+  --ui-field-label: #cac4d0;
+  --ui-field-error: #f2b8b5;
+  --ui-switch-track-unselected: #4a4458;
+  --ui-card-container-filled: #36343b;
+  --ui-select-container-filled: #4a4458;
+  --ui-dialog-container: #2b2930;
+  --ui-dialog-fg: #e6e0e9;
+  --ui-dialog-body: #cac4d0;
+  --ui-dialog-scrim: rgb(0 0 0 / .32);
+  --ui-toast-container: #ece6f0;
+  --ui-toast-fg: #1d1b20;
+  --ui-toast-action: #6750a4;
+  --ui-toast-icon-info: #6750a4;
+  --ui-toast-icon-success: #2e7d32;
+  --ui-toast-icon-warning: #7a5700;
+  --ui-toast-icon-error: #b3261e;
+
+}
+
+@media (prefers-color-scheme: dark) {
+  .theme-material:not([data-theme="light"]) {
+    color-scheme: dark;
+    --ui-color-canvas: #141218;
+    --ui-color-surface: #211f26;
+    --ui-color-fg: #e6e0e9;
+    --ui-color-fg-muted: #cac4d0;
+    --ui-color-primary: #d0bcff;
+    --ui-color-primary-fg: #381e72;
+    --ui-color-secondary: #4a4458;
+    --ui-color-secondary-fg: #e8def8;
+    --ui-color-border: #49454f;
+    --ui-color-border-strong: #938f99;
+    --ui-color-danger: #f2b8b5;
+    --ui-color-danger-fg: #601410;
+    --ui-color-focus-ring: #e8def8;
+    --ui-field-container: #36343b;
+    --ui-field-border: #938f99;
+    --ui-field-border-hover: #e6e0e9;
+    --ui-field-label: #cac4d0;
+    --ui-field-error: #f2b8b5;
+    --ui-card-container-filled: #36343b;
+    --ui-select-container-filled: #4a4458;
+    --ui-dialog-container: #2b2930;
+    --ui-dialog-fg: #e6e0e9;
+    --ui-dialog-body: #cac4d0;
+    --ui-dialog-scrim: rgb(0 0 0 / .32);
+    --ui-toast-container: #ece6f0;
+    --ui-toast-fg: #1d1b20;
+    --ui-toast-action: #6750a4;
+    --ui-toast-icon-info: #6750a4;
+    --ui-toast-icon-success: #2e7d32;
+    --ui-toast-icon-warning: #7a5700;
+    --ui-toast-icon-error: #b3261e;
+
+  }
+}

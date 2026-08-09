@@ -1,0 +1,1057 @@
+@import "tailwindcss";
+@import "../../themes/theme-material/theme.css";
+@source "../templates";
+@source "../content";
+
+@theme inline {
+  --color-canvas: var(--ui-color-canvas);
+  --color-surface: var(--ui-color-surface);
+  --color-fg: var(--ui-color-fg);
+  --color-primary: var(--ui-color-primary);
+  --color-primary-fg: var(--ui-color-primary-fg);
+  --color-border: var(--ui-color-border);
+  --font-sans: var(--ui-font-sans);
+  --radius-md: var(--ui-radius-md);
+  --shadow-elevation-1: var(--ui-shadow-1);
+}
+
+@layer base {
+  * { box-sizing: border-box; }
+  html { color-scheme: light dark; }
+  body {
+    margin: 0;
+    min-height: 100vh;
+    background: var(--ui-color-canvas);
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-md);
+  }
+  a { color: inherit; }
+}
+
+@layer components {
+  .site-header {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 1rem clamp(1rem, 4vw, 4rem);
+    background: var(--ui-color-surface);
+    box-shadow: var(--ui-shadow-1);
+  }
+  .brand { font: var(--ui-type-title-lg); text-decoration: none; }
+  .site-header nav a { color: var(--ui-color-primary); font: var(--ui-type-label-lg); }
+  .docs-shell { width: min(68rem, calc(100% - 2rem)); margin: 4rem auto; }
+  .prose { max-width: 48rem; }
+  .prose h1 { margin: 0 0 1rem; font: var(--ui-type-display-sm); }
+  .prose h2 { margin-top: 2.5rem; font: var(--ui-type-headline-sm); }
+  .prose p { color: var(--ui-color-fg-muted); line-height: 1.7; }
+  .hero-action { margin-top: 2rem; }
+  .component-preview {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: 2rem;
+    padding: 2rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-lg);
+    background: var(--ui-color-surface);
+    box-shadow: var(--ui-shadow-1);
+  }
+  .text-field-preview {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 2rem;
+  }
+  .text-field-preview .ui-text-field { width: 100%; }
+  .ui-button {
+    position: relative;
+    display: inline-flex;
+    min-height: 2.5rem;
+    align-items: center;
+    justify-content: center;
+    gap: .5rem;
+    border: 1px solid transparent;
+    border-radius: var(--ui-radius-full);
+    padding: .625rem 1.5rem;
+    font: var(--ui-type-label-lg);
+    text-decoration: none;
+    cursor: pointer;
+    transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-button:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px rgb(255 255 255 / var(--ui-state-hover-opacity)); }
+  .ui-button:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px rgb(255 255 255 / var(--ui-state-pressed-opacity)); }
+  .ui-button:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-button-primary { background: var(--ui-color-primary); color: var(--ui-color-primary-fg); }
+  .ui-button-secondary { background: var(--ui-color-secondary); color: var(--ui-color-secondary-fg); }
+  .ui-button-outline { border-color: var(--ui-color-border-strong); background: transparent; color: var(--ui-color-primary); }
+  .ui-button-text { background: transparent; color: var(--ui-color-primary); }
+  .ui-button-text:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent);
+  }
+  .ui-button-text:active:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+  }
+  .ui-button:disabled, .ui-button[aria-disabled="true"] {
+    opacity: var(--ui-state-disabled-opacity);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .ui-button svg { flex: none; }
+  .ui-button-spinner {
+    width: 1rem;
+    height: 1rem;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 999px;
+    animation: ui-spin .8s linear infinite;
+  }
+  .ui-text-field {
+    display: grid;
+    width: min(100%, 24rem);
+    gap: 0;
+  }
+  .ui-text-field-control {
+    position: relative;
+    display: grid;
+    height: 3.5rem;
+    box-sizing: border-box;
+    border-radius: var(--ui-radius-xs);
+    color: var(--ui-field-label);
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-text-field-control > label {
+    position: absolute;
+    z-index: 1;
+    top: 50%;
+    inset-inline-start: 1rem;
+    max-width: calc(100% - 2rem);
+    overflow: hidden;
+    color: var(--ui-field-label);
+    cursor: text;
+    font: var(--ui-type-body-lg);
+    text-overflow: ellipsis;
+    transform: translateY(-50%);
+    transform-origin: left top;
+    white-space: nowrap;
+    transition: color var(--ui-motion-short) var(--ui-easing-standard), font-size var(--ui-motion-short) var(--ui-easing-standard), top var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-text-field-control:focus-within > label,
+  .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label {
+    font: var(--ui-type-label-sm);
+  }
+  .ui-text-field-control:dir(rtl) > label { transform-origin: right top; }
+  .ui-text-field-control:focus-within > label { color: var(--ui-color-primary); }
+  .ui-text-field input,
+  .ui-text-field textarea {
+    width: 100%;
+    min-width: 0;
+    border: 0;
+    border-radius: inherit;
+    background: transparent;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-lg);
+    outline: 0;
+  }
+  .ui-text-field input { height: 100%; box-sizing: border-box; padding: 1rem 1rem; }
+  .ui-text-field textarea { padding: 1.5rem 1rem .5rem; }
+  .ui-text-field-filled .ui-text-field input { padding: 1.5rem 1rem .5rem; }
+  .ui-text-field input::placeholder,
+  .ui-text-field textarea::placeholder { color: transparent; }
+  .ui-text-field-error input,
+  .ui-text-field-error textarea { padding-inline-end: 3.5rem; }
+  .ui-text-field-error .ui-text-field-control > label { max-width: calc(100% - 3.5rem); }
+  .ui-text-field-error-icon {
+    position: absolute;
+    top: 50%;
+    inset-inline-end: 1rem;
+    width: 1.5rem;
+    height: 1.5rem;
+    color: var(--ui-field-error);
+    fill: currentColor;
+    pointer-events: none;
+    transform: translateY(-50%);
+  }
+  .ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label { top: 1rem; transform: none; }
+  .ui-text-field-control:has(textarea) { height: auto; min-height: 7rem; }
+  .ui-text-field textarea { min-height: 7rem; resize: vertical; }
+  .ui-text-field-outlined .ui-text-field-control {
+    border: 1px solid var(--ui-field-border);
+    background: var(--ui-color-surface);
+  }
+  .ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: var(--ui-color-primary);
+    box-shadow: inset 0 0 0 2px var(--ui-color-primary);
+  }
+  .ui-text-field-outlined .ui-text-field-control:focus-within > label,
+  .ui-text-field-outlined .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-outlined .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label {
+    top: 0;
+    padding: 0 .25rem;
+    background: var(--ui-color-surface);
+    transform: translate(-.25rem, -50%);
+  }
+  .ui-text-field-outlined .ui-text-field-control:dir(rtl):focus-within > label,
+  .ui-text-field-outlined .ui-text-field-control:dir(rtl):has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-outlined .ui-text-field-control:dir(rtl):has(textarea:not(:placeholder-shown)) > label {
+    transform: translate(.25rem, -50%);
+  }
+  .ui-text-field-filled .ui-text-field-control {
+    border-bottom: 1px solid var(--ui-field-border);
+    border-radius: var(--ui-radius-xs) var(--ui-radius-xs) var(--ui-radius-none) var(--ui-radius-none);
+    background: var(--ui-field-container);
+  }
+  .ui-text-field-filled .ui-text-field-control:focus-within {
+    border-bottom-color: var(--ui-color-primary);
+    box-shadow: inset 0 -2px 0 var(--ui-color-primary);
+  }
+  .ui-text-field-filled .ui-text-field-control:focus-within > label,
+  .ui-text-field-filled .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-filled .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label {
+    top: .5rem;
+    transform: none;
+  }
+  .ui-text-field input:hover:not(:disabled),
+  .ui-text-field textarea:hover:not(:disabled) { cursor: text; }
+  .ui-text-field-control:hover:not(:focus-within):has(input:not(:disabled)),
+  .ui-text-field-control:hover:not(:focus-within):has(textarea:not(:disabled)) { border-color: var(--ui-field-border-hover); }
+  .ui-text-field input:focus-visible,
+  .ui-text-field textarea:focus-visible { outline: none; }
+  .ui-text-field-error .ui-text-field-control > label,
+  .ui-text-field-error .ui-text-field-message { color: var(--ui-field-error); }
+  .ui-text-field-error .ui-text-field-control { border-color: var(--ui-field-error); }
+  .ui-text-field-error .ui-text-field-control:focus-within > label { color: var(--ui-field-error); }
+  .ui-text-field-error .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  .ui-text-field-error .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label { color: var(--ui-field-error); }
+  .ui-text-field-error.ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: var(--ui-field-error);
+    box-shadow: inset 0 0 0 2px var(--ui-field-error);
+  }
+  .ui-text-field-error.ui-text-field-outlined .ui-text-field-control:hover:not(:focus-within):has(input:not(:disabled)),
+  .ui-text-field-error.ui-text-field-outlined .ui-text-field-control:hover:not(:focus-within):has(textarea:not(:disabled)) { border-color: var(--ui-field-error); }
+  .ui-text-field-error.ui-text-field-filled .ui-text-field-control:focus-within {
+    border-color: var(--ui-field-error);
+    box-shadow: inset 0 -2px 0 var(--ui-field-error);
+  }
+  .ui-text-field-error.ui-text-field-filled .ui-text-field-control:hover:not(:focus-within):has(input:not(:disabled)),
+  .ui-text-field-error.ui-text-field-filled .ui-text-field-control:hover:not(:focus-within):has(textarea:not(:disabled)) { border-color: var(--ui-field-error); }
+  .ui-text-field-message { margin: 0; padding: .25rem 1rem 0; color: var(--ui-color-fg-muted); font: var(--ui-type-body-sm); }
+  .ui-text-field-disabled .ui-text-field-control > label,
+  .ui-text-field-disabled input,
+  .ui-text-field-disabled textarea,
+  .ui-text-field-disabled .ui-text-field-message,
+  .ui-text-field-disabled .ui-text-field-error-icon { opacity: var(--ui-state-disabled-opacity); }
+  .ui-text-field-disabled .ui-text-field-control { box-shadow: none; }
+  .ui-text-field-disabled.ui-text-field-outlined .ui-text-field-control {
+    border-color: color-mix(in srgb, var(--ui-color-fg) 12%, transparent);
+  }
+  .ui-text-field-disabled.ui-text-field-filled .ui-text-field-control {
+    background: color-mix(in srgb, var(--ui-color-fg) 4%, var(--ui-color-surface));
+    border-bottom-color: color-mix(in srgb, var(--ui-color-fg) 38%, transparent);
+  }
+  .ui-text-field :disabled {
+    cursor: not-allowed;
+  }
+  .ui-text-field-error.ui-text-field-disabled .ui-text-field-control {
+    border-color: color-mix(in srgb, var(--ui-color-fg) 12%, transparent);
+    box-shadow: none;
+  }
+  .ui-text-field-error.ui-text-field-disabled .ui-text-field-control > label {
+    color: var(--ui-field-label);
+  }
+  form:has(> .ui-text-field) { display: grid; width: min(100%, 24rem); gap: 1rem; }
+  form:has(> .ui-text-field) .ui-button { justify-self: start; }
+  .ui-dialog {
+    min-width: 280px;
+    min-height: 140px;
+    max-width: min(560px, calc(100% - 48px));
+    max-height: min(560px, calc(100% - 48px));
+    width: fit-content;
+    height: fit-content;
+    margin: auto;
+    overflow: auto;
+    border: 0;
+    border-radius: var(--ui-dialog-radius);
+    padding: 0;
+    background: var(--ui-dialog-container);
+    color: var(--ui-dialog-fg);
+    translate: 0 -50px;
+    scale: .35;
+    opacity: 0;
+    transition: opacity 150ms var(--ui-easing-standard), translate 150ms var(--ui-easing-standard), scale 150ms var(--ui-easing-standard), overlay 150ms allow-discrete, display 150ms allow-discrete;
+    transition-behavior: allow-discrete;
+  }
+  .ui-dialog-headline { margin: 0; padding: 24px 24px 0; font: var(--ui-type-dialog-headline); }
+  .ui-dialog-content { padding: 24px; color: var(--ui-dialog-body); font: var(--ui-type-dialog-body); }
+  .ui-dialog-content > :first-child { margin-block-start: 0; }
+  .ui-dialog-content > :last-child { margin-block-end: 0; }
+  .ui-dialog-actions { display: flex; flex-wrap: nowrap; justify-content: flex-end; gap: 8px; padding: 16px 24px 24px; }
+  .ui-dialog::backdrop {
+    background: var(--ui-dialog-scrim);
+    opacity: 0;
+    transition: opacity 150ms var(--ui-easing-standard), overlay 150ms allow-discrete, display 150ms allow-discrete;
+    transition-behavior: allow-discrete;
+  }
+  .ui-dialog[open] {
+    translate: 0;
+    scale: 1;
+    opacity: 1;
+    transition-duration: 500ms;
+  }
+  .ui-dialog[open]::backdrop { opacity: 1; transition-duration: 500ms; }
+  @starting-style {
+    .ui-dialog[open] { translate: 0 -50px; scale: .35; opacity: 0; }
+    .ui-dialog[open]::backdrop { opacity: 0; }
+  }
+  .toast-demo-form { display: grid; grid-template-columns: 1fr; gap: 1rem; width: min(100%, 24rem); }
+  .toast-demo-type-label { font: var(--ui-type-label-lg); color: var(--ui-field-label); }
+  .toast-demo-type {
+    min-height: 2.5rem;
+    border: 1px solid var(--ui-color-border-strong);
+    border-radius: var(--ui-radius-sm);
+    padding: .5rem;
+    background: var(--ui-field-container);
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-md);
+  }
+  .toast-demo-type:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .toast-demo-submit { display: flex; }
+  .ui-toast-region {
+    position: fixed;
+    inset-inline: 1rem;
+    bottom: 1rem;
+    z-index: 1000;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: .5rem;
+    pointer-events: none;
+  }
+  .ui-toast {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    min-height: 3rem;
+    max-width: min(100%, 26rem);
+    padding: .875rem 1rem;
+    border-radius: var(--ui-toast-radius);
+    background: var(--ui-toast-container);
+    color: var(--ui-toast-fg);
+    box-shadow: var(--ui-shadow-3);
+    font: var(--ui-type-body-md);
+  }
+  .ui-toast-region .ui-toast {
+    pointer-events: auto;
+    opacity: 0;
+    translate: 0 .5rem;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), translate var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-toast-region .ui-toast.ui-toast-show { opacity: 1; translate: 0 0; }
+  .ui-toast svg { flex: none; }
+  .ui-toast-message { color: var(--ui-toast-fg); }
+  .ui-toast-icon-info { color: var(--ui-toast-icon-info); }
+  .ui-toast-icon-success { color: var(--ui-toast-icon-success); }
+  .ui-toast-icon-warning { color: var(--ui-toast-icon-warning); }
+  .ui-toast-icon-error { color: var(--ui-toast-icon-error); }
+  .ui-toast-action {
+    margin-inline-start: auto;
+    border: 0;
+    background: transparent;
+    padding: .25rem;
+    color: var(--ui-toast-action);
+    font: var(--ui-type-label-lg);
+    cursor: pointer;
+  }
+  .ui-toast-action:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .sr-only {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0, 0, 0, 0);
+    white-space: nowrap;
+    border: 0;
+  }
+  /* ---- System primitives (Wave 1A) ---- */
+  /* Focus ring: shared :focus-visible contract. The broad rule is a robust
+     default so no focusable element loses its indicator; .ui-focus-ring is the
+     explicit utility for custom focusable elements. Both keep the component
+     specific focus-visible rules intact and never change geometry. */
+  :focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-focus-ring:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  /* Elevation: visual-only utilities mapped to the theme shadow tokens.
+     Elevation must never be the sole carrier of meaning or state. */
+  .ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 {
+    transition: box-shadow var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-elevation-0 { box-shadow: var(--ui-shadow-0); }
+  .ui-elevation-1 { box-shadow: var(--ui-shadow-1); }
+  .ui-elevation-2 { box-shadow: var(--ui-shadow-2); }
+  .ui-elevation-3 { box-shadow: var(--ui-shadow-3); }
+  .ui-elevation-4 { box-shadow: var(--ui-shadow-4); }
+  .ui-elevation-5 { box-shadow: var(--ui-shadow-5); }
+  /* Icon: consistent 24px sizing and currentColor fill for trusted inline SVG.
+     Markup integrity (aria-hidden + focusable=false for decorative icons, a
+     visible text name for meaningful icons) stays an HTML/Go contract. */
+  .ui-icon {
+    width: 1.5rem;
+    height: 1.5rem;
+    flex: none;
+    fill: currentColor;
+  }
+  /* Divider: a 1px thematic break mapped to the divider tokens. The paint is
+     clipped to the content box so the inset variants shorten the visible line
+     without fading it. Decorative by default: it carries no accessible role
+     unless a consumer opts in with role="separator" on a semantic break. */
+  .ui-divider {
+    display: block;
+    height: var(--ui-divider-thickness);
+    background: var(--ui-divider-color);
+    background-clip: content-box;
+    border: 0;
+    margin: 0;
+  }
+  .ui-divider-inset { padding-inline: 1rem; }
+  .ui-divider-inset-start { padding-inline-start: 1rem; }
+  .ui-divider-inset-end { padding-inline-end: 1rem; }
+  .divider-demo-list {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+  }
+  .divider-demo-row {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+  }
+  .divider-demo-label {
+    flex: none;
+    min-width: 6rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-sm);
+  }
+  .divider-demo-row .ui-divider { flex: 1 1 auto; }
+  /* Card: a Material container that groups content. The base .ui-card supplies
+     layout and shape; the variant class picks the surface and boundary:
+     elevated (shadow level 1), filled (raised surface, no shadow), outlined
+     (surface + 1px outline). The semantic root stays native: <article> for a
+     static group, <a> for navigation, <button> for an action. Card must never
+     be the sole carrier of meaning; interactive roots keep focus-visible. */
+  .ui-card {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    position: relative;
+    border-radius: var(--ui-card-radius);
+    padding: 1rem;
+    min-width: 0;
+    color: var(--ui-color-fg);
+    text-align: start;
+    text-decoration: none;
+    font: var(--ui-type-body-lg);
+  }
+  .ui-card-elevated { background: var(--ui-card-container-elevated); box-shadow: var(--ui-shadow-1); }
+  .ui-card-filled { background: var(--ui-card-container-filled); }
+  .ui-card-outlined { background: var(--ui-card-container-outlined); border: 1px solid var(--ui-card-outline-color); }
+  .ui-card:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset); }
+  .ui-card-title { margin: 0 0 .25rem; font: var(--ui-type-headline-sm); }
+  .ui-card-action { margin-top: 1rem; }
+  .card-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .card-demo-grid .ui-card { min-height: 8rem; }
+  /* Badge: a compact error-tinted marker for counts and short labels. The dot
+     form is decorative and must always pair with visible or accessible text
+     ("not color-only"); the large form carries the label itself. The marker is
+     error-colored by theme token so it follows light and dark schemes. */
+  .ui-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex: none;
+    width: var(--ui-badge-size);
+    height: var(--ui-badge-size);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-badge-container);
+    color: var(--ui-badge-fg);
+  }
+  .ui-badge-large {
+    width: auto;
+    min-width: var(--ui-badge-large-size);
+    height: var(--ui-badge-large-size);
+    padding-inline: .25rem;
+    font: var(--ui-type-label-sm);
+    line-height: 1rem;
+  }
+  .badge-demo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .badge-demo-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .elevation-demo-list {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    width: 100%;
+  }
+  .elevation-demo-list li {
+    min-height: 6rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-md);
+    padding: 1rem;
+    background: var(--ui-color-surface);
+    color: var(--ui-color-fg);
+    font: var(--ui-type-label-lg);
+    text-align: center;
+  }
+  .focus-demo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1rem;
+  }
+  .focus-demo-link {
+    padding: .625rem 1rem;
+    border-radius: var(--ui-radius-sm);
+    background: var(--ui-color-surface);
+    color: var(--ui-color-primary);
+    font: var(--ui-type-label-lg);
+    text-decoration: none;
+  }
+  .icon-demo-grid {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1.5rem;
+  }
+  .icon-demo-token {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .icon-demo-token .ui-icon { color: var(--ui-color-primary); }
+  /* Checkbox: a native input[type="checkbox"] enhanced with CSS. The real
+     control stays the focusable, operable element; appearance: none removes
+     the browser default so Loom paints the 18x18 Material box, its outline,
+     and the checked chevron from --ui-checkbox-* tokens. All paints are
+     token-driven so states survive light and dark schemes. */
+.ui-checkbox {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+    font: var(--ui-type-body-md);
+  }
+  .ui-checkbox:hover { --ui-checkbox-outline: var(--ui-checkbox-hover-outline); }
+  .ui-checkbox:active:not(:disabled) input[type="checkbox"] { transform: scale(.92); }
+  .ui-checkbox input[type="checkbox"] {
+    appearance: none;
+    width: var(--ui-checkbox-size);
+    height: var(--ui-checkbox-size);
+    border-radius: var(--ui-checkbox-radius);
+    border: var(--ui-checkbox-outline-width) solid var(--ui-checkbox-outline);
+    margin: 0;
+    flex: none;
+    cursor: pointer;
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-checkbox input:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-checkbox input:checked + .ui-checkbox-mark { opacity: 1; }
+  .ui-checkbox input:checked ~ .ui-checkbox-label { color: var(--ui-color-fg); }
+  .ui-checkbox input:checked { background: var(--ui-checkbox-container); border-color: transparent; }
+  .ui-checkbox input[type="checkbox"][aria-invalid="true"] { border-color: var(--ui-checkbox-error); }
+  .ui-checkbox:hover input[type="checkbox"][aria-invalid="true"] { border-color: var(--ui-checkbox-error); }
+  .ui-checkbox input[type="checkbox"][aria-invalid="true"]:checked { background: var(--ui-checkbox-error); }
+  .ui-checkbox input:disabled {
+    cursor: not-allowed;
+    opacity: var(--ui-state-disabled-opacity);
+  }
+  .ui-checkbox input:disabled:checked { background: var(--ui-checkbox-checked-disabled-container); }
+  .ui-checkbox-mark {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-checkbox-size);
+    height: var(--ui-checkbox-size);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ui-checkbox-mark::after {
+    content: "";
+    box-sizing: border-box;
+    width: 6px;
+    height: 11px;
+    border-right: 2px solid var(--ui-checkbox-icon);
+    border-bottom: 2px solid var(--ui-checkbox-icon);
+    transform: rotate(45deg);
+    transform-origin: center;
+  }
+  .ui-checkbox-label { color: var(--ui-color-fg); }
+  .checkbox-demo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .checkbox-demo-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  /* Radio: a native input[type="radio"] enhanced with CSS. The real control
+     stays the focusable, operable element; appearance: none removes the
+     browser default so Loom paints the 20px Material ring and the inner
+     checked dot from --ui-radio-* tokens. All paints are token-driven so
+     states survive light and dark schemes. */
+  .ui-radio {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+    font: var(--ui-type-body-md);
+  }
+  .ui-radio:hover { --ui-radio-outline: var(--ui-radio-hover-outline); }
+  .ui-radio:active:not(:disabled) input[type="radio"] { transform: scale(.92); }
+  .ui-radio input[type="radio"] {
+    appearance: none;
+    width: var(--ui-radio-size);
+    height: var(--ui-radio-size);
+    border-radius: var(--ui-radio-radius);
+    border: var(--ui-radio-outline-width) solid var(--ui-radio-outline);
+    margin: 0;
+    flex: none;
+    cursor: pointer;
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-radio input:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-radio input:checked + .ui-radio-mark { opacity: 1; }
+  .ui-radio input:checked { border-color: var(--ui-radio-checked); }
+  .ui-radio input[type="radio"][aria-invalid="true"] { border-color: var(--ui-color-danger); }
+  .ui-radio:hover input[type="radio"][aria-invalid="true"] { border-color: var(--ui-color-danger); }
+  .ui-radio input[type="radio"][aria-invalid="true"]:checked + .ui-radio-mark::after { background: var(--ui-color-danger); }
+  .ui-radio input:disabled {
+    cursor: not-allowed;
+    opacity: var(--ui-state-disabled-opacity);
+  }
+  .ui-radio input:disabled + .ui-radio-mark { opacity: var(--ui-state-disabled-opacity); }
+  .ui-radio input:disabled + .ui-radio-mark::after { background: var(--ui-radio-disabled); }
+  .ui-radio-mark {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    transform: translateY(-50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-radio-size);
+    height: var(--ui-radio-size);
+    opacity: 0;
+    pointer-events: none;
+  }
+  .ui-radio-mark::after {
+    content: "";
+    box-sizing: border-box;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--ui-radio-checked);
+    transition: background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-radio-label { color: var(--ui-color-fg); }
+  .radio-demo-fieldset {
+    display: flex;
+    flex-direction: column;
+    gap: .5rem;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    width: 100%;
+  }
+  .radio-demo-fieldset legend {
+    margin-bottom: .5rem;
+    padding: 0;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-label-lg);
+  }
+  .radio-demo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .radio-demo-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  /* Switch: a native input[type="checkbox"] enhanced with CSS. The real
+     control stays the focusable, operable element; appearance: none removes
+     the browser default so Loom paints the 52x32 Material track, its outline,
+     and the sliding handle from --ui-switch-* tokens. The handle grows from
+     16px to 24px when checked and 28px while pressed, mirroring Material 3
+     switch geometry. Disabled state follows the Material split: the track
+     drops to 12% opacity while the unchecked handle drops to 38%. */
+  .ui-switch {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    cursor: pointer;
+    font: var(--ui-type-body-md);
+  }
+  .ui-switch:hover { --ui-switch-track-outline: var(--ui-color-fg); }
+  .ui-switch input[type="checkbox"] {
+    appearance: none;
+    width: var(--ui-switch-width);
+    height: var(--ui-switch-height);
+    border-radius: var(--ui-switch-radius);
+    border: var(--ui-switch-outline-width) solid var(--ui-switch-track-outline);
+    margin: 0;
+    flex: none;
+    background: transparent;
+    cursor: pointer;
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-switch input:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-switch input:checked { border-color: transparent; }
+  .ui-switch input:checked + .ui-switch-track { background: var(--ui-switch-track); }
+  .ui-switch input:checked ~ .ui-switch-handle {
+    width: var(--ui-switch-handle-selected-size);
+    height: var(--ui-switch-handle-selected-size);
+    background: var(--ui-switch-handle-selected);
+    transform: translateY(-50%) translateX(calc(var(--ui-switch-width) - var(--ui-switch-handle-selected-size) - 12px));
+  }
+  .ui-switch input:active:not(:disabled) ~ .ui-switch-handle {
+    width: var(--ui-switch-handle-pressed-size);
+    height: var(--ui-switch-handle-pressed-size);
+  }
+  .ui-switch input:disabled { cursor: not-allowed; }
+  .ui-switch input:disabled + .ui-switch-track { opacity: var(--ui-switch-disabled-track-opacity); }
+  .ui-switch input:disabled ~ .ui-switch-handle { background: var(--ui-switch-disabled-handle); }
+  .ui-switch input:disabled:not(:checked) ~ .ui-switch-handle { opacity: var(--ui-switch-disabled-handle-opacity); }
+  .ui-switch-track {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 50%;
+    width: var(--ui-switch-width);
+    height: var(--ui-switch-height);
+    box-sizing: border-box;
+    border-radius: var(--ui-switch-radius);
+    border: var(--ui-switch-outline-width) solid var(--ui-switch-track-outline);
+    background: var(--ui-switch-track-unselected);
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: background-color var(--ui-motion-short) var(--ui-easing-standard), opacity var(--ui-motion-short) var(--ui-easing-standard), border-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-switch-handle {
+    position: absolute;
+    inset-inline-start: 6px;
+    top: 50%;
+    width: var(--ui-switch-handle-size);
+    height: var(--ui-switch-handle-size);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-switch-handle);
+    pointer-events: none;
+    transform: translateY(-50%) translateX(0);
+    transition: width var(--ui-motion-short) var(--ui-easing-standard), height var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard), opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-switch-label { color: var(--ui-color-fg); }
+  .switch-demo-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 1.5rem;
+    margin: 0;
+    padding: 0;
+    width: 100%;
+    list-style: none;
+  }
+  .switch-demo-item {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  /* Select: a native <select> enhanced with CSS. The element stays the focusable,
+     operable control; appearance: none removes the browser chrome so Loom paints
+     the Material 3 field from --ui-select-* tokens. Filled uses a surface-container-
+     highest background with a top-only 4px radius and a bottom active indicator;
+     outlined uses a transparent field with a full 4px radius and a 1px outline that
+     tightens to the primary color. The label floats from body-large to body-sm when
+     focused or when a non-placeholder option is chosen. */
+  .ui-select {
+    position: relative;
+    display: grid;
+    width: min(100%, 24rem);
+    gap: 0;
+  }
+  .ui-select select {
+    appearance: none;
+    width: 100%;
+    height: var(--ui-select-height);
+    box-sizing: border-box;
+    padding: 1rem 2.5rem 0 1rem;
+    border-radius: var(--ui-select-radius);
+    background: transparent;
+    color: var(--ui-select-fg);
+    font: var(--ui-type-body-lg);
+    cursor: pointer;
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-select select:hover:not(:disabled):not([aria-invalid="true"]) {
+    border-color: var(--ui-select-hover-outline);
+  }
+  .ui-select select:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-select select:disabled {
+    cursor: not-allowed;
+    opacity: var(--ui-select-disabled-opacity);
+  }
+  .ui-select select[aria-invalid="true"] { border-color: var(--ui-select-error); }
+  .ui-select select[aria-invalid="true"] ~ .ui-select-label,
+  .ui-select select[aria-invalid="true"] ~ .ui-select-caret { color: var(--ui-select-error); }
+  .ui-select-filled select {
+    background: var(--ui-select-container-filled);
+    border: 1px solid transparent;
+    border-bottom: 1px solid var(--ui-select-outline);
+    border-radius: var(--ui-select-radius-top);
+  }
+  .ui-select-filled select:focus-visible { border-bottom-color: var(--ui-select-focus); }
+  .ui-select-outlined select {
+    background: transparent;
+    border: 1px solid var(--ui-select-outline);
+  }
+  .ui-select-outlined select:focus-visible { border-color: var(--ui-select-focus); }
+  .ui-select-label {
+    position: absolute;
+    inset-inline-start: 1rem;
+    top: 50%;
+    color: var(--ui-select-label);
+    font: var(--ui-type-body-lg);
+    transform: translateY(-50%);
+    transition: font var(--ui-motion-short) var(--ui-easing-standard), color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-select:focus-within .ui-select-label,
+  .ui-select:has(select option:checked:not([value=""])) .ui-select-label {
+    top: .375rem;
+    color: var(--ui-select-label);
+    font: var(--ui-type-body-sm);
+    transform: none;
+    transition: font var(--ui-motion-short) var(--ui-easing-standard), color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-select:focus-within .ui-select-label { color: var(--ui-select-focus); }
+  .ui-select-caret {
+    position: absolute;
+    inset-inline-end: 1rem;
+    top: 50%;
+    color: var(--ui-select-caret);
+    pointer-events: none;
+    transform: translateY(-50%);
+    transition: color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+.ui-select select:disabled + .ui-select-label,
+.ui-select:has(select:disabled) .ui-select-caret { opacity: var(--ui-select-disabled-opacity); }
+  .ui-select select option {
+    background: var(--ui-select-list-bg);
+    color: var(--ui-select-list-fg);
+  }
+  .select-demo-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: start;
+    gap: 2rem;
+    width: 100%;
+  }
+  .select-demo-group { display: grid; gap: 1rem; width: 100%; }
+  .select-demo-group h3 {
+    margin: 0;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-label-lg);
+  }
+  @media (max-width: 48rem) { .select-demo-grid { grid-template-columns: 1fr; } }
+}
+
+@keyframes ui-spin { to { transform: rotate(360deg); } }
+@media (max-width: 48rem) {
+  .text-field-preview { grid-template-columns: 1fr; }
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-button { transition: none; }
+  .ui-button-spinner { animation: none; }
+  .ui-text-field-control { transition: none; }
+  .ui-text-field-control > label { transition: none; }
+  .ui-text-field input, .ui-text-field textarea { transition: none; }
+  .ui-dialog, .ui-dialog::backdrop, .ui-dialog-headline, .ui-dialog-content, .ui-dialog-actions { transition: none; }
+  .ui-toast-region .ui-toast { transition: none; }
+  .ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 { transition: none; }
+  .ui-switch input[type="checkbox"], .ui-switch-track, .ui-switch-handle { transition: none; }
+  .ui-select select, .ui-select-label, .ui-select-caret { transition: none; }
+}
+@media (forced-colors: active) {
+  .ui-button { border: 1px solid ButtonText; }
+  .ui-button:focus-visible { outline-color: Highlight; }
+  .ui-text-field-outlined .ui-text-field-control,
+  .ui-text-field-filled .ui-text-field-control {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: Highlight;
+    box-shadow: inset 0 0 0 2px Highlight;
+  }
+  .ui-text-field-filled .ui-text-field-control:focus-within {
+    border-bottom-color: Highlight;
+    box-shadow: inset 0 -2px 0 Highlight;
+  }
+  .ui-text-field input,
+  .ui-text-field textarea {
+    color: FieldText;
+    forced-color-adjust: auto;
+  }
+  .ui-text-field-error .ui-text-field-control { border-color: Mark; }
+  .ui-text-field-error.ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: Mark;
+    box-shadow: inset 0 0 0 2px Mark;
+  }
+  .ui-text-field-error.ui-text-field-filled .ui-text-field-control:focus-within {
+    border-bottom-color: Mark;
+    box-shadow: inset 0 -2px 0 Mark;
+  }
+  .ui-text-field-error .ui-text-field-control > label,
+  .ui-text-field-error .ui-text-field-message,
+  .ui-text-field-error-icon { color: Mark; }
+  .ui-text-field-disabled .ui-text-field-control {
+    border-color: GrayText;
+    box-shadow: none;
+  }
+  .ui-text-field-disabled .ui-text-field-control > label,
+  .ui-text-field-disabled input,
+  .ui-text-field-disabled textarea,
+  .ui-text-field-disabled .ui-text-field-message,
+  .ui-text-field-disabled .ui-text-field-error-icon {
+    color: GrayText;
+    opacity: 1;
+  }
+  .ui-dialog { border: 2px solid WindowText; }
+  .ui-toast { border: 1px solid CanvasText; forced-color-adjust: auto; }
+  .ui-toast-message { color: CanvasText; forced-color-adjust: auto; }
+  .ui-toast-icon-info, .ui-toast-icon-success, .ui-toast-icon-warning, .ui-toast-icon-error { color: CanvasText; }
+  .ui-toast-action { color: Highlight; }
+  .ui-toast-action:focus-visible { outline-color: Highlight; }
+  :focus-visible, .ui-focus-ring:focus-visible { outline-color: Highlight; }
+  .ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 { box-shadow: none; }
+  .ui-divider { background: CanvasText; }
+  .ui-card { border: 1px solid CanvasText; }
+  .ui-badge { border: 1px solid CanvasText; }
+  .ui-checkbox input[type="checkbox"] {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  input:checked + .ui-checkbox-mark { opacity: 1; }
+  .ui-checkbox-mark::after { border-color: Canvas; }
+  .ui-checkbox input:checked { background: CanvasText; }
+  .ui-checkbox input:disabled { opacity: 1; color: GrayText; }
+  .ui-radio input[type="radio"] {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  input:checked + .ui-radio-mark { opacity: 1; }
+  .ui-radio input:checked + .ui-radio-mark::after { background: CanvasText; }
+  .ui-radio input:disabled + .ui-radio-mark::after { background: GrayText; }
+  .ui-radio input:disabled { opacity: 1; }
+  .ui-switch .ui-switch-track,
+  .ui-switch input[type="checkbox"] {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-switch input:checked + .ui-switch-track { background: ButtonText; }
+  .ui-switch input:checked ~ .ui-switch-handle { background: ButtonText; }
+  .ui-switch input:disabled + .ui-switch-track { border-color: GrayText; }
+  .ui-switch input:disabled:not(:checked) ~ .ui-switch-handle { opacity: 1; }
+  .ui-select select {
+    border-color: CanvasText;
+    color: FieldText;
+    forced-color-adjust: auto;
+  }
+  .ui-select select:disabled {
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+  .ui-select select[aria-invalid="true"] {
+    border-color: Mark;
+    color: FieldText;
+  }
+  .ui-select select[aria-invalid="true"] ~ .ui-select-label,
+  .ui-select select[aria-invalid="true"] ~ .ui-select-caret { color: Mark; }
+}

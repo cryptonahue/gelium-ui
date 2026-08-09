@@ -1,0 +1,22 @@
+{{define "card-demo"}}
+<ol class="card-demo-grid">
+  <li>
+    <article class="ui-card ui-card-elevated">
+      <h2 class="ui-card-title">{{.Static.Title}}</h2>
+      <p class="ui-card-body">{{.Static.Body}}</p>
+    </article>
+  </li>
+  <li>
+    <a class="ui-card ui-card-outlined" href="{{.Link.Href}}">
+      <h2 class="ui-card-title">{{.Link.Title}}</h2>
+      <p class="ui-card-body">{{.Link.Body}}</p>
+    </a>
+  </li>
+  <li>
+    <button class="ui-card ui-card-filled" type="button">
+      <h2 class="ui-card-title">{{.Action.Title}}</h2>
+      <p class="ui-card-body">{{.Action.Body}}</p>
+    </button>
+  </li>
+</ol>
+{{end}}

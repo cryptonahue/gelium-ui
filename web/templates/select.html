@@ -1,0 +1,71 @@
+{{define "select-demo"}}
+<div class="select-demo-grid">
+  <div class="select-demo-group">
+    <h3>Filled</h3>
+    <div class="ui-select ui-select-filled">
+      <select id="select-filled" name="plan-filled">
+        <option value="" selected disabled>Choose a plan</option>
+        <option value="standard">Standard</option>
+        <option value="priority">Priority</option>
+      </select>
+      <label class="ui-select-label" for="select-filled">Plan</label>
+      <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+    </div>
+    <div class="ui-select ui-select-filled">
+      <select id="select-filled-populated" name="plan-populated">
+        <option value="" disabled>Choose a plan</option>
+        <option value="standard">Standard</option>
+        <option value="priority" selected>Priority</option>
+      </select>
+      <label class="ui-select-label" for="select-filled-populated">Plan</label>
+      <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+    </div>
+    <div class="ui-select ui-select-filled">
+      <select id="select-filled-disabled" name="plan-disabled" disabled>
+        <option value="" selected>Unavailable plan</option>
+        <option value="standard">Standard</option>
+      </select>
+      <label class="ui-select-label" for="select-filled-disabled">Plan</label>
+      <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+    </div>
+    <div class="ui-select ui-select-filled">
+      <select id="select-filled-error" name="plan-error" aria-invalid="true">
+        <option value="" selected disabled>Choose a plan</option>
+        <option value="standard">Standard</option>
+        <option value="priority">Priority</option>
+      </select>
+      <label class="ui-select-label" for="select-filled-error">Plan</label>
+      <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+    </div>
+  </div>
+  <div class="select-demo-group">
+    <h3>Outlined</h3>
+    <div class="ui-select ui-select-outlined">
+      <select id="select-outlined" name="region-outlined">
+        <option value="" selected disabled>Choose a region</option>
+        <option value="eu">Europe</option>
+        <option value="us">United States</option>
+      </select>
+      <label class="ui-select-label" for="select-outlined">Region</label>
+      <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+    </div>
+    <div class="ui-select ui-select-outlined">
+      <select id="select-outlined-disabled" name="region-disabled" disabled>
+        <option value="" selected>Disabled region</option>
+        <option value="eu">Europe</option>
+      </select>
+      <label class="ui-select-label" for="select-outlined-disabled">Region</label>
+      <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+    </div>
+    <div class="ui-select ui-select-outlined">
+      <select id="select-outlined-error" name="region-error" aria-invalid="true">
+        <option value="" selected disabled>Choose a region</option>
+        <option value="eu">Europe</option>
+        <option value="us">United States</option>
+      </select>
+      <label class="ui-select-label" for="select-outlined-error">Region</label>
+      <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+    </div>
+  </div>
+</div>
+{{end}}

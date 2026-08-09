@@ -1,0 +1,36 @@
+{{define "switch-demo"}}
+<ol class="switch-demo-list">
+  <li class="switch-demo-item">
+    <label class="ui-switch">
+      <input type="checkbox" id="switch-unchecked">
+      <span class="ui-switch-track" aria-hidden="true"></span>
+      <span class="ui-switch-handle" aria-hidden="true"></span>
+      <span class="ui-switch-label">Unchecked</span>
+    </label>
+  </li>
+  <li class="switch-demo-item">
+    <label class="ui-switch">
+      <input type="checkbox" id="switch-checked" checked>
+      <span class="ui-switch-track" aria-hidden="true"></span>
+      <span class="ui-switch-handle" aria-hidden="true"></span>
+      <span class="ui-switch-label">Checked</span>
+    </label>
+  </li>
+  <li class="switch-demo-item">
+    <label class="ui-switch">
+      <input type="checkbox" id="switch-disabled" disabled>
+      <span class="ui-switch-track" aria-hidden="true"></span>
+      <span class="ui-switch-handle" aria-hidden="true"></span>
+      <span class="ui-switch-label">Disabled</span>
+    </label>
+  </li>
+  <li class="switch-demo-item">
+    <label class="ui-switch">
+      <input type="checkbox" id="switch-disabled-checked" disabled checked>
+      <span class="ui-switch-track" aria-hidden="true"></span>
+      <span class="ui-switch-handle" aria-hidden="true"></span>
+      <span class="ui-switch-label">Disabled checked</span>
+    </label>
+  </li>
+</ol>
+{{end}}

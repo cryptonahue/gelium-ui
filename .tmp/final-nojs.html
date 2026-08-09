@@ -1,0 +1,92 @@
+<!doctype html>
+<html lang="en" class="theme-material">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>Text field · Loom UI</title>
+  <link rel="stylesheet" href="/static/app.css?v=0.2.0">
+  <script defer src="/static/htmx.min.js?v=0.2.0"></script>
+  <script defer src="/static/app.js?v=0.2.0"></script>
+</head>
+<body>
+  <header class="site-header">
+    <a class="brand" href="/">Loom UI</a>
+    <nav aria-label="Primary"><a href="/components/button">Button</a> <a href="/components/text-field">Text field</a></nav>
+  </header>
+  <main class="docs-shell">
+    <article class="prose"><h1>Text field</h1>
+<p>Text field is an open-code component built with native <code>&lt;input&gt;</code> and <code>&lt;textarea&gt;</code> elements. Every visible label is explicitly associated through <code>for</code> and <code>id</code>, while helper and error messages use unique IDs referenced by <code>aria-describedby</code>.</p>
+<h2>Variants and states</h2>
+<p>The dogfooded examples demonstrate outlined and filled variants, normal and helper text, a visibly labelled error that does not rely on color, disabled input, and a textarea.</p>
+<h2>Server validation</h2>
+<p>The form below submits a named field to the server with browser validation disabled so the server remains the source of truth.</p>
+<p>Whitespace-only input returns <strong>HTTP 422</strong> with the submitted value preserved, <code>aria-invalid=&quot;true&quot;</code>, and an associated error. Valid input returns HTTP 200 with the preserved value and an accessible success message.</p>
+<p>The form works without JavaScript: its native <code>method</code> and <code>action</code> submit to the same endpoint, which returns a complete documentation page with the updated form while preserving the HTTP 422 or 200 status. HTMX is a progressive enhancement; when it sends <code>HX-Request: true</code>, the server returns only the complete form fragment and replaces it using <code>hx-target=&quot;this&quot;</code> plus <code>hx-swap=&quot;outerHTML&quot;</code>.</p>
+<p>Expected HTMX validation failures return the explicit <code>X-Loom-Validation: true</code> response header. Local <code>/static/app.js</code> listens for <code>htmx:beforeSwap</code> and only when both that header is <code>true</code> and the status is 422 does it set <code>shouldSwap</code> to true and <code>isError</code> to false. Other HTTP 422 responses remain transport errors and are not swapped by this hook.</p>
+</article>
+    
+    
+    <section class="component-preview text-field-preview" aria-label="Text field examples">
+<div class="ui-text-field ui-text-field-outlined">
+  <span class="ui-text-field-control">
+    <label for="text-normal">Name</label>
+    <input id="text-normal" type="text" placeholder=" " value="">
+    
+  </span>
+  
+</div>
+
+<div class="ui-text-field ui-text-field-filled">
+  <span class="ui-text-field-control">
+    <label for="text-helper">Email</label>
+    <input id="text-helper" type="text" placeholder=" " value="" aria-describedby="text-helper-help">
+    
+  </span>
+  <p class="ui-text-field-message" id="text-helper-help">We&#39;ll only use this for account updates.</p>
+</div>
+
+<div class="ui-text-field ui-text-field-outlined ui-text-field-error">
+  <span class="ui-text-field-control">
+    <label for="text-error">Username</label>
+    <input id="text-error" type="text" placeholder=" " value="?" aria-invalid="true" aria-describedby="text-error-error">
+    <svg class="ui-text-field-error-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z"></path></svg>
+  </span>
+  <p class="ui-text-field-message" id="text-error-error" role="alert"><strong>Error:</strong> Use letters and numbers only.</p>
+</div>
+
+<div class="ui-text-field ui-text-field-filled ui-text-field-disabled">
+  <span class="ui-text-field-control">
+    <label for="text-disabled">Account ID</label>
+    <input id="text-disabled" type="text" placeholder=" " value="ACCT-1042" disabled>
+    
+  </span>
+  
+</div>
+
+<div class="ui-text-field ui-text-field-outlined">
+  <span class="ui-text-field-control">
+    <label for="text-textarea">Biography</label>
+    <textarea id="text-textarea" placeholder=" " aria-describedby="text-textarea-help"></textarea>
+    
+  </span>
+  <p class="ui-text-field-message" id="text-textarea-help">Tell people a little about yourself.</p>
+</div>
+</section>
+    <section class="component-preview" aria-label="Text field validation example" id="validation-example">
+<form method="post" action="/examples/text-field/validate#validation-example" novalidate hx-post="/examples/text-field/validate" hx-target="this" hx-swap="outerHTML">
+  
+<div class="ui-text-field ui-text-field-outlined ui-text-field-error">
+  <span class="ui-text-field-control">
+    <label for="validation-name">Name</label>
+    <input id="validation-name" type="text" placeholder=" " name="name" value="   " aria-invalid="true" aria-describedby="validation-name-error" autofocus>
+    <svg class="ui-text-field-error-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z"></path></svg>
+  </span>
+  <p class="ui-text-field-message" id="validation-name-error" role="alert"><strong>Error:</strong> Name is required</p>
+</div>
+
+  <button class="ui-button ui-button-primary" type="submit"><span>Validate name</span></button>
+</form>
+</section>
+  </main>
+</body>
+</html>
