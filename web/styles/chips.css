@@ -1,0 +1,208 @@
+@layer components {
+  /* Chip: a 32px, rounded (corner-small = 8px) pill that surfaces one discrete
+     action or selection. The base .ui-chip carries the shared geometry: height,
+     radius via --ui-radius-sm, the 1px outline, and the label-large type. Each
+     variant (assist / filter / suggestion / input) is a native interactive
+     element (button, link, or checkbox) so the semantics come from the element
+     and the component never masquerades as a generic div. Hover and press apply
+     an inset state layer of the label color, matching the other Material
+     controls. */
+  .ui-chip {
+    position: relative;
+    box-sizing: border-box;
+    display: inline-flex;
+    align-items: center;
+    height: 2rem;
+    padding-inline: 1rem;
+    gap: .5rem;
+    border: 1px solid var(--ui-color-border-strong);
+    border-radius: var(--ui-radius-sm);
+    background: transparent;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+    line-height: 1;
+    cursor: pointer;
+    text-decoration: none;
+    white-space: nowrap;
+    user-select: none;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard), border-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-chip:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: inset 0 0 0 999px rgb(25 28 28 / var(--ui-state-hover-opacity));
+  }
+  .ui-chip:active:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: inset 0 0 0 999px rgb(25 28 28 / var(--ui-state-pressed-opacity));
+  }
+  .ui-chip:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-chip:disabled,
+  .ui-chip[aria-disabled="true"] {
+    opacity: var(--ui-state-disabled-opacity);
+    cursor: not-allowed;
+    box-shadow: none;
+  }
+  .ui-chip-label { line-height: 1.25rem; }
+
+  /* Leading icon: an .ui-icon painted at the Material leading-icon size (18px)
+     and primary color, separated by the icon-label space. */
+  .ui-chip-icon { color: var(--ui-color-primary); }
+
+  /* Assist & suggestion chips are buttons/links carrying the base geometry. */
+  .ui-chip-assist,
+  .ui-chip-suggestion { color: var(--ui-color-fg-muted); }
+
+  /* Filter chip: a native checkbox resized to the full pill so the real
+     control paints the entire container. :checked fills with the secondary
+     container and raises the label to on-secondary-container; the selected
+     check icon appears via the adjacent .ui-chip-selected-icon span. The input
+     keeps appearance: none only for painting -- keyboard, name, checked state,
+     and form submission are the native checkbox contract. */
+  .ui-chip-filter { padding: 0; color: var(--ui-color-fg-muted); }
+  .ui-chip-filter input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    border-radius: inherit;
+    background: transparent;
+    cursor: pointer;
+  }
+  .ui-chip-filter .ui-chip-label {
+    position: relative;
+    z-index: 1;
+    padding-inline: 1rem;
+  }
+  .ui-chip-filter .ui-chip-selected-icon {
+    position: relative;
+    z-index: 1;
+    width: .5625rem;
+    height: .5625rem;
+    flex: none;
+    opacity: 0;
+    transform: scale(0);
+    border-left: 2px solid currentColor;
+    border-bottom: 2px solid currentColor;
+    margin-inline-start: 1.125rem;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-chip-filter input:checked {
+    background: var(--ui-color-secondary);
+    color: var(--ui-color-secondary-fg);
+  }
+  .ui-chip-filter input:checked ~ .ui-chip-selected-icon {
+    opacity: 1;
+    transform: scale(1) rotate(-45deg) translate(0, -0.125rem);
+  }
+  .ui-chip-filter input:checked ~ .ui-chip-label {
+    color: var(--ui-color-secondary-fg);
+  }
+  .ui-chip-filter:hover:not(:has(input:disabled)) input:checked {
+    box-shadow: inset 0 0 0 999px rgb(29 25 43 / var(--ui-state-hover-opacity));
+  }
+  .ui-chip-filter input:disabled {
+    cursor: not-allowed;
+  }
+
+  /* Input chip: removable, with a trailing icon button. The remove control is a
+     real button whose circular 24px hit area mirrors Material's trailing action
+     geometry (4/3 * 18px icon). */
+  .ui-chip-input {
+    padding-inline-start: 1rem;
+    padding-inline-end: 0;
+    color: var(--ui-color-fg);
+    background: var(--ui-color-surface);
+  }
+  .ui-chip-input .ui-chip-label { padding-inline: 0 0; }
+  .ui-chip-remove {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    align-self: center;
+    width: 1.5rem;
+    height: 1.5rem;
+    margin-inline: .5rem .625rem;
+    padding: 0;
+    border: none;
+    border-radius: var(--ui-radius-full);
+    background: transparent;
+    color: var(--ui-color-fg-muted);
+    cursor: pointer;
+    flex: none;
+    transition: background-color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-chip-remove .ui-icon { width: 1.125rem; height: 1.125rem; }
+  .ui-chip-remove:hover { box-shadow: inset 0 0 0 999px rgb(25 28 28 / var(--ui-state-hover-opacity)); }
+  .ui-chip-remove:active { box-shadow: inset 0 0 0 999px rgb(25 28 28 / var(--ui-state-pressed-opacity)); }
+  .ui-chip-remove:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Do not show the remove UI when the input chip is disabled. */
+  .ui-chip-input:disabled .ui-chip-remove { display: none; }
+
+  /* Demo preview composition. */
+  .chips-demo-grid {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+  }
+  .chips-demo-group { display: grid; gap: .5rem; }
+  .chips-demo-heading {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .chips-demo-row {
+    display: flex;
+    flex-wrap: wrap;
+    gap: .5rem;
+    align-items: center;
+  }
+  .chips-demo-notice {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-md);
+  }
+  /* A non-interactive stand-in used only to show a removed chip or the reset
+     control in the docs example. It is deliberately not a .ui-chip. */
+  .ui-chip-none {
+    display: inline-flex;
+    align-items: center;
+    height: 2.5rem;
+    padding-inline: 1rem;
+    border: 1px dashed var(--ui-color-border);
+    border-radius: var(--ui-radius-sm);
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-chip,
+  .ui-chip-filter .ui-chip-selected-icon,
+  .ui-chip-remove { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-chip { border: 1px solid CanvasText; forced-color-adjust: auto; }
+  .ui-chip:focus-visible { outline-color: Highlight; }
+  .ui-chip-filter input:checked {
+    border: 1px solid CanvasText;
+    background: Highlight;
+  }
+  .ui-chip-filter input:checked ~ .ui-chip-label { color: HighlightText; }
+  .ui-chip-filter input:checked ~ .ui-chip-selected-icon { border-color: HighlightText; }
+  .ui-chip:disabled,
+  .ui-chip[aria-disabled="true"] { opacity: 1; color: GrayText; }
+  .ui-chip-input { border-color: CanvasText; }
+  .ui-chip-remove { border: 1px solid ButtonText; }
+  .ui-chip-remove:focus-visible { outline-color: Highlight; }
+}

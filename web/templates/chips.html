@@ -1,0 +1,66 @@
+{{define "chips-demo"}}
+<div class="chips-demo-grid">
+  <section class="chips-demo-group">
+    <h4 class="chips-demo-heading">Assist</h4>
+    <div class="chips-demo-row">
+      <button type="button" class="ui-chip ui-chip-assist"><span class="ui-chip-icon" aria-hidden="true">{{.CalendarSVG}}</span><span class="ui-chip-label">Add to calendar</span></button>
+      <button type="button" class="ui-chip ui-chip-assist"><span class="ui-chip-label">Set a reminder</span></button>
+      <a class="ui-chip ui-chip-assist" href="/components/chips"><span class="ui-chip-label">Navigate to docs</span></a>
+      <button type="button" class="ui-chip ui-chip-assist" disabled><span class="ui-chip-label">Disabled</span></button>
+    </div>
+  </section>
+
+  <section class="chips-demo-group">
+    <h4 class="chips-demo-heading">Filter</h4>
+    <div class="chips-demo-row">
+      <label class="ui-chip ui-chip-filter">
+        <input type="checkbox" name="filter" value="docs" checked>
+        <span class="ui-chip-selected-icon" aria-hidden="true"></span>
+        <span class="ui-chip-label">Docs</span>
+      </label>
+      <label class="ui-chip ui-chip-filter">
+        <input type="checkbox" name="filter" value="slides" checked>
+        <span class="ui-chip-selected-icon" aria-hidden="true"></span>
+        <span class="ui-chip-label">Slides</span>
+      </label>
+      <label class="ui-chip ui-chip-filter">
+        <input type="checkbox" name="filter" value="sheets">
+        <span class="ui-chip-selected-icon" aria-hidden="true"></span>
+        <span class="ui-chip-label">Sheets</span>
+      </label>
+      <label class="ui-chip ui-chip-filter">
+        <input type="checkbox" name="filter" value="images" disabled>
+        <span class="ui-chip-selected-icon" aria-hidden="true"></span>
+        <span class="ui-chip-label">Images</span>
+      </label>
+    </div>
+  </section>
+
+  <section class="chips-demo-group">
+    <h4 class="chips-demo-heading">Suggestion</h4>
+    <div class="chips-demo-row">
+      <button type="button" class="ui-chip ui-chip-suggestion"><span class="ui-chip-label">I agree</span></button>
+      <button type="button" class="ui-chip ui-chip-suggestion"><span class="ui-chip-label">Looks good to me</span></button>
+      <button type="button" class="ui-chip ui-chip-suggestion" disabled><span class="ui-chip-label">Disabled</span></button>
+    </div>
+  </section>
+
+  <section class="chips-demo-group">
+    <h4 class="chips-demo-heading">Input</h4>
+    <form class="chips-demo-row" method="post" action="/examples/chips/remove">
+      {{range .Removable}}
+      {{if .Removed}}
+      <span class="ui-chip-none" data-removed="{{.Value}}">{{.Label}}</span>
+      {{else}}
+      <span class="ui-chip ui-chip-input" data-chip="{{.Value}}">
+        <span class="ui-chip-label">{{.Label}}</span>
+        <button type="submit" class="ui-chip-remove" name="remove" value="{{.Value}}" aria-label="Remove {{.Label}}">{{$.RemoveSVG}}</button>
+      </span>
+      {{end}}
+      {{end}}
+      <button type="submit" class="ui-chip-none" name="remove" value="">Reset</button>
+    </form>
+    {{if .RemoveNotice}}<p class="chips-demo-notice" role="status">{{.RemoveNotice}}</p>{{end}}
+  </section>
+</div>
+{{end}}

@@ -33,6 +33,8 @@ func componentRoutes() []componentRoute {
 		{Path: "/components/progress", Label: "Progress", Handler: (*server).progressDocs},
 		{Path: "/components/icon-button", Label: "Icon button", Handler: (*server).iconButtonDocs},
 		{Path: "/components/fab", Label: "FAB", Handler: (*server).fabDocs},
+		{Path: "/components/list", Label: "List", Handler: (*server).listDocs},
+		{Path: "/components/chips", Label: "Chips", Handler: (*server).chipsDocs},
 	}
 }
 

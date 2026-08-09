@@ -20,6 +20,8 @@
 @import "./progress.css";
 @import "./icon-button.css";
 @import "./fab.css";
+@import "./list.css";
+@import "./chips.css";
 
 @source "../templates";
 @source "../content";
@@ -54,6 +56,7 @@
   .ui-slider input[type="range"]::-moz-range-thumb { transition: none; }
   .ui-progress progress { transition: none; }
   .ui-fab { transition: none; }
+  .ui-list .ui-list-item::before, .ui-list-item-link, .ui-list-item-label { transition: none; }
 }
 
 @media (forced-colors: active) {
@@ -191,4 +194,11 @@
   .ui-progress progress::-moz-progress-bar { background: CanvasText; }
   .ui-progress progress:indeterminate::-webkit-progress-bar { background: CanvasText; }
   .ui-progress progress:indeterminate::-moz-progress-bar { background: CanvasText; }
+  .ui-list { background: Canvas; }
+  .ui-list-item { color: CanvasText; forced-color-adjust: auto; }
+  .ui-list-item::before { background: CanvasText; }
+  .ui-list-item-link { color: LinkText; }
+  .ui-list-item-link:focus-visible { outline-color: Highlight; }
+  .ui-list-item-label input[type="checkbox"] { forced-color-adjust: auto; }
+  .ui-list-item-label:has(input:disabled) { color: GrayText; opacity: 1; }
 }

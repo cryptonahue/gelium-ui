@@ -1,0 +1,123 @@
+{{define "list-demo"}}
+<div class="list-demo-grid">
+
+  <section class="list-demo-group" aria-label="Single-line list">
+    <h3 class="list-demo-caption">Single-line</h3>
+    <ul class="ui-list">
+      <li class="ui-list-item"><span class="ui-list-item-headline">Inbox</span></li>
+      <li class="ui-list-item"><span class="ui-list-item-headline">Sent</span></li>
+      <li class="ui-list-item"><span class="ui-list-item-headline">Drafts</span></li>
+      <li class="ui-list-item"><span class="ui-list-item-headline">Trash</span></li>
+    </ul>
+  </section>
+
+  <section class="list-demo-group" aria-label="Ordered static list">
+    <h3 class="list-demo-caption">Ordered static</h3>
+    <ol class="ui-list">
+      <li class="ui-list-item"><span class="ui-list-item-headline">1. First item</span></li>
+      <li class="ui-list-item"><span class="ui-list-item-headline">2. Second item</span></li>
+      <li class="ui-list-item"><span class="ui-list-item-headline">3. Third item</span></li>
+    </ol>
+  </section>
+
+  <section class="list-demo-group" aria-label="Two-line list">
+    <h3 class="list-demo-caption">Two-line</h3>
+    <ul class="ui-list">
+      <li class="ui-list-item ui-list-item--two-line">
+        <span class="ui-list-item-text">
+          <span class="ui-list-item-headline">Brunch this weekend?</span>
+          <span class="ui-list-item-supporting">Ali Connors — I'll be in your neighborhood doing errands this weekend.</span>
+        </span>
+      </li>
+      <li class="ui-list-item ui-list-item--two-line">
+        <span class="ui-list-item-text">
+          <span class="ui-list-item-headline">Summer BBQ</span>
+          <span class="ui-list-item-supporting">to Alex, Scott, Jennifer — Wish I could come, but I'm out of town this weekend.</span>
+        </span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="list-demo-group" aria-label="Three-line list">
+    <h3 class="list-demo-caption">Three-line</h3>
+    <ul class="ui-list">
+      <li class="ui-list-item ui-list-item--three-line">
+        <span class="ui-list-item-text">
+          <span class="ui-list-item-headline">Brunch this weekend?</span>
+          <span class="ui-list-item-supporting">Ali Connors — I'll be in your neighborhood doing errands this weekend. Want to hang out?</span>
+        </span>
+      </li>
+      <li class="ui-list-item ui-list-item--three-line">
+        <span class="ui-list-item-text">
+          <span class="ui-list-item-headline">Summer BBQ</span>
+          <span class="ui-list-item-supporting">to Alex, Scott, Jennifer — Wish I could come, but I'm out of town this weekend. Let me know if there is anything I can do.</span>
+        </span>
+      </li>
+    </ul>
+  </section>
+
+  <section class="list-demo-group" aria-label="Navigation list">
+    <h3 class="list-demo-caption">Navigation</h3>
+    <nav class="list-demo-nav" aria-label="Example component navigation">
+      <ul class="ui-list">
+        <li class="ui-list-item"><a class="ui-list-item-link" href="/components/button">Buttons</a></li>
+        <li class="ui-list-item"><a class="ui-list-item-link" href="/components/checkbox">Checkboxes</a></li>
+        <li class="ui-list-item"><a class="ui-list-item-link" href="/components/slider">Slider</a></li>
+      </ul>
+    </nav>
+  </section>
+
+  <section class="list-demo-group" aria-label="Selection list">
+    <h3 class="list-demo-caption">Selection</h3>
+    <form method="get" action="/components/list" class="list-demo-form">
+      <ul class="ui-list">
+        <li class="ui-list-item ui-list-item--select">
+          <label class="ui-list-item-label">
+            <input type="checkbox" name="selection" value="single" checked>
+            <span class="ui-list-item-text">
+              <span class="ui-list-item-headline">Single line item</span>
+              <span class="ui-list-item-supporting">Secondary line</span>
+            </span>
+          </label>
+        </li>
+        <li class="ui-list-item ui-list-item--select">
+          <label class="ui-list-item-label">
+            <input type="checkbox" name="selection" value="double">
+            <span class="ui-list-item-text">
+              <span class="ui-list-item-headline">Selected in a multi-select</span>
+              <span class="ui-list-item-supporting">Uses a native checkbox, no JS</span>
+            </span>
+          </label>
+        </li>
+        <li class="ui-list-item ui-list-item--select">
+          <label class="ui-list-item-label">
+            <input type="checkbox" name="selection" value="disabled" disabled>
+            <span class="ui-list-item-text">
+              <span class="ui-list-item-headline">Disabled item</span>
+              <span class="ui-list-item-supporting">Cannot be selected</span>
+            </span>
+          </label>
+        </li>
+      </ul>
+      <button type="submit" class="ui-list-submit">Submit selection</button>
+    </form>
+  </section>
+
+  <section class="list-demo-group" aria-label="Icon list">
+    <h3 class="list-demo-caption">Leading &amp; trailing icons</h3>
+    <ul class="ui-list">
+      <li class="ui-list-item">
+        <span class="ui-list-item-icon" aria-hidden="true"><svg class="ui-list-icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.71-4.35-9.34-8.03C.74 10.09 1.42 6.71 4.34 5.2 6.48 4.08 9.07 4.5 12 7.1c2.93-2.6 5.52-3.02 7.66-1.9 2.92 1.51 3.6 4.89 1.68 7.77C18.71 16.65 12 21 12 21z"></path></svg></span>
+        <span class="ui-list-item-headline">Show your work</span>
+        <span class="ui-list-item-icon ui-list-item-icon--end" aria-hidden="true"><svg class="ui-list-icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg></span>
+      </li>
+      <li class="ui-list-item">
+        <span class="ui-list-item-icon" aria-hidden="true"><svg class="ui-list-icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21s-6.71-4.35-9.34-8.03C.74 10.09 1.42 6.71 4.34 5.2 6.48 4.08 9.07 4.5 12 7.1c2.93-2.6 5.52-3.02 7.66-1.9 2.92 1.51 3.6 4.89 1.68 7.77C18.71 16.65 12 21 12 21z"></path></svg></span>
+        <span class="ui-list-item-headline">Made for everyone</span>
+        <span class="ui-list-item-icon ui-list-item-icon--end" aria-hidden="true"><svg class="ui-list-icon-svg" viewBox="0 0 24 24" fill="currentColor"><path d="M10 6 8.59 7.41 13.17 12l-4.58 4.59L10 18l6-6z"></path></svg></span>
+      </li>
+    </ul>
+  </section>
+
+</div>
+{{end}}

@@ -37,6 +37,8 @@ type pageView struct {
 	ProgressDemo   *progressDemo
 	IconButtonDemo *iconButtonDemo
 	FabDemo        *fabDemo
+	ListDemo       *listDemo
+	ChipsDemo      *chipsDemo
 }
 
 type server struct {
@@ -66,6 +68,7 @@ func New() http.Handler {
 	mux.HandleFunc("POST /examples/text-field/validate", s.validateTextField)
 	mux.HandleFunc("POST /examples/toast/demo", s.toastDemo)
 	mux.HandleFunc("POST /examples/select/menu", s.selectMenu)
+	mux.HandleFunc("POST /examples/chips/remove", s.chipsRemoveDemo)
 	mux.HandleFunc("GET /static/{name}", s.staticAsset)
 	return mux
 }

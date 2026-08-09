@@ -37,6 +37,7 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/select-menu.css",
 		"styles/slider.css",
 		"styles/progress.css",
+		"styles/list.css",
 		"styles/app.css",
 	}
 	var sb strings.Builder

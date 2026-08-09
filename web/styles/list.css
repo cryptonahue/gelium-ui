@@ -1,0 +1,182 @@
+@layer components {
+  /* List: a server-rendered Material 3 list composed of <ul>/<ol> containers
+     and <li> items. The root is the semantic list element; list items are the
+     flex rows carrying a leading slot, the text content (headline plus
+     optional supporting text), and a trailing slot. Items are reimplemented
+     over native HTML semantics so navigation uses real <a href> items and
+     selection uses native checkboxes in a real <form> — no component
+     JavaScript. The --ui-list-* tokens are declared scoped to the root so the
+     primitive works standalone; the theme may override them globally. */
+  .ui-list {
+    --ui-list-container-color: var(--ui-color-surface);
+    --ui-list-item-leading-space: 16px;
+    --ui-list-item-trailing-space: 16px;
+    --ui-list-item-icon-size: 24px;
+    --ui-list-item-one-line-height: 56px;
+    --ui-list-item-two-line-height: 72px;
+    --ui-list-item-three-line-height: 88px;
+    --ui-list-item-label-color: var(--ui-color-fg);
+    --ui-list-item-supporting-color: var(--ui-color-fg-muted);
+    --ui-list-item-icon-color: var(--ui-color-fg-muted);
+    --ui-list-item-hover-opacity: var(--ui-state-hover-opacity);
+    --ui-list-item-pressed-opacity: var(--ui-state-pressed-opacity);
+    --ui-list-item-focus-opacity: var(--ui-state-focus-opacity);
+    --ui-list-item-disabled-opacity: var(--ui-state-disabled-opacity);
+
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+    background: var(--ui-list-container-color);
+  }
+
+  /* The item is the single flex row host; variant modifiers raise the height
+     and inner interactive elements (link / label) fill it. */
+  .ui-list-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    box-sizing: border-box;
+    min-height: var(--ui-list-item-one-line-height);
+    padding: 12px var(--ui-list-item-trailing-space) 12px var(--ui-list-item-leading-space);
+    color: var(--ui-list-item-label-color);
+    font: var(--ui-type-body-lg);
+  }
+  .ui-list-item--two-line { min-height: var(--ui-list-item-two-line-height); }
+  .ui-list-item--three-line { min-height: var(--ui-list-item-three-line-height); }
+
+  /* Material state layer, painted with the shared state-opacity tokens. The
+     overlay is a full-bleed ::before so state applies without affecting the
+     geometry or moving focus. :focus-within also lights the layer when focus
+     lands on an inner link or checkbox. */
+  .ui-list-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-list-item:hover::before { opacity: var(--ui-list-item-hover-opacity); }
+  .ui-list-item:focus-within::before { opacity: var(--ui-list-item-focus-opacity); }
+  .ui-list-item:active::before { opacity: var(--ui-list-item-pressed-opacity); }
+
+  /* Text content column: headline on top, supporting text below when present. */
+  .ui-list-item-text {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+  }
+  .ui-list-item-headline {
+    display: block;
+    color: var(--ui-list-item-label-color);
+    font: var(--ui-type-body-lg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+  }
+  .ui-list-item--two-line .ui-list-item-headline,
+  .ui-list-item--three-line .ui-list-item-headline { white-space: nowrap; }
+  .ui-list-item-supporting {
+    display: block;
+    color: var(--ui-list-item-supporting-color);
+    font: var(--ui-type-body-md);
+    overflow: hidden;
+  }
+  .ui-list-item--three-line .ui-list-item-supporting {
+    -webkit-box-orient: vertical;
+    -webkit-line-clamp: 2;
+    display: -webkit-box;
+    line-clamp: 2;
+  }
+
+  /* Leading and trailing icon slots (decorative, aria-hidden upstream). */
+  .ui-list-item-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-list-item-icon-size);
+    height: var(--ui-list-item-icon-size);
+    flex: none;
+    color: var(--ui-list-item-icon-color);
+  }
+  .ui-list-item-icon--end { color: var(--ui-list-item-icon-color); }
+  .ui-list-icon-svg {
+    width: var(--ui-list-item-icon-size);
+    height: var(--ui-list-item-icon-size);
+  }
+
+  /* Navigation: the anchor fills the row and stays the focusable element. */
+  .ui-list-item-link {
+    display: flex;
+    align-items: center;
+    flex: 1;
+    align-self: stretch;
+    color: inherit;
+    font: inherit;
+    text-decoration: none;
+    outline: none;
+  }
+  .ui-list-item-link:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Selection: a native checkbox inside a full-row label; the whole row is a
+     toggle and the form submits the checked values without JavaScript. */
+  .ui-list-item-label {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    flex: 1;
+    align-self: stretch;
+    cursor: pointer;
+  }
+  .ui-list-item-label input[type="checkbox"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex: none;
+    accent-color: var(--ui-color-primary);
+  }
+  .ui-list-item-label input[type="checkbox"]:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-list-item-label:has(input:disabled) { cursor: default; }
+
+  /* Interactive rows get a pointer cursor; disabled rows dim. */
+  .ui-list:has(.ui-list-item-link) .ui-list-item { cursor: pointer; }
+  .ui-list-item-label:has(input:disabled) { opacity: var(--ui-list-item-disabled-opacity); }
+
+  /* Demo scaffolding. */
+  .list-demo-grid {
+    display: grid;
+    gap: 1.5rem;
+    width: 100%;
+    max-width: 32rem;
+  }
+  .list-demo-group { display: grid; gap: .5rem; }
+  .list-demo-caption {
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .list-demo-form .ui-list { width: 100%; }
+  .ui-list-submit {
+    margin-top: .75rem;
+    font: var(--ui-type-label-lg);
+    color: var(--ui-color-primary);
+    background: none;
+    border: none;
+    padding: 0;
+    cursor: pointer;
+  }
+  .ui-list-submit:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+}
