@@ -135,16 +135,14 @@ Familia upstream: assist, filter, input y suggestion chips. Debe implementarse p
 |---|---|---|---|
 | Tabs | Focus | links/páginas como fallback; tablist ARIA sólo si teclado completo está resuelto | ✅ Entregado (Wave 4A, commit 8e7c741): links reales `<a href>` con selección server-side `aria-current="page"`, primary/secondary, sin roving focus (sin brecha JS demostrada) |
 | Navigation bar (Labs) | Icon, Focus, Badge opcional | navegación real con links | ✅ Entregado (Wave 4A, commit 8e7c741): `<nav>` + destinos `<a href>` con activo server-side, reusa `.ui-badge` |
-| Navigation tab (Labs) | contrato Tabs/Nav bar | link semántico, no tab falso | 🔲 Pendiente — contrato de Tabs/Nav bar ya definido, se puede implementar |
-
-HTMX puede cambiar paneles y history, pero el fallback debe navegar normalmente. Roving focus y flechas requieren una brecha JS demostrada.
+| Navigation tab (Labs) | contrato Tabs/Nav bar | link semántico, no tab falso | ✅ Entregado (commit 8ca17a9): `<a href>` real con activo server-side, reusa `.ui-nav-bar` y `.ui-badge` |
 
 #### 4B. Segmented buttons
 
-| Componente | Dependencias | Base nativa |
-|---|---|---|
-| Segmented button (Labs) | Button, Focus | radio/checkbox/button según selección |
-| Segmented button set (Labs) | Segmented button | fieldset o grupo accesible |
+| Componente | Dependencias | Base nativa | Estado |
+|---|---|---|---|
+| Segmented button (Labs) | Button, Focus | radio/checkbox/button según selección | ✅ Entregado (commit 8ca17a9): radio/checkbox/button nativos, `:checked` sin JS |
+| Segmented button set (Labs) | Segmented button | fieldset o grupo accesible | ✅ Entregado (commit 8ca17a9): `<fieldset>`+`<legend>` para selección, `role="group"` para acciones |
 
 Single/multi select debe preferir radios/checkboxes sin JS.
 
