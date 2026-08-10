@@ -7,11 +7,12 @@
      with aria-current="page" — no component JavaScript. Geometry follows the
      Material contract: a 360px container at full height shaped
      corner-large-end, 56px destinations holding the 24px glyph and a
-     label-large label, and a full-width 336px x 56px secondary-container pill
-     as the active indicator. Unlike the navigation bar, the drawer keeps a
-     single glyph per destination and recolors it when selected (Material does
-     not swap icons in a drawer). Badges on destinations compose the existing
-     .ui-badge primitive (not reinvented). */
+     label-large label, and a full-bleed secondary-container highlight as the
+     active indicator (matching the hover state-layer geometry). Unlike the
+     navigation bar, the drawer keeps a single glyph per destination and
+     recolors it when selected (Material does not swap icons in a drawer).
+     Badges on destinations compose the existing .ui-badge primitive (not
+     reinvented). */
   .ui-navigation-drawer {
     --ui-navigation-drawer-container-width: 360px;
     --ui-navigation-drawer-container-color: var(--ui-color-surface);
@@ -19,8 +20,6 @@
     --ui-navigation-drawer-item-height: 56px;
     --ui-navigation-drawer-item-inline-padding: 12px;
     --ui-navigation-drawer-icon-size: 24px;
-    --ui-navigation-drawer-indicator-width: 336px;
-    --ui-navigation-drawer-indicator-height: 56px;
     --ui-navigation-drawer-indicator-color: var(--ui-color-secondary);
     --ui-navigation-drawer-active-icon-color: var(--ui-color-secondary-fg);
     --ui-navigation-drawer-active-label-color: var(--ui-color-secondary-fg);
@@ -150,15 +149,16 @@
     transition: color var(--ui-motion-short) var(--ui-easing-standard);
   }
 
-  /* Active indicator: the full-width 336x56 secondary-container pill behind the
-     selected destination, faded out until selected. It is inset by the same
-     inline padding as the destination content, matching the upstream
-     active-indicator.width/height tokens on the 360px container. */
+  /* Active indicator: a full-width secondary-container highlight behind the
+     selected destination, faded out until selected. Unlike the navigation bar
+     (which centers a 64px pill), the drawer's selected state uses a
+     full-bleed container that spans the whole destination — the same geometry
+     as the hover state layer, so the selected background and the hover
+     background align edge to edge. */
   .ui-navigation-drawer-indicator {
     position: absolute;
     z-index: 0;
-    inset-block: 0;
-    inset-inline: var(--ui-navigation-drawer-item-inline-padding);
+    inset: 0;
     border-radius: var(--ui-radius-full);
     background: var(--ui-navigation-drawer-indicator-color);
     opacity: 0;

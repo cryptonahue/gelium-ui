@@ -40,8 +40,7 @@ func TestNavigationDrawerActiveIndicatorIsFullWidthPill(t *testing.T) {
 	for _, contract := range []string{
 		`.ui-navigation-drawer-indicator {`,
 		`position: absolute;`,
-		`inset-block: 0;`,
-		`inset-inline: var(--ui-navigation-drawer-item-inline-padding);`,
+		`inset: 0;`,
 		`border-radius: var(--ui-radius-full);`,
 		`background: var(--ui-navigation-drawer-indicator-color);`,
 		`opacity: 0;`,
