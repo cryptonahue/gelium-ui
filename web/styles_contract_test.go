@@ -637,14 +637,45 @@ func TestSemanticColorTokensOverriddenByMaterialTheme(t *testing.T) {
 // locked to the status palette.
 func TestToastIconTokensDeriveFromCore(t *testing.T) {
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, defaultThemeName), " ")
-	for _, derive := range []string{
-		"--ui-toast-icon-info: var(--ui-color-info)",
-		"--ui-toast-icon-success: var(--ui-color-success)",
-		"--ui-toast-icon-warning: var(--ui-color-warning)",
-		"--ui-toast-icon-error: var(--ui-color-danger)",
+	// The toast uses an inverted surface: light = dark container (#322f35),
+	// dark = light container (#ece6f0). Icons must therefore be light on the
+	// dark container and dark on the light container to keep contrast. These
+	// are deliberate per-scheme values (not core status tokens, which would
+	// render at 1.14-1.60:1 on the inverted surface).
+	for _, want := range []string{
+		"--ui-toast-icon-info: #d0bcff",
+		"--ui-toast-icon-success: #81c995",
+		"--ui-toast-icon-warning: #fdd663",
+		"--ui-toast-icon-error: #f2b8b5",
+		"--ui-toast-icon-info: #6750a4",
+		"--ui-toast-icon-success: #2e7d32",
+		"--ui-toast-icon-warning: #7a5700",
+		"--ui-toast-icon-error: #b3261e",
 	} {
-		if n := strings.Count(theme, derive); n < 3 {
-			t.Errorf("theme-material must define %q in all schemes, got %d definitions", derive, n)
+		if !strings.Contains(theme, want) {
+			t.Errorf("theme-material must define toast icon value %q with accessible contrast on the inverted surface", want)
+		}
+	}
+	// Light scheme defines the four light-on-dark values; dark schemes
+	// (class and media) define the dark-on-light values, twice each.
+	for _, derive := range []string{
+		"--ui-toast-icon-info: #d0bcff",
+		"--ui-toast-icon-success: #81c995",
+		"--ui-toast-icon-warning: #fdd663",
+		"--ui-toast-icon-error: #f2b8b5",
+	} {
+		if n := strings.Count(theme, derive); n < 1 {
+			t.Errorf("theme-material must define light-scheme toast icon %q at least once, got %d", derive, n)
+		}
+	}
+	for _, derive := range []string{
+		"--ui-toast-icon-info: #6750a4",
+		"--ui-toast-icon-success: #2e7d32",
+		"--ui-toast-icon-warning: #7a5700",
+		"--ui-toast-icon-error: #b3261e",
+	} {
+		if n := strings.Count(theme, derive); n < 2 {
+			t.Errorf("theme-material must define dark-scheme toast icon %q in class and media, got %d", derive, n)
 		}
 	}
 }
