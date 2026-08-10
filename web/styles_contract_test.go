@@ -56,6 +56,7 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/inline-alert.css",
 		"styles/skeleton.css",
 		"styles/tooltip.css",
+		"styles/validation-summary.css",
 		"styles/demo-whatsapp.css",
 		"styles/app.css",
 	}

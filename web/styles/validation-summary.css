@@ -1,0 +1,75 @@
+@layer components {
+  /* Validation summary: a server-rendered form-level list of validation
+     errors that link to the offending fields (native anchors, no JS). It
+     composes with the field-level error (.ui-text-field-message) instead of
+     replacing it: the summary is the navigation landmark for the whole form
+     while each field keeps its own aria-invalid + aria-describedby. The root
+     carries role="alert" fixed — the summary only ever reports validation
+     errors, so there are no tones. The --ui-validation-summary-* tokens are
+     declared scoped to the root so the primitive works standalone; the theme
+     may override them globally. There is no animation, so no reduced-motion
+     block. */
+  .ui-validation-summary {
+    --ui-validation-summary-padding: var(--ui-space-3) var(--ui-space-4);
+    --ui-validation-summary-gap: var(--ui-space-2);
+    --ui-validation-summary-radius: var(--ui-radius-sm);
+    --ui-validation-summary-bg: var(--ui-color-danger-container);
+    --ui-validation-summary-fg: var(--ui-color-danger);
+    --ui-validation-summary-title-color: var(--ui-color-danger);
+    --ui-validation-summary-item-color: var(--ui-color-danger);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-validation-summary-gap);
+    padding: var(--ui-validation-summary-padding);
+    border-radius: var(--ui-validation-summary-radius);
+    background: var(--ui-validation-summary-bg);
+    color: var(--ui-validation-summary-fg);
+  }
+
+  .ui-validation-summary-title {
+    margin: 0;
+    color: var(--ui-validation-summary-title-color);
+    font: var(--ui-type-title-md);
+  }
+
+  .ui-validation-summary-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-space-1);
+  }
+
+  .ui-validation-summary-item {
+    color: var(--ui-validation-summary-item-color);
+    font: var(--ui-type-body-sm);
+  }
+
+  .ui-validation-summary-item a {
+    color: var(--ui-color-danger);
+    text-decoration: underline;
+  }
+  .ui-validation-summary-item a:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-validation-summary {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-validation-summary-title,
+  .ui-validation-summary-item {
+    color: Mark;
+  }
+  .ui-validation-summary-item a {
+    color: LinkText;
+  }
+  .ui-validation-summary-item a:focus-visible {
+    outline-color: Highlight;
+  }
+}

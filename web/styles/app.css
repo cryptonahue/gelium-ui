@@ -34,6 +34,7 @@
 @import "./inline-alert.css";
 @import "./skeleton.css";
 @import "./tooltip.css";
+@import "./validation-summary.css";
 @import "./demo-whatsapp.css";
 
 @source "../templates";

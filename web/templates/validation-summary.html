@@ -1,0 +1,6 @@
+{{define "validation-summary"}}{{if .Items}}<div class="ui-validation-summary" role="alert">
+  <h{{.HeadingLevel}} class="ui-validation-summary-title">{{.Title}}</h{{.HeadingLevel}}>
+  <ul class="ui-validation-summary-list">
+    {{range .Items}}<li class="ui-validation-summary-item"><a href="{{.Href}}">{{.Message}}</a></li>{{end}}
+  </ul>
+</div>{{end}}{{end}}
