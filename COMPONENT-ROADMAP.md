@@ -155,6 +155,7 @@ Single/multi select debe preferir radios/checkboxes sin JS.
 - top layer/open-close puede ser declarativo;
 - posicionamiento, typeahead y teclado completo sólo con JS mínimo si la plataforma no alcanza;
 - fallback no-JS: navegación o formulario real, no imitación CSS inaccesible.
+- ✅ Entregado (Wave 5, commit 4e1631c): Popover API declarativa (`popover` + `popovertarget`, light-dismiss/Escape nativos), anchor positioning con fallback, items como links/buttons/checkbox/radio nativos, zero JS.
 
 #### Navigation drawer (Labs)
 
@@ -162,6 +163,7 @@ Single/multi select debe preferir radios/checkboxes sin JS.
 - variante modal sobre `<dialog>`;
 - variante permanente como `<nav>` en layout;
 - HTMX sólo para contenido remoto, no para semántica básica.
+- ✅ Entregado (Wave 5, commit 4e1631c): modal sobre `<dialog>` nativo, permanente como `<nav>`, destinos `<a href>` con activo server-side, reusa `.ui-badge`.
 
 ### Wave 6 — Loom-only posteriores
 
