@@ -1,0 +1,217 @@
+@layer components {
+  /* Navigation tab (Labs): the individual destination of a Material 3
+     navigation bar, reimplemented over server-rendered HTML. The root is a
+     real <a href> link — the roadmap's "link semántico, no tab falso" — so the
+     active tab is derived server-side from the current page and marked with
+     aria-current="page"; there is no role="tab", no role="tablist" and no
+     component JavaScript. The tab composes the same destination contract as
+     the delivered navigation bar (ui-nav-bar-list / ui-nav-bar-item wrap the
+     tabs in the in-bar demo) and reuses the existing .ui-badge primitive.
+     Geometry follows the Material contract: a 48px minimum hit area, a 64x32
+     icon slot holding the 32px secondary-container active-indicator pill
+     behind the 24px glyph, and a 12px label-medium label with a 4px top
+     margin. Material's active/inactive icon pair is two glyphs in the icon
+     slot and only the active one is painted when the tab is selected;
+     when both slots carry the same glyph the template renders a single copy. */
+  .ui-nav-tab {
+    --ui-nav-tab-icon-size: 24px;
+    --ui-nav-tab-icon-container-width: 64px;
+    --ui-nav-tab-icon-container-height: 32px;
+    --ui-nav-tab-indicator-size: 32px;
+    --ui-nav-tab-indicator-color: var(--ui-color-secondary);
+    --ui-nav-tab-active-icon-color: var(--ui-color-secondary-fg);
+    --ui-nav-tab-active-label-color: var(--ui-color-fg);
+    --ui-nav-tab-active-label-weight: 700;
+    --ui-nav-tab-inactive-icon-color: var(--ui-color-fg-muted);
+    --ui-nav-tab-inactive-hover-icon-color: var(--ui-color-fg);
+    --ui-nav-tab-inactive-label-color: var(--ui-color-fg-muted);
+    --ui-nav-tab-label-height: 16px;
+    --ui-nav-tab-label-space: 4px;
+    --ui-nav-tab-state-layer-color: var(--ui-color-fg);
+    --ui-nav-tab-hover-opacity: var(--ui-state-hover-opacity);
+    --ui-nav-tab-focus-opacity: var(--ui-state-focus-opacity);
+    --ui-nav-tab-pressed-opacity: var(--ui-state-pressed-opacity);
+
+    position: relative;
+    display: flex;
+    flex: 1;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: 48px;
+    min-width: 48px;
+    padding: 8px 0 12px;
+    color: var(--ui-nav-tab-inactive-icon-color);
+    font: var(--ui-type-label-sm);
+    text-align: center;
+    text-decoration: none;
+    outline: none;
+    transition: color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-nav-tab:hover,
+  .ui-nav-tab:focus-visible,
+  .ui-nav-tab:active {
+    color: var(--ui-nav-tab-inactive-hover-icon-color);
+  }
+  .ui-nav-tab--active {
+    color: var(--ui-nav-tab-active-icon-color);
+    font-weight: var(--ui-nav-tab-active-label-weight);
+  }
+  .ui-nav-tab--active:hover,
+  .ui-nav-tab--active:focus-visible,
+  .ui-nav-tab--active:active {
+    color: var(--ui-nav-tab-active-icon-color);
+  }
+
+  /* Material state layer: a full-bleed ::before at the shared --ui-state-*
+     opacities, painted without affecting geometry or moving focus. */
+  .ui-nav-tab::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ui-nav-tab-state-layer-color);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-nav-tab:hover::before { opacity: var(--ui-nav-tab-hover-opacity); }
+  .ui-nav-tab:focus-visible::before { opacity: var(--ui-nav-tab-focus-opacity); }
+  .ui-nav-tab:active::before { opacity: var(--ui-nav-tab-pressed-opacity); }
+  .ui-nav-tab:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Icon slot: the 64x32 box that carries the active-indicator pill and the
+     two glyphs. It is aria-hidden in the template; the label is the
+     accessible name. */
+  .ui-nav-tab-icon {
+    position: relative;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-nav-tab-icon-container-width);
+    height: var(--ui-nav-tab-icon-container-height);
+  }
+
+  /* Active indicator: the 32px secondary-container pill centered behind the
+     icon, faded out until the tab is selected. */
+  .ui-nav-tab-indicator {
+    position: absolute;
+    width: var(--ui-nav-tab-indicator-size);
+    height: var(--ui-nav-tab-indicator-size);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-nav-tab-indicator-color);
+    opacity: 0;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), width var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-nav-tab--active .ui-nav-tab-indicator { opacity: 1; }
+
+  /* Glyphs: the inactive and active slots both live in the icon box; CSS swaps
+     them when the tab is selected, mirroring Material's active/inactive icon
+     pair with no JavaScript. */
+  .ui-nav-tab-glyph {
+    display: inline-block;
+    width: var(--ui-nav-tab-icon-size);
+    height: var(--ui-nav-tab-icon-size);
+    fill: currentColor;
+  }
+  .ui-nav-tab-glyph--active { display: none; }
+  .ui-nav-tab--active .ui-nav-tab-glyph { display: none; }
+  .ui-nav-tab--active .ui-nav-tab-glyph--active { display: inline-block; }
+
+  /* Label: the 16px label-medium text below the icon. In icon-only mode it
+     collapses to zero height while staying in the DOM, so the accessible name
+     is always present. */
+  .ui-nav-tab-label {
+    position: relative;
+    z-index: 1;
+    height: var(--ui-nav-tab-label-height);
+    margin-top: var(--ui-nav-tab-label-space);
+    color: var(--ui-nav-tab-inactive-label-color);
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), height var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-nav-tab:hover .ui-nav-tab-label,
+  .ui-nav-tab:focus-visible .ui-nav-tab-label,
+  .ui-nav-tab:active .ui-nav-tab-label {
+    color: var(--ui-nav-tab-inactive-hover-icon-color);
+  }
+  .ui-nav-tab--active .ui-nav-tab-label {
+    color: var(--ui-nav-tab-active-label-color);
+  }
+
+  /* Upstream hideInactiveLabel (per-tab): inactive tabs collapse to icon-only,
+     the active one keeps its label. */
+  .ui-nav-tab--hide-inactive-label .ui-nav-tab-label {
+    height: 0;
+    opacity: 0;
+  }
+  .ui-nav-tab--hide-inactive-label.ui-nav-tab--active .ui-nav-tab-label {
+    height: var(--ui-nav-tab-label-height);
+    opacity: 1;
+  }
+
+  /* Badge: tabs compose the existing .ui-badge primitive, anchored to the
+     icon's top-end corner (the upstream badge placement inside the
+     aria-hidden icon slot). */
+  .ui-nav-tab .ui-badge {
+    position: absolute;
+    inset-block-start: 0;
+    inset-inline-start: 50%;
+    margin-inline-start: .375rem;
+    margin-block-start: .25rem;
+  }
+  .ui-nav-tab .ui-badge.ui-badge-large {
+    margin-inline-start: .125rem;
+    margin-block-start: 1px;
+  }
+
+  /* In-bar composition: when a ui-nav-tab is dropped into the delivered
+     .ui-nav-bar the tab fills its item cell exactly like the bar's own
+     destination contract. */
+  .ui-nav-bar .ui-nav-tab {
+    height: 100%;
+  }
+
+  /* Demo preview composition. */
+  .navigation-tab-demo-grid {
+    display: grid;
+    gap: 2rem;
+    width: 100%;
+  }
+  .navigation-tab-demo-group {
+    display: grid;
+    gap: .5rem;
+    max-width: 28rem;
+  }
+  .navigation-tab-demo-heading {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .navigation-tab-demo-row {
+    display: flex;
+    gap: .25rem;
+    min-width: 16rem;
+    border-block-end: 1px solid var(--ui-color-border);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-nav-tab,
+  .ui-nav-tab::before,
+  .ui-nav-tab-label,
+  .ui-nav-tab-indicator { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-nav-tab { color: CanvasText; forced-color-adjust: auto; }
+  .ui-nav-tab--active { color: HighlightText; }
+  .ui-nav-tab--active .ui-nav-tab-label { color: HighlightText; }
+  .ui-nav-tab-indicator { border: 1px solid Highlight; }
+  .ui-nav-tab:focus-visible { outline-color: Highlight; }
+}

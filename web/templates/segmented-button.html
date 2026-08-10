@@ -1,0 +1,113 @@
+{{define "segmented-button-demo"}}
+<div class="segmented-button-demo-grid">
+
+  <form method="get" action="/components/segmented-button" class="segmented-button-demo-form">
+    <section class="segmented-button-demo-group" aria-label="Single select segmented button set">
+      <h3 class="segmented-button-demo-heading">Single select (radio)</h3>
+      <fieldset class="ui-segmented-button-set">
+        <legend class="ui-segmented-button-legend">Choose a transport mode</legend>
+        <label class="ui-segmented-button ui-segmented-button--icon-only">
+          <input type="radio" name="transport" value="walk" aria-label="Walk">
+          <span class="ui-segmented-button-graphic" aria-hidden="true">
+            <svg class="ui-segmented-button-checkmark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path class="ui-segmented-button-checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"></path>
+            </svg>
+          </span>
+          <span class="ui-segmented-button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M13.5,5.5c1.1,0 2-0.9 2-2s-0.9-2 -2-2 -2,0.9 -2,2 0.9,2 2,2zM9.8,8.9L7,23h2.1l1.8-8 2.1,2v6h2v-7.5l-2.1-2 0.6-3C14.8,12 16.8,13 19,13v-2c-1.9,0 -3.5-1 -4.3-2.4l-1-1.6c-0.4-0.6 -1-1 -1.7-1 -0.3,0 -0.5,0.1 -0.8,0.1L6,8.3V13h2V9.6l1.8-0.7z"></path></svg>
+          </span>
+        </label>
+        <label class="ui-segmented-button ui-segmented-button--icon-only">
+          <input type="radio" name="transport" value="transit" aria-label="Transit">
+          <span class="ui-segmented-button-graphic" aria-hidden="true">
+            <svg class="ui-segmented-button-checkmark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path class="ui-segmented-button-checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"></path>
+            </svg>
+          </span>
+          <span class="ui-segmented-button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12,2c-4.42,0 -8,0.5 -8,4v9.5C4,17.43 5.57,19 7.5,19L6,20.5v0.5h12v-0.5L16.5,19c1.93,0 3.5-1.57 3.5-3.5V6c0-3.5 -3.58-4 -8-4zM7.5,17c-0.83,0 -1.5-0.67 -1.5-1.5S6.67,14 7.5,14s1.5,0.67 1.5,1.5S8.33,17 7.5,17zM11,10H6V5h5v5zM16.5,17c-0.83,0 -1.5-0.67 -1.5-1.5s0.67-1.5 1.5-1.5 1.5,0.67 1.5,1.5 -0.67,1.5 -1.5,1.5zM18,10h-5V5h5v5z"></path></svg>
+          </span>
+        </label>
+        <label class="ui-segmented-button ui-segmented-button--icon-only">
+          <input type="radio" name="transport" value="drive" checked aria-label="Drive">
+          <span class="ui-segmented-button-graphic" aria-hidden="true">
+            <svg class="ui-segmented-button-checkmark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path class="ui-segmented-button-checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"></path>
+            </svg>
+          </span>
+          <span class="ui-segmented-button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M18.92,6.01C18.72,5.42 18.16,5 17.5,5h-11c-0.66,0 -1.21,0.42 -1.42,1.01L3,12v8c0,0.55 0.45,1 1,1h1c0.55,0 1-0.45 1-1v-1h12v1c0,0.55 0.45,1 1,1h1c0.55,0 1-0.45 1-1v-8l-2.08-5.99zM6.5,16c-0.83,0 -1.5-0.67 -1.5-1.5S5.67,13 6.5,13s1.5,0.67 1.5,1.5S7.33,16 6.5,16zM17.5,16c-0.83,0 -1.5-0.67 -1.5-1.5s0.67-1.5 1.5-1.5 1.5,0.67 1.5,1.5 -0.67,1.5 -1.5,1.5zM5,11l1.5-4.5h11L19,11H5z"></path></svg>
+          </span>
+        </label>
+      </fieldset>
+    </section>
+
+    <section class="segmented-button-demo-group" aria-label="Multi select segmented button set">
+      <h3 class="segmented-button-demo-heading">Multi select (checkbox)</h3>
+      <fieldset class="ui-segmented-button-set">
+        <legend class="ui-segmented-button-legend">Choose formatting options</legend>
+        <label class="ui-segmented-button">
+          <input type="checkbox" name="formatting" value="bold" checked>
+          <span class="ui-segmented-button-graphic" aria-hidden="true">
+            <svg class="ui-segmented-button-checkmark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path class="ui-segmented-button-checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"></path>
+            </svg>
+          </span>
+          <span class="ui-segmented-button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M15.6,10.79c0.97-0.67 1.65-1.77 1.65-2.79 0-2.26-1.75-4-4-4H7v14h7.04c2.09,0 3.71-1.7 3.71-3.79 0-1.52-0.86-2.82-2.15-3.42zM10,6.5h3c0.83,0 1.5,0.67 1.5,1.5s-0.67,1.5 -1.5,1.5h-3v-3zM13.5,15.5H10v-3h3.5c0.83,0 1.5,0.67 1.5,1.5s-0.67,1.5 -1.5,1.5z"></path></svg>
+          </span>
+          <span class="ui-segmented-button-label">Bold</span>
+        </label>
+        <label class="ui-segmented-button">
+          <input type="checkbox" name="formatting" value="italic" checked>
+          <span class="ui-segmented-button-graphic" aria-hidden="true">
+            <svg class="ui-segmented-button-checkmark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path class="ui-segmented-button-checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"></path>
+            </svg>
+          </span>
+          <span class="ui-segmented-button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M10,4v3h2.21l-3.42,8H6v3h8v-3h-2.21l3.42-8H18V4z"></path></svg>
+          </span>
+          <span class="ui-segmented-button-label">Italic</span>
+        </label>
+        <label class="ui-segmented-button">
+          <input type="checkbox" name="formatting" value="underline" disabled>
+          <span class="ui-segmented-button-graphic" aria-hidden="true">
+            <svg class="ui-segmented-button-checkmark" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+              <path class="ui-segmented-button-checkmark-path" fill="none" d="M1.73,12.91 8.1,19.28 22.79,4.59"></path>
+            </svg>
+          </span>
+          <span class="ui-segmented-button-icon" aria-hidden="true">
+            <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M12,17c3.31,0 6-2.69 6-6V3h-2.5v8c0,1.93-1.57,3.5-3.5,3.5S8.5,12.93 8.5,11V3H6v8c0,3.31 2.69,6 6,6zM3,19v2h18v-2z"></path></svg>
+          </span>
+          <span class="ui-segmented-button-label">Underline</span>
+        </label>
+      </fieldset>
+    </section>
+
+    <button type="submit" class="segmented-button-demo-submit">Submit selection</button>
+  </form>
+
+  <section class="segmented-button-demo-group" aria-label="Action segmented button set">
+    <h3 class="segmented-button-demo-heading">Action set (button)</h3>
+    <div class="ui-segmented-button-set" role="group" aria-label="View actions">
+      <button type="button" class="ui-segmented-button ui-segmented-button--action">
+        <span class="ui-segmented-button-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M17.65,6.35C16.2,4.9 14.21,4 12,4c-4.42,0 -7.99,3.58 -7.99,8s3.57,8 7.99,8c3.73,0 6.84-2.55 7.73-6h-2.08c-0.82,2.33 -3.04,4 -5.65,4 -3.31,0 -6-2.69 -6-6s2.69-6 6-6c1.66,0 3.14,0.69 4.22,1.78L13,11h7V4l-2.35,2.35z"></path></svg>
+        </span>
+        <span class="ui-segmented-button-label">Refresh</span>
+      </button>
+      <button type="button" class="ui-segmented-button ui-segmented-button--action">
+        <span class="ui-segmented-button-label">Export</span>
+      </button>
+      <button type="button" class="ui-segmented-button ui-segmented-button--action" disabled>
+        <span class="ui-segmented-button-icon" aria-hidden="true">
+          <svg viewBox="0 0 24 24" fill="currentColor" aria-hidden="true" focusable="false"><path d="M6,19c0,1.1 0.9,2 2,2h8c1.1,0 2-0.9 2-2V7H6v12zM19,4h-3.5l-1-1h-5l-1,1H5v2h14V4z"></path></svg>
+        </span>
+        <span class="ui-segmented-button-label">Delete</span>
+      </button>
+    </div>
+  </section>
+
+</div>
+{{end}}

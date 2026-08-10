@@ -1,0 +1,284 @@
+@layer components {
+  /* Segmented button set + segmented button (Labs): a server-rendered Material
+     3 outlined segmented control. Selection sets use native radio/checkbox
+     semantics inside a <fieldset> whose <legend> names the group; action sets
+     use <button type="button"> inside role="group". The selected fill, the
+     leading checkmark reveal and the icon swap are all derived from the native
+     :checked pseudo-class (the roadmap's "Single/multi select debe preferir
+     radios/checkboxes sin JS"), so the checked values submit through a normal
+     <form> with no component JavaScript. Geometry follows the upstream token
+     contract: a 40px container with a full-corner pill, 1px outline and 1px
+     dividers; first/last segments cap the pill; the 18px checkmark/icon sit in
+     a 12px-padded cell. The --ui-segmented-button-* custom properties are
+     scoped to the root and reuse the shared --ui-* tokens. */
+  .ui-segmented-button-set {
+    --ui-segmented-button-container-height: 40px;
+    --ui-segmented-button-container-radius: var(--ui-radius-full);
+    --ui-segmented-button-outline: var(--ui-color-border-strong);
+    --ui-segmented-button-selected-container: var(--ui-color-secondary);
+    --ui-segmented-button-selected-fg: var(--ui-color-secondary-fg);
+    --ui-segmented-button-selected-state-layer: var(--ui-color-secondary-fg);
+    --ui-segmented-button-unselected-fg: var(--ui-color-fg);
+    --ui-segmented-button-unselected-state-layer: var(--ui-color-fg);
+    --ui-segmented-button-icon-size: 18px;
+    --ui-segmented-button-icon-label-gap: 8px;
+    --ui-segmented-button-spacing: 12px;
+    --ui-segmented-button-disabled-opacity: var(--ui-state-disabled-opacity);
+
+    display: flex;
+    align-items: stretch;
+    box-sizing: border-box;
+    width: 100%;
+    min-width: 0;
+    height: var(--ui-segmented-button-container-height);
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--ui-segmented-button-outline);
+    border-radius: var(--ui-segmented-button-container-radius);
+  }
+
+  /* The legend names the radio/checkbox group in the accessibility tree while
+     staying visually hidden, keeping the pill clean. */
+  .ui-segmented-button-legend {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    padding: 0;
+    margin: -1px;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    clip-path: inset(50%);
+    white-space: nowrap;
+    border: 0;
+  }
+
+  /* Segment: the individual radio/checkbox/button cell. The native control is
+     the first child so every selected/disabled style keys off its state; the
+     label wraps it so the whole cell is the label target. */
+  .ui-segmented-button {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex: 1;
+    min-width: 0;
+    padding-inline: var(--ui-segmented-button-spacing);
+    color: var(--ui-segmented-button-unselected-fg);
+    font-family: var(--ui-font-sans);
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+  }
+  .ui-segmented-button:not(:first-child) {
+    border-inline-start: 1px solid var(--ui-segmented-button-outline);
+  }
+  .ui-segmented-button:first-child {
+    border-start-start-radius: var(--ui-segmented-button-container-radius);
+    border-end-start-radius: var(--ui-segmented-button-container-radius);
+  }
+  .ui-segmented-button:last-child {
+    border-start-end-radius: var(--ui-segmented-button-container-radius);
+    border-end-end-radius: var(--ui-segmented-button-container-radius);
+  }
+
+  /* Action segments are real <button> elements: strip the browser defaults
+     while keeping the shared segment chrome (the divider border-inline-start is
+     re-applied by the higher-specificity :not(:first-child) rule). */
+  .ui-segmented-button--action {
+    background: transparent;
+    border: 0;
+    color: inherit;
+    font: inherit;
+  }
+
+  /* Material state layer: a full-bleed ::before at the shared --ui-state-*
+     opacities, painted without affecting geometry or moving focus. The layer
+     color follows the Material split (unselected on-surface, selected
+     on-secondary-container). */
+  .ui-segmented-button::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    background: var(--ui-segmented-button-unselected-state-layer);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-segmented-button:hover::before { opacity: var(--ui-state-hover-opacity); }
+  .ui-segmented-button:focus-visible::before,
+  .ui-segmented-button:has(input:focus-visible)::before { opacity: var(--ui-state-focus-opacity); }
+  .ui-segmented-button:active::before { opacity: var(--ui-state-pressed-opacity); }
+
+  .ui-segmented-button:focus-visible,
+  .ui-segmented-button:has(input:focus-visible) {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+    z-index: 1;
+  }
+
+  /* Selected fill: derived purely from the native :checked state. */
+  .ui-segmented-button:has(input:checked) {
+    background: var(--ui-segmented-button-selected-container);
+    color: var(--ui-segmented-button-selected-fg);
+  }
+  .ui-segmented-button:has(input:checked)::before {
+    background: var(--ui-segmented-button-selected-state-layer);
+  }
+
+  /* Leading graphic: collapses to zero width until the native control is
+     checked, then reveals the checkmark with the 150ms width transition. */
+  .ui-segmented-button-graphic {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 0;
+    overflow: hidden;
+    transition: width var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-segmented-button:has(input:checked) .ui-segmented-button-graphic {
+    width: var(--ui-segmented-button-icon-size);
+  }
+
+  .ui-segmented-button-checkmark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-segmented-button-icon-size);
+    height: var(--ui-segmented-button-icon-size);
+    flex: none;
+  }
+  .ui-segmented-button-checkmark-path {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2px;
+    stroke-dasharray: 29.7833385;
+    stroke-dashoffset: 29.7833385;
+    transition: stroke-dashoffset var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-segmented-button:has(input:checked) .ui-segmented-button-checkmark-path {
+    stroke-dashoffset: 0;
+  }
+
+  /* Icon slot: replaced by the checkmark in labeled segments when selected;
+     kept beside the checkmark in icon-only segments (the upstream
+     transportation-mode pattern). */
+  .ui-segmented-button-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-segmented-button-icon-size);
+    height: var(--ui-segmented-button-icon-size);
+    flex: none;
+  }
+  .ui-segmented-button-icon svg {
+    width: var(--ui-segmented-button-icon-size);
+    height: var(--ui-segmented-button-icon-size);
+  }
+  .ui-segmented-button:has(input:checked) .ui-segmented-button-icon { display: none; }
+  .ui-segmented-button--icon-only:has(input:checked) .ui-segmented-button-icon {
+    display: inline-flex;
+    margin-inline-start: var(--ui-segmented-button-icon-label-gap);
+  }
+  .ui-segmented-button-icon + .ui-segmented-button-label {
+    margin-inline-start: var(--ui-segmented-button-icon-label-gap);
+  }
+  .ui-segmented-button:has(input:checked) .ui-segmented-button-label {
+    margin-inline-start: var(--ui-segmented-button-icon-label-gap);
+  }
+
+  .ui-segmented-button-label {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    font-size: .875rem;
+    font-weight: 500;
+    line-height: 1.25rem;
+    letter-spacing: .00625rem;
+    white-space: nowrap;
+  }
+
+  /* Disabled: dims the content at the shared disabled opacity, keeps the
+     selected fill for selected+disabled, and drops the pointer cursor. */
+  .ui-segmented-button--action:disabled,
+  .ui-segmented-button:has(input:disabled) { cursor: not-allowed; }
+  .ui-segmented-button--action:disabled .ui-segmented-button-label,
+  .ui-segmented-button:has(input:disabled) .ui-segmented-button-label,
+  .ui-segmented-button:has(input:disabled) .ui-segmented-button-icon,
+  .ui-segmented-button:has(input:disabled) .ui-segmented-button-checkmark {
+    opacity: var(--ui-segmented-button-disabled-opacity);
+  }
+
+  /* Demo scaffolding. */
+  .segmented-button-demo-grid {
+    display: grid;
+    gap: 2rem;
+    width: 100%;
+  }
+  .segmented-button-demo-group {
+    display: grid;
+    gap: .75rem;
+    max-width: 28rem;
+  }
+  .segmented-button-demo-heading {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .segmented-button-demo-form {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+  }
+  .segmented-button-demo-form .ui-segmented-button-set { width: 100%; }
+  .segmented-button-demo-submit {
+    justify-self: start;
+    padding: .5rem .75rem;
+    color: var(--ui-color-primary);
+    background: none;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-sm);
+    font: var(--ui-type-label-lg);
+    cursor: pointer;
+  }
+  .segmented-button-demo-submit:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-segmented-button-graphic,
+  .ui-segmented-button-checkmark-path,
+  .ui-segmented-button::before { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-segmented-button-set {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-segmented-button { color: CanvasText; forced-color-adjust: auto; }
+  .ui-segmented-button:not(:first-child) { border-inline-start-color: CanvasText; }
+  .ui-segmented-button:has(input:checked) {
+    background: Highlight;
+    color: HighlightText;
+  }
+  .ui-segmented-button:has(input:checked) .ui-segmented-button-checkmark-path {
+    stroke: HighlightText;
+  }
+  .ui-segmented-button:focus-visible,
+  .ui-segmented-button:has(input:focus-visible) { outline-color: Highlight; }
+  .ui-segmented-button--action:disabled,
+  .ui-segmented-button:has(input:disabled) {
+    background: Canvas;
+    color: GrayText;
+  }
+  .ui-segmented-button--action:disabled .ui-segmented-button-label,
+  .ui-segmented-button:has(input:disabled) .ui-segmented-button-label,
+  .ui-segmented-button:has(input:disabled) .ui-segmented-button-icon,
+  .ui-segmented-button:has(input:disabled) .ui-segmented-button-checkmark {
+    opacity: 1;
+  }
+}

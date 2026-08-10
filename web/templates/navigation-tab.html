@@ -1,0 +1,40 @@
+{{define "navigation-tab-demo"}}
+<div class="navigation-tab-demo-grid">
+  {{range $row := .Rows}}
+  <section class="navigation-tab-demo-group">
+    <h4 class="navigation-tab-demo-heading">{{$row.Heading}}</h4>
+    {{if $row.InBar}}
+    <nav class="ui-nav-bar" aria-label="{{$row.AriaLabel}}">
+      <ul class="ui-nav-bar-list">
+        {{range $tab := $row.Destinations}}
+        <li class="ui-nav-bar-item">
+          <a class="ui-nav-tab{{if $tab.Active}} ui-nav-tab--active{{end}}{{if $row.HideInactiveLabels}} ui-nav-tab--hide-inactive-label{{end}}" href="{{$tab.Href}}"{{if $tab.Active}} aria-current="page"{{end}}>
+            <span class="ui-nav-tab-icon" aria-hidden="true">
+              <span class="ui-nav-tab-indicator"></span>
+              {{$tab.InactiveSVG}}{{if $tab.HasDistinctActiveGlyph}}{{$tab.ActiveSVG}}{{end}}
+              {{if $tab.HasBadge}}{{if $tab.BadgeDot}}<span class="ui-badge" aria-hidden="true"></span>{{else}}<span class="ui-badge ui-badge-large">{{$tab.BadgeValue}}</span>{{end}}{{end}}
+            </span>
+            <span class="ui-nav-tab-label">{{$tab.Label}}</span>
+          </a>
+        </li>
+        {{end}}
+      </ul>
+    </nav>
+    {{else}}
+    <div class="navigation-tab-demo-row" aria-label="{{$row.AriaLabel}}">
+      {{range $tab := $row.Destinations}}
+      <a class="ui-nav-tab{{if $tab.Active}} ui-nav-tab--active{{end}}{{if $row.HideInactiveLabels}} ui-nav-tab--hide-inactive-label{{end}}" href="{{$tab.Href}}"{{if $tab.Active}} aria-current="page"{{end}}>
+        <span class="ui-nav-tab-icon" aria-hidden="true">
+          <span class="ui-nav-tab-indicator"></span>
+          {{$tab.InactiveSVG}}{{if $tab.HasDistinctActiveGlyph}}{{$tab.ActiveSVG}}{{end}}
+          {{if $tab.HasBadge}}{{if $tab.BadgeDot}}<span class="ui-badge" aria-hidden="true"></span>{{else}}<span class="ui-badge ui-badge-large">{{$tab.BadgeValue}}</span>{{end}}{{end}}
+        </span>
+        <span class="ui-nav-tab-label">{{$tab.Label}}</span>
+      </a>
+      {{end}}
+    </div>
+    {{end}}
+  </section>
+  {{end}}
+</div>
+{{end}}

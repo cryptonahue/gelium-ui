@@ -24,6 +24,8 @@
 @import "./chips.css";
 @import "./tabs.css";
 @import "./navigation-bar.css";
+@import "./navigation-tab.css";
+@import "./segmented-button.css";
 
 @source "../templates";
 @source "../content";

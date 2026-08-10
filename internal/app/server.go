@@ -12,35 +12,37 @@ import (
 )
 
 type pageView struct {
-	Title             string
-	Content           template.HTML
-	Nav               []navLink
-	CTA               *buttonView
-	Buttons           []buttonView
-	TextFields        []textFieldView
-	ValidationForm    *validationFormView
-	Dialog            *dialogView
-	Toasts            []toastView
-	ToastDemo         *toastDemoView
-	ElevationDemo     *elevationDemo
-	FocusRingDemo     *focusRingDemo
-	IconDemo          *iconDemo
-	DividerDemo       *dividerDemo
-	CardDemo          *cardDemo
-	BadgeDemo         *badgeDemo
-	CheckboxDemo      *checkboxDemo
-	RadioDemo         *radioDemo
-	SwitchDemo        *switchDemo
-	SelectDemo        *selectDemo
-	SelectMenuDemo    *selectMenuDemo
-	SliderDemo        *sliderDemo
-	ProgressDemo      *progressDemo
-	IconButtonDemo    *iconButtonDemo
-	FabDemo           *fabDemo
-	ListDemo          *listDemo
-	ChipsDemo         *chipsDemo
-	TabsDemo          *tabsDemo
-	NavigationBarDemo *navigationBarDemo
+	Title               string
+	Content             template.HTML
+	Nav                 []navLink
+	CTA                 *buttonView
+	Buttons             []buttonView
+	TextFields          []textFieldView
+	ValidationForm      *validationFormView
+	Dialog              *dialogView
+	Toasts              []toastView
+	ToastDemo           *toastDemoView
+	ElevationDemo       *elevationDemo
+	FocusRingDemo       *focusRingDemo
+	IconDemo            *iconDemo
+	DividerDemo         *dividerDemo
+	CardDemo            *cardDemo
+	BadgeDemo           *badgeDemo
+	CheckboxDemo        *checkboxDemo
+	RadioDemo           *radioDemo
+	SwitchDemo          *switchDemo
+	SelectDemo          *selectDemo
+	SelectMenuDemo      *selectMenuDemo
+	SliderDemo          *sliderDemo
+	ProgressDemo        *progressDemo
+	IconButtonDemo      *iconButtonDemo
+	FabDemo             *fabDemo
+	ListDemo            *listDemo
+	ChipsDemo           *chipsDemo
+	TabsDemo            *tabsDemo
+	NavigationBarDemo   *navigationBarDemo
+	NavigationTabDemo   *navigationTabDemo
+	SegmentedButtonDemo *segmentedButtonDemo
 }
 
 type server struct {
