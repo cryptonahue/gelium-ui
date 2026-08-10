@@ -1,0 +1,10 @@
+{{define "skeleton"}}<div class="ui-skeleton{{if .Avatar}} ui-skeleton--avatar{{end}}" role="status">
+  <span class="sr-only">{{if .Label}}{{.Label}}{{else}}Loading{{end}}</span>
+  <div class="ui-skeleton-blocks" aria-hidden="true">
+    {{if .Avatar}}<span class="ui-skeleton-block ui-skeleton-block--circle"></span>
+    <span class="ui-skeleton-block ui-skeleton-block--line ui-skeleton-block--short"></span>{{end}}
+    <span class="ui-skeleton-block ui-skeleton-block--title"></span>
+    <span class="ui-skeleton-block ui-skeleton-block--line"></span>
+    {{if .Lines}}{{range $i := (printf "%*s" .Lines "")}}<span class="ui-skeleton-block ui-skeleton-block--line"></span>{{end}}{{end}}
+  </div>
+</div>{{end}}

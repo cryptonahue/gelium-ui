@@ -1,0 +1,92 @@
+@layer components {
+  /* Skeleton: a server-rendered loading placeholder for regions the server
+     will fill with a later response (HTMX swap or the next full page GET).
+     The root is a live region (role="status") whose only accessible content
+     is the sr-only label; the visual blocks are aria-hidden decoration. The
+     fill uses the Material 3 pulse (opacity 0.5 ↔ 1 over surface-container),
+     disabled under prefers-reduced-motion. The --ui-skeleton-* tokens are
+     declared scoped to the root so the primitive works standalone; the theme
+     may override them globally. */
+  .ui-skeleton {
+    --ui-skeleton-padding: var(--ui-space-6);
+    --ui-skeleton-gap: var(--ui-space-2);
+    --ui-skeleton-block-gap: var(--ui-space-1);
+    --ui-skeleton-block-height: var(--ui-size-label-height);
+    --ui-skeleton-title-height: calc(var(--ui-skeleton-block-height) + var(--ui-space-2));
+    --ui-skeleton-block-radius: var(--ui-radius-sm);
+    --ui-skeleton-block-color: var(--ui-color-surface-container);
+    --ui-skeleton-line-width: 100%;
+    --ui-skeleton-avatar-size: var(--ui-size-icon);
+    --ui-skeleton-avatar-gap: var(--ui-space-4);
+    --ui-skeleton-pulse-duration: 1.2s;
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-skeleton-gap);
+    padding: var(--ui-skeleton-padding);
+  }
+
+  .ui-skeleton-blocks {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-skeleton-block-gap);
+  }
+
+  .ui-skeleton-block {
+    height: var(--ui-skeleton-block-height);
+    border-radius: var(--ui-skeleton-block-radius);
+    background: var(--ui-skeleton-block-color);
+    animation: ui-skeleton-pulse var(--ui-skeleton-pulse-duration) var(--ui-easing-standard) infinite;
+  }
+
+  .ui-skeleton-block--line {
+    width: var(--ui-skeleton-line-width);
+  }
+
+  .ui-skeleton-block--title {
+    width: var(--ui-skeleton-line-width);
+    height: var(--ui-skeleton-title-height);
+  }
+
+  .ui-skeleton-block--short {
+    width: 60%;
+  }
+
+  .ui-skeleton-block--circle {
+    width: var(--ui-skeleton-avatar-size);
+    height: var(--ui-skeleton-avatar-size);
+    flex: none;
+    border-radius: var(--ui-radius-full);
+  }
+
+  .ui-skeleton--avatar .ui-skeleton-blocks {
+    display: grid;
+    grid-template-columns: auto minmax(0, 1fr);
+    grid-template-areas:
+      "avatar title"
+      "avatar line"
+      "avatar short";
+    column-gap: var(--ui-skeleton-avatar-gap);
+  }
+
+  .ui-skeleton--avatar .ui-skeleton-block--circle { grid-area: avatar; align-self: start; }
+  .ui-skeleton--avatar .ui-skeleton-block--title { grid-area: title; }
+  .ui-skeleton--avatar .ui-skeleton-block--line { grid-area: line; }
+  .ui-skeleton--avatar .ui-skeleton-block--short { grid-area: short; }
+}
+
+@keyframes ui-skeleton-pulse {
+  0%, 100% { opacity: 1; }
+  50% { opacity: .5; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-skeleton-block { animation: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-skeleton-block {
+    background: CanvasText;
+    forced-color-adjust: auto;
+  }
+}
