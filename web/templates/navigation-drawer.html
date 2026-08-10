@@ -1,0 +1,39 @@
+{{define "navigation-drawer-demo"}}
+<div class="navigation-drawer-demo-grid">
+  {{range .Drawers}}
+  <section class="navigation-drawer-demo-group">
+    <h4 class="navigation-drawer-demo-heading">{{.Heading}}</h4>
+    {{if .Modal}}
+    {{template "button" .Trigger}}
+    <dialog class="ui-navigation-drawer ui-navigation-drawer--modal" id="{{.ID}}" closedby="any" aria-label="{{.Label}}">
+      <ul class="ui-navigation-drawer-list">
+        {{range .Destinations}}{{template "navigation-drawer-destination" .}}{{end}}
+      </ul>
+    </dialog>
+    {{else}}
+    <div class="navigation-drawer-demo-frame">
+      <nav class="ui-navigation-drawer ui-navigation-drawer--standard" aria-label="{{.Label}}">
+        <ul class="ui-navigation-drawer-list">
+          {{range .Destinations}}{{template "navigation-drawer-destination" .}}{{end}}
+        </ul>
+      </nav>
+      <div class="navigation-drawer-demo-content">
+        <h5 class="navigation-drawer-demo-content-title">Page content</h5>
+        <p class="navigation-drawer-demo-content-body">The permanent variant embeds a <code>nav</code> in the layout, always visible, with the active destination marked server-side.</p>
+      </div>
+    </div>
+    {{end}}
+  </section>
+  {{end}}
+</div>
+{{end}}
+
+{{define "navigation-drawer-destination"}}
+<li class="ui-navigation-drawer-item">
+  <a class="ui-navigation-drawer-destination{{if .Active}} ui-navigation-drawer-destination--active{{end}}" href="{{.Href}}"{{if .Active}} aria-current="page"{{end}}>
+    <span class="ui-navigation-drawer-indicator" aria-hidden="true"></span>
+    <span class="ui-navigation-drawer-glyph" aria-hidden="true">{{.Glyph}}{{if .HasBadge}}{{if .BadgeDot}}<span class="ui-badge" aria-hidden="true"></span>{{else}}<span class="ui-badge ui-badge-large">{{.BadgeValue}}</span>{{end}}{{end}}</span>
+    <span class="ui-navigation-drawer-label">{{.Label}}</span>
+  </a>
+</li>
+{{end}}

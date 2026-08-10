@@ -39,6 +39,8 @@ func componentRoutes() []componentRoute {
 		{Path: "/components/navigation-bar", Label: "Navigation bar", Handler: (*server).navigationBarDocs},
 		{Path: "/components/navigation-tab", Label: "Navigation tab", Handler: (*server).navigationTabDocs},
 		{Path: "/components/segmented-button", Label: "Segmented buttons", Handler: (*server).segmentedButtonDocs},
+		{Path: "/components/menu", Label: "Menu", Handler: (*server).menuDocs},
+		{Path: "/components/navigation-drawer", Label: "Navigation drawer", Handler: (*server).navigationDrawerDocs},
 	}
 }
 

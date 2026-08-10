@@ -1,0 +1,290 @@
+@layer components {
+  /* Menu: a server-rendered Material 3 menu surface. The open anatomy demo is a
+     <ul> whose rows are real interactive elements (buttons, links or native
+     checkbox/radio selection rows); the popover demos wrap the same surface in
+     the native popover attribute and drive it declaratively with a trigger
+     button (popovertarget / popovertargetaction) — no component JavaScript.
+     Item rows are 48px with a 12px leading/trailing space, a 24px leading icon
+     slot, state layers at the shared --ui-state-* opacities, a focus ring and
+     a 1px divider. The --ui-menu-* tokens are scoped to the surface so the
+     primitive works standalone; the theme may override them globally. */
+  .ui-menu {
+    --ui-menu-container-color: var(--ui-color-surface);
+    --ui-menu-container-radius: var(--ui-radius-xs);
+    --ui-menu-container-elevation: var(--ui-shadow-2);
+    --ui-menu-item-height: 48px;
+    --ui-menu-item-leading-space: 12px;
+    --ui-menu-item-trailing-space: 12px;
+    --ui-menu-item-icon-size: 24px;
+    --ui-menu-item-icon-gap: 12px;
+    --ui-menu-item-label-color: var(--ui-color-fg);
+    --ui-menu-item-icon-color: var(--ui-color-fg-muted);
+    --ui-menu-item-selected-container: var(--ui-color-secondary);
+    --ui-menu-item-selected-fg: var(--ui-color-secondary-fg);
+    --ui-menu-item-hover-opacity: var(--ui-state-hover-opacity);
+    --ui-menu-item-focus-opacity: var(--ui-state-focus-opacity);
+    --ui-menu-item-pressed-opacity: var(--ui-state-pressed-opacity);
+    --ui-menu-item-disabled-opacity: var(--ui-state-disabled-opacity);
+    --ui-menu-divider-color: var(--ui-divider-color);
+    --ui-menu-divider-thickness: var(--ui-divider-thickness);
+
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    min-width: 112px;
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+    border-radius: var(--ui-menu-container-radius);
+    background: var(--ui-menu-container-color);
+    box-shadow: var(--ui-menu-container-elevation);
+    color: var(--ui-menu-item-label-color);
+    user-select: none;
+  }
+
+  /* Popover surface: a native top-layer popover that stays closed until the
+     trigger toggles it. The popovertarget control supplies the implicit anchor,
+     so anchor positioning lifts the surface onto the trigger when supported;
+     otherwise the UA default (fixed, centered, margin auto) keeps it usable. */
+  .ui-menu[popover] {
+    position: fixed;
+    border: 0;
+    margin: auto;
+    max-width: calc(100vw - 2rem);
+    max-height: calc(100vh - 2rem);
+    overflow: auto;
+  }
+
+  /* Anchor positioning (Baseline 2026, newly available) is a progressive
+     enhancement: the implicit anchor created by popovertarget positions the
+     surface below the trigger without any component JavaScript. */
+  @supports (anchor-name: --ui-menu-trigger) {
+    .ui-menu[popover] {
+      position: fixed;
+      margin: 0;
+      inset-block-start: anchor(bottom);
+      inset-block-end: auto;
+      inset-inline-start: anchor(left);
+      inset-inline-end: auto;
+      translate: 0 4px;
+    }
+  }
+
+  /* Item: the single flex row host. The interactive element (button / link /
+     label) fills the row and stays the focusable element. */
+  .ui-menu-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: var(--ui-menu-item-icon-gap);
+    box-sizing: border-box;
+    min-height: var(--ui-menu-item-height);
+    padding: 0 var(--ui-menu-item-trailing-space) 0 var(--ui-menu-item-leading-space);
+    color: var(--ui-menu-item-label-color);
+    font: var(--ui-type-body-lg);
+  }
+
+  /* Material state layer, painted with the shared state-opacity tokens. The
+     overlay is a full-bleed ::before so state applies without affecting the
+     geometry or moving focus. :focus-within also lights the layer when focus
+     lands on an inner link, button or checkbox. */
+  .ui-menu-item::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-menu-item:hover::before { opacity: var(--ui-menu-item-hover-opacity); }
+  .ui-menu-item:focus-within::before { opacity: var(--ui-menu-item-focus-opacity); }
+  .ui-menu-item:active::before { opacity: var(--ui-menu-item-pressed-opacity); }
+
+  /* Action and navigation items: the native control fills the row. */
+  .ui-menu-item-button {
+    display: flex;
+    align-items: center;
+    gap: var(--ui-menu-item-icon-gap);
+    flex: 1;
+    align-self: stretch;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+  }
+  .ui-menu-item-link {
+    display: flex;
+    align-items: center;
+    gap: var(--ui-menu-item-icon-gap);
+    flex: 1;
+    align-self: stretch;
+    min-width: 0;
+    box-sizing: border-box;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: inherit;
+    font: inherit;
+    text-align: start;
+    text-decoration: none;
+    cursor: pointer;
+    outline: none;
+  }
+  .ui-menu-item-button:disabled {
+    color: inherit;
+    cursor: default;
+  }
+  .ui-menu-item-link:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-menu-item-button:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Selection rows: a native checkbox/radio inside a full-row label; the whole
+     row is a toggle and the form submits the checked values without JS. */
+  .ui-menu-item--select {
+    cursor: pointer;
+  }
+  .ui-menu-item-label {
+    display: flex;
+    align-items: center;
+    gap: var(--ui-menu-item-icon-gap);
+    flex: 1;
+    align-self: stretch;
+    min-width: 0;
+    cursor: pointer;
+  }
+  .ui-menu-item-label input[type="checkbox"],
+  .ui-menu-item-label input[type="radio"] {
+    width: 18px;
+    height: 18px;
+    margin: 0;
+    flex: none;
+    accent-color: var(--ui-color-primary);
+  }
+  .ui-menu-item-label input:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Selected row: derived purely from the native :checked state, using the
+     Material secondary-container selected fill. */
+  .ui-menu-item:has(input:checked) {
+    background: var(--ui-menu-item-selected-container);
+    color: var(--ui-menu-item-selected-fg);
+  }
+
+  .ui-menu-item-label-text {
+    display: block;
+    color: inherit;
+    font: var(--ui-type-body-lg);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Leading icon slot (decorative, aria-hidden upstream). */
+  .ui-menu-item-icon {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: var(--ui-menu-item-icon-size);
+    height: var(--ui-menu-item-icon-size);
+    flex: none;
+    color: var(--ui-menu-item-icon-color);
+  }
+  .ui-menu-item-icon-svg {
+    width: var(--ui-menu-item-icon-size);
+    height: var(--ui-menu-item-icon-size);
+  }
+
+  /* Divider: a 1px thematic break between groups. */
+  .ui-menu-divider {
+    height: var(--ui-menu-divider-thickness);
+    margin: 8px 0;
+    border: 0;
+    background: var(--ui-menu-divider-color);
+  }
+
+  /* Disabled rows dim at the shared disabled opacity. */
+  .ui-menu-item:has(.ui-menu-item-button:disabled),
+  .ui-menu-item:has(input:disabled) {
+    opacity: var(--ui-menu-item-disabled-opacity);
+  }
+
+  /* Demo scaffolding. */
+  .menu-demo-grid {
+    display: grid;
+    gap: 2rem;
+    width: 100%;
+  }
+  .menu-demo-group {
+    display: grid;
+    gap: .75rem;
+    justify-items: start;
+    max-width: 28rem;
+  }
+  .menu-demo-heading {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .menu-demo-anchor {
+    position: relative;
+    display: inline-block;
+  }
+  .menu-demo-trigger {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .menu-demo-caret {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+  }
+  .menu-demo-form {
+    display: contents;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-menu-item::before { transition: none; }
+  .ui-menu[popover] { translate: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-menu {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-menu-item { color: CanvasText; forced-color-adjust: auto; }
+  .ui-menu-item::before { background: CanvasText; }
+  .ui-menu-item:has(input:checked) {
+    background: Highlight;
+    color: HighlightText;
+  }
+  .ui-menu-item:has(input:checked)::before { background: HighlightText; }
+  .ui-menu-item-button:disabled,
+  .ui-menu-item:has(input:disabled) {
+    color: GrayText;
+    opacity: 1;
+  }
+  .ui-menu-item-link:focus-visible { outline-color: Highlight; }
+  .ui-menu-item-button:focus-visible { outline-color: Highlight; }
+  .ui-menu-item-label input:focus-visible { outline-color: Highlight; }
+  .ui-menu-divider { background: CanvasText; }
+}

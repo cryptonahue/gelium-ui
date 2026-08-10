@@ -1,0 +1,285 @@
+@layer components {
+  /* Navigation drawer (Labs): a Material 3 navigation drawer reimplemented
+     over server-rendered HTML. The standard (permanent) variant is a real
+     <nav> embedded in the layout; the modal variant is a native <dialog> with
+     an invoker-command trigger. Destinations are real <a href> links so the
+     active destination is derived server-side from the current page and marked
+     with aria-current="page" — no component JavaScript. Geometry follows the
+     Material contract: a 360px container at full height shaped
+     corner-large-end, 56px destinations holding the 24px glyph and a
+     label-large label, and a full-width 336px x 56px secondary-container pill
+     as the active indicator. Unlike the navigation bar, the drawer keeps a
+     single glyph per destination and recolors it when selected (Material does
+     not swap icons in a drawer). Badges on destinations compose the existing
+     .ui-badge primitive (not reinvented). */
+  .ui-navigation-drawer {
+    --ui-navigation-drawer-container-width: 360px;
+    --ui-navigation-drawer-container-color: var(--ui-color-surface);
+    --ui-navigation-drawer-container-elevation: var(--ui-shadow-0);
+    --ui-navigation-drawer-item-height: 56px;
+    --ui-navigation-drawer-item-inline-padding: 12px;
+    --ui-navigation-drawer-icon-size: 24px;
+    --ui-navigation-drawer-indicator-width: 336px;
+    --ui-navigation-drawer-indicator-height: 56px;
+    --ui-navigation-drawer-indicator-color: var(--ui-color-secondary);
+    --ui-navigation-drawer-active-icon-color: var(--ui-color-secondary-fg);
+    --ui-navigation-drawer-active-label-color: var(--ui-color-secondary-fg);
+    --ui-navigation-drawer-active-label-weight: 700;
+    --ui-navigation-drawer-active-state-layer-color: var(--ui-color-secondary-fg);
+    --ui-navigation-drawer-inactive-icon-color: var(--ui-color-fg-muted);
+    --ui-navigation-drawer-inactive-hover-icon-color: var(--ui-color-fg);
+    --ui-navigation-drawer-inactive-label-color: var(--ui-color-fg-muted);
+    --ui-navigation-drawer-state-layer-color: var(--ui-color-fg);
+    --ui-navigation-drawer-hover-opacity: var(--ui-state-hover-opacity);
+    --ui-navigation-drawer-focus-opacity: var(--ui-state-focus-opacity);
+    --ui-navigation-drawer-pressed-opacity: var(--ui-state-pressed-opacity);
+
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    width: var(--ui-navigation-drawer-container-width);
+    height: 100%;
+    background: var(--ui-navigation-drawer-container-color);
+    box-shadow: var(--ui-navigation-drawer-container-elevation);
+    border-start-end-radius: var(--ui-radius-lg);
+    border-end-end-radius: var(--ui-radius-lg);
+  }
+
+  /* Standard (permanent) variant: a real <nav> embedded in the layout, always
+     visible. Its height comes from the surrounding layout frame. */
+  .ui-navigation-drawer--standard {
+    display: flex;
+    flex-direction: column;
+  }
+
+  /* Modal variant: a native <dialog> pinned to the start edge at full height,
+     with the Material slide-in motion and a scrim via ::backdrop. The modal
+     container is surface-container-low at level-1 elevation (upstream modal
+     tokens), mapped to the existing dialog container/level-1 shadow. The
+     @starting-style + allow-discrete pattern is the same progressive
+     enhancement as the Dialog component: browsers without it show the drawer
+     without animation. */
+  .ui-navigation-drawer--modal {
+    --ui-navigation-drawer-container-color: var(--ui-dialog-container);
+    --ui-navigation-drawer-container-elevation: var(--ui-shadow-1);
+    position: fixed;
+    inset-block: 0;
+    inset-inline-start: 0;
+    max-width: calc(100vw - 56px);
+    margin: 0;
+    padding: 0;
+    border: 0;
+    overflow-y: auto;
+    translate: -100% 0;
+    opacity: 0;
+    transition: translate 150ms var(--ui-easing-standard), opacity 150ms var(--ui-easing-standard), overlay 150ms allow-discrete, display 150ms allow-discrete;
+    transition-behavior: allow-discrete;
+  }
+  .ui-navigation-drawer--modal::backdrop {
+    background: var(--ui-dialog-scrim);
+    opacity: 0;
+    transition: opacity 150ms var(--ui-easing-standard), overlay 150ms allow-discrete, display 150ms allow-discrete;
+    transition-behavior: allow-discrete;
+  }
+  .ui-navigation-drawer--modal[open] {
+    translate: 0;
+    opacity: 1;
+    transition-duration: 500ms;
+  }
+  .ui-navigation-drawer--modal[open]::backdrop {
+    opacity: 1;
+    transition-duration: 500ms;
+  }
+  @starting-style {
+    .ui-navigation-drawer--modal[open] { translate: -100% 0; opacity: 0; }
+    .ui-navigation-drawer--modal[open]::backdrop { opacity: 0; }
+  }
+
+  .ui-navigation-drawer-list {
+    display: flex;
+    flex-direction: column;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 8px 0;
+    list-style: none;
+  }
+
+  .ui-navigation-drawer-item {
+    display: flex;
+    box-sizing: border-box;
+  }
+
+  .ui-navigation-drawer-destination {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: var(--ui-navigation-drawer-item-height);
+    padding-inline: var(--ui-navigation-drawer-item-inline-padding);
+    color: var(--ui-navigation-drawer-inactive-icon-color);
+    font: var(--ui-type-label-lg);
+    text-decoration: none;
+    outline: none;
+    transition: color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+
+  .ui-navigation-drawer-glyph {
+    position: relative;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    flex: none;
+    width: var(--ui-navigation-drawer-icon-size);
+    height: var(--ui-navigation-drawer-icon-size);
+    color: inherit;
+  }
+
+  .ui-navigation-drawer-glyph-svg {
+    width: var(--ui-navigation-drawer-icon-size);
+    height: var(--ui-navigation-drawer-icon-size);
+    fill: currentColor;
+  }
+
+  .ui-navigation-drawer-label {
+    position: relative;
+    z-index: 1;
+    color: var(--ui-navigation-drawer-inactive-label-color);
+    transition: color var(--ui-motion-short) var(--ui-easing-standard);
+  }
+
+  /* Active indicator: the full-width 336x56 secondary-container pill behind the
+     selected destination, faded out until selected. It is inset by the same
+     inline padding as the destination content, matching the upstream
+     active-indicator.width/height tokens on the 360px container. */
+  .ui-navigation-drawer-indicator {
+    position: absolute;
+    z-index: 0;
+    inset-block: 0;
+    inset-inline: var(--ui-navigation-drawer-item-inline-padding);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-navigation-drawer-indicator-color);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-navigation-drawer-destination--active .ui-navigation-drawer-indicator { opacity: 1; }
+
+  .ui-navigation-drawer-destination--active {
+    color: var(--ui-navigation-drawer-active-icon-color);
+    font-weight: var(--ui-navigation-drawer-active-label-weight);
+  }
+  .ui-navigation-drawer-destination--active:hover,
+  .ui-navigation-drawer-destination--active:focus-visible,
+  .ui-navigation-drawer-destination--active:active {
+    color: var(--ui-navigation-drawer-active-icon-color);
+  }
+  .ui-navigation-drawer-destination--active .ui-navigation-drawer-label {
+    color: var(--ui-navigation-drawer-active-label-color);
+  }
+
+  /* Material state layer: a full-bleed ::before at the shared --ui-state-*
+     opacities, painted above the indicator but below the text without
+     affecting geometry or moving focus. The selected destination uses the
+     on-secondary-container state color per the active tokens. */
+  .ui-navigation-drawer-destination::before {
+    content: "";
+    position: absolute;
+    z-index: 1;
+    inset: 0;
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-navigation-drawer-state-layer-color);
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-navigation-drawer-destination:hover::before { opacity: var(--ui-navigation-drawer-hover-opacity); }
+  .ui-navigation-drawer-destination:focus-visible::before { opacity: var(--ui-navigation-drawer-focus-opacity); }
+  .ui-navigation-drawer-destination:active::before { opacity: var(--ui-navigation-drawer-pressed-opacity); }
+  .ui-navigation-drawer-destination--active::before { background: var(--ui-navigation-drawer-active-state-layer-color); }
+  .ui-navigation-drawer-destination:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Hover also nudges the inactive destination's colors toward on-surface. */
+  .ui-navigation-drawer-destination:hover,
+  .ui-navigation-drawer-destination:focus-visible,
+  .ui-navigation-drawer-destination:active {
+    color: var(--ui-navigation-drawer-inactive-hover-icon-color);
+  }
+  .ui-navigation-drawer-destination:hover .ui-navigation-drawer-label,
+  .ui-navigation-drawer-destination:focus-visible .ui-navigation-drawer-label,
+  .ui-navigation-drawer-destination:active .ui-navigation-drawer-label {
+    color: var(--ui-navigation-drawer-inactive-hover-icon-color);
+  }
+
+  /* Badge: destinations compose the existing .ui-badge primitive, anchored to
+     the icon's top-end corner (the upstream badge placement on the glyph). */
+  .ui-navigation-drawer .ui-badge {
+    position: absolute;
+    inset-block-start: -3px;
+    inset-inline-start: calc(100% - 3px);
+  }
+
+  /* Demo preview composition. */
+  .navigation-drawer-demo-grid {
+    display: grid;
+    gap: 2rem;
+    width: 100%;
+  }
+  .navigation-drawer-demo-group {
+    display: grid;
+    gap: .5rem;
+  }
+  .navigation-drawer-demo-heading {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .navigation-drawer-demo-frame {
+    display: flex;
+    align-items: stretch;
+    gap: 1.5rem;
+    width: 100%;
+    min-height: 22rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-md);
+    background: var(--ui-color-canvas);
+  }
+  .navigation-drawer-demo-content {
+    flex: 1;
+    padding: 1.5rem;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-sm);
+  }
+  .navigation-drawer-demo-content-title {
+    margin: 0 0 .5rem;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-title-lg);
+  }
+  .navigation-drawer-demo-content-body {
+    margin: 0;
+    max-width: 36ch;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-navigation-drawer-destination,
+  .ui-navigation-drawer-destination::before,
+  .ui-navigation-drawer-label,
+  .ui-navigation-drawer-indicator,
+  .ui-navigation-drawer--modal,
+  .ui-navigation-drawer--modal::backdrop { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-navigation-drawer { box-shadow: none; border: 1px solid CanvasText; forced-color-adjust: auto; }
+  .ui-navigation-drawer-destination { color: CanvasText; forced-color-adjust: auto; }
+  .ui-navigation-drawer-destination--active { color: HighlightText; }
+  .ui-navigation-drawer-destination--active .ui-navigation-drawer-label { color: HighlightText; }
+  .ui-navigation-drawer-indicator { border: 1px solid Highlight; }
+  .ui-navigation-drawer-destination:focus-visible { outline-color: Highlight; }
+}
