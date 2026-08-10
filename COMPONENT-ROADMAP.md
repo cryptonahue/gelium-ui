@@ -174,6 +174,7 @@ Single/multi select debe preferir radios/checkboxes sin JS.
 - HTMX como enhancement;
 - Progress y Toast para operaciones remotas;
 - SSE opcional para actualización realtime.
+- ✅ Entregado (Wave 6, commit ac845fa): `<table>` nativa con `<thead>/<th scope>`, sort/paginación/filtro server-side por GET, HTMX opcional, selección con checkboxes nativos, refresh con Progress/Toast.
 
 #### Tooltip
 
@@ -181,6 +182,7 @@ Single/multi select debe preferir radios/checkboxes sin JS.
 - nunca esconder información esencial exclusivamente en tooltip;
 - fallback accesible visible o `aria-describedby`;
 - JS sólo para una brecha real de posicionamiento/interacción.
+- ✅ Entregado (Wave 6, commit ac845fa): audita title/Popover/Interest Invokers/anchor; usa Interest Invokers declarativos (`interesttarget` + `interestaction=show-popover`) con zero JS; variantes plain y rich; nunca esconde info esencial.
 
 ### Deferred — Ripple
 
