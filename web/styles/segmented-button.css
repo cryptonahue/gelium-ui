@@ -54,7 +54,10 @@
 
   /* Segment: the individual radio/checkbox/button cell. The native control is
      the first child so every selected/disabled style keys off its state; the
-     label wraps it so the whole cell is the label target. */
+     label wraps it so the whole cell is the label target. The native radio/
+     checkbox is visually hidden (appearance:none + full-bleed transparent
+     layer) exactly like the checkbox/switch primitives, so the pill shows only
+     the checkmark, icon and label. */
   .ui-segmented-button {
     position: relative;
     display: inline-flex;
@@ -68,6 +71,19 @@
     font-family: var(--ui-font-sans);
     cursor: pointer;
     -webkit-tap-highlight-color: transparent;
+  }
+  .ui-segmented-button input[type="radio"],
+  .ui-segmented-button input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    position: absolute;
+    inset: 0;
+    margin: 0;
+    width: 100%;
+    height: 100%;
+    border: none;
+    background: transparent;
+    cursor: pointer;
   }
   .ui-segmented-button:not(:first-child) {
     border-inline-start: 1px solid var(--ui-segmented-button-outline);
