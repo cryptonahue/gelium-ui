@@ -67,6 +67,7 @@ func New() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", s.health)
 	mux.HandleFunc("GET /{$}", s.home)
+	mux.HandleFunc("GET /docs", s.docsIndex)
 	for _, r := range componentRoutes() {
 		r := r
 		mux.HandleFunc("GET "+r.Path, func(w http.ResponseWriter, req *http.Request) {
@@ -119,11 +120,11 @@ func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) home(w http.ResponseWriter, _ *http.Request) {
 	s.renderMarkdownPage(w, pageView{
-		Title: "Loom UI",
+		Title: "Gelidium UI",
 		CTA: &buttonView{
-			Label:   "Explore Button",
+			Label:   "Read the docs",
 			Variant: "primary",
-			Href:    "/components/button",
+			Href:    "/docs",
 		},
 	}, "content/index.md")
 }
@@ -138,16 +139,26 @@ func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, data pageView, 
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
 		return
 	}
+	s.renderMarkdownStatus(w, data, string(source), status)
+}
 
+// renderMarkdown converts an in-memory Markdown string and renders it into the
+// docs layout. Used by pages that build their content programmatically (the
+// /docs index) as well as by pages served from embedded files.
+func (s *server) renderMarkdown(w http.ResponseWriter, data pageView, source string) {
+	s.renderMarkdownStatus(w, data, source, http.StatusOK)
+}
+
+func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, source string, status int) {
 	var rendered bytes.Buffer
-	if err := s.markdown.Convert(source, &rendered); err != nil {
+	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
 		return
 	}
 
 	var page bytes.Buffer
 	data.Nav = navLinks()
-	data.Content = template.HTML(rendered.String()) // #nosec G203 -- source is trusted, embedded Markdown.
+	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
 		return

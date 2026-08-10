@@ -77,7 +77,7 @@ func TestSelectMenuChangeNoHSetsValueAndRendersSessionState(t *testing.T) {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
 	}
 	body := res.Body.String()
-	if !strings.Contains(body, `<!doctype html>`) || !strings.Contains(body, `<title>Select · Loom UI</title>`) {
+	if !strings.Contains(body, `<!doctype html>`) || !strings.Contains(body, `<title>Select · Gelidium UI</title>`) {
 		t.Error("no-HX response must be a complete documentation page")
 	}
 	if !strings.Contains(body, `value="priority"`) {

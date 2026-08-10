@@ -16,11 +16,14 @@
     display: flex;
     align-items: center;
     justify-content: space-between;
+    gap: 1rem;
+    flex-wrap: wrap;
     padding: 1rem clamp(1rem, 4vw, 4rem);
     background: var(--ui-color-surface);
     box-shadow: var(--ui-shadow-1);
   }
   .brand { font: var(--ui-type-title-lg); text-decoration: none; }
+  .site-header nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
   .site-header nav a { color: var(--ui-color-primary); font: var(--ui-type-label-lg); }
   .docs-shell { width: min(68rem, calc(100% - 2rem)); margin: 4rem auto; }
   .prose { max-width: 48rem; }
@@ -28,6 +31,13 @@
   .prose h2 { margin-top: 2.5rem; font: var(--ui-type-headline-sm); }
   .prose p { color: var(--ui-color-fg-muted); line-height: 1.7; }
   .hero-action { margin-top: 2rem; }
+
+  /* Landing hero: the home page presents Gelidium UI above the fold with a
+     larger display and a call to action, without changing the docs shell. */
+  .landing-hero h1 { font: var(--ui-type-display-lg); max-width: 22ch; }
+  .landing-hero p { font-size: 1.125rem; max-width: 48ch; }
+  .prose ul { line-height: 1.8; }
+  .prose li code, .prose p code { padding: .125rem .375rem; border-radius: var(--ui-radius-xs); background: var(--ui-color-surface-container); font-size: .9em; }
   .component-preview {
     display: flex;
     flex-wrap: wrap;

@@ -15,7 +15,7 @@ func TestDialogDocsRouteDogfoodsNativeDeclarativeDialog(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<title>Dialog · Loom UI</title>`, `<h1>Dialog</h1>`, `href="/components/dialog"`,
+		`<title>Dialog · Gelidium UI</title>`, `<h1>Dialog</h1>`, `href="/components/dialog"`,
 		`id="confirm-dialog-title"`, `id="confirm-dialog-description"`,
 		`command="show-modal" commandfor="confirm-dialog"`,
 		`command="request-close" commandfor="confirm-dialog"`,

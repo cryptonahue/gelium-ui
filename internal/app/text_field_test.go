@@ -201,7 +201,7 @@ func TestTextFieldValidationWithoutHXRejectsWhitespaceInCompleteDocumentationPag
 	body := res.Body.String()
 	for _, contract := range []string{
 		`<!doctype html>`,
-		`<title>Text field · Loom UI</title>`,
+		`<title>Text field · Gelidium UI</title>`,
 		`<nav aria-label="Primary">`,
 		`<article class="prose"><h1>Text field</h1>`,
 		`aria-label="Text field examples"`,
@@ -266,7 +266,7 @@ func TestTextFieldValidationWithoutHXAcceptsValueInCompleteDocumentationPage(t *
 	body := res.Body.String()
 	for _, contract := range []string{
 		`<!doctype html>`,
-		`<title>Text field · Loom UI</title>`,
+		`<title>Text field · Gelidium UI</title>`,
 		`<nav aria-label="Primary">`,
 		`<article class="prose"><h1>Text field</h1>`,
 		`aria-label="Text field examples"`,

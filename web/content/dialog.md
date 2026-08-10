@@ -4,7 +4,7 @@ Dialog is an open-code component built with the broadly available native `<dialo
 
 ## Native modal behavior
 
-The trigger uses `command="show-modal"` with `commandfor="confirm-dialog"`. These invoker attributes are recent Baseline Low features. Loom UI intentionally includes no component JavaScript fallback, so in older browsers the trigger does nothing; consumers supporting them need a server-rendered fallback or adapter. `request-close`, used by Cancel, is newer than the invoker commands; Confirm uses `command="close"` with the value `confirm`.
+The trigger uses `command="show-modal"` with `commandfor="confirm-dialog"`. These invoker attributes are recent Baseline Low features. Gelidium UI intentionally includes no component JavaScript fallback, so in older browsers the trigger does nothing; consumers supporting them need a server-rendered fallback or adapter. `request-close`, used by Cancel, is newer than the invoker commands; Confirm uses `command="close"` with the value `confirm`.
 
 The visible headline and description are referenced by `aria-labelledby` and `aria-describedby`. `closedby` is not Baseline: `closedby="any"` adds light dismiss only in supporting browsers. The explicit Cancel action and native Escape behavior remain available in compatible browsers.
 

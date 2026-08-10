@@ -70,7 +70,7 @@ func TestHomeRendersMarkdownInsideDogfoodedLayout(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Loom UI</h1>`,
+		`<h1>Gelidium UI</h1>`,
 		`<main`,
 		`class="ui-button ui-button-primary"`,
 		`href="/components/button"`,

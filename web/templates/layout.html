@@ -3,14 +3,14 @@
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{.Title}} · Loom UI</title>
+  <title>{{.Title}} · Gelidium UI</title>
   <link rel="stylesheet" href="/static/app.css?v=0.4.0">
   <script defer src="/static/htmx.min.js?v=0.4.0"></script>
   <script defer src="/static/app.js?v=0.4.0"></script>
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/">Loom UI</a>
+    <a class="brand" href="/">Gelidium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
   </header>
   <main class="docs-shell">

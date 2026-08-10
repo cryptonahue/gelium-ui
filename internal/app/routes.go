@@ -47,7 +47,10 @@ func componentRoutes() []componentRoute {
 }
 
 func navLinks() []navLink {
-	links := make([]navLink, 0, len(componentRoutes()))
+	links := make([]navLink, 0, len(componentRoutes())+2)
+	links = append(links,
+		navLink{Path: "/docs", Label: "Docs"},
+	)
 	for _, r := range componentRoutes() {
 		links = append(links, navLink{Path: r.Path, Label: r.Label})
 	}
