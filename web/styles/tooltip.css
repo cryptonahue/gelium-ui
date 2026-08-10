@@ -1,0 +1,141 @@
+@layer components {
+  /* Tooltip: a short contextual label revealed on hover or keyboard focus.
+     The roadmap audit (2026-08) found the Interest Invokers API (the
+     trigger/target attribute pair that opens a popover on hover) is not
+     Baseline, so that "popover opened on hover" mechanism is not viable
+     without JavaScript. Loom therefore uses the roadmap's accessible-visible
+     fallback: a styled .ui-tooltip surface inside a .ui-tooltip-host wrapper,
+     shown with the native :hover and :focus-within pseudo-classes — no
+     component JavaScript, keyboard focus included. The surface uses
+     role="tooltip" and the trigger references it with aria-describedby.
+     Essential information is never hidden exclusively inside the tooltip: the
+     trigger keeps its own visible label or aria-label. The --ui-tooltip-*
+     tokens are scoped to the surface so the primitive works standalone; the
+     theme may override them globally. */
+  .ui-tooltip-host {
+    position: relative;
+    display: inline-flex;
+  }
+
+  .ui-tooltip {
+    --ui-tooltip-container: var(--ui-color-fg);
+    --ui-tooltip-fg: var(--ui-color-canvas);
+    --ui-tooltip-radius: var(--ui-radius-xs);
+    --ui-tooltip-padding: 4px 8px;
+    --ui-tooltip-supporting-text: var(--ui-type-body-sm);
+    --ui-tooltip-max-width: min(18rem, calc(100vw - 2rem));
+    --ui-tooltip-offset: 4px;
+    --ui-tooltip-z: 50;
+
+    position: absolute;
+    inset-block-start: calc(100% + var(--ui-tooltip-offset));
+    inset-inline-start: 50%;
+    translate: -50% 0;
+    z-index: var(--ui-tooltip-z);
+    box-sizing: border-box;
+    max-width: var(--ui-tooltip-max-width);
+    padding: var(--ui-tooltip-padding);
+    border-radius: var(--ui-tooltip-radius);
+    background: var(--ui-tooltip-container);
+    color: var(--ui-tooltip-fg);
+    font: var(--ui-tooltip-supporting-text);
+    text-align: start;
+    pointer-events: none;
+    visibility: hidden;
+    opacity: 0;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), visibility var(--ui-motion-short) var(--ui-easing-standard);
+  }
+
+  /* Reveal: pure CSS. :hover covers the mouse, :focus-within covers keyboard
+     focus on the trigger (and on the rich variant's action link) with no
+     geometry change and no layout shift. */
+  .ui-tooltip-host:hover .ui-tooltip,
+  .ui-tooltip-host:focus-within .ui-tooltip {
+    visibility: visible;
+    opacity: 1;
+  }
+
+  /* Position above the anchor instead of below. */
+  .ui-tooltip--top {
+    inset-block-start: auto;
+    inset-block-end: calc(100% + var(--ui-tooltip-offset));
+  }
+
+  /* Rich tooltip: a surface-container with elevation, a title-small subhead,
+     body-medium supporting text and an optional action link. Pointer events
+     stay enabled so the action link is clickable while the surface is shown. */
+  .ui-tooltip--rich {
+    --ui-tooltip-container: var(--ui-color-surface);
+    --ui-tooltip-fg: var(--ui-color-fg-muted);
+    --ui-tooltip-radius: var(--ui-radius-md);
+    --ui-tooltip-padding: 8px 12px;
+    --ui-tooltip-subhead: var(--ui-type-label-lg);
+    --ui-tooltip-supporting-text: var(--ui-type-body-md);
+
+    box-shadow: var(--ui-shadow-2);
+    pointer-events: auto;
+  }
+  .ui-tooltip-subhead {
+    display: block;
+    color: var(--ui-color-fg);
+    font: var(--ui-tooltip-subhead);
+  }
+  .ui-tooltip-supporting-text {
+    display: block;
+    font: var(--ui-tooltip-supporting-text);
+  }
+  .ui-tooltip-action {
+    display: inline-block;
+    margin-top: .5rem;
+    color: var(--ui-color-primary);
+    font: var(--ui-type-label-lg);
+    text-decoration: none;
+  }
+  .ui-tooltip-action:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Demo scaffolding. */
+  .tooltip-demo-grid {
+    display: grid;
+    gap: 2rem;
+    width: 100%;
+  }
+  .tooltip-demo-group {
+    display: grid;
+    gap: .75rem;
+  }
+  .tooltip-demo-heading {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .tooltip-demo-note {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-md);
+  }
+  .tooltip-demo-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 2.5rem;
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-tooltip { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-tooltip {
+    border: 1px solid CanvasText;
+    background: Canvas;
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-tooltip-subhead { color: CanvasText; forced-color-adjust: auto; }
+  .ui-tooltip-action { color: LinkText; }
+  .ui-tooltip-action:focus-visible { outline-color: Highlight; }
+}

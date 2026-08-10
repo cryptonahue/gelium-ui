@@ -1,0 +1,86 @@
+{{define "data-table-demo"}}
+<div class="data-table-demo-grid">
+
+  <section class="data-table-demo-group" aria-label="Server-side data table">
+    <h3 class="data-table-demo-heading">Server-side data table</h3>
+
+    <form class="data-table-demo-filter" method="get" action="/components/data-table#data-table-demo"
+          hx-get="/components/data-table" hx-target="#data-table-panel" hx-swap="outerHTML">
+      <label class="data-table-demo-filter-label" for="data-table-demo-q">Filter</label>
+      <input class="data-table-demo-filter-input" id="data-table-demo-q" type="search" name="q" value="{{.Query}}" aria-label="Filter by name or status">
+      <button type="submit" class="data-table-demo-filter-submit">Filter</button>
+    </form>
+
+    <form class="data-table-demo-select" method="get" action="/components/data-table#data-table-demo">
+      <input type="hidden" name="q" value="{{.Query}}">
+      <input type="hidden" name="sort" value="{{.Sort}}">
+      <input type="hidden" name="dir" value="{{.Dir}}">
+      {{template "data-table-panel" .}}
+      <div class="data-table-demo-actions">
+        <button type="submit" class="data-table-demo-submit">Submit selection</button>
+        {{if .SelectionNotice}}<p class="data-table-demo-notice" role="status">{{.SelectionNotice}}</p>{{end}}
+      </div>
+    </form>
+  </section>
+
+  <section class="data-table-demo-group" aria-label="Remote refresh operation">
+    <h3 class="data-table-demo-heading">Remote refresh</h3>
+    {{template "data-table-refresh-form" .}}
+  </section>
+
+</div>
+{{end}}
+
+{{define "data-table-panel"}}
+<div class="ui-data-table" id="data-table-panel">
+  <table class="ui-data-table-table">
+    <caption class="ui-data-table-caption">{{.Caption}}</caption>
+    <thead>
+      <tr>
+        <th scope="col" class="ui-data-table-cell ui-data-table-cell--checkbox">
+          <label class="ui-data-table-checkbox">
+            <input type="checkbox" name="selection" value="all"{{if eq .SelectedCount .Total}} checked{{end}} aria-label="Select all rows">
+          </label>
+        </th>
+        {{range .Columns}}
+        <th scope="col" class="ui-data-table-cell ui-data-table-cell--sortable"{{if .AriaSort}} aria-sort="{{.AriaSort}}"{{end}}>
+          <a class="ui-data-table-sort{{if .Active}} ui-data-table-sort--active{{end}}" href="{{.Href}}"
+             hx-get="{{.Href}}" hx-target="#data-table-panel" hx-swap="outerHTML">{{.Label}}{{.SortIcon}}</a>
+        </th>
+        {{end}}
+      </tr>
+    </thead>
+    <tbody>
+      {{range .Rows}}
+      <tr class="ui-data-table-row">
+        <td class="ui-data-table-cell ui-data-table-cell--checkbox">
+          <label class="ui-data-table-checkbox">
+            <input type="checkbox" name="selection" value="{{.ID}}"{{if .Selected}} checked{{end}} aria-label="Select {{.Name}}">
+          </label>
+        </td>
+        <td class="ui-data-table-cell ui-data-table-cell--label">{{.Name}}</td>
+        <td class="ui-data-table-cell ui-data-table-cell--label">{{.Status}}</td>
+        <td class="ui-data-table-cell ui-data-table-cell--label">{{.Date}}</td>
+      </tr>
+      {{end}}
+    </tbody>
+  </table>
+  <nav class="ui-data-table-pagination" aria-label="Table pages">
+    {{if .HasPrev}}<a class="ui-data-table-page" href="{{.PrevHref}}" hx-get="{{.PrevHref}}" hx-target="#data-table-panel" hx-swap="outerHTML">Previous</a>{{else}}<span class="ui-data-table-page ui-data-table-page--disabled" aria-disabled="true">Previous</span>{{end}}
+    {{range .PageLinks}}{{if .Current}}<span class="ui-data-table-page ui-data-table-page--current" aria-current="page">{{.Num}}</span>{{else}}<a class="ui-data-table-page" href="{{.Href}}" hx-get="{{.Href}}" hx-target="#data-table-panel" hx-swap="outerHTML">{{.Num}}</a>{{end}}{{end}}
+    {{if .HasNext}}<a class="ui-data-table-page" href="{{.NextHref}}" hx-get="{{.NextHref}}" hx-target="#data-table-panel" hx-swap="outerHTML">Next</a>{{else}}<span class="ui-data-table-page ui-data-table-page--disabled" aria-disabled="true">Next</span>{{end}}
+  </nav>
+</div>
+{{end}}
+
+{{define "data-table-refresh-form"}}
+<form class="data-table-demo-refresh" method="post" action="/examples/data-table/refresh#data-table-refresh" novalidate
+      hx-post="/examples/data-table/refresh" hx-target="this" hx-swap="outerHTML">
+  <div class="data-table-demo-refresh-row">
+    <button type="submit" class="data-table-demo-refresh-button">Refresh data</button>
+    {{if .Refreshed}}<span class="ui-progress data-table-demo-progress"><progress value="100" max="100"></progress></span>{{end}}
+  </div>
+  <p class="data-table-demo-refresh-hint">Refresh simulates a remote operation: the server re-renders the table and reports the result. Without JavaScript the page reloads with an inline toast; with HTMX the panel swaps and the live region announces it.</p>
+  {{if .Refreshed}}{{if .RefreshToast}}{{template "toast" .RefreshToast}}{{end}}{{end}}
+</form>
+{{end}}

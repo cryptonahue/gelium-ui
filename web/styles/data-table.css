@@ -1,0 +1,359 @@
+@layer components {
+  /* Data table: a server-rendered Material 3 table over native <table>
+     semantics. The root .ui-data-table container paints the surface with a
+     1px outline and the container radius; the header row is 56px, body rows
+     52px, and cells use 16px horizontal padding (Material anatomy). Sortable
+     headers are real links that issue GET requests the server answers; row
+     selection uses native checkboxes inside a real form, so the selected row
+     styles derive from the native :checked pseudo-class. The --ui-data-table-*
+     tokens are declared scoped to the root so the primitive works standalone;
+     the theme may override them globally. */
+  .ui-data-table {
+    --ui-data-table-container-color: var(--ui-color-surface);
+    --ui-data-table-outline-color: var(--ui-color-border);
+    --ui-data-table-header-height: 56px;
+    --ui-data-table-row-height: 52px;
+    --ui-data-table-cell-padding: 16px;
+    --ui-data-table-header-color: var(--ui-color-fg-muted);
+    --ui-data-table-header-hover-color: var(--ui-color-fg);
+    --ui-data-table-label-color: var(--ui-color-fg);
+    --ui-data-table-selected-container-color: var(--ui-color-secondary);
+    --ui-data-table-hover-opacity: var(--ui-state-hover-opacity);
+    --ui-data-table-focus-opacity: var(--ui-state-focus-opacity);
+    --ui-data-table-pressed-opacity: var(--ui-state-pressed-opacity);
+    --ui-data-table-checkbox-size: 18px;
+    --ui-data-table-sort-icon-size: 18px;
+
+    box-sizing: border-box;
+    width: 100%;
+    background: var(--ui-data-table-container-color);
+    border: 1px solid var(--ui-data-table-outline-color);
+    border-radius: var(--ui-radius-sm);
+    overflow: hidden;
+  }
+
+  .ui-data-table-table {
+    width: 100%;
+    border-collapse: collapse;
+    text-align: start;
+  }
+
+  .ui-data-table-caption {
+    padding: var(--ui-data-table-cell-padding);
+    color: var(--ui-data-table-header-color);
+    font: var(--ui-type-body-sm);
+    text-align: start;
+    caption-side: top;
+  }
+
+  .ui-data-table-cell {
+    box-sizing: border-box;
+    padding: 0 var(--ui-data-table-cell-padding);
+    text-align: start;
+    vertical-align: middle;
+    color: var(--ui-data-table-label-color);
+    font: var(--ui-type-body-md);
+  }
+  thead .ui-data-table-cell {
+    height: var(--ui-data-table-header-height);
+    color: var(--ui-data-table-header-color);
+    font: var(--ui-type-label-sm);
+  }
+  tbody .ui-data-table-cell {
+    height: var(--ui-data-table-row-height);
+  }
+  tbody .ui-data-table-cell--label {
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+  }
+
+  /* Row dividers: a top border on every row after the first keeps the divider
+     off the header and off the caption; the container outline closes the last
+     row. Uses an adjacent-sibling row selector instead of depending on the
+     container's first or last child, which may not be the row itself. */
+  tbody .ui-data-table-row + .ui-data-table-row .ui-data-table-cell {
+    border-top: 1px solid var(--ui-data-table-outline-color);
+  }
+
+  /* Material row state layer, painted with the shared state-opacity tokens as
+     a full-bleed ::before so state never affects geometry or layout shift. The
+     layer sits on currentColor so it follows the text color. */
+  .ui-data-table-row {
+    position: relative;
+  }
+  .ui-data-table-row .ui-data-table-cell {
+    position: relative;
+  }
+  .ui-data-table-row .ui-data-table-cell::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    background: currentColor;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-data-table-row:hover .ui-data-table-cell::before { opacity: var(--ui-data-table-hover-opacity); }
+  .ui-data-table-row:focus-within .ui-data-table-cell::before { opacity: var(--ui-data-table-focus-opacity); }
+  .ui-data-table-row:active .ui-data-table-cell::before { opacity: var(--ui-data-table-pressed-opacity); }
+
+  /* Selected rows derive from the native checkbox :checked, exactly like List:
+     the row tints and the checkbox fills. Selection is never communicated by
+     color alone — the native checkbox state is always present. */
+  .ui-data-table-row:has(input:checked) .ui-data-table-cell {
+    background: var(--ui-data-table-selected-container-color);
+  }
+  .ui-data-table-row:has(input:checked) .ui-data-table-cell::before { background: currentColor; }
+
+  /* Checkbox column: a native checkbox inside a label, with the Material state
+     focus ring landing on the input itself. */
+  .ui-data-table-cell--checkbox {
+    width: 48px;
+    padding: 0 var(--ui-data-table-cell-padding);
+  }
+  .ui-data-table-checkbox {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+  }
+  .ui-data-table-checkbox input[type="checkbox"] {
+    width: var(--ui-data-table-checkbox-size);
+    height: var(--ui-data-table-checkbox-size);
+    margin: 0;
+    flex: none;
+    accent-color: var(--ui-color-primary);
+  }
+  .ui-data-table-checkbox input[type="checkbox"]:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  /* Sortable header: the label is a real link so activation is a normal GET.
+     Hover brightens the label and glyph; focus-visible shows the focus ring
+     without changing geometry. The active column keeps its arrow visible. */
+  .ui-data-table-cell--sortable {
+    padding: 0;
+  }
+  .ui-data-table-sort {
+    display: inline-flex;
+    align-items: center;
+    gap: .25rem;
+    box-sizing: border-box;
+    width: 100%;
+    min-height: var(--ui-data-table-header-height);
+    padding: 0 var(--ui-data-table-cell-padding);
+    color: inherit;
+    text-decoration: none;
+    outline: none;
+    font: inherit;
+  }
+  .ui-data-table-sort:hover { color: var(--ui-data-table-header-hover-color); }
+  .ui-data-table-sort:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-data-table-sort-icon {
+    width: var(--ui-data-table-sort-icon-size);
+    height: var(--ui-data-table-sort-icon-size);
+    flex: none;
+    opacity: 0;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-data-table-sort:hover .ui-data-table-sort-icon,
+  .ui-data-table-sort:focus-visible .ui-data-table-sort-icon,
+  .ui-data-table-sort--active .ui-data-table-sort-icon { opacity: 1; }
+  .ui-data-table-sort-icon svg,
+  .ui-data-table-sort-icon {
+    width: var(--ui-data-table-sort-icon-size);
+    height: var(--ui-data-table-sort-icon-size);
+  }
+
+  /* Pagination footer: previous/next plus numbered pages. Every page is a real
+     link so no-JS navigation works; the current page is a span with
+     aria-current="page" and a state-layer style. */
+  .ui-data-table-pagination {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: .25rem;
+    padding: .5rem var(--ui-data-table-cell-padding);
+    border-top: 1px solid var(--ui-data-table-outline-color);
+  }
+  .ui-data-table-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 2rem;
+    height: 2rem;
+    box-sizing: border-box;
+    padding: 0 .5rem;
+    border-radius: var(--ui-radius-full);
+    color: var(--ui-data-table-header-color);
+    text-decoration: none;
+    outline: none;
+    font: var(--ui-type-label-sm);
+  }
+  .ui-data-table-page:hover { color: var(--ui-color-primary); }
+  .ui-data-table-page:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-data-table-page--current {
+    color: var(--ui-color-primary);
+    font-weight: 600;
+  }
+  .ui-data-table-page--disabled {
+    color: var(--ui-data-table-header-color);
+    opacity: var(--ui-state-disabled-opacity);
+    pointer-events: none;
+  }
+
+  /* Demo scaffolding: the preview grid, the server-side filter form, the
+     selection form wrapping the table, and the remote refresh operation. The
+     ui- prefix stays reserved for the component primitives. */
+  .data-table-preview {
+    display: block;
+    width: 100%;
+  }
+  .data-table-demo-grid {
+    display: grid;
+    gap: 2rem;
+    width: 100%;
+    max-width: 52rem;
+  }
+  .data-table-demo-group {
+    display: grid;
+    gap: .75rem;
+    min-width: 0;
+  }
+  .data-table-demo-heading {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-lg);
+  }
+  .data-table-demo-filter {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: .5rem;
+  }
+  .data-table-demo-filter-label {
+    font: var(--ui-type-label-lg);
+  }
+  .data-table-demo-filter-input {
+    flex: 1 1 12rem;
+    min-width: 8rem;
+    padding: .5rem .75rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-sm);
+    background: var(--ui-color-canvas);
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-md);
+  }
+  .data-table-demo-filter-input:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .data-table-demo-filter-submit {
+    padding: .5rem .75rem;
+    color: var(--ui-color-primary);
+    background: none;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-sm);
+    font: var(--ui-type-label-lg);
+    cursor: pointer;
+  }
+  .data-table-demo-filter-submit:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .data-table-demo-select .ui-data-table { width: 100%; }
+  .data-table-demo-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+    margin-top: .75rem;
+  }
+  .data-table-demo-submit {
+    padding: .5rem .75rem;
+    color: var(--ui-color-primary);
+    background: none;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-sm);
+    font: var(--ui-type-label-lg);
+    cursor: pointer;
+  }
+  .data-table-demo-submit:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .data-table-demo-notice {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-md);
+  }
+  .data-table-demo-refresh {
+    display: grid;
+    gap: .75rem;
+    max-width: 32rem;
+  }
+  .data-table-demo-refresh-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 1rem;
+  }
+  .data-table-demo-refresh-button {
+    padding: .5rem .75rem;
+    color: var(--ui-color-primary);
+    background: none;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-sm);
+    font: var(--ui-type-label-lg);
+    cursor: pointer;
+  }
+  .data-table-demo-refresh-button:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .data-table-demo-progress {
+    flex: 1 1 8rem;
+    min-width: 8rem;
+  }
+  .data-table-demo-refresh-hint {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-sm);
+  }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-data-table-row .ui-data-table-cell::before,
+  .ui-data-table-sort-icon { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-data-table {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-data-table-row .ui-data-table-cell { color: CanvasText; forced-color-adjust: auto; }
+  .ui-data-table-row .ui-data-table-cell::before { background: CanvasText; }
+  .ui-data-table-row:has(input:checked) .ui-data-table-cell {
+    background: Highlight;
+    color: HighlightText;
+  }
+  .ui-data-table-row:has(input:checked) .ui-data-table-cell::before { background: HighlightText; }
+  .ui-data-table-sort { color: LinkText; }
+  .ui-data-table-sort:focus-visible { outline-color: Highlight; }
+  .ui-data-table-checkbox input[type="checkbox"] { forced-color-adjust: auto; }
+  .ui-data-table-page { color: LinkText; }
+  .ui-data-table-page:focus-visible { outline-color: Highlight; }
+  .ui-data-table-page--current { color: Highlight; }
+  .ui-data-table-page--disabled { color: GrayText; opacity: 1; }
+  .ui-data-table-caption { color: CanvasText; }
+}

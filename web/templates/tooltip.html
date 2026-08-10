@@ -1,0 +1,72 @@
+{{define "tooltip-demo"}}
+<div class="tooltip-demo-grid">
+
+  <section class="tooltip-demo-group" aria-label="Plain tooltips">
+    <h3 class="tooltip-demo-heading">Plain tooltip</h3>
+    <p class="tooltip-demo-note">Hover or focus each control to reveal its tooltip. Every control is self-explanatory on its own — the tooltip only adds context, never essential information.</p>
+    <div class="tooltip-demo-row">
+
+      <span class="ui-tooltip-host">
+        <button type="button" class="ui-button ui-button-primary" aria-describedby="tooltip-btn-save">
+          <span>Save changes</span>
+        </button>
+        <span class="ui-tooltip" id="tooltip-btn-save" role="tooltip">Saves your current document.</span>
+      </span>
+
+      <span class="ui-tooltip-host">
+        <button type="button" class="ui-icon-button ui-icon-button-standard" aria-label="Add to favorites" aria-describedby="tooltip-icon-fav">
+          <svg class="ui-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path d="M12 21.35l-1.45-1.32C5.4 15.36 2 12.28 2 8.5 2 5.42 4.42 3 7.5 3c1.74 0 3.41.81 4.5 2.09C13.09 3.81 14.76 3 16.5 3 19.58 3 22 5.42 22 8.5c0 3.78-3.4 6.86-8.55 11.54L12 21.35z"/></svg>
+        </button>
+        <span class="ui-tooltip" id="tooltip-icon-fav" role="tooltip">Add to favorites</span>
+      </span>
+
+      <span class="ui-tooltip-host">
+        <a class="ui-button ui-button-outline" href="/components/button" aria-describedby="tooltip-link-learn">
+          <span>Learn more</span>
+        </a>
+        <span class="ui-tooltip" id="tooltip-link-learn" role="tooltip">Read the Button documentation</span>
+      </span>
+
+    </div>
+  </section>
+
+  <section class="tooltip-demo-group" aria-label="Rich tooltips">
+    <h3 class="tooltip-demo-heading">Rich tooltip — title, supporting text, optional action</h3>
+    <div class="tooltip-demo-row">
+
+      <span class="ui-tooltip-host">
+        <button type="button" class="ui-button ui-button-secondary" aria-describedby="tooltip-rich-share">
+          <span>Share</span>
+        </button>
+        <span class="ui-tooltip ui-tooltip--rich" id="tooltip-rich-share" role="tooltip">
+          <span class="ui-tooltip-subhead">Share the document</span>
+          <span class="ui-tooltip-supporting-text">Send a copy or invite collaborators to edit together.</span>
+          <a class="ui-tooltip-action" href="/components/card">Learn more</a>
+        </span>
+      </span>
+
+      <span class="ui-tooltip-host">
+        <button type="button" class="ui-icon-button ui-icon-button-filled" aria-label="Add to calendar" aria-describedby="tooltip-rich-calendar">
+          <svg class="ui-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4Zm-5 16a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm3-10H5V5h10v4Z"/></svg>
+        </button>
+        <span class="ui-tooltip ui-tooltip--rich" id="tooltip-rich-calendar" role="tooltip">
+          <span class="ui-tooltip-subhead">Add to calendar</span>
+          <span class="ui-tooltip-supporting-text">Creates a calendar event for the selected slot.</span>
+        </span>
+      </span>
+
+      <span class="ui-tooltip-host">
+        <a class="ui-button ui-button-outline" href="/components/list" aria-describedby="tooltip-rich-archive">
+          <span>Archive</span>
+        </a>
+        <span class="ui-tooltip ui-tooltip--rich ui-tooltip--top" id="tooltip-rich-archive" role="tooltip">
+          <span class="ui-tooltip-subhead">Archive the item</span>
+          <span class="ui-tooltip-supporting-text">Moves the item out of the active list without deleting it.</span>
+        </span>
+      </span>
+
+    </div>
+  </section>
+
+</div>
+{{end}}

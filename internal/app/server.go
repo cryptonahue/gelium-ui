@@ -45,6 +45,8 @@ type pageView struct {
 	SegmentedButtonDemo  *segmentedButtonDemo
 	MenuDemo             *menuDemo
 	NavigationDrawerDemo *navigationDrawerDemo
+	DataTableDemo        *dataTableDemo
+	TooltipDemo          *tooltipDemo
 }
 
 type server struct {
@@ -75,6 +77,7 @@ func New() http.Handler {
 	mux.HandleFunc("POST /examples/toast/demo", s.toastDemo)
 	mux.HandleFunc("POST /examples/select/menu", s.selectMenu)
 	mux.HandleFunc("POST /examples/chips/remove", s.chipsRemoveDemo)
+	mux.HandleFunc("POST /examples/data-table/refresh", s.dataTableRefreshDemo)
 	mux.HandleFunc("GET /static/{name}", s.staticAsset)
 	return mux
 }
