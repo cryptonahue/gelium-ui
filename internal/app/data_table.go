@@ -79,6 +79,21 @@ type dataTablePageView struct {
 	Current bool
 }
 
+// emptyStateView is the view data for the shared "empty-state" partial. Title
+// and Body carry the message, Icon may carry a trusted inline SVG glyph
+// (template.HTML, decorative), and CTA is a real link for GET navigation —
+// never a div/span control. Compact switches the primitive to start alignment
+// for inline contexts like a table row.
+type emptyStateView struct {
+	Title    string
+	Body     string
+	Icon     template.HTML
+	CTA      bool
+	CTAHref  string
+	CTALabel string
+	Compact  bool
+}
+
 // dataTableDemo is the view model for the Data table documentation preview.
 type dataTableDemo struct {
 	Query           string
@@ -97,6 +112,8 @@ type dataTableDemo struct {
 	HasNext         bool
 	SelectedCount   int
 	SelectionNotice string
+	Colspan         int
+	EmptyState      emptyStateView
 	Refreshed       bool
 	RefreshToast    *toastView
 }
@@ -220,6 +237,21 @@ func newDataTableDemo(q, sortParam, dir, page string, selection []string) *dataT
 		}
 	}
 
+	// The empty row spans every column plus the leading checkbox column, so
+	// the message never collapses the table grid.
+	colspan := 1 + len(dataTableColumns(query, sortKey, direction))
+	var emptyState emptyStateView
+	if total == 0 {
+		emptyState = emptyStateView{
+			Title:    "No results",
+			Body:     "Try adjusting your search or filters.",
+			CTA:      true,
+			CTAHref:  dataTableHref("", sortKey, direction, 0),
+			CTALabel: "Clear search",
+			Compact:  true,
+		}
+	}
+
 	pageLinks := make([]dataTablePageView, 0, totalPages)
 	for n := 1; n <= totalPages; n++ {
 		pageLinks = append(pageLinks, dataTablePageView{
@@ -246,6 +278,8 @@ func newDataTableDemo(q, sortParam, dir, page string, selection []string) *dataT
 		HasNext:         pageNum < totalPages,
 		SelectedCount:   selectedCount,
 		SelectionNotice: dataTableSelectionNotice(selection),
+		Colspan:         colspan,
+		EmptyState:      emptyState,
 		Refreshed:       false,
 	}
 	return demo

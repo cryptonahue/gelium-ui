@@ -296,3 +296,90 @@ func TestDataTablePageLinksPreserveSortAndFilter(t *testing.T) {
 		t.Error("switching sort must preserve the active filter")
 	}
 }
+
+func TestDataTableEmptyStateRendersMessageAndCTA(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/data-table?q=zzz", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		"0 rows · page 1 of 1",
+		`class="ui-empty-state ui-empty-state--compact"`,
+		`colspan="4"`,
+		`<a class="ui-button" href="?sort=name&amp;dir=asc">Clear search</a>`,
+		">No results</p>",
+		">Try adjusting your search or filters.</p>",
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("empty state is missing %q", contract)
+		}
+	}
+	if strings.Contains(body, `<tr class="ui-data-table-row">`) {
+		t.Error("empty state must not render any data rows")
+	}
+}
+
+func TestDataTableEmptyStateSelectAllDisabledOrAbsent(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/data-table?q=zzz", nil))
+	body := res.Body.String()
+	if strings.Contains(body, `<input type="checkbox" name="selection" value="all"`) {
+		t.Error("select-all checkbox must not render with zero rows")
+	}
+	if strings.Contains(body, `class="data-table-demo-submit"`) {
+		t.Error("submit selection button must not render with zero rows")
+	}
+}
+
+func TestDataTableEmptyStateHXFragmentIncludesEmptyRow(t *testing.T) {
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodGet, "/components/data-table?q=zzz", nil)
+	req.Header.Set("HX-Request", "true")
+	New().ServeHTTP(res, req)
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	if strings.Contains(body, "<html") {
+		t.Error("HX empty state response must be a fragment, not a full document")
+	}
+	for _, contract := range []string{
+		`<div class="ui-data-table" id="data-table-panel">`,
+		`class="ui-empty-state ui-empty-state--compact"`,
+		`colspan="4"`,
+		">No results</p>",
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("HX empty state fragment is missing %q", contract)
+		}
+	}
+}
+
+func TestDataTableEmptyStateAllSelectionCountsZero(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/data-table?q=zzz&selection=all", nil))
+	body := res.Body.String()
+	if strings.Contains(body, "All rows selected.") {
+		t.Error("empty state must not claim all rows are selected")
+	}
+	if strings.Contains(body, `<input type="checkbox" name="selection" value="all" checked`) {
+		t.Error("select-all must not be checked with zero rows even after selection=all")
+	}
+}
+
+func TestDataTableEmptyStateEscapesQuery(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, `/components/data-table?q=<script>alert(1)</script>`, nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	if strings.Contains(body, `<script>alert(1)`) {
+		t.Error("injected query must be HTML-escaped in the empty state")
+	}
+	if !strings.Contains(body, `class="ui-empty-state ui-empty-state--compact"`) {
+		t.Error("an unmatched query must still render the empty state")
+	}
+}

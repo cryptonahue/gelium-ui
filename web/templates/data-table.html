@@ -17,8 +17,8 @@
       <input type="hidden" name="dir" value="{{.Dir}}">
       {{template "data-table-panel" .}}
       <div class="data-table-demo-actions">
-        <button type="submit" class="data-table-demo-submit">Submit selection</button>
-        {{if .SelectionNotice}}<p class="data-table-demo-notice" role="status">{{.SelectionNotice}}</p>{{end}}
+        {{if gt .Total 0}}<button type="submit" class="data-table-demo-submit">Submit selection</button>{{end}}
+        {{if and (gt .Total 0) .SelectionNotice}}<p class="data-table-demo-notice" role="status">{{.SelectionNotice}}</p>{{end}}
       </div>
     </form>
   </section>
@@ -39,7 +39,7 @@
       <tr>
         <th scope="col" class="ui-data-table-cell ui-data-table-cell--checkbox">
           <label class="ui-data-table-checkbox">
-            <input type="checkbox" name="selection" value="all"{{if eq .SelectedCount .Total}} checked{{end}} aria-label="Select all rows">
+            {{if gt .Total 0}}<input type="checkbox" name="selection" value="all"{{if and (gt .Total 0) (eq .SelectedCount .Total)}} checked{{end}} aria-label="Select all rows">{{end}}
           </label>
         </th>
         {{range .Columns}}
@@ -51,6 +51,7 @@
       </tr>
     </thead>
     <tbody>
+      {{if .Rows}}
       {{range .Rows}}
       <tr class="ui-data-table-row">
         <td class="ui-data-table-cell ui-data-table-cell--checkbox">
@@ -61,6 +62,11 @@
         <td class="ui-data-table-cell ui-data-table-cell--label">{{.Name}}</td>
         <td class="ui-data-table-cell ui-data-table-cell--label">{{.Status}}</td>
         <td class="ui-data-table-cell ui-data-table-cell--label">{{.Date}}</td>
+      </tr>
+      {{end}}
+      {{else}}
+      <tr>
+        <td colspan="{{.Colspan}}" class="ui-data-table-cell">{{template "empty-state" .EmptyState}}</td>
       </tr>
       {{end}}
     </tbody>

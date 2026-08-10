@@ -1,0 +1,61 @@
+@layer components {
+  /* Empty state: a server-rendered status message for empty result sets. The
+     root paints a centered flex column by default (feed/search-results at page
+     level); the --compact modifier switches to start alignment for inline
+     contexts like a table row. The --ui-empty-state-* tokens are declared
+     scoped to the root so the primitive works standalone; the theme may
+     override them globally. There is no animation, so no reduced-motion
+     block. */
+  .ui-empty-state {
+    --ui-empty-state-padding: var(--ui-space-6);
+    --ui-empty-state-gap: var(--ui-space-2);
+    --ui-empty-state-icon-size: var(--ui-size-icon);
+    --ui-empty-state-title-color: var(--ui-color-fg);
+    --ui-empty-state-body-color: var(--ui-color-fg-muted);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    place-content: center;
+    gap: var(--ui-empty-state-gap);
+    padding: var(--ui-empty-state-padding);
+    text-align: center;
+  }
+
+  .ui-empty-state--compact {
+    align-items: flex-start;
+    justify-content: flex-start;
+    text-align: start;
+  }
+
+  .ui-empty-state-icon {
+    width: var(--ui-empty-state-icon-size);
+    height: var(--ui-empty-state-icon-size);
+    flex: none;
+    color: var(--ui-empty-state-body-color);
+  }
+
+  .ui-empty-state-title {
+    margin: 0;
+    color: var(--ui-empty-state-title-color);
+    font: var(--ui-type-title-md);
+  }
+
+  .ui-empty-state-body {
+    margin: 0;
+    color: var(--ui-empty-state-body-color);
+    font: var(--ui-type-body-sm);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-empty-state-icon,
+  .ui-empty-state-title,
+  .ui-empty-state-body {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-empty-state a.ui-button { color: LinkText; }
+  .ui-empty-state a.ui-button:focus-visible { outline-color: Highlight; }
+}

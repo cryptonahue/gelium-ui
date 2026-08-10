@@ -1,0 +1,6 @@
+{{define "empty-state"}}<div class="ui-empty-state{{if .Compact}} ui-empty-state--compact{{end}}" role="status">
+  {{if .Icon}}<span class="ui-empty-state-icon" aria-hidden="true">{{.Icon}}</span>{{end}}
+  <p class="ui-empty-state-title">{{.Title}}</p>
+  <p class="ui-empty-state-body">{{.Body}}</p>
+  {{if .CTA}}<a class="ui-button" href="{{.CTAHref}}">{{.CTALabel}}</a>{{end}}
+</div>{{end}}
