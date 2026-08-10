@@ -1,0 +1,132 @@
+{{/* WhatsApp demo — admin/dev section (technical surface behind the 🛡 lock). */}}
+{{define "demo-whatsapp-admin"}}<!doctype html>
+<html lang="en" class="theme-material">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LoomChat · Modo administrador</title>
+  <link rel="stylesheet" href="/static/app.css?v=0.4.0">
+  <script defer src="/static/htmx.min.js?v=0.4.0"></script>
+  <script defer src="/static/app.js?v=0.4.0"></script>
+</head>
+<body class="demo-wa-root demo-wa-root--admin">
+  <div class="demo-wa-app">
+    <header class="demo-wa-appbar">
+      <div class="demo-wa-brand">🛡 LoomChat <span class="demo-wa-admin-tag">Admin</span></div>
+      <nav class="demo-wa-appbar-actions" aria-label="Admin actions">
+        <a class="demo-wa-lock" href="/demo/whatsapp" aria-label="Volver a la app">← App</a>
+      </nav>
+    </header>
+
+    <div class="demo-wa-admin">
+      <nav class="demo-wa-admin-nav" aria-label="Secciones de administración">
+        <a class="demo-wa-admin-tab demo-wa-admin-tab--active" href="#numbers">Números</a>
+        <a class="demo-wa-admin-tab" href="#qr">QR Codes</a>
+        <a class="demo-wa-admin-tab" href="#webhooks">Webhooks</a>
+        <a class="demo-wa-admin-tab" href="#templates">Plantillas</a>
+        <a class="demo-wa-admin-tab" href="#tokens">API / Tokens</a>
+      </nav>
+
+      <section class="demo-wa-admin-panel" id="numbers" aria-label="Números">
+        <h2 class="demo-wa-admin-title">Números conectados <a class="demo-wa-admin-add" href="#">➕ conectar</a></h2>
+        <div class="demo-wa-admin-table-wrap">
+          <table class="demo-wa-admin-table">
+            <thead><tr><th scope="col">Número</th><th scope="col">Calidad</th><th scope="col">Nombre</th><th scope="col">Throughput</th><th scope="col">Acciones</th></tr></thead>
+            <tbody>
+              {{range .Numbers}}
+              <tr>
+                <td>{{.DisplayPhone}}</td>
+                <td><span class="demo-wa-quality demo-wa-quality--{{.Quality}}">{{.Quality}}</span></td>
+                <td>{{.VerifiedName}}</td>
+                <td>{{.Throughput}}</td>
+                <td><a href="#" class="demo-wa-admin-action">⚙</a> <a href="#" class="demo-wa-admin-action">🗑</a></td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+        </div>
+        {{if .Numbers}}{{range .Numbers}}{{if eq .Quality "YELLOW"}}<p class="demo-wa-notice demo-wa-notice--warn">⚠️ {{.DisplayPhone}} con calidad YELLOW — puede bajar el throughput.</p>{{end}}{{end}}{{end}}
+      </section>
+
+      <section class="demo-wa-admin-panel" id="qr" aria-label="QR Codes">
+        <h2 class="demo-wa-admin-title">QR Codes <a class="demo-wa-admin-add" href="#">➕ crear</a></h2>
+        <div class="demo-wa-admin-table-wrap">
+          <table class="demo-wa-admin-table">
+            <thead><tr><th scope="col">Código</th><th scope="col">Mensaje predefinido</th><th scope="col">Enlace</th><th scope="col">Acciones</th></tr></thead>
+            <tbody>
+              {{range .QRCodes}}
+              <tr>
+                <td>{{.Code}}</td>
+                <td>{{.Prefilled}}</td>
+                <td><a href="{{.DeepLinkURL}}">{{.DeepLinkURL}}</a></td>
+                <td><a href="#" class="demo-wa-admin-action">✎</a> <a href="#" class="demo-wa-admin-action">🗑</a></td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="demo-wa-admin-panel" id="webhooks" aria-label="Webhooks">
+        <h2 class="demo-wa-admin-title">Webhooks</h2>
+        <form method="post" action="/demo/whatsapp/admin" class="demo-wa-webhook-form">
+          <label class="demo-wa-form-label" for="wh-url">URL</label>
+          <input class="demo-wa-webhook-input" id="wh-url" type="url" name="webhook_url" value="{{.WebhookURL}}">
+          <label class="demo-wa-form-label" for="wh-secret">Secret (whsec_…)</label>
+          <div class="demo-wa-secret-row">
+            <input class="demo-wa-webhook-input" id="wh-secret" type="password" name="webhook_secret" value="{{.WebhookSecretMasked}}">
+            <span class="demo-wa-secret-eye">👁</span>
+            <button class="demo-wa-admin-action" type="button">regenerar ⚠</button>
+          </div>
+          <p class="demo-wa-notice">Asignatura <strong>{{if .SignatureOn}}activada ✓{{else}}desactivada{{end}}</strong> · HMAC-SHA256 · headers <code>x-datafy-delivery-id</code>, <code>x-datafy-signature-256</code> · responder 200 en ≤ 20 s · valida <code>sha256=HMAC(timestamp.corpo)</code></p>
+          <button class="ui-button" type="submit">Guardar webhook</button>
+        </form>
+        <h3 class="demo-wa-admin-subtitle">Entregas recientes</h3>
+        <div class="demo-wa-admin-table-wrap">
+          <table class="demo-wa-admin-table">
+            <thead><tr><th scope="col">Delivery ID</th><th scope="col">Tipo</th><th scope="col">Estado</th><th scope="col">HTTP</th><th scope="col">Timestamp</th></tr></thead>
+            <tbody>
+              {{range .Deliveries}}
+              <tr>
+                <td class="demo-wa-mono">{{.DeliveryID}}</td>
+                <td>{{.Type}}</td>
+                <td>{{.Status}}</td>
+                <td>{{.HTTP}}</td>
+                <td>{{.Timestamp}}</td>
+              </tr>
+              {{end}}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="demo-wa-admin-panel" id="templates" aria-label="Plantillas">
+        <h2 class="demo-wa-admin-title">Plantillas <a class="demo-wa-admin-add" href="#">➕ nueva</a></h2>
+        <div class="demo-wa-admin-table-wrap">
+          <table class="demo-wa-admin-table">
+            <thead><tr><th scope="col">Nombre</th><th scope="col">Categoría</th><th scope="col">Idioma</th><th scope="col">Estado</th><th scope="col">Acciones</th></tr></thead>
+            <tbody>
+              {{range .Numbers}}<tr><td colspan="5" class="demo-wa-table-note">Ver plantillas en el panel Datafy — <code>GET /templates</code></td></tr>{{end}}
+            </tbody>
+          </table>
+        </div>
+      </section>
+
+      <section class="demo-wa-admin-panel" id="tokens" aria-label="API y tokens">
+        <h2 class="demo-wa-admin-title">API / Tokens</h2>
+        <div class="demo-wa-token-card">
+          <div class="demo-wa-token-row"><span class="demo-wa-token-label">Token activo</span><code class="demo-wa-mono">{{.TokenMasked}}</code> <a class="demo-wa-admin-action" href="#">👁</a> <a class="demo-wa-admin-action" href="#">copiar</a> <a class="demo-wa-admin-action" href="#">rotar</a></div>
+          <div class="demo-wa-token-row"><span class="demo-wa-token-label">Base URL</span><code class="demo-wa-mono">{{.BaseURL}}</code></div>
+          <div class="demo-wa-token-row"><span class="demo-wa-token-label">Límites</span><span>{{.RateLimitMsg}}</span></div>
+          <div class="demo-wa-token-row">
+            <span class="demo-wa-token-label">Uso del minuto</span>
+            <span class="demo-wa-rate-bar"><span class="demo-wa-rate-fill" style="width: {{.RateUsed}}%"></span></span>
+            <span>{{.RateUsed}}%</span>
+          </div>
+        </div>
+      </section>
+    </div>
+  </div>
+  {{template "toast-region"}}
+</body>
+</html>{{end}}

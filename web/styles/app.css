@@ -30,6 +30,7 @@
 @import "./navigation-drawer.css";
 @import "./data-table.css";
 @import "./tooltip.css";
+@import "./demo-whatsapp.css";
 
 @source "../templates";
 @source "../content";

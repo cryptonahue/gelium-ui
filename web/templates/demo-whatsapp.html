@@ -1,0 +1,164 @@
+{{/* WhatsApp demo — main non-technical UX (chat app like WhatsApp/Discord). */}}
+{{define "demo-whatsapp"}}<!doctype html>
+<html lang="en" class="theme-material">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>LoomChat · WhatsApp demo</title>
+  <link rel="stylesheet" href="/static/app.css?v=0.4.0">
+  <script defer src="/static/htmx.min.js?v=0.4.0"></script>
+  <script defer src="/static/app.js?v=0.4.0"></script>
+</head>
+<body class="demo-wa-root">
+  <div class="demo-wa-app">
+    <header class="demo-wa-appbar">
+      <div class="demo-wa-brand">✳ LoomChat</div>
+      <form method="get" action="/demo/whatsapp" class="demo-wa-search" role="search">
+        <input class="demo-wa-search-input" type="search" name="q" value="{{.Search}}" placeholder="Buscar conversaciones…" aria-label="Buscar conversaciones">
+      </form>
+      <nav class="demo-wa-appbar-actions" aria-label="App actions">
+        <a class="ui-fab demo-wa-fab" href="/demo/whatsapp?nuevo=1" aria-label="Nueva conversación">＋</a>
+        <a class="demo-wa-lock" href="/demo/whatsapp/admin" aria-label="Modo administrador">🛡</a>
+      </nav>
+    </header>
+
+    <div class="demo-wa-layout">
+      <aside class="demo-wa-sidebar" aria-label="Conversaciones">
+        <div class="demo-wa-sidebar-head">
+          <span class="demo-wa-heading-label">Conversaciones</span>
+        </div>
+        <ul class="demo-wa-conversations" role="list">
+          {{range .Conversations}}
+          <li>
+            <a class="demo-wa-conv{{if .Active}} demo-wa-conv--active{{end}}" href="/demo/whatsapp?c={{.ID}}">
+              <span class="demo-wa-avatar" aria-hidden="true">{{.Initial}}</span>
+              <span class="demo-wa-conv-body">
+                <span class="demo-wa-conv-top">
+                  <span class="demo-wa-conv-name">{{.ContactName}}</span>
+                  <span class="demo-wa-conv-time">{{.LastTime}}</span>
+                </span>
+                <span class="demo-wa-conv-bottom">
+                  <span class="demo-wa-conv-msg">{{.LastMessage}}</span>
+                </span>
+                <span class="demo-wa-conv-footer">
+                  <span class="demo-wa-window demo-wa-window--{{.WindowTone}}" title="Ventana de servicio de 24 h">{{.WindowLabel}}</span>
+                  {{if gt .Unread 0}}<span class="demo-wa-unread" aria-label="{{.Unread}} sin leer">{{.Unread}}</span>{{end}}
+                </span>
+              </span>
+            </a>
+          </li>
+          {{end}}
+          {{if eq (len .Conversations) 0}}
+          <li class="demo-wa-empty">Sin resultados para tu búsqueda.</li>
+          {{end}}
+        </ul>
+      </aside>
+
+      <main class="demo-wa-chat" {{if .ActiveChat}}aria-label="Conversación con {{.ActiveChat.Conversation.ContactName}}"{{end}}>
+        {{if .ActiveChat}}
+        {{$chat := .ActiveChat}}
+        <header class="demo-wa-chat-head">
+          <span class="demo-wa-avatar demo-wa-avatar--sm" aria-hidden="true">{{$chat.Conversation.Initial}}</span>
+          <div class="demo-wa-chat-head-info">
+            <span class="demo-wa-chat-name">{{$chat.Conversation.ContactName}}</span>
+            <span class="demo-wa-chat-sub">{{$chat.Conversation.Phone}}</span>
+          </div>
+          <div class="demo-wa-chat-head-window">
+            <span class="demo-wa-window demo-wa-window--{{$chat.WindowTone}} demo-wa-window--lg">{{$chat.WindowLabel}}</span>
+            <span class="demo-wa-window-bar">
+              <span class="demo-wa-window-fill demo-wa-window-fill--{{$chat.WindowTone}}" style="width: {{$chat.WindowFraction}}%"></span>
+            </span>
+            <small class="demo-wa-window-hint">Ventana de servicio de 24 h</small>
+          </div>
+          <a class="demo-wa-chat-menu" href="/demo/whatsapp?c={{$chat.Conversation.ID}}&info=1" aria-label="Información del contacto">ⓘ</a>
+        </header>
+
+        <div class="demo-wa-thread" aria-live="polite">
+          {{range $chat.Messages}}
+            {{if .Inbound}}
+            <div class="demo-wa-row demo-wa-row--in">
+              <div class="demo-wa-bubble demo-wa-bubble--in">
+                {{if eq .Kind "list"}}
+                <div class="demo-wa-list">
+                  <span class="demo-wa-list-title">{{.ListTitle}}</span>
+                  <ul class="demo-wa-list-rows">{{range .ListRows}}<li>{{.}}</li>{{end}}</ul>
+                  <span class="demo-wa-list-btn">▸ Ver opciones</span>
+                </div>
+                {{else if eq .Kind "image"}}
+                <span class="demo-wa-image">🖼 {{.Body}}</span>
+                {{else if eq .Kind "template"}}
+                <span class="demo-wa-template-tag">📄 {{.Body}}</span>
+                {{else}}
+                <span class="demo-wa-text">{{.Body}}</span>
+                {{end}}
+                <span class="demo-wa-bubble-time">{{.Time}}</span>
+              </div>
+            </div>
+            {{else}}
+            <div class="demo-wa-row demo-wa-row--out">
+              <div class="demo-wa-bubble demo-wa-bubble--out">
+                {{if eq .Kind "image"}}
+                <span class="demo-wa-image">🖼 {{.Body}}</span>
+                {{else if eq .Kind "list"}}
+                <div class="demo-wa-list">
+                  <span class="demo-wa-list-title">{{.ListTitle}}</span>
+                  <span class="demo-wa-list-btn">▸ Ver opciones</span>
+                </div>
+                {{else if eq .Kind "template"}}
+                <span class="demo-wa-template-tag">📄 {{.Body}}</span>
+                {{else}}
+                <span class="demo-wa-text">{{.Body}}</span>
+                {{end}}
+                <span class="demo-wa-bubble-meta">
+                  <span class="demo-wa-bubble-time">{{.Time}}</span>
+                  <span class="demo-wa-status demo-wa-status--{{.Status}}" aria-label="Estado {{.Status}}">
+                    {{if eq .Status "read"}}✓✓{{else if eq .Status "delivered"}}✓✓{{else}}✓{{end}}
+                  </span>
+                </span>
+              </div>
+            </div>
+            {{end}}
+          {{end}}
+
+          {{if $chat.Typing}}
+          <div class="demo-wa-row demo-wa-row--in">
+            <div class="demo-wa-bubble demo-wa-bubble--in demo-wa-bubble--typing" aria-label="Escribiendo…">
+              <span class="demo-wa-typing-dots"><span></span><span></span><span></span></span>
+            </div>
+          </div>
+          {{end}}
+        </div>
+
+        {{if $chat.WindowExpired}}
+        <div class="demo-wa-expired" role="note">
+          <p class="demo-wa-expired-title">La ventana de servicio de 24 h venció</p>
+          <p class="demo-wa-expired-body">Solo podés enviar mensajes prediseñados a {{$chat.Conversation.ContactName}}.</p>
+          <form method="post" action="/demo/whatsapp/send-template" class="demo-wa-template-send">
+            <input type="hidden" name="conversation" value="{{$chat.Conversation.ID}}">
+            <label class="demo-wa-form-label" for="tpl-{{$chat.Conversation.ID}}">Elegí un mensaje prediseñado</label>
+            <select class="ui-select demo-wa-select" id="tpl-{{$chat.Conversation.ID}}" name="template" required>
+              {{range $chat.Templates}}<option value="{{.Name}}">{{.FriendlyLabel}}</option>{{end}}
+            </select>
+            <button class="ui-button" type="submit">Enviar mensaje prediseñado</button>
+          </form>
+        </div>
+        {{else}}
+        <form method="post" action="/demo/whatsapp/send" class="demo-wa-composer">
+          <input type="hidden" name="conversation" value="{{$chat.Conversation.ID}}">
+          <button class="demo-wa-composer-btn" type="submit" name="action" value="typing" formaction="/demo/whatsapp/typing?c={{$chat.Conversation.ID}}" title="Simular que tu cliente escribe">✍️</button>
+          <input class="demo-wa-composer-input" type="text" name="message" placeholder="Escribí un mensaje…" aria-label="Mensaje" autocomplete="off">
+          <button class="demo-wa-composer-send" type="submit" aria-label="Enviar">➤</button>
+        </form>
+        {{end}}
+        {{else}}
+        <div class="demo-wa-placeholder">
+          <p class="demo-wa-placeholder-title">Seleccioná una conversación</p>
+          <p class="demo-wa-placeholder-body">Elegí un contacto de la lista para comenzar a chatear.</p>
+        </div>
+        {{end}}
+      </main>
+    </div>
+  </div>
+  {{template "toast-region"}}
+</body>
+</html>{{end}}

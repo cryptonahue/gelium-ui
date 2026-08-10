@@ -78,6 +78,12 @@ func New() http.Handler {
 	mux.HandleFunc("POST /examples/select/menu", s.selectMenu)
 	mux.HandleFunc("POST /examples/chips/remove", s.chipsRemoveDemo)
 	mux.HandleFunc("POST /examples/data-table/refresh", s.dataTableRefreshDemo)
+	mux.HandleFunc("GET /demo/whatsapp", s.whatsAppDemo)
+	mux.HandleFunc("GET /demo/whatsapp/admin", s.whatsAppAdmin)
+	mux.HandleFunc("POST /demo/whatsapp/send", s.whatsAppSend)
+	mux.HandleFunc("POST /demo/whatsapp/send-template", s.whatsAppSendTemplate)
+	mux.HandleFunc("POST /demo/whatsapp/typing", s.whatsAppTyping)
+	mux.HandleFunc("POST /demo/whatsapp/read", s.whatsAppRead)
 	mux.HandleFunc("GET /static/{name}", s.staticAsset)
 	return mux
 }
