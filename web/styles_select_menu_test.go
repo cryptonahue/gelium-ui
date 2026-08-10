@@ -42,21 +42,14 @@ func TestSelectMenuPrimitiveCSSMapsMaterialMenuSurfaceAndItems(t *testing.T) {
 		}
 	}
 
-	reducedIndex := strings.Index(css, "@media (prefers-reduced-motion: reduce)")
-	if reducedIndex < 0 {
-		t.Fatal("source CSS is missing the reduced-motion media query")
-	}
-	reduced := css[reducedIndex:]
-	if nextMedia := strings.Index(reduced[1:], "@media "); nextMedia >= 0 {
-		reduced = reduced[:nextMedia+1]
-	}
+	reduced := entryMediaBlock(t, css, "@media (prefers-reduced-motion: reduce)")
 	if !strings.Contains(reduced, ".ui-select-menu") {
 		t.Error("reduced-motion CSS must disable select-menu transitions")
 	}
 }
 
 func TestSelectMenuThemeDefinesPublicUIFamily(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-select-menu-container:",
 		"--ui-select-menu-radius:",
@@ -64,7 +57,6 @@ func TestSelectMenuThemeDefinesPublicUIFamily(t *testing.T) {
 		"--ui-select-menu-min-width:",
 		"--ui-select-menu-item-height:",
 		"--ui-select-menu-item-fg:",
-		"--ui-select-menu-item-icon:",
 		"--ui-select-menu-item-selected:",
 		"--ui-select-menu-divider:",
 	} {

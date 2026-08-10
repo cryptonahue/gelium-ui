@@ -16,10 +16,10 @@
     --ui-nav-bar-container: var(--ui-color-surface);
     --ui-nav-bar-container-elevation: var(--ui-shadow-2);
     --ui-nav-bar-height: 80px;
-    --ui-nav-bar-icon-size: 24px;
-    --ui-nav-bar-icon-container-width: 64px;
-    --ui-nav-bar-icon-container-height: 32px;
-    --ui-nav-bar-indicator-size: 32px;
+    --ui-nav-bar-icon-size: var(--ui-size-icon);
+    --ui-nav-bar-icon-container-width: var(--ui-size-nav-icon-slot);
+    --ui-nav-bar-icon-container-height: var(--ui-size-nav-icon-slot-h);
+    --ui-nav-bar-indicator-size: var(--ui-size-indicator);
     --ui-nav-bar-indicator-color: var(--ui-color-secondary);
     --ui-nav-bar-active-icon-color: var(--ui-color-secondary-fg);
     --ui-nav-bar-active-label-color: var(--ui-color-fg);
@@ -27,8 +27,8 @@
     --ui-nav-bar-inactive-icon-color: var(--ui-color-fg-muted);
     --ui-nav-bar-inactive-hover-icon-color: var(--ui-color-fg);
     --ui-nav-bar-inactive-label-color: var(--ui-color-fg-muted);
-    --ui-nav-bar-label-height: 16px;
-    --ui-nav-bar-label-space: 4px;
+    --ui-nav-bar-label-height: var(--ui-size-label-height);
+    --ui-nav-bar-label-space: var(--ui-space-1);
     --ui-nav-bar-state-layer-color: var(--ui-color-fg);
     --ui-nav-bar-hover-opacity: var(--ui-state-hover-opacity);
     --ui-nav-bar-focus-opacity: var(--ui-state-focus-opacity);
@@ -75,7 +75,7 @@
     width: 100%;
     min-height: 48px;
     min-width: 48px;
-    padding: 8px 0 12px;
+    padding: var(--ui-space-2) 0 var(--ui-space-3);
     color: var(--ui-nav-bar-inactive-icon-color);
     font: var(--ui-type-label-sm);
     text-align: center;

@@ -11,9 +11,9 @@
     border: 0;
     margin: 0;
   }
-  .ui-divider-inset { padding-inline: 1rem; }
-  .ui-divider-inset-start { padding-inline-start: 1rem; }
-  .ui-divider-inset-end { padding-inline-end: 1rem; }
+  .ui-divider-inset { padding-inline: var(--ui-space-4); }
+  .ui-divider-inset-start { padding-inline-start: var(--ui-space-4); }
+  .ui-divider-inset-end { padding-inline-end: var(--ui-space-4); }
   .divider-demo-list {
     display: grid;
     gap: 1rem;

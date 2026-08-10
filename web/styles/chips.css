@@ -8,14 +8,18 @@
      an inset state layer of the label color, matching the other Material
      controls. */
   .ui-chip {
+    --ui-chip-height: 2rem;
+    --ui-chip-remove-size: 1.5rem;
+    --ui-chip-remove-icon-size: var(--ui-size-icon-sm);
+    --ui-chip-selected-icon-size: .5625rem;
     position: relative;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
-    height: 2rem;
-    padding-inline: 1rem;
-    gap: .5rem;
-    border: 1px solid var(--ui-color-border-strong);
+    height: var(--ui-chip-height);
+    padding-inline: var(--ui-space-4);
+    gap: var(--ui-space-2);
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border-strong);
     border-radius: var(--ui-radius-sm);
     background: transparent;
     color: var(--ui-color-fg-muted);
@@ -29,10 +33,10 @@
     transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard), border-color var(--ui-motion-short) var(--ui-easing-standard);
   }
   .ui-chip:hover:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px rgb(25 28 28 / var(--ui-state-hover-opacity));
+    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent);
   }
   .ui-chip:active:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px rgb(25 28 28 / var(--ui-state-pressed-opacity));
+    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-pressed-opacity) * 100%), transparent);
   }
   .ui-chip:focus-visible {
     outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
@@ -77,13 +81,13 @@
   .ui-chip-filter .ui-chip-label {
     position: relative;
     z-index: 1;
-    padding-inline: 1rem;
+    padding-inline: var(--ui-space-4);
   }
   .ui-chip-filter .ui-chip-selected-icon {
     position: relative;
     z-index: 1;
-    width: .5625rem;
-    height: .5625rem;
+    width: var(--ui-chip-selected-icon-size);
+    height: var(--ui-chip-selected-icon-size);
     flex: none;
     opacity: 0;
     transform: scale(0);
@@ -104,7 +108,7 @@
     color: var(--ui-color-secondary-fg);
   }
   .ui-chip-filter:hover:not(:has(input:disabled)) input:checked {
-    box-shadow: inset 0 0 0 999px rgb(29 25 43 / var(--ui-state-hover-opacity));
+    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent);
   }
   .ui-chip-filter input:disabled {
     cursor: not-allowed;
@@ -114,7 +118,7 @@
      real button whose circular 24px hit area mirrors Material's trailing action
      geometry (4/3 * 18px icon). */
   .ui-chip-input {
-    padding-inline-start: 1rem;
+    padding-inline-start: var(--ui-space-4);
     padding-inline-end: 0;
     color: var(--ui-color-fg);
     background: var(--ui-color-surface);
@@ -125,8 +129,8 @@
     align-items: center;
     justify-content: center;
     align-self: center;
-    width: 1.5rem;
-    height: 1.5rem;
+    width: var(--ui-chip-remove-size);
+    height: var(--ui-chip-remove-size);
     margin-inline: .5rem .625rem;
     padding: 0;
     border: none;
@@ -137,9 +141,9 @@
     flex: none;
     transition: background-color var(--ui-motion-short) var(--ui-easing-standard);
   }
-  .ui-chip-remove .ui-icon { width: 1.125rem; height: 1.125rem; }
-  .ui-chip-remove:hover { box-shadow: inset 0 0 0 999px rgb(25 28 28 / var(--ui-state-hover-opacity)); }
-  .ui-chip-remove:active { box-shadow: inset 0 0 0 999px rgb(25 28 28 / var(--ui-state-pressed-opacity)); }
+  .ui-chip-remove .ui-icon { width: var(--ui-chip-remove-icon-size); height: var(--ui-chip-remove-icon-size); }
+  .ui-chip-remove:hover { box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent); }
+  .ui-chip-remove:active { box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
   .ui-chip-remove:focus-visible {
     outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
     outline-offset: var(--ui-focus-offset);

@@ -36,7 +36,7 @@ func TestBadgePrimitiveCSSMapsSizesAndNotColorOnly(t *testing.T) {
 }
 
 func TestBadgeThemeDefinesPublicUIPair(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-badge-size:",
 		"--ui-badge-large-size:",

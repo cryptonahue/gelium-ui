@@ -22,7 +22,7 @@ func TestNavigationDrawerPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 		`.ui-navigation-drawer-item {`,
 		`.ui-navigation-drawer-destination {`,
 		`min-height: var(--ui-navigation-drawer-item-height);`,
-		`gap: 12px;`,
+		`gap: var(--ui-space-3);`,
 		`font: var(--ui-type-label-lg);`,
 		`.ui-navigation-drawer-glyph {`,
 		`width: var(--ui-navigation-drawer-icon-size);`,

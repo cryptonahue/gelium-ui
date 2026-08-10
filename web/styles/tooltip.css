@@ -21,7 +21,7 @@
     --ui-tooltip-container: var(--ui-color-fg);
     --ui-tooltip-fg: var(--ui-color-canvas);
     --ui-tooltip-radius: var(--ui-radius-xs);
-    --ui-tooltip-padding: 4px 8px;
+    --ui-tooltip-padding: var(--ui-space-1) var(--ui-space-2);
     --ui-tooltip-supporting-text: var(--ui-type-body-sm);
     --ui-tooltip-max-width: min(18rem, calc(100vw - 2rem));
     --ui-tooltip-offset: 4px;
@@ -68,7 +68,7 @@
     --ui-tooltip-container: var(--ui-color-surface);
     --ui-tooltip-fg: var(--ui-color-fg-muted);
     --ui-tooltip-radius: var(--ui-radius-md);
-    --ui-tooltip-padding: 8px 12px;
+    --ui-tooltip-padding: var(--ui-space-2) var(--ui-space-3);
     --ui-tooltip-subhead: var(--ui-type-label-lg);
     --ui-tooltip-supporting-text: var(--ui-type-body-md);
 
@@ -86,7 +86,7 @@
   }
   .ui-tooltip-action {
     display: inline-block;
-    margin-top: .5rem;
+    margin-top: var(--ui-space-2);
     color: var(--ui-color-primary);
     font: var(--ui-type-label-lg);
     text-decoration: none;

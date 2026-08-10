@@ -9,14 +9,15 @@
      a 1px divider. The --ui-menu-* tokens are scoped to the surface so the
      primitive works standalone; the theme may override them globally. */
   .ui-menu {
+    --ui-menu-min-width: 112px;
     --ui-menu-container-color: var(--ui-color-surface);
     --ui-menu-container-radius: var(--ui-radius-xs);
     --ui-menu-container-elevation: var(--ui-shadow-2);
-    --ui-menu-item-height: 48px;
-    --ui-menu-item-leading-space: 12px;
-    --ui-menu-item-trailing-space: 12px;
-    --ui-menu-item-icon-size: 24px;
-    --ui-menu-item-icon-gap: 12px;
+    --ui-menu-item-height: var(--ui-size-item-sm);
+    --ui-menu-item-leading-space: var(--ui-space-3);
+    --ui-menu-item-trailing-space: var(--ui-space-3);
+    --ui-menu-item-icon-size: var(--ui-size-icon);
+    --ui-menu-item-icon-gap: var(--ui-space-3);
     --ui-menu-item-label-color: var(--ui-color-fg);
     --ui-menu-item-icon-color: var(--ui-color-fg-muted);
     --ui-menu-item-selected-container: var(--ui-color-secondary);
@@ -31,9 +32,9 @@
     display: flex;
     flex-direction: column;
     box-sizing: border-box;
-    min-width: 112px;
+    min-width: var(--ui-menu-min-width);
     margin: 0;
-    padding: 8px 0;
+    padding: var(--ui-space-2) 0;
     list-style: none;
     border-radius: var(--ui-menu-container-radius);
     background: var(--ui-menu-container-color);
@@ -167,8 +168,8 @@
   }
   .ui-menu-item-label input[type="checkbox"],
   .ui-menu-item-label input[type="radio"] {
-    width: 18px;
-    height: 18px;
+    width: var(--ui-size-icon-sm);
+    height: var(--ui-size-icon-sm);
     margin: 0;
     flex: none;
     accent-color: var(--ui-color-primary);
@@ -212,7 +213,7 @@
   /* Divider: a 1px thematic break between groups. */
   .ui-menu-divider {
     height: var(--ui-menu-divider-thickness);
-    margin: 8px 0;
+    margin: var(--ui-space-2) 0;
     border: 0;
     background: var(--ui-menu-divider-color);
   }

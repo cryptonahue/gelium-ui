@@ -9,6 +9,7 @@
   /* Color */
   --ui-color-canvas: #fff7ff;
   --ui-color-surface: #f7f2fa;
+  --ui-color-surface-container: #f3edf7;
   --ui-color-fg: #1d1b20;
   --ui-color-fg-muted: #49454f;
   --ui-color-primary: #6750a4;
@@ -21,6 +22,16 @@
   --ui-color-danger-fg: #ffffff;
   --ui-color-focus-ring: #4f378b;
 
+  /* Semantic status colors — Material overrides of the core neutral defaults */
+  --ui-color-success: #2e7d32;
+  --ui-color-success-fg: #ffffff;
+  --ui-color-warning: #b9930a;
+  --ui-color-warning-fg: #6a4b00;
+  --ui-color-warning-container: #fff3d6;
+  --ui-color-info: #4f5d75;
+  --ui-color-danger-container: #fddcdc;
+  --ui-color-scrim: rgb(0 0 0 / .32);
+
   /* Text field */
   --ui-field-container: #f3edf7;
   --ui-field-border: #79747e;
@@ -32,23 +43,26 @@
   --ui-dialog-container: #ece6f0;
   --ui-dialog-fg: #1d1b20;
   --ui-dialog-body: #49454f;
-  --ui-dialog-scrim: rgb(0 0 0 / .32);
+  --ui-dialog-scrim: var(--ui-color-scrim);
 
   /* Toast */
   --ui-toast-container: #322f35;
   --ui-toast-fg: #f3edf7;
   --ui-toast-radius: 4px;
   --ui-toast-action: #d0bcff;
-  --ui-toast-icon-info: #d0bcff;
-  --ui-toast-icon-success: #81c995;
-  --ui-toast-icon-warning: #fdd663;
-  --ui-toast-icon-error: #f2b8b5;
+  --ui-toast-icon-info: var(--ui-color-info);
+  --ui-toast-icon-success: var(--ui-color-success);
+  --ui-toast-icon-warning: var(--ui-color-warning);
+  --ui-toast-icon-error: var(--ui-color-danger);
 
   /* Typescale */
   --ui-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
+  --ui-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
   --ui-type-display-sm: 400 2.25rem/2.75rem var(--ui-font-sans);
+  --ui-type-display-lg: 400 3.5rem/4rem var(--ui-font-sans);
   --ui-type-headline-sm: 400 1.5rem/2rem var(--ui-font-sans);
   --ui-type-title-lg: 500 1.375rem/1.75rem var(--ui-font-sans);
+  --ui-type-title-md: 500 1rem/1.5rem var(--ui-font-sans);
   --ui-type-body-lg: 400 1rem/1.5rem var(--ui-font-sans);
   --ui-type-body-md: 400 1rem/1.5rem var(--ui-font-sans);
   --ui-type-body-sm: 400 .75rem/1rem var(--ui-font-sans);
@@ -57,13 +71,27 @@
   --ui-type-dialog-headline: 400 1.5rem/2rem var(--ui-font-sans);
   --ui-type-dialog-body: 400 .875rem/1.25rem var(--ui-font-sans);
 
+  /* Size — Material overrides of the core control/item geometry. control and
+     track repeat their core defaults (2.5rem / 4px): the values exist here so
+     the theme owns every value a consumer may read. Items follow the Material
+     anatomy (menu 48, list/drawer/table 56/72/88); the nav slot tokens keep
+     their core 64x32/32/16px defaults because those are already Material. */
+  --ui-size-control: 2.5rem;
+  --ui-size-field: 3.5rem;
+  --ui-size-icon: 24px;
+  --ui-size-icon-sm: 18px;
+  --ui-size-track: 4px;
+  --ui-size-item-sm: 48px;
+  --ui-size-item: 56px;
+  --ui-size-item-lg: 72px;
+  --ui-size-item-xl: 88px;
+
   /* Shape */
   --ui-radius-none: 0;
   --ui-radius-xs: .25rem;
   --ui-radius-sm: .5rem;
   --ui-radius-md: .75rem;
   --ui-radius-lg: 1rem;
-  --ui-radius-xl: 1.75rem;
   --ui-radius-full: 9999px;
   --ui-dialog-radius: 28px;
 
@@ -95,7 +123,7 @@
   /* Checkbox */
   --ui-checkbox-size: 18px;
   --ui-checkbox-radius: 2px;
-  --ui-checkbox-outline-width: 2px;
+  --ui-checkbox-outline-width: var(--ui-border-width-2);
   --ui-checkbox-outline: var(--ui-color-fg-muted);
   --ui-checkbox-hover-outline: var(--ui-color-fg);
   --ui-checkbox-container: var(--ui-color-primary);
@@ -106,7 +134,7 @@
   /* Radio */
   --ui-radio-size: 20px;
   --ui-radio-radius: 50%;
-  --ui-radio-outline-width: 2px;
+  --ui-radio-outline-width: var(--ui-border-width-2);
   --ui-radio-outline: var(--ui-color-fg-muted);
   --ui-radio-hover-outline: var(--ui-color-fg);
   --ui-radio-checked: var(--ui-color-primary);
@@ -116,7 +144,7 @@
   --ui-switch-width: 52px;
   --ui-switch-height: 32px;
   --ui-switch-radius: var(--ui-radius-full);
-  --ui-switch-outline-width: 2px;
+  --ui-switch-outline-width: var(--ui-border-width-2);
   --ui-switch-track: var(--ui-color-primary);
   --ui-switch-track-unselected: #e6e0e9;
   --ui-switch-track-outline: var(--ui-color-border-strong);
@@ -130,7 +158,7 @@
   --ui-switch-disabled-handle: var(--ui-color-fg);
 
   /* Slider */
-  --ui-slider-track-height: 4px;
+  --ui-slider-track-height: var(--ui-size-track);
   --ui-slider-track-radius: var(--ui-radius-full);
   --ui-slider-handle-size: 20px;
   --ui-slider-handle-pressed-size: 24px;
@@ -142,7 +170,7 @@
   --ui-slider-disabled-opacity: var(--ui-state-disabled-opacity);
 
   /* Progress */
-  --ui-progress-track-height: 4px;
+  --ui-progress-track-height: var(--ui-size-track);
   --ui-progress-radius: var(--ui-radius-full);
   --ui-progress-track: #e6e0e9;
   --ui-progress-indicator: var(--ui-color-primary);
@@ -161,10 +189,10 @@
   --ui-fab-icon-size: 24px;
   --ui-fab-icon-size-large: 36px;
   --ui-fab-icon-size-extended: 28px;
-  --ui-fab-extension-gap: 12px;
+  --ui-fab-extension-gap: var(--ui-space-3);
 
   /* Select */
-  --ui-select-height: 3.5rem;
+  --ui-select-height: var(--ui-size-field);
   --ui-select-radius: 4px;
   --ui-select-radius-top: 4px 4px 0 0;
   --ui-select-caret: var(--ui-color-fg-muted);
@@ -184,7 +212,6 @@
   --ui-select-menu-min-width: 210px;
   --ui-select-menu-item-height: 48px;
   --ui-select-menu-item-fg: var(--ui-color-fg);
-  --ui-select-menu-item-icon: var(--ui-color-fg-muted);
   --ui-select-menu-item-selected: #e6e0e9;
   --ui-select-menu-divider: var(--ui-color-border);
 
@@ -192,11 +219,11 @@
   --ui-state-hover-opacity: .08;
   --ui-state-focus-opacity: .10;
   --ui-state-pressed-opacity: .10;
-  --ui-state-dragged-opacity: .16;
   --ui-state-disabled-opacity: .38;
   --ui-focus-thickness: 3px;
   --ui-focus-offset: 2px;
   --ui-motion-short: 150ms;
+  --ui-motion-long: 500ms;
   --ui-easing-standard: cubic-bezier(.2, 0, 0, 1);
 }
 
@@ -206,6 +233,7 @@
   color-scheme: dark;
   --ui-color-canvas: #141218;
   --ui-color-surface: #211f26;
+  --ui-color-surface-container: #2b2930;
   --ui-color-fg: #e6e0e9;
   --ui-color-fg-muted: #cac4d0;
   --ui-color-primary: #d0bcff;
@@ -217,6 +245,17 @@
   --ui-color-danger: #f2b8b5;
   --ui-color-danger-fg: #601410;
   --ui-color-focus-ring: #e8def8;
+
+  /* Semantic status colors — dark Material values */
+  --ui-color-success: #81c995;
+  --ui-color-success-fg: #00391f;
+  --ui-color-warning: #fdd663;
+  --ui-color-warning-fg: #fdd663;
+  --ui-color-warning-container: #3a3100;
+  --ui-color-info: #d0bcff;
+  --ui-color-danger-container: #8c1d18;
+  --ui-color-scrim: rgb(0 0 0 / .32);
+
   --ui-field-container: #36343b;
   --ui-field-border: #938f99;
   --ui-field-border-hover: #e6e0e9;
@@ -232,14 +271,14 @@
   --ui-dialog-container: #2b2930;
   --ui-dialog-fg: #e6e0e9;
   --ui-dialog-body: #cac4d0;
-  --ui-dialog-scrim: rgb(0 0 0 / .32);
+  --ui-dialog-scrim: var(--ui-color-scrim);
   --ui-toast-container: #ece6f0;
   --ui-toast-fg: #1d1b20;
   --ui-toast-action: #6750a4;
-  --ui-toast-icon-info: #6750a4;
-  --ui-toast-icon-success: #2e7d32;
-  --ui-toast-icon-warning: #7a5700;
-  --ui-toast-icon-error: #b3261e;
+  --ui-toast-icon-info: var(--ui-color-info);
+  --ui-toast-icon-success: var(--ui-color-success);
+  --ui-toast-icon-warning: var(--ui-color-warning);
+  --ui-toast-icon-error: var(--ui-color-danger);
 
   --ui-fab-primary-container: #4f378b;
   --ui-fab-primary-fg: #eaddff;
@@ -255,6 +294,7 @@
     color-scheme: dark;
     --ui-color-canvas: #141218;
     --ui-color-surface: #211f26;
+    --ui-color-surface-container: #2b2930;
     --ui-color-fg: #e6e0e9;
     --ui-color-fg-muted: #cac4d0;
     --ui-color-primary: #d0bcff;
@@ -266,6 +306,17 @@
     --ui-color-danger: #f2b8b5;
     --ui-color-danger-fg: #601410;
     --ui-color-focus-ring: #e8def8;
+
+    /* Semantic status colors — dark Material values */
+    --ui-color-success: #81c995;
+    --ui-color-success-fg: #00391f;
+    --ui-color-warning: #fdd663;
+    --ui-color-warning-fg: #fdd663;
+    --ui-color-warning-container: #3a3100;
+    --ui-color-info: #d0bcff;
+    --ui-color-danger-container: #8c1d18;
+    --ui-color-scrim: rgb(0 0 0 / .32);
+
     --ui-field-container: #36343b;
     --ui-field-border: #938f99;
     --ui-field-border-hover: #e6e0e9;
@@ -280,14 +331,14 @@
     --ui-dialog-container: #2b2930;
     --ui-dialog-fg: #e6e0e9;
     --ui-dialog-body: #cac4d0;
-    --ui-dialog-scrim: rgb(0 0 0 / .32);
+    --ui-dialog-scrim: var(--ui-color-scrim);
     --ui-toast-container: #ece6f0;
     --ui-toast-fg: #1d1b20;
     --ui-toast-action: #6750a4;
-    --ui-toast-icon-info: #6750a4;
-    --ui-toast-icon-success: #2e7d32;
-    --ui-toast-icon-warning: #7a5700;
-    --ui-toast-icon-error: #b3261e;
+    --ui-toast-icon-info: var(--ui-color-info);
+    --ui-toast-icon-success: var(--ui-color-success);
+    --ui-toast-icon-warning: var(--ui-color-warning);
+    --ui-toast-icon-error: var(--ui-color-danger);
 
     --ui-fab-primary-container: #4f378b;
     --ui-fab-primary-fg: #eaddff;

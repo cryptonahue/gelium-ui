@@ -1,0 +1,146 @@
+/*
+ * Gelium UI core tokens — the semantic contract every theme starts from.
+ *
+ * This file owns the *contract*: the token families every consumer may rely on
+ * (color, state layers, focus, radius, elevation, motion, spacing, size) with neutral,
+ * theme-independent defaults. Concrete values live in the theme layer
+ * (one themes subdirectory per theme, e.g. themes/theme-material/theme.css),
+ * which overrides these tokens under its own class, so this file must be
+ * imported before any theme. The defaults are intentionally neutral (no
+ * Material values) so an unthemed document stays usable and no consumer
+ * depends on a specific brand hue.
+ *
+ * Token families that are purely visual or component-scoped (dialog, toast,
+ * card, badge, checkbox, radio, switch, slider, progress, fab, select, field,
+ * divider, data-table, list, menu, navigation, segmented, tooltip, and the
+ * typescale) remain owned by their theme or component layer; they are NOT part
+ * of this core contract.
+ */
+:root {
+  /* Color — neutral defaults; themes override with their palette. */
+  --ui-color-canvas: #ffffff;
+  --ui-color-surface: #f5f5f5;
+  --ui-color-surface-container: #ececec;
+  --ui-color-fg: #1c1c1c;
+  --ui-color-fg-muted: #555555;
+  --ui-color-primary: #444444;
+  --ui-color-primary-fg: #ffffff;
+  --ui-color-secondary: #e0e0e0;
+  --ui-color-secondary-fg: #1c1c1c;
+  --ui-color-border: #cfcfcf;
+  --ui-color-border-strong: #7a7a7a;
+  --ui-color-danger: #cc3a3a;
+  --ui-color-danger-fg: #ffffff;
+  --ui-color-focus-ring: #444444;
+
+  /* Error/danger: danger is canonical; error is a temporary compatibility
+     alias pointing at it (never the other way around). */
+  --ui-color-error: var(--ui-color-danger);
+
+  /* Semantic status colors — success/warning/info have real consumers
+     (toast icon variants, WhatsApp demo tones). danger-container backs the
+     demo RED quality chip; scrim is the dialog/drawer backdrop. There is no
+     outline token (border-strong covers that role) and no success-container
+     token (no component consumer). */
+  --ui-color-success: #2e7d32;
+  --ui-color-success-fg: #ffffff;
+  --ui-color-warning: #b9930a;
+  --ui-color-warning-fg: #6a4b00;
+  --ui-color-warning-container: #fff3d6;
+  --ui-color-info: #4f5d75;
+  --ui-color-danger-container: #fddcdc;
+  --ui-color-scrim: rgb(0 0 0 / .32);
+
+  /* State layer opacity contract: hover, focus, pressed, selected, disabled.
+     There is no dragged token: nothing consumes it. */
+  --ui-state-hover-opacity: .08;
+  --ui-state-focus-opacity: .10;
+  --ui-state-pressed-opacity: .10;
+  --ui-state-selected-opacity: .08;
+  --ui-state-disabled-opacity: .38;
+
+  /* Focus indicator */
+  --ui-focus-thickness: 3px;
+  --ui-focus-offset: 2px;
+
+  /* Border — width/style scale. Only values with real consumers. width-1 backs
+     the real borders of button, icon-button, select, text-field, card, chips,
+     segmented-button, data-table and tabs (9 components). width-2 backs the
+     checkbox/radio/switch outline-width theme tokens; the spinner and
+     checkmark/glyph strokes keep their literal 2px decorative strokes by
+     design. solid is the style every consumer above uses. There is no dashed
+     step: the only use is a docs demo stand-in. */
+  --ui-border-width-1: 1px;
+  --ui-border-width-2: 2px;
+  --ui-border-style-solid: solid;
+
+  /* Shape — basic radius scale */
+  --ui-radius-none: 0;
+  --ui-radius-xs: .25rem;
+  --ui-radius-sm: .5rem;
+  --ui-radius-md: .75rem;
+  --ui-radius-lg: 1rem;
+  --ui-radius-full: 9999px;
+
+  /* Elevation — basic shadow scale */
+  --ui-shadow-0: none;
+  --ui-shadow-1: 0 1px 2px rgb(0 0 0 / .14), 0 1px 3px rgb(0 0 0 / .10);
+  --ui-shadow-2: 0 2px 6px rgb(0 0 0 / .16), 0 1px 2px rgb(0 0 0 / .12);
+  --ui-shadow-3: 0 4px 8px rgb(0 0 0 / .16), 0 2px 4px rgb(0 0 0 / .12);
+  --ui-shadow-4: 0 8px 12px rgb(0 0 0 / .16), 0 3px 6px rgb(0 0 0 / .12);
+  --ui-shadow-5: 0 12px 20px rgb(0 0 0 / .18), 0 4px 8px rgb(0 0 0 / .12);
+
+  /* Motion — base duration and easing. short is the ubiquitous interaction
+     duration; long backs the dialog/navigation-drawer [open] entrance
+     transitions (the only 500ms consumers in the component layer). There is
+     no medium step: nothing consumes it. */
+  --ui-motion-short: 150ms;
+  --ui-motion-long: 500ms;
+  --ui-easing-standard: cubic-bezier(.2, 0, 0, 1);
+
+  /* Spacing — base scale */
+  --ui-space-1: .25rem;
+  --ui-space-2: .5rem;
+  --ui-space-3: .75rem;
+  --ui-space-4: 1rem;
+  --ui-space-6: 1.5rem;
+  --ui-space-8: 2rem;
+
+  /* Size — control/item geometry. The values below are neutral defaults that
+     themes override under their own class (Material: 2.5rem control, 3.5rem
+     field, 24px/18px icons, 4px track, 48/56/72/88px items). Consumers:
+     --ui-size-control  → button, icon-button, segmented-button min geometry;
+     --ui-size-field    → text-field/select field height;
+     --ui-size-icon     → .ui-icon and glyph slots (tabs, list, menu, nav);
+     --ui-size-icon-sm  → 18px glyphs (checkboxes, checkmarks, sort icons);
+     --ui-size-track    → slider/progress track height;
+     --ui-size-item-*   → list/menu/drawer/data-table row heights;
+     --ui-size-nav-*    → navigation bar/tab icon slot, indicator and label.
+     There is no density-* family: nothing consumes it, so it stays absent. */
+  --ui-size-control: 2.5rem;
+  --ui-size-field: 3.5rem;
+  --ui-size-icon: 1.5rem;
+  --ui-size-icon-sm: 1.125rem;
+  --ui-size-track: 4px;
+  --ui-size-item-sm: 48px;
+  --ui-size-item: 56px;
+  --ui-size-item-lg: 72px;
+  --ui-size-item-xl: 88px;
+  --ui-size-nav-icon-slot: 64px;
+  --ui-size-nav-icon-slot-h: 32px;
+  --ui-size-indicator: 32px;
+  --ui-size-label-height: 16px;
+
+  /* Fonts — neutral defaults so every typescale token below stays resolvable
+     in an unthemed document; themes override these under their own class. */
+  --ui-font-sans: ui-sans-serif, system-ui, sans-serif;
+  --ui-font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
+
+  /* Typescale — display-lg and title-md are the typescale tokens the core
+     must own: the landing hero (base.css) consumes display-lg, and the
+     WhatsApp manager demo admin subtitle (demo-whatsapp.css) consumes
+     title-md, so an unthemed document still gets usable type sizes. They
+     mirror the theme shorthand form `weight size/line-height family`. */
+  --ui-type-display-lg: 400 3.5rem/4rem var(--ui-font-sans);
+  --ui-type-title-md: 500 1rem/1.5rem var(--ui-font-sans);
+}

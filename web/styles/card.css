@@ -12,7 +12,7 @@
     align-items: stretch;
     position: relative;
     border-radius: var(--ui-card-radius);
-    padding: 1rem;
+    padding: var(--ui-space-4);
     min-width: 0;
     color: var(--ui-color-fg);
     text-align: start;
@@ -21,10 +21,10 @@
   }
   .ui-card-elevated { background: var(--ui-card-container-elevated); box-shadow: var(--ui-shadow-1); }
   .ui-card-filled { background: var(--ui-card-container-filled); }
-  .ui-card-outlined { background: var(--ui-card-container-outlined); border: 1px solid var(--ui-card-outline-color); }
+  .ui-card-outlined { background: var(--ui-card-container-outlined); border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-card-outline-color); }
   .ui-card:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset); }
-  .ui-card-title { margin: 0 0 .25rem; font: var(--ui-type-headline-sm); }
-  .ui-card-action { margin-top: 1rem; }
+  .ui-card-title { margin: 0 0 var(--ui-space-1); font: var(--ui-type-headline-sm); }
+  .ui-card-action { margin-top: var(--ui-space-4); }
   .card-demo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));

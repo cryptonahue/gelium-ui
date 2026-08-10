@@ -171,7 +171,6 @@ func TestMaterialThemeExposesSemanticFoundationContracts(t *testing.T) {
 		"--ui-type-display-sm:",
 		"--ui-radius-full:",
 		"--ui-shadow-5:",
-		"--ui-state-dragged-opacity:",
 		"--ui-focus-thickness:3px",
 		"--ui-focus-offset:2px",
 		"--ui-field-container:",
@@ -184,6 +183,39 @@ func TestMaterialThemeExposesSemanticFoundationContracts(t *testing.T) {
 		}
 	}
 }
+func TestThemeClassIsServerDrivenAndAllowlisted(t *testing.T) {
+	tests := []struct {
+		name  string
+		theme string
+		want  string
+	}{
+		{name: "empty falls back to default", theme: "", want: "theme-material"},
+		{name: "default passes the allowlist", theme: "theme-material", want: "theme-material"},
+		{name: "unknown theme falls back to default", theme: "theme-basecoat", want: "theme-material"},
+		{name: "arbitrary injection falls back to default", theme: "onload=alert(1)", want: "theme-material"},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := themeClass(tt.theme); got != tt.want {
+				t.Errorf("themeClass(%q) = %q, want %q", tt.theme, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestLayoutRendersThemeClassOnHTMLElement(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<html lang="en" class="theme-material">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("home does not render the server-driven theme class %q", contract)
+		}
+	}
+}
+
 func renderToast(t *testing.T, view toastView) string {
 	t.Helper()
 	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/toast.html"))

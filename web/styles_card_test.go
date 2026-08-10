@@ -14,7 +14,7 @@ func TestCardPrimitiveCSSMapsVariantsToThemeTokens(t *testing.T) {
 		`border-radius: var(--ui-card-radius);`,
 		`.ui-card-elevated { background: var(--ui-card-container-elevated); box-shadow: var(--ui-shadow-1);`,
 		`.ui-card-filled { background: var(--ui-card-container-filled);`,
-		`.ui-card-outlined { background: var(--ui-card-container-outlined); border: 1px solid var(--ui-card-outline-color);`,
+		`.ui-card-outlined { background: var(--ui-card-container-outlined); border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-card-outline-color);`,
 		`.ui-card:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset);`,
 	} {
 		if !strings.Contains(css, contract) {
@@ -33,7 +33,7 @@ func TestCardPrimitiveCSSMapsVariantsToThemeTokens(t *testing.T) {
 }
 
 func TestCardThemeDefinesPublicUIFamily(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-card-radius:",
 		"--ui-card-container-elevated:",

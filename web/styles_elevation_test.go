@@ -25,14 +25,7 @@ func TestElevationPrimitiveCSSMapsLevelsToShadowTokens(t *testing.T) {
 		t.Error("elevation is visual-only and must not keep decorative shadows in forced colors")
 	}
 
-	reducedIndex := strings.Index(css, "@media (prefers-reduced-motion: reduce)")
-	if reducedIndex < 0 {
-		t.Fatal("source CSS is missing the reduced-motion media query")
-	}
-	reduced := css[reducedIndex:]
-	if nextMedia := strings.Index(reduced[1:], "@media "); nextMedia >= 0 {
-		reduced = reduced[:nextMedia+1]
-	}
+	reduced := entryMediaBlock(t, css, "@media (prefers-reduced-motion: reduce)")
 	if !strings.Contains(reduced, ".ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 { transition: none;") {
 		t.Error("reduced-motion CSS must disable the elevation box-shadow transition")
 	}

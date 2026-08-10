@@ -12,7 +12,7 @@ func TestNavTabPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 	for _, contract := range []string{
 		`.ui-nav-tab {`,
 		`flex-direction: column;`,
-		`padding: 8px 0 12px;`,
+		`padding: var(--ui-space-2) 0 var(--ui-space-3);`,
 		`min-width: 48px;`,
 		`font: var(--ui-type-label-sm);`,
 		`.ui-nav-tab-icon {`,

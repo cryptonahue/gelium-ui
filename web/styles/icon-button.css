@@ -2,11 +2,11 @@
   .ui-icon-button {
     position: relative;
     display: inline-flex;
-    width: 2.5rem;
-    height: 2.5rem;
+    width: var(--ui-size-control);
+    height: var(--ui-size-control);
     align-items: center;
     justify-content: center;
-    border: 1px solid transparent;
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent;
     border-radius: var(--ui-radius-full);
     padding: 0;
     flex: none;
@@ -15,14 +15,14 @@
     transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard), border-color var(--ui-motion-short) var(--ui-easing-standard);
   }
   .ui-icon-button .ui-icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: var(--ui-size-icon);
+    height: var(--ui-size-icon);
   }
   .ui-icon-button:hover:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px rgb(255 255 255 / var(--ui-state-hover-opacity));
+    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent);
   }
   .ui-icon-button:active:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px rgb(255 255 255 / var(--ui-state-pressed-opacity));
+    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-pressed-opacity) * 100%), transparent);
   }
   .ui-icon-button:focus-visible {
     outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);

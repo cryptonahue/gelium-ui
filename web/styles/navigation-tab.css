@@ -14,10 +14,10 @@
      slot and only the active one is painted when the tab is selected;
      when both slots carry the same glyph the template renders a single copy. */
   .ui-nav-tab {
-    --ui-nav-tab-icon-size: 24px;
-    --ui-nav-tab-icon-container-width: 64px;
-    --ui-nav-tab-icon-container-height: 32px;
-    --ui-nav-tab-indicator-size: 32px;
+    --ui-nav-tab-icon-size: var(--ui-size-icon);
+    --ui-nav-tab-icon-container-width: var(--ui-size-nav-icon-slot);
+    --ui-nav-tab-icon-container-height: var(--ui-size-nav-icon-slot-h);
+    --ui-nav-tab-indicator-size: var(--ui-size-indicator);
     --ui-nav-tab-indicator-color: var(--ui-color-secondary);
     --ui-nav-tab-active-icon-color: var(--ui-color-secondary-fg);
     --ui-nav-tab-active-label-color: var(--ui-color-fg);
@@ -25,8 +25,8 @@
     --ui-nav-tab-inactive-icon-color: var(--ui-color-fg-muted);
     --ui-nav-tab-inactive-hover-icon-color: var(--ui-color-fg);
     --ui-nav-tab-inactive-label-color: var(--ui-color-fg-muted);
-    --ui-nav-tab-label-height: 16px;
-    --ui-nav-tab-label-space: 4px;
+    --ui-nav-tab-label-height: var(--ui-size-label-height);
+    --ui-nav-tab-label-space: var(--ui-space-1);
     --ui-nav-tab-state-layer-color: var(--ui-color-fg);
     --ui-nav-tab-hover-opacity: var(--ui-state-hover-opacity);
     --ui-nav-tab-focus-opacity: var(--ui-state-focus-opacity);
@@ -42,7 +42,7 @@
     width: 100%;
     min-height: 48px;
     min-width: 48px;
-    padding: 8px 0 12px;
+    padding: var(--ui-space-2) 0 var(--ui-space-3);
     color: var(--ui-nav-tab-inactive-icon-color);
     font: var(--ui-type-label-sm);
     text-align: center;

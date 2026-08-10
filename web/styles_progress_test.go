@@ -41,7 +41,7 @@ func TestProgressPrimitiveCSSMapsNativeProgressAndStates(t *testing.T) {
 }
 
 func TestProgressThemeDefinesPublicUIFamily(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-progress-track-height:",
 		"--ui-progress-radius:",

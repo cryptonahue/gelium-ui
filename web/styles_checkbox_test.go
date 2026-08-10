@@ -11,7 +11,7 @@ func TestCheckboxPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 
 	for _, contract := range []string{
 		`.ui-checkbox {`,
-		`gap: .5rem;`,
+		`gap: var(--ui-space-2);`,
 		`input[type="checkbox"] {`,
 		`appearance: none;`,
 		`width: var(--ui-checkbox-size);`,
@@ -55,7 +55,7 @@ func TestCheckboxPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 }
 
 func TestCheckboxThemeDefinesPublicUIFamily(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-checkbox-size:",
 		"--ui-checkbox-radius:",
@@ -70,6 +70,16 @@ func TestCheckboxThemeDefinesPublicUIFamily(t *testing.T) {
 		if !strings.Contains(theme, token) {
 			t.Errorf("theme is missing checkbox token %q", token)
 		}
+	}
+}
+
+func TestCheckboxReducedMotionDisablesTransitions(t *testing.T) {
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceComponentCSS(t, "checkbox.css"), " ")
+	if !strings.Contains(css, `@media (prefers-reduced-motion: reduce)`) {
+		t.Error("checkbox.css must include a reduced-motion media query")
+	}
+	if !strings.Contains(css, `.ui-checkbox input[type="checkbox"] { transition: none; }`) {
+		t.Error("checkbox reduced-motion must disable the control transition")
 	}
 }
 

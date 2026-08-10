@@ -26,20 +26,31 @@ func TestToastReleaseDocsAndPackageVersionStayCoherent(t *testing.T) {
 }
 
 func TestMaterialThemeDefinesToastTokensInEveryColorScheme(t *testing.T) {
-	theme := regexp.MustCompile(`\s+`).ReplaceAllString(repositoryFile(t, "themes", "theme-material", "theme.css"), " ")
+	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
 	count := func(token string) int {
 		return len(regexp.MustCompile(`(?i)`+regexp.QuoteMeta(token)).FindAllStringIndex(theme, -1))
 	}
 	if got := count(`--ui-toast-container:`); got != 3 {
 		t.Errorf("toast container theme declarations = %d, want 3 (light, explicit dark, media dark)", got)
 	}
+	// The contract is the token family, never a concrete hex value. Color
+	// tokens must be defined once per scheme (light, explicit dark, media
+	// dark); shape tokens are scheme-independent and just need to exist.
 	for _, token := range []string{
-		`--ui-toast-container: #322f35;`,
-		`--ui-toast-fg: #f3edf7;`,
-		`--ui-toast-radius: 4px;`,
-		`--ui-toast-action: #d0bcff;`,
-		`--ui-toast-container: #ece6f0;`,
-		`--ui-toast-fg: #1d1b20;`,
+		`--ui-toast-container:`,
+		`--ui-toast-fg:`,
+		`--ui-toast-action:`,
+	} {
+		if got := count(token); got != 3 {
+			t.Errorf("toast token %s must be defined in light, explicit dark, and media dark schemes, got %d", token, got)
+		}
+	}
+	for _, token := range []string{
+		`--ui-toast-radius:`,
+		`--ui-toast-icon-info:`,
+		`--ui-toast-icon-success:`,
+		`--ui-toast-icon-warning:`,
+		`--ui-toast-icon-error:`,
 	} {
 		if !strings.Contains(theme, token) {
 			t.Errorf("Material toast theme is missing %q", token)
@@ -52,8 +63,8 @@ func TestToastSourceCSSImplementsSnackbarAnatomyAndAccessibleStates(t *testing.T
 	compact := regexp.MustCompile(`\s+`).ReplaceAllString(css, " ")
 	for _, contract := range []string{
 		`.ui-toast-region { position: fixed;`,
-		`.ui-toast { display: flex;`,
-		`min-height: 3rem;`,
+		`.ui-toast { --ui-toast-min-height: 3rem; --ui-toast-padding: .875rem 1rem; display: flex;`,
+		`min-height: var(--ui-toast-min-height);`,
 		`max-width: min(100%, 26rem);`,
 		`border-radius: var(--ui-toast-radius);`,
 		`background: var(--ui-toast-container);`,
@@ -71,14 +82,7 @@ func TestToastSourceCSSImplementsSnackbarAnatomyAndAccessibleStates(t *testing.T
 
 func TestToastReducedMotionDisablesRegionTransition(t *testing.T) {
 	css := sourceAppCSS(t)
-	reducedIndex := strings.Index(css, "@media (prefers-reduced-motion: reduce)")
-	if reducedIndex < 0 {
-		t.Fatal("source CSS is missing the reduced-motion media query")
-	}
-	reduced := css[reducedIndex:]
-	if next := strings.Index(reduced[1:], "@media "); next >= 0 {
-		reduced = reduced[:next+1]
-	}
+	reduced := entryMediaBlock(t, css, "@media (prefers-reduced-motion: reduce)")
 	pattern := regexp.MustCompile(`(?s)\.ui-toast-region \.ui-toast\s*\{[^}]*transition:\s*none\s*;?[^}]*\}`)
 	if !pattern.MatchString(reduced) {
 		t.Error("reduced-motion CSS must disable the toast enter/exit transition")

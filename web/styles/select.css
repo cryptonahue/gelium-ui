@@ -10,6 +10,7 @@
       field paints it transparent while empty, leaving the resting label as the only
       prompt. */
   .ui-select {
+    --ui-select-caret-reserve: 2.5rem;
     position: relative;
     display: grid;
     width: min(100%, 24rem);
@@ -20,7 +21,7 @@
     width: 100%;
     height: var(--ui-select-height);
     box-sizing: border-box;
-    padding: 1rem 2.5rem 0 1rem;
+    padding: 1rem var(--ui-select-caret-reserve) 0 1rem;
     border-radius: var(--ui-select-radius);
     background: transparent;
     color: var(--ui-select-fg);
@@ -47,14 +48,14 @@
   .ui-select select[aria-invalid="true"] ~ .ui-select-caret { color: var(--ui-select-error); }
   .ui-select-filled select {
     background: var(--ui-select-container-filled);
-    border: 1px solid transparent;
-    border-bottom: 1px solid var(--ui-select-outline);
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent;
+    border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);
     border-radius: var(--ui-select-radius-top);
   }
   .ui-select-filled select:focus-visible { border-bottom-color: var(--ui-select-focus); }
   .ui-select-outlined select {
     background: transparent;
-    border: 1px solid var(--ui-select-outline);
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);
   }
   .ui-select-outlined select:focus-visible { border-color: var(--ui-select-focus); }
   .ui-select-label {

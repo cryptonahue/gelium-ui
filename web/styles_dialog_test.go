@@ -7,27 +7,34 @@ import (
 )
 
 func TestMaterialThemeDefinesDialogSemanticsInEveryColorScheme(t *testing.T) {
-	theme := regexp.MustCompile(`\s+`).ReplaceAllString(repositoryFile(t, "themes", "theme-material", "theme.css"), " ")
+	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
 	for _, contract := range []string{
-		`--ui-dialog-radius: 28px;`,
-		`--ui-type-dialog-headline: 400 1.5rem/2rem var(--ui-font-sans);`,
-		`--ui-type-dialog-body: 400 .875rem/1.25rem var(--ui-font-sans);`,
-		`--ui-dialog-container: #ece6f0;`,
-		`--ui-dialog-fg: #1d1b20;`,
-		`--ui-dialog-body: #49454f;`,
-		`--ui-dialog-scrim: rgb(0 0 0 / .32);`,
+		`--ui-dialog-radius:`,
+		`--ui-type-dialog-headline:`,
+		`--ui-type-dialog-body:`,
+		`--ui-dialog-container:`,
+		`--ui-dialog-fg:`,
+		`--ui-dialog-body:`,
+		`--ui-dialog-scrim:`,
 		`.theme-material.theme-dark,`,
-		`--ui-dialog-container: #2b2930;`,
-		`--ui-dialog-fg: #e6e0e9;`,
-		`--ui-dialog-body: #cac4d0;`,
 		`@media (prefers-color-scheme: dark)`,
 	} {
 		if !strings.Contains(theme, contract) {
 			t.Errorf("Material dialog theme contract is missing %q", contract)
 		}
 	}
-	if strings.Count(theme, `--ui-dialog-container: #2b2930;`) != 2 {
-		t.Error("dark dialog semantics must be defined for explicit and preferred dark schemes")
+	// Every surface/foreground/scrim token must be defined once per scheme:
+	// light, explicit dark, and media dark. The contract is token presence
+	// across schemes, not a concrete hex value.
+	for _, token := range []string{
+		"--ui-dialog-container:",
+		"--ui-dialog-fg:",
+		"--ui-dialog-body:",
+		"--ui-dialog-scrim:",
+	} {
+		if got := strings.Count(theme, token); got != 3 {
+			t.Errorf("dark dialog semantics must be defined for explicit and preferred dark schemes: %s appears %d times, want 3", token, got)
+		}
 	}
 }
 
@@ -35,17 +42,17 @@ func TestDialogSourceCSSImplementsMaterialGeometryStatesAndProgressiveMotion(t *
 	css := sourceAppCSS(t)
 	compact := regexp.MustCompile(`\s+`).ReplaceAllString(css, " ")
 	for _, contract := range []string{
-		`.ui-dialog {`, `min-width: 280px;`, `min-height: 140px;`,
-		`max-width: min(560px, calc(100% - 48px));`, `max-height: min(560px, calc(100% - 48px));`,
+		`.ui-dialog {`, `min-width: var(--ui-dialog-min-width);`, `min-height: var(--ui-dialog-min-height);`,
+		`max-width: min(var(--ui-dialog-max-width), calc(100% - 48px));`, `max-height: min(var(--ui-dialog-max-width), calc(100% - 48px));`,
 		`width: fit-content;`, `height: fit-content;`, `margin: auto;`, `border-radius: var(--ui-dialog-radius);`,
 		`background: var(--ui-dialog-container);`, `color: var(--ui-dialog-fg);`,
-		`.ui-dialog-headline { margin: 0; padding: 24px 24px 0; font: var(--ui-type-dialog-headline);`,
-		`.ui-dialog-content { padding: 24px; color: var(--ui-dialog-body); font: var(--ui-type-dialog-body);`,
-		`.ui-dialog-actions { display: flex; flex-wrap: nowrap; justify-content: flex-end; gap: 8px; padding: 16px 24px 24px;`,
+		`.ui-dialog-headline { margin: 0; padding: var(--ui-space-6) var(--ui-space-6) 0; font: var(--ui-type-dialog-headline);`,
+		`.ui-dialog-content { padding: var(--ui-space-6); color: var(--ui-dialog-body); font: var(--ui-type-dialog-body);`,
+		`.ui-dialog-actions { display: flex; flex-wrap: nowrap; justify-content: flex-end; gap: var(--ui-space-2); padding: var(--ui-space-4) var(--ui-space-6) var(--ui-space-6);`,
 		`.ui-dialog::backdrop { background: var(--ui-dialog-scrim);`,
-		`transition: opacity 150ms`, `transition-behavior: allow-discrete;`, `overlay 150ms`, `display 150ms`,
+		`transition: opacity var(--ui-motion-short)`, `transition-behavior: allow-discrete;`, `overlay var(--ui-motion-short)`, `display var(--ui-motion-short)`,
 		`.ui-dialog[open] {`, `translate: 0;`, `scale: 1;`, `opacity: 1;`,
-		`@starting-style`, `translate: 0 -50px;`, `scale: .35;`, `500ms`,
+		`@starting-style`, `translate: 0 -50px;`, `scale: .35;`, `var(--ui-motion-long)`,
 		`@media (prefers-reduced-motion: reduce)`, `transition: none;`,
 		`@media (forced-colors: active)`, `border: 2px solid WindowText;`,
 	} {

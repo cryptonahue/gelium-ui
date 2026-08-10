@@ -16,7 +16,7 @@
     border-radius: var(--ui-select-menu-radius);
     background: var(--ui-select-menu-container);
     box-shadow: var(--ui-select-menu-elevation);
-    padding: .5rem 0;
+    padding: var(--ui-space-2) 0;
     color: var(--ui-select-menu-item-fg);
     transition: opacity var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
   }
@@ -45,7 +45,7 @@
     min-height: var(--ui-select-menu-item-height);
     box-sizing: border-box;
     border: 0;
-    padding: 0 1rem;
+    padding: 0 var(--ui-space-4);
     background: transparent;
     color: var(--ui-select-menu-item-fg);
     font: var(--ui-type-label-lg);
@@ -59,14 +59,14 @@
     background: var(--ui-select-menu-item-selected);
   }
   .ui-select-menu-divider {
-    height: 1px;
-    margin: .5rem 0;
+    height: var(--ui-divider-thickness);
+    margin: var(--ui-space-2) 0;
     border: 0;
     background: var(--ui-select-menu-divider);
   }
   .ui-select-menu-error {
     margin: 0;
-    padding: .5rem 1rem;
+    padding: var(--ui-space-2) var(--ui-space-4);
     color: var(--ui-select-error);
     font: var(--ui-type-body-sm);
   }

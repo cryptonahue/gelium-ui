@@ -9,12 +9,12 @@
      primitive works standalone; the theme may override them globally. */
   .ui-list {
     --ui-list-container-color: var(--ui-color-surface);
-    --ui-list-item-leading-space: 16px;
-    --ui-list-item-trailing-space: 16px;
-    --ui-list-item-icon-size: 24px;
-    --ui-list-item-one-line-height: 56px;
-    --ui-list-item-two-line-height: 72px;
-    --ui-list-item-three-line-height: 88px;
+    --ui-list-item-leading-space: var(--ui-space-4);
+    --ui-list-item-trailing-space: var(--ui-space-4);
+    --ui-list-item-icon-size: var(--ui-size-icon);
+    --ui-list-item-one-line-height: var(--ui-size-item);
+    --ui-list-item-two-line-height: var(--ui-size-item-lg);
+    --ui-list-item-three-line-height: var(--ui-size-item-xl);
     --ui-list-item-label-color: var(--ui-color-fg);
     --ui-list-item-supporting-color: var(--ui-color-fg-muted);
     --ui-list-item-icon-color: var(--ui-color-fg-muted);
@@ -27,7 +27,7 @@
     flex-direction: column;
     box-sizing: border-box;
     margin: 0;
-    padding: 8px 0;
+    padding: var(--ui-space-2) 0;
     list-style: none;
     background: var(--ui-list-container-color);
   }
@@ -38,10 +38,10 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--ui-space-4);
     box-sizing: border-box;
     min-height: var(--ui-list-item-one-line-height);
-    padding: 12px var(--ui-list-item-trailing-space) 12px var(--ui-list-item-leading-space);
+    padding: var(--ui-space-3) var(--ui-list-item-trailing-space) var(--ui-space-3) var(--ui-list-item-leading-space);
     color: var(--ui-list-item-label-color);
     font: var(--ui-type-body-lg);
   }
@@ -131,14 +131,14 @@
   .ui-list-item-label {
     display: flex;
     align-items: center;
-    gap: 16px;
+    gap: var(--ui-space-4);
     flex: 1;
     align-self: stretch;
     cursor: pointer;
   }
   .ui-list-item-label input[type="checkbox"] {
-    width: 18px;
-    height: 18px;
+    width: var(--ui-size-icon-sm);
+    height: var(--ui-size-icon-sm);
     margin: 0;
     flex: none;
     accent-color: var(--ui-color-primary);

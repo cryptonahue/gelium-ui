@@ -17,12 +17,12 @@ func TestListPrimitiveCSSMapsAnatomyAndStates(t *testing.T) {
 		`background: var(--ui-list-container-color);`,
 		`.ui-list-item {`,
 		`min-height: var(--ui-list-item-one-line-height);`,
-		`padding: 12px var(--ui-list-item-trailing-space) 12px var(--ui-list-item-leading-space);`,
+		`padding: var(--ui-space-3) var(--ui-list-item-trailing-space) var(--ui-space-3) var(--ui-list-item-leading-space);`,
 		`.ui-list-item--two-line { min-height: var(--ui-list-item-two-line-height);`,
 		`.ui-list-item--three-line { min-height: var(--ui-list-item-three-line-height);`,
 		`.ui-list-item-headline {`,
 		`.ui-list-item-supporting {`,
-		`gap: 16px;`,
+		`gap: var(--ui-space-4);`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("source CSS is missing list contract %q", contract)

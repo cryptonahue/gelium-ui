@@ -32,14 +32,14 @@ func TestTextFieldSourceCSSUsesThemeTokensAndAccessibleStates(t *testing.T) {
 func TestTextFieldSourceCSSBuildsMaterialContainerAndFloatingLabel(t *testing.T) {
 	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
 	for _, contract := range []string{
-		`.ui-text-field-control { position: relative; display: grid; height: 3.5rem; box-sizing: border-box;`,
+		`.ui-text-field-control { position: relative; display: grid; height: var(--ui-size-field); box-sizing: border-box;`,
 		`.ui-text-field-control > label { position: absolute;`,
 		`.ui-text-field-control:focus-within > label`,
 		`.ui-text-field-control:has(input:not(:placeholder-shown)) > label`,
 		`.ui-text-field-control:has(textarea:not(:placeholder-shown)) > label`,
 		`.ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label { top: 1rem; transform: none;`,
-		`.ui-text-field-outlined .ui-text-field-control { border: 1px solid var(--ui-field-border);`,
-		`.ui-text-field-filled .ui-text-field-control { border-bottom: 1px solid var(--ui-field-border);`,
+		`.ui-text-field-outlined .ui-text-field-control { border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-field-border);`,
+		`.ui-text-field-filled .ui-text-field-control { border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-field-border);`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("Material text-field anatomy is missing %q", contract)
@@ -67,7 +67,7 @@ func TestTextFieldSingleLineControlKeepsStableExternalHeight(t *testing.T) {
 	if controlRule == nil {
 		t.Fatal("source CSS is missing the base text-field control rule")
 	}
-	for _, contract := range []string{`(?:^|\s)height:\s*3\.5rem\s*;`, `box-sizing:\s*border-box\s*;`} {
+	for _, contract := range []string{`(?:^|\s)height:\s*var\(--ui-size-field\)\s*;`, `box-sizing:\s*border-box\s*;`} {
 		if !regexp.MustCompile(contract).MatchString(controlRule[1]) {
 			t.Errorf("base text-field control must match %q", contract)
 		}
@@ -78,8 +78,8 @@ func TestTextFieldSingleLineControlKeepsStableExternalHeight(t *testing.T) {
 
 	for _, pattern := range []string{
 		`(?s)\.ui-text-field input\s*\{[^}]*height:\s*100%\s*;[^}]*box-sizing:\s*border-box\s*;`,
-		`(?s)\.ui-text-field-control:has\(textarea\)\s*\{[^}]*height:\s*auto\s*;[^}]*min-height:\s*7rem\s*;`,
-		`(?s)\.ui-text-field textarea\s*\{[^}]*min-height:\s*7rem\s*;[^}]*resize:\s*vertical\s*;`,
+		`(?s)\.ui-text-field-control:has\(textarea\)\s*\{[^}]*height:\s*auto\s*;[^}]*min-height:\s*var\(--ui-text-field-textarea-min-height\)\s*;`,
+		`(?s)\.ui-text-field textarea\s*\{[^}]*min-height:\s*var\(--ui-text-field-textarea-min-height\)\s*;[^}]*resize:\s*vertical\s*;`,
 	} {
 		if !regexp.MustCompile(pattern).MatchString(css) {
 			t.Errorf("stable text-field sizing contract is missing pattern %q", pattern)
@@ -194,7 +194,7 @@ func TestTextFieldTrailingSlotAndFloatingLabelUseLogicalRTLGeometry(t *testing.T
 	for _, contract := range []string{
 		`.ui-text-field-control > label { position: absolute; z-index: 1; top: 50%; inset-inline-start: 1rem;`,
 		`.ui-text-field-error .ui-text-field-control > label { max-width: calc(100% - 3.5rem);`,
-		`.ui-text-field-error-icon { position: absolute; top: 50%; inset-inline-end: 1rem; width: 1.5rem; height: 1.5rem;`,
+		`.ui-text-field-error-icon { position: absolute; top: 50%; inset-inline-end: 1rem; width: var(--ui-text-field-error-icon-size); height: var(--ui-text-field-error-icon-size);`,
 		`.ui-text-field-error input, .ui-text-field-error textarea { padding-inline-end: 3.5rem;`,
 		`.ui-text-field-control:dir(rtl) > label { transform-origin: right top;`,
 		`.ui-text-field-outlined .ui-text-field-control:dir(rtl):focus-within > label`,
@@ -272,8 +272,8 @@ func TestTextFieldErrorFocusAndHoverKeepErrorIndicatorForBothVariants(t *testing
 func TestTextFieldSupportingMessageUsesMaterialTypographyAndSpacing(t *testing.T) {
 	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
 	for _, contract := range []string{
-		`.ui-text-field { display: grid; width: min(100%, 24rem); gap: 0;`,
-		`.ui-text-field-message { margin: 0; padding: .25rem 1rem 0; color: var(--ui-color-fg-muted); font: var(--ui-type-body-sm);`,
+		`.ui-text-field { --ui-text-field-textarea-min-height: 7rem; --ui-text-field-error-icon-size: var(--ui-size-icon); display: grid; width: min(100%, 24rem); gap: 0;`,
+		`.ui-text-field-message { margin: 0; padding: var(--ui-space-1) var(--ui-space-4) 0; color: var(--ui-color-fg-muted); font: var(--ui-type-body-sm);`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("supporting message Material contract is missing %q", contract)
@@ -328,14 +328,7 @@ func TestTextFieldFocusUsesInsetOverlayWithoutChangingBorderGeometry(t *testing.
 
 func TestReducedMotionDisablesTextFieldControlAndLabelTransitions(t *testing.T) {
 	css := sourceAppCSS(t)
-	reducedMotionIndex := strings.Index(css, "@media (prefers-reduced-motion: reduce)")
-	if reducedMotionIndex < 0 {
-		t.Fatal("source CSS is missing the reduced-motion media query")
-	}
-	reducedMotionCSS := css[reducedMotionIndex:]
-	if nextMedia := strings.Index(reducedMotionCSS[1:], "@media "); nextMedia >= 0 {
-		reducedMotionCSS = reducedMotionCSS[:nextMedia+1]
-	}
+	reducedMotionCSS := entryMediaBlock(t, css, "@media (prefers-reduced-motion: reduce)")
 	for _, selector := range []string{`.ui-text-field-control`, `.ui-text-field-control > label`} {
 		pattern := regexp.MustCompile(`(?s)` + regexp.QuoteMeta(selector) + `\s*\{[^}]*transition:\s*none\s*;?[^}]*\}`)
 		if !pattern.MatchString(reducedMotionCSS) {

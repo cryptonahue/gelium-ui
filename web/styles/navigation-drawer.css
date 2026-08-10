@@ -17,9 +17,9 @@
     --ui-navigation-drawer-container-width: 360px;
     --ui-navigation-drawer-container-color: var(--ui-color-surface);
     --ui-navigation-drawer-container-elevation: var(--ui-shadow-0);
-    --ui-navigation-drawer-item-height: 56px;
-    --ui-navigation-drawer-item-inline-padding: 12px;
-    --ui-navigation-drawer-icon-size: 24px;
+    --ui-navigation-drawer-item-height: var(--ui-size-item);
+    --ui-navigation-drawer-item-inline-padding: var(--ui-space-3);
+    --ui-navigation-drawer-icon-size: var(--ui-size-icon);
     --ui-navigation-drawer-indicator-color: var(--ui-color-secondary);
     --ui-navigation-drawer-active-icon-color: var(--ui-color-secondary-fg);
     --ui-navigation-drawer-active-label-color: var(--ui-color-secondary-fg);
@@ -71,23 +71,23 @@
     overflow-y: auto;
     translate: -100% 0;
     opacity: 0;
-    transition: translate 150ms var(--ui-easing-standard), opacity 150ms var(--ui-easing-standard), overlay 150ms allow-discrete, display 150ms allow-discrete;
+    transition: translate var(--ui-motion-short) var(--ui-easing-standard), opacity var(--ui-motion-short) var(--ui-easing-standard), overlay var(--ui-motion-short) allow-discrete, display var(--ui-motion-short) allow-discrete;
     transition-behavior: allow-discrete;
   }
   .ui-navigation-drawer--modal::backdrop {
     background: var(--ui-dialog-scrim);
     opacity: 0;
-    transition: opacity 150ms var(--ui-easing-standard), overlay 150ms allow-discrete, display 150ms allow-discrete;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard), overlay var(--ui-motion-short) allow-discrete, display var(--ui-motion-short) allow-discrete;
     transition-behavior: allow-discrete;
   }
   .ui-navigation-drawer--modal[open] {
     translate: 0;
     opacity: 1;
-    transition-duration: 500ms;
+    transition-duration: var(--ui-motion-long);
   }
   .ui-navigation-drawer--modal[open]::backdrop {
     opacity: 1;
-    transition-duration: 500ms;
+    transition-duration: var(--ui-motion-long);
   }
   @starting-style {
     .ui-navigation-drawer--modal[open] { translate: -100% 0; opacity: 0; }
@@ -99,7 +99,7 @@
     flex-direction: column;
     box-sizing: border-box;
     margin: 0;
-    padding: 8px 0;
+    padding: var(--ui-space-2) 0;
     list-style: none;
   }
 
@@ -112,7 +112,7 @@
     position: relative;
     display: flex;
     align-items: center;
-    gap: 12px;
+    gap: var(--ui-space-3);
     box-sizing: border-box;
     width: 100%;
     min-height: var(--ui-navigation-drawer-item-height);

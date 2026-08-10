@@ -11,9 +11,28 @@ import (
 	webassets "loomui/web"
 )
 
+// defaultThemeClass is the theme applied when none is requested. The value must
+// match a class owned by a theme that ships on disk (themes/*/theme.css).
+const defaultThemeClass = "theme-material"
+
+// themeClass resolves a requested theme to a safe CSS class. Theme identity is
+// server-driven and validated against an allowlist of themes that exist on
+// disk; unknown values fall back to the default so no page can inject an
+// arbitrary class or depend on a theme that does not exist. Extend the
+// allowlist as new themes (e.g. theme-basecoat) land.
+func themeClass(theme string) string {
+	for _, allowed := range []string{defaultThemeClass} {
+		if theme == allowed {
+			return theme
+		}
+	}
+	return defaultThemeClass
+}
+
 type pageView struct {
 	Title                string
 	Content              template.HTML
+	ThemeClass           string
 	Nav                  []navLink
 	CTA                  *buttonView
 	Buttons              []buttonView
@@ -159,6 +178,7 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, sour
 	var page bytes.Buffer
 	data.Nav = navLinks()
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
+	data.ThemeClass = themeClass(data.ThemeClass)
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
 		return

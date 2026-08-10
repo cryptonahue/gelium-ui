@@ -16,8 +16,8 @@ func TestSelectPrimitiveCSSMapsNativeVariantsAndStates(t *testing.T) {
 		`appearance: none;`,
 		`height: var(--ui-select-height);`,
 		`border-radius: var(--ui-select-radius);`,
-		`.ui-select-filled select { background: var(--ui-select-container-filled); border: 1px solid transparent; border-bottom: 1px solid var(--ui-select-outline);`,
-		`.ui-select-outlined select { background: transparent; border: 1px solid var(--ui-select-outline);`,
+		`.ui-select-filled select { background: var(--ui-select-container-filled); border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent; border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);`,
+		`.ui-select-outlined select { background: transparent; border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);`,
 		`.ui-select select:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset);`,
 		`.ui-select select:disabled { cursor: not-allowed;`,
 		`.ui-select select[aria-invalid="true"] { border-color: var(--ui-select-error);`,
@@ -71,7 +71,7 @@ func TestSelectPrimitiveCSSMapsNativeVariantsAndStates(t *testing.T) {
 }
 
 func TestSelectThemeDefinesPublicUIFamily(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-select-height:",
 		"--ui-select-radius:",

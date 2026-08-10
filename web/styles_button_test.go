@@ -49,15 +49,7 @@ func TestTextButtonUsesPrimaryStateLayersWithoutInactiveInteraction(t *testing.T
 
 func TestReducedMotionDisablesButtonSpinnerAnimation(t *testing.T) {
 	css := sourceAppCSS(t)
-	reducedMotionIndex := strings.Index(css, "@media (prefers-reduced-motion: reduce)")
-	if reducedMotionIndex < 0 {
-		t.Fatal("source CSS is missing the reduced-motion media query")
-	}
-
-	reducedMotionCSS := css[reducedMotionIndex:]
-	if nextMedia := strings.Index(reducedMotionCSS[1:], "@media "); nextMedia >= 0 {
-		reducedMotionCSS = reducedMotionCSS[:nextMedia+1]
-	}
+	reducedMotionCSS := entryMediaBlock(t, css, "@media (prefers-reduced-motion: reduce)")
 	spinnerAnimationNone := regexp.MustCompile(`(?s)\.ui-button-spinner\s*\{[^}]*animation:\s*none\s*;?[^}]*\}`)
 	if !spinnerAnimationNone.MatchString(reducedMotionCSS) {
 		t.Error("reduced-motion CSS must disable the spinner with animation: none")

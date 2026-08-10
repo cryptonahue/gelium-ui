@@ -25,17 +25,17 @@ func TestFabPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 		`position: relative;`,
 		`display: inline-flex;`,
 		`.ui-fab-medium {`,
-		`width: 56px;`,
-		`height: 56px;`,
+		`width: var(--ui-fab-container-size);`,
+		`height: var(--ui-fab-container-size);`,
 		`box-shadow: var(--ui-shadow-3);`,
 		`.ui-fab-small {`,
-		`width: 40px;`,
-		`height: 40px;`,
+		`width: var(--ui-fab-container-size-small);`,
+		`height: var(--ui-fab-container-size-small);`,
 		`.ui-fab-large {`,
-		`width: 96px;`,
-		`height: 96px;`,
+		`width: var(--ui-fab-container-size-large);`,
+		`height: var(--ui-fab-container-size-large);`,
 		`.ui-fab-extended {`,
-		`height: 48px;`,
+		`height: var(--ui-fab-extended-height);`,
 		`font: var(--ui-type-label-lg);`,
 		`.ui-fab-primary { background: var(--ui-fab-primary-container); color: var(--ui-fab-primary-fg); }`,
 		`.ui-fab-surface { background: var(--ui-fab-surface-container); color: var(--ui-fab-surface-fg); }`,
@@ -57,7 +57,7 @@ func TestFabPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 }
 
 func TestFabThemeDefinesPublicUITokens(t *testing.T) {
-	theme := regexp.MustCompile(`\s+`).ReplaceAllString(repositoryFile(t, "themes", "theme-material", "theme.css"), " ")
+	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
 	light := theme
 	for _, token := range []string{
 		"--ui-fab-primary-container:",
@@ -81,12 +81,18 @@ func TestFabThemeDefinesPublicUITokens(t *testing.T) {
 	}
 
 	// The dark scheme must remap the container pair so the FAB stays legible.
-	// Both the explicit dark override and the media query repeat the pairs.
-	count := strings.Count(theme, "--ui-fab-primary-container: #4f378b") +
-		strings.Count(theme, "--ui-fab-surface-container: #36343b") +
-		strings.Count(theme, "--ui-fab-secondary-container: #4a4458")
-	if count < 3 {
-		t.Errorf("theme dark scheme must define the three FAB container colors, found dark markers %d", count)
+	// Both the explicit dark override and the media query repeat the pairs, so
+	// each container token is defined in exactly three schemes (light, explicit
+	// dark, media dark). The contract is the token family across every scheme,
+	// never a concrete hex value.
+	for _, token := range []string{
+		"--ui-fab-primary-container:",
+		"--ui-fab-surface-container:",
+		"--ui-fab-secondary-container:",
+	} {
+		if got := strings.Count(theme, token); got != 3 {
+			t.Errorf("theme must define %s in light, explicit dark, and media dark schemes, got %d", token, got)
+		}
 	}
 }
 

@@ -12,12 +12,12 @@ func TestDataTablePrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 	for _, contract := range []string{
 		`.ui-data-table {`,
 		`background: var(--ui-data-table-container-color);`,
-		`border: 1px solid var(--ui-data-table-outline-color);`,
+		`border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-data-table-outline-color);`,
 		`border-radius: var(--ui-radius-sm);`,
 		`height: var(--ui-data-table-header-height);`,
 		`height: var(--ui-data-table-row-height);`,
 		`padding: 0 var(--ui-data-table-cell-padding);`,
-		`width: 48px;`,
+		`width: var(--ui-data-table-checkbox-column-width);`,
 		`.ui-data-table-sort-icon {`,
 		`width: var(--ui-data-table-sort-icon-size);`,
 	} {

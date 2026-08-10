@@ -23,16 +23,18 @@
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: .5rem;
+    gap: var(--ui-space-2);
     pointer-events: none;
   }
   .ui-toast {
+    --ui-toast-min-height: 3rem;
+    --ui-toast-padding: .875rem 1rem;
     display: flex;
     align-items: center;
-    gap: .75rem;
-    min-height: 3rem;
+    gap: var(--ui-space-3);
+    min-height: var(--ui-toast-min-height);
     max-width: min(100%, 26rem);
-    padding: .875rem 1rem;
+    padding: var(--ui-toast-padding);
     border-radius: var(--ui-toast-radius);
     background: var(--ui-toast-container);
     color: var(--ui-toast-fg);
@@ -56,7 +58,7 @@
     margin-inline-start: auto;
     border: 0;
     background: transparent;
-    padding: .25rem;
+    padding: var(--ui-space-1);
     color: var(--ui-toast-action);
     font: var(--ui-type-label-lg);
     cursor: pointer;

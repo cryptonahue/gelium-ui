@@ -11,9 +11,9 @@
   .ui-data-table {
     --ui-data-table-container-color: var(--ui-color-surface);
     --ui-data-table-outline-color: var(--ui-color-border);
-    --ui-data-table-header-height: 56px;
+    --ui-data-table-header-height: var(--ui-size-item);
     --ui-data-table-row-height: 52px;
-    --ui-data-table-cell-padding: 16px;
+    --ui-data-table-cell-padding: var(--ui-space-4);
     --ui-data-table-header-color: var(--ui-color-fg-muted);
     --ui-data-table-header-hover-color: var(--ui-color-fg);
     --ui-data-table-label-color: var(--ui-color-fg);
@@ -21,13 +21,14 @@
     --ui-data-table-hover-opacity: var(--ui-state-hover-opacity);
     --ui-data-table-focus-opacity: var(--ui-state-focus-opacity);
     --ui-data-table-pressed-opacity: var(--ui-state-pressed-opacity);
-    --ui-data-table-checkbox-size: 18px;
-    --ui-data-table-sort-icon-size: 18px;
+    --ui-data-table-checkbox-size: var(--ui-size-icon-sm);
+    --ui-data-table-sort-icon-size: var(--ui-size-icon-sm);
+    --ui-data-table-checkbox-column-width: 48px;
 
     box-sizing: border-box;
     width: 100%;
     background: var(--ui-data-table-container-color);
-    border: 1px solid var(--ui-data-table-outline-color);
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-data-table-outline-color);
     border-radius: var(--ui-radius-sm);
     overflow: hidden;
   }
@@ -73,7 +74,7 @@
      row. Uses an adjacent-sibling row selector instead of depending on the
      container's first or last child, which may not be the row itself. */
   tbody .ui-data-table-row + .ui-data-table-row .ui-data-table-cell {
-    border-top: 1px solid var(--ui-data-table-outline-color);
+    border-top: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-data-table-outline-color);
   }
 
   /* Material row state layer, painted with the shared state-opacity tokens as
@@ -109,7 +110,7 @@
   /* Checkbox column: a native checkbox inside a label, with the Material state
      focus ring landing on the input itself. */
   .ui-data-table-cell--checkbox {
-    width: 48px;
+    width: var(--ui-data-table-checkbox-column-width);
     padding: 0 var(--ui-data-table-cell-padding);
   }
   .ui-data-table-checkbox {
@@ -139,7 +140,7 @@
   .ui-data-table-sort {
     display: inline-flex;
     align-items: center;
-    gap: .25rem;
+    gap: var(--ui-space-1);
     box-sizing: border-box;
     width: 100%;
     min-height: var(--ui-data-table-header-height);
@@ -178,9 +179,9 @@
     align-items: center;
     justify-content: flex-end;
     flex-wrap: wrap;
-    gap: .25rem;
-    padding: .5rem var(--ui-data-table-cell-padding);
-    border-top: 1px solid var(--ui-data-table-outline-color);
+    gap: var(--ui-space-1);
+    padding: var(--ui-space-2) var(--ui-data-table-cell-padding);
+    border-top: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-data-table-outline-color);
   }
   .ui-data-table-page {
     display: inline-flex;
@@ -189,7 +190,7 @@
     min-width: 2rem;
     height: 2rem;
     box-sizing: border-box;
-    padding: 0 .5rem;
+    padding: 0 var(--ui-space-2);
     border-radius: var(--ui-radius-full);
     color: var(--ui-data-table-header-color);
     text-decoration: none;

@@ -13,9 +13,9 @@ func TestDividerPrimitiveCSSMapsTokensAndInsets(t *testing.T) {
 		`.ui-divider {`,
 		`height: var(--ui-divider-thickness);`,
 		`background: var(--ui-divider-color);`,
-		`.ui-divider-inset { padding-inline: 1rem;`,
-		`.ui-divider-inset-start { padding-inline-start: 1rem;`,
-		`.ui-divider-inset-end { padding-inline-end: 1rem;`,
+		`.ui-divider-inset { padding-inline: var(--ui-space-4);`,
+		`.ui-divider-inset-start { padding-inline-start: var(--ui-space-4);`,
+		`.ui-divider-inset-end { padding-inline-end: var(--ui-space-4);`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("source CSS is missing divider contract %q", contract)
@@ -33,7 +33,7 @@ func TestDividerPrimitiveCSSMapsTokensAndInsets(t *testing.T) {
 }
 
 func TestDividerThemeDefinesPublicUIPair(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-divider-color:",
 		"--ui-divider-thickness:",

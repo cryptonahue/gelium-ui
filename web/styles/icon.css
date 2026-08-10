@@ -3,8 +3,8 @@
      Markup integrity (aria-hidden + focusable=false for decorative icons, a
      visible text name for meaningful icons) stays an HTML/Go contract. */
   .ui-icon {
-    width: 1.5rem;
-    height: 1.5rem;
+    width: var(--ui-size-icon);
+    height: var(--ui-size-icon);
     flex: none;
     fill: currentColor;
   }

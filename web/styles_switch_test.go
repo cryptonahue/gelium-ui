@@ -11,7 +11,7 @@ func TestSwitchPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 
 	for _, contract := range []string{
 		`.ui-switch {`,
-		`gap: .5rem;`,
+		`gap: var(--ui-space-2);`,
 		`input[type="checkbox"] {`,
 		`appearance: none;`,
 		`width: var(--ui-switch-width);`,
@@ -63,7 +63,7 @@ func TestSwitchPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 }
 
 func TestSwitchThemeDefinesPublicUIFamily(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-switch-width:",
 		"--ui-switch-height:",

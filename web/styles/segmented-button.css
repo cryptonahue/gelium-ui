@@ -12,7 +12,7 @@
      a 12px-padded cell. The --ui-segmented-button-* custom properties are
      scoped to the root and reuse the shared --ui-* tokens. */
   .ui-segmented-button-set {
-    --ui-segmented-button-container-height: 40px;
+    --ui-segmented-button-container-height: var(--ui-size-control);
     --ui-segmented-button-container-radius: var(--ui-radius-full);
     --ui-segmented-button-outline: var(--ui-color-border-strong);
     --ui-segmented-button-selected-container: var(--ui-color-secondary);
@@ -20,9 +20,9 @@
     --ui-segmented-button-selected-state-layer: var(--ui-color-secondary-fg);
     --ui-segmented-button-unselected-fg: var(--ui-color-fg);
     --ui-segmented-button-unselected-state-layer: var(--ui-color-fg);
-    --ui-segmented-button-icon-size: 18px;
-    --ui-segmented-button-icon-label-gap: 8px;
-    --ui-segmented-button-spacing: 12px;
+    --ui-segmented-button-icon-size: var(--ui-size-icon-sm);
+    --ui-segmented-button-icon-label-gap: var(--ui-space-2);
+    --ui-segmented-button-spacing: var(--ui-space-3);
     --ui-segmented-button-disabled-opacity: var(--ui-state-disabled-opacity);
 
     display: flex;
@@ -33,7 +33,7 @@
     height: var(--ui-segmented-button-container-height);
     margin: 0;
     padding: 0;
-    border: 1px solid var(--ui-segmented-button-outline);
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-segmented-button-outline);
     border-radius: var(--ui-segmented-button-container-radius);
   }
 
@@ -86,7 +86,7 @@
     cursor: pointer;
   }
   .ui-segmented-button:not(:first-of-type) {
-    border-inline-start: 1px solid var(--ui-segmented-button-outline);
+    border-inline-start: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-segmented-button-outline);
   }
   .ui-segmented-button:first-of-type {
     border-start-start-radius: var(--ui-segmented-button-container-radius);

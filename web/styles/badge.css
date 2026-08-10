@@ -19,7 +19,7 @@
     width: auto;
     min-width: var(--ui-badge-large-size);
     height: var(--ui-badge-large-size);
-    padding-inline: .25rem;
+    padding-inline: var(--ui-space-1);
     font: var(--ui-type-label-sm);
     line-height: 1rem;
   }

@@ -4,11 +4,18 @@
      the browser default so Loom paints the 18x18 Material box, its outline,
      and the checked chevron from --ui-checkbox-* tokens. All paints are
      token-driven so states survive light and dark schemes. */
-.ui-checkbox {
+  .ui-checkbox {
+    /* Check glyph box (width × height), not the control: the ::after chevron
+       is a rotated 6×11 border-L. The pair value documents the glyph box; it
+       is NOT consumed by width/height (each takes a single length), so the
+       component reads the two dimensions through the pair contract below. */
+    --ui-checkbox-mark-size: 6px 11px;
+    --ui-checkbox-mark-width: 6px;
+    --ui-checkbox-mark-height: 11px;
     position: relative;
     display: inline-flex;
     align-items: center;
-    gap: .5rem;
+    gap: var(--ui-space-2);
     cursor: pointer;
     font: var(--ui-type-body-md);
   }
@@ -56,8 +63,8 @@
   .ui-checkbox-mark::after {
     content: "";
     box-sizing: border-box;
-    width: 6px;
-    height: 11px;
+    width: var(--ui-checkbox-mark-width);
+    height: var(--ui-checkbox-mark-height);
     border-right: 2px solid var(--ui-checkbox-icon);
     border-bottom: 2px solid var(--ui-checkbox-icon);
     transform: rotate(45deg);
@@ -80,4 +87,8 @@
     color: var(--ui-color-fg-muted);
     font: var(--ui-type-label-lg);
   }
+}
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-checkbox input[type="checkbox"] { transition: none; }
 }

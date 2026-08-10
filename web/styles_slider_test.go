@@ -50,7 +50,7 @@ func TestSliderPrimitiveCSSMapsNativeRangeAndStates(t *testing.T) {
 }
 
 func TestSliderThemeDefinesPublicUIFamily(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-slider-track-height:",
 		"--ui-slider-track-radius:",

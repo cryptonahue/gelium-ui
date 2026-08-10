@@ -11,7 +11,7 @@ func TestRadioPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 
 	for _, contract := range []string{
 		`.ui-radio {`,
-		`gap: .5rem;`,
+		`gap: var(--ui-space-2);`,
 		`input[type="radio"] {`,
 		`appearance: none;`,
 		`width: var(--ui-radio-size);`,
@@ -55,7 +55,7 @@ func TestRadioPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 }
 
 func TestRadioThemeDefinesPublicUIFamily(t *testing.T) {
-	theme := repositoryFile(t, "themes", "theme-material", "theme.css")
+	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-radio-size:",
 		"--ui-radio-radius:",
@@ -68,6 +68,16 @@ func TestRadioThemeDefinesPublicUIFamily(t *testing.T) {
 		if !strings.Contains(theme, token) {
 			t.Errorf("theme is missing radio token %q", token)
 		}
+	}
+}
+
+func TestRadioReducedMotionDisablesTransitions(t *testing.T) {
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceComponentCSS(t, "radio.css"), " ")
+	if !strings.Contains(css, `@media (prefers-reduced-motion: reduce)`) {
+		t.Error("radio.css must include a reduced-motion media query")
+	}
+	if !strings.Contains(css, `.ui-radio input[type="radio"], .ui-radio-mark::after { transition: none; }`) {
+		t.Error("radio reduced-motion must disable the control and dot transitions")
 	}
 }
 

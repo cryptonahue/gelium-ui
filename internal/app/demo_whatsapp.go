@@ -109,6 +109,7 @@ type whatsAppDemoView struct {
 	Conversations []whatsAppConversationView
 	ActiveChat    *whatsAppChatView
 	Search        string
+	ThemeClass    string
 }
 
 // whatsAppNumberView is one row of the admin numbers table.
@@ -148,6 +149,7 @@ type whatsAppAdminView struct {
 	RateLimitMsg        string
 	RateUsed            int // percent
 	ActiveTab           string
+	ThemeClass          string
 }
 
 // ----- mock store -----
@@ -532,12 +534,14 @@ func (s *server) whatsAppDemo(w http.ResponseWriter, r *http.Request) {
 		Conversations: conversations,
 		ActiveChat:    chat,
 		Search:        search,
+		ThemeClass:    themeClass(defaultThemeClass),
 	})
 }
 
 func (s *server) whatsAppAdmin(w http.ResponseWriter, r *http.Request) {
 	view := whatsAppDemoStore.adminView(time.Now())
 	view.ActiveTab = "numbers"
+	view.ThemeClass = themeClass(defaultThemeClass)
 	s.templates.ExecuteTemplate(w, "demo-whatsapp-admin", view)
 }
 
