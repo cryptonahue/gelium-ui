@@ -85,14 +85,14 @@
     background: transparent;
     cursor: pointer;
   }
-  .ui-segmented-button:not(:first-child) {
+  .ui-segmented-button:not(:first-of-type) {
     border-inline-start: 1px solid var(--ui-segmented-button-outline);
   }
-  .ui-segmented-button:first-child {
+  .ui-segmented-button:first-of-type {
     border-start-start-radius: var(--ui-segmented-button-container-radius);
     border-end-start-radius: var(--ui-segmented-button-container-radius);
   }
-  .ui-segmented-button:last-child {
+  .ui-segmented-button:last-of-type {
     border-start-end-radius: var(--ui-segmented-button-container-radius);
     border-end-end-radius: var(--ui-segmented-button-container-radius);
   }
