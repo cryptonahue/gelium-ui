@@ -1,0 +1,5 @@
+{{define "inline-alert"}}<div class="ui-inline-alert ui-inline-alert--{{.Tone}}" role="{{if eq .Tone "error"}}alert{{else}}status{{end}}">
+  {{if .Icon}}<span class="ui-inline-alert-icon" aria-hidden="true">{{.Icon}}</span>{{end}}
+  {{if .Title}}<p class="ui-inline-alert-title">{{.Title}}</p>{{end}}
+  <p class="ui-inline-alert-body">{{.Body}}</p>
+</div>{{end}}

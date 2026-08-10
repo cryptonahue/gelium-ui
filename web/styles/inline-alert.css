@@ -1,0 +1,70 @@
+@layer components {
+  /* Inline alert: a server-rendered section/form-level status message with a
+     surface container and a tone (error/success/info/warning). It composes
+     with the field-level error (.ui-text-field-message) instead of replacing
+     it: the alert is the container signal for the whole form/section, while
+     the field keeps its own aria-invalid + aria-describedby. Color is never
+     the only signal — the optional icon, the title/body text and the
+     role carry meaning, and the forced-colors block keeps the tone visible
+     under forced colors. The --ui-inline-alert-* tokens are declared scoped
+     to the root so the primitive works standalone; the theme may override
+     them globally. There is no animation, so no reduced-motion block. */
+  .ui-inline-alert {
+    --ui-inline-alert-padding: var(--ui-space-3) var(--ui-space-4);
+    --ui-inline-alert-gap: var(--ui-space-2);
+    --ui-inline-alert-radius: var(--ui-radius-sm);
+    --ui-inline-alert-icon-size: var(--ui-size-icon-sm);
+    --ui-inline-alert-bg: var(--ui-color-surface-container);
+    --ui-inline-alert-fg: var(--ui-color-fg);
+
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ui-inline-alert-gap);
+    padding: var(--ui-inline-alert-padding);
+    border-radius: var(--ui-inline-alert-radius);
+    background: var(--ui-inline-alert-bg);
+    color: var(--ui-inline-alert-fg);
+  }
+
+  .ui-inline-alert--error   { --ui-inline-alert-bg: var(--ui-color-danger-container);  --ui-inline-alert-fg: var(--ui-color-danger); }
+  .ui-inline-alert--warning { --ui-inline-alert-bg: var(--ui-color-warning-container); --ui-inline-alert-fg: var(--ui-color-warning-fg); }
+  .ui-inline-alert--success { --ui-inline-alert-bg: color-mix(in srgb, var(--ui-color-success) 12%, var(--ui-color-surface)); --ui-inline-alert-fg: var(--ui-color-success); }
+  .ui-inline-alert--info    { --ui-inline-alert-bg: color-mix(in srgb, var(--ui-color-info) 12%, var(--ui-color-surface));    --ui-inline-alert-fg: var(--ui-color-info); }
+
+  .ui-inline-alert-icon {
+    width: var(--ui-inline-alert-icon-size);
+    height: var(--ui-inline-alert-icon-size);
+    flex: none;
+    color: var(--ui-inline-alert-fg);
+  }
+
+  .ui-inline-alert-title {
+    margin: 0;
+    color: var(--ui-inline-alert-fg);
+    font: var(--ui-type-label-lg);
+  }
+
+  .ui-inline-alert-body {
+    margin: 0;
+    color: var(--ui-inline-alert-fg);
+    font: var(--ui-type-body-sm);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-inline-alert {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-inline-alert-icon,
+  .ui-inline-alert-title,
+  .ui-inline-alert-body {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-inline-alert--error .ui-inline-alert-icon,
+  .ui-inline-alert--error .ui-inline-alert-title,
+  .ui-inline-alert--error .ui-inline-alert-body {
+    color: Mark;
+  }
+}
