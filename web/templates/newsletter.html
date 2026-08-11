@@ -1,0 +1,15 @@
+{{define "newsletter"}}<aside class="ui-newsletter" aria-labelledby="{{.ID}}-title">
+  {{if .Title}}<h2 id="{{.ID}}-title" class="ui-newsletter-title">{{.Title}}</h2>{{end}}
+  {{if .Description}}<p class="ui-newsletter-description">{{.Description}}</p>{{end}}
+  {{if .Success}}<p class="ui-newsletter-success" role="status">{{.Success}}</p>
+  {{else}}<form class="ui-newsletter-form" method="post" action="{{.Action}}" hx-post="{{.Action}}" hx-target="closest .ui-newsletter" hx-swap="outerHTML">
+    {{if .Error}}<div class="ui-newsletter-alert" id="{{.ID}}-error">{{template "inline-alert" .Error}}</div>{{end}}
+    <div class="ui-newsletter-field">
+      <label class="ui-newsletter-label" for="{{.EmailID}}">{{.EmailLabel}}</label>
+      <div class="ui-newsletter-row">
+        <input class="ui-newsletter-input" id="{{.EmailID}}" name="{{.EmailName}}" type="email" autocomplete="email" required{{if .Error}} aria-invalid="true" aria-describedby="{{.ID}}-error"{{end}}{{if .EmailValue}} value="{{.EmailValue}}"{{end}}>
+        {{template "button" .Submit}}
+      </div>
+    </div>
+  </form>{{end}}
+</aside>{{end}}

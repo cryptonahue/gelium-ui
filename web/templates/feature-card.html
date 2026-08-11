@@ -1,0 +1,8 @@
+{{define "feature-card"}}<article class="ui-card ui-card-elevated ui-feature-card">
+  {{if .Media}}<div class="ui-feature-card-media">{{.Media}}</div>{{end}}
+  <div class="ui-feature-card-body">
+    {{if .Title}}<h3 class="ui-card-title">{{.Title}}</h3>{{end}}
+    {{if .Body}}<p class="ui-card-body">{{.Body}}</p>{{end}}
+    {{if .CTA}}<div class="ui-card-action">{{template "button" .CTA}}</div>{{end}}
+  </div>
+</article>{{end}}

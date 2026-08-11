@@ -1,0 +1,9 @@
+{{define "split"}}<section class="ui-split">
+  {{if .Media}}<div class="ui-split-media">{{.Media}}</div>{{end}}
+  <div class="ui-split-body">
+    {{if .Eyebrow}}<p class="ui-split-eyebrow">{{.Eyebrow}}</p>{{end}}
+    {{if .Title}}<h2 class="ui-split-title">{{.Title}}</h2>{{end}}
+    {{if .Body}}<p class="ui-split-copy">{{.Body}}</p>{{end}}
+    {{if .CTA}}<div class="ui-split-action">{{template "button" .CTA}}</div>{{end}}
+  </div>
+</section>{{end}}

@@ -1,0 +1,113 @@
+@layer components {
+  /* Hero (Billboard): the full-width promotional header of a landing page. It
+     is a composition — a display title, subtitle and one or more CTA links
+     (Button partial), with an optional background media layer. The scrim is a
+     scoped token so consumers can retune the overlay; the title keeps
+     --ui-type-display-lg so the hero leads the page with its single h1 (P2).
+     No animation, so no reduced-motion block. */
+  .ui-hero {
+    --ui-hero-padding: var(--ui-space-6) var(--ui-space-4);
+    --ui-hero-gap: var(--ui-space-3);
+    --ui-hero-surface: var(--ui-color-surface);
+    --ui-hero-border: var(--ui-color-border);
+    --ui-hero-radius: var(--ui-radius-lg);
+    --ui-hero-title-type: var(--ui-type-display-lg);
+    --ui-hero-title-color: var(--ui-color-fg);
+    --ui-hero-subtitle-color: var(--ui-color-fg-muted);
+    --ui-hero-eyebrow-color: var(--ui-color-fg-muted);
+    --ui-hero-scrim: var(--ui-color-scrim);
+    --ui-hero-scrim-opacity: 0.45;
+
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+    gap: var(--ui-hero-gap);
+    padding: var(--ui-hero-padding);
+    overflow: hidden;
+    border: 1px solid var(--ui-hero-border);
+    border-radius: var(--ui-hero-radius);
+    background: var(--ui-hero-surface);
+  }
+
+  .ui-hero-media {
+    position: absolute;
+    inset: 0;
+    z-index: 0;
+  }
+
+  .ui-hero-media img,
+  .ui-hero-media video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+
+  /* Legibility layer over the background media; a no-op without media. */
+  .ui-hero--has-media::after {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: 1;
+    background: var(--ui-hero-scrim);
+    opacity: var(--ui-hero-scrim-opacity);
+  }
+
+  .ui-hero-content {
+    position: relative;
+    z-index: 2;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: var(--ui-hero-gap);
+    max-width: 44rem;
+  }
+
+  .ui-hero-eyebrow {
+    margin: 0;
+    font: var(--ui-type-label-lg);
+    color: var(--ui-hero-eyebrow-color);
+  }
+
+  .ui-hero-title {
+    margin: 0;
+    font: var(--ui-hero-title-type);
+    color: var(--ui-hero-title-color);
+  }
+
+  .ui-hero-subtitle {
+    margin: 0;
+    font: var(--ui-type-body-lg);
+    color: var(--ui-hero-subtitle-color);
+  }
+
+  .ui-hero-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: var(--ui-hero-gap);
+    margin-top: var(--ui-space-2);
+  }
+
+  /* Generous padding on wide screens. */
+  @media (min-width: 48rem) {
+    .ui-hero { padding: var(--ui-space-8) var(--ui-space-6); }
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-hero {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-hero-media,
+  .ui-hero--has-media::after { display: none; }
+  .ui-hero-eyebrow,
+  .ui-hero-title,
+  .ui-hero-subtitle {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+}
