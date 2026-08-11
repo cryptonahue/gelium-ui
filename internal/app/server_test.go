@@ -225,3 +225,118 @@ func renderToast(t *testing.T, view toastView) string {
 	}
 	return rendered.String()
 }
+
+func renderBanner(t *testing.T, view bannerView) string {
+	t.Helper()
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/banner.html"))
+	var rendered bytes.Buffer
+	if err := tmpl.ExecuteTemplate(&rendered, "banner", view); err != nil {
+		t.Fatalf("execute banner template: %v", err)
+	}
+	return rendered.String()
+}
+
+// TestLayoutOmitsBannerWhenNil proves the pageView.Banner slot is optional: a
+// nil banner renders nothing and the layout still builds cleanly.
+func TestLayoutOmitsBannerWhenNil(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	if strings.Contains(res.Body.String(), "ui-banner") {
+		t.Error("layout must not render a banner when pageView.Banner is nil")
+	}
+}
+
+// TestLayoutRendersBannerSlotBetweenHeaderAndMain proves the global banner slot
+// sits between the </header> and <main> landmarks and renders the partial when
+// pageView.Banner is set.
+func TestLayoutRendersBannerSlotBetweenHeaderAndMain(t *testing.T) {
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	var page bytes.Buffer
+	data := pageView{
+		Title:      "banner slot",
+		ThemeClass: "theme-material",
+		Nav:        []navLink{{Path: "/", Label: "Home"}},
+		Banner: &bannerView{
+			Tone:  "info",
+			Title: "Scheduled maintenance",
+			Body:  "Tonight 22:00-23:00 UTC.",
+		},
+	}
+	if err := tmpl.ExecuteTemplate(&page, "layout", data); err != nil {
+		t.Fatalf("execute layout with banner: %v", err)
+	}
+	body := page.String()
+	for _, contract := range []string{
+		`class="ui-banner ui-banner--info"`,
+		`role="status"`,
+		`class="ui-banner-title">Scheduled maintenance`,
+		`class="ui-banner-body">Tonight 22:00-23:00 UTC.`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("layout does not render banner contract %q", contract)
+		}
+	}
+
+	headerEnd := strings.Index(body, "</header>")
+	mainStart := strings.Index(body, "<main")
+	bannerPos := strings.Index(body, `class="ui-banner ui-banner--info"`)
+	if headerEnd < 0 || mainStart < 0 {
+		t.Fatal("layout is missing the header or main landmarks")
+	}
+	if bannerPos < headerEnd || bannerPos > mainStart {
+		t.Error("banner slot must render between </header> and <main>")
+	}
+}
+
+// TestBannerRoleIsDerivedFromTone proves role="alert" is reserved for the
+// error tone and every other tone announces politely as status.
+func TestBannerRoleIsDerivedFromTone(t *testing.T) {
+	for _, tone := range []string{"error", "success", "info", "warning"} {
+		got := renderBanner(t, bannerView{Tone: tone, Body: "x"})
+		want := "role=\"status\""
+		if tone == "error" {
+			want = "role=\"alert\""
+		}
+		if !strings.Contains(got, want) {
+			t.Errorf("tone %q must render %s", tone, want)
+		}
+	}
+}
+
+// TestBannerMarkupContracts proves the decorative icon is aria-hidden, the CTA
+// is a real link, the dismiss is a POST form with a submit button, and an empty
+// DismissHref omits the dismiss form entirely.
+func TestBannerMarkupContracts(t *testing.T) {
+	icon := template.HTML(`<svg aria-hidden="true"><title>info</title></svg>`)
+	got := renderBanner(t, bannerView{
+		Tone:        "error",
+		Icon:        icon,
+		Title:       "Session expired",
+		Body:        "Re-authenticate to continue.",
+		CTA:         true,
+		CTAHref:     "/login",
+		CTALabel:    "Re-authenticate",
+		DismissHref: "/dismiss",
+		DismissIcon: template.HTML("×"),
+	})
+	for _, contract := range []string{
+		`<span class="ui-banner-icon" aria-hidden="true">`,
+		`class="ui-banner-title">Session expired`,
+		`class="ui-banner-body">Re-authenticate to continue.`,
+		`<a class="ui-button" href="/login">Re-authenticate</a>`,
+		`<form class="ui-banner-dismiss" method="post" action="/dismiss">`,
+		`<button class="ui-icon-button" type="submit" aria-label="Dismiss">×</button>`,
+	} {
+		if !strings.Contains(got, contract) {
+			t.Errorf("banner markup is missing contract %q", contract)
+		}
+	}
+
+	noDismiss := renderBanner(t, bannerView{Tone: "success", Body: "Saved."})
+	if strings.Contains(noDismiss, "ui-banner-dismiss") {
+		t.Error("banner must omit the dismiss form when DismissHref is empty")
+	}
+}

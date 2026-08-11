@@ -13,6 +13,7 @@
     <a class="brand" href="/">Gelidium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
   </header>
+  {{if .Banner}}{{template "banner" .Banner}}{{end}}
   <main class="docs-shell">
     <article class="prose">{{.Content}}</article>
     {{if .CTA}}<div class="hero-action">{{template "button" .CTA}}</div>{{end}}

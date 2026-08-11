@@ -1,0 +1,11 @@
+{{define "banner"}}<div class="ui-banner ui-banner--{{.Tone}}" role="{{if eq .Tone "error"}}alert{{else}}status{{end}}">
+  {{if .Icon}}<span class="ui-banner-icon" aria-hidden="true">{{.Icon}}</span>{{end}}
+  <div class="ui-banner-content">
+    {{if .Title}}<p class="ui-banner-title">{{.Title}}</p>{{end}}
+    <p class="ui-banner-body">{{.Body}}</p>
+  </div>
+  {{if .CTA}}<a class="ui-button" href="{{.CTAHref}}">{{.CTALabel}}</a>{{end}}
+  {{if .DismissHref}}<form class="ui-banner-dismiss" method="post" action="{{.DismissHref}}">
+    <button class="ui-icon-button" type="submit" aria-label="Dismiss">{{.DismissIcon}}</button>
+  </form>{{end}}
+</div>{{end}}

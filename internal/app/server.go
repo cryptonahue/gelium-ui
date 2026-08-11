@@ -29,11 +29,30 @@ func themeClass(theme string) string {
 	return defaultThemeClass
 }
 
+// bannerView is the server-driven view model for the page-level BANNER slot
+// (Phase D pattern 5). The partial is a primitive: no handler wires it yet —
+// Phase G will inject it when a page/site condition (expired session,
+// maintenance, pending consent) is detected. A nil Banner on pageView renders
+// no banner. Tone is a closed vocabulary (info|success|warning|error), the
+// CTA is a real link and the dismiss a POST+303 action, both 0 JS.
+type bannerView struct {
+	Tone        string
+	Icon        template.HTML
+	Title       string
+	Body        string
+	CTA         bool
+	CTAHref     string
+	CTALabel    string
+	DismissHref string
+	DismissIcon template.HTML
+}
+
 type pageView struct {
 	Title                string
 	Content              template.HTML
 	ThemeClass           string
 	Nav                  []navLink
+	Banner               *bannerView
 	CTA                  *buttonView
 	Buttons              []buttonView
 	TextFields           []textFieldView

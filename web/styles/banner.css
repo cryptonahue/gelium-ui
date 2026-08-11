@@ -1,0 +1,83 @@
+@layer components {
+  /* Banner: a page-level, full-width horizontal status bar rendered between
+     the site header and the main content. It carries the persistent page/site
+     signal (expired session, maintenance, consent, persistent success) — never
+     the transient toast. Color is never the only signal: the optional icon,
+     the title/body text and the role carry meaning, and the forced-colors
+     block keeps the tone visible under forced colors. The --ui-banner-* tokens
+     are declared scoped to the root so the primitive works standalone; the
+     theme may override them globally. There is no animation, so no
+     reduced-motion block. */
+  .ui-banner {
+    --ui-banner-padding: var(--ui-space-3) var(--ui-space-4);
+    --ui-banner-gap: var(--ui-space-3);
+    --ui-banner-radius: var(--ui-radius-sm);
+    --ui-banner-icon-size: var(--ui-size-icon-sm);
+    --ui-banner-bg: var(--ui-color-surface-container);
+    --ui-banner-fg: var(--ui-color-fg);
+
+    display: flex;
+    align-items: center;
+    width: 100%;
+    gap: var(--ui-banner-gap);
+    padding: var(--ui-banner-padding);
+    border-radius: var(--ui-banner-radius);
+    background: var(--ui-banner-bg);
+    color: var(--ui-banner-fg);
+  }
+
+  .ui-banner--error   { --ui-banner-bg: var(--ui-color-danger-container);  --ui-banner-fg: var(--ui-color-danger); }
+  .ui-banner--warning { --ui-banner-bg: var(--ui-color-warning-container); --ui-banner-fg: var(--ui-color-warning-fg); }
+  .ui-banner--success { --ui-banner-bg: color-mix(in srgb, var(--ui-color-success) 12%, var(--ui-color-surface)); --ui-banner-fg: var(--ui-color-success); }
+  .ui-banner--info    { --ui-banner-bg: color-mix(in srgb, var(--ui-color-info) 12%, var(--ui-color-surface));    --ui-banner-fg: var(--ui-color-info); }
+
+  .ui-banner-icon {
+    width: var(--ui-banner-icon-size);
+    height: var(--ui-banner-icon-size);
+    flex: none;
+    color: var(--ui-banner-fg);
+  }
+
+  .ui-banner-content {
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+  }
+
+  .ui-banner-title {
+    margin: 0;
+    color: var(--ui-banner-fg);
+    font: var(--ui-type-label-lg);
+  }
+
+  .ui-banner-body {
+    margin: 0;
+    color: var(--ui-banner-fg);
+    font: var(--ui-type-body-sm);
+  }
+
+  .ui-banner-dismiss {
+    display: inline;
+    margin: 0 0 0 auto;
+    border: 0;
+    background: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-banner {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-banner-icon,
+  .ui-banner-title,
+  .ui-banner-body {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-banner--error .ui-banner-icon,
+  .ui-banner--error .ui-banner-title,
+  .ui-banner--error .ui-banner-body {
+    color: Mark;
+  }
+}
