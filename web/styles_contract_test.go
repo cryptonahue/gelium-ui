@@ -61,6 +61,7 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/tooltip.css",
 		"styles/validation-summary.css",
 		"styles/demo-whatsapp.css",
+		"styles/recipe-admin-resource.css",
 		"styles/app.css",
 	}
 	var sb strings.Builder
@@ -362,10 +363,11 @@ func TestSizeTokensConsumedByComponents(t *testing.T) {
 	}
 
 	excluded := map[string]bool{
-		"tokens.css":        true, // defines the scale, not a consumer
-		"base.css":          true, // docs layout (site-header, prose, hero)
-		"demo-whatsapp.css": true, // demo only (all selectors are .demo-wa-*)
-		"app.css":           true, // entry, imports and media tails
+		"tokens.css":                true, // defines the scale, not a consumer
+		"base.css":                  true, // docs layout (site-header, prose, hero)
+		"demo-whatsapp.css":         true, // demo only (all selectors are .demo-wa-*)
+		"recipe-admin-resource.css": true, // screen recipe layout (all selectors are .recipe-ar-*)
+		"app.css":                   true, // entry, imports and media tails
 	}
 
 	var consumers []string
@@ -408,24 +410,24 @@ func TestSizeTokensConsumedByComponents(t *testing.T) {
 // so consumers can override geometry at the component root. Presence only.
 func TestComponentSizeTokensDeclaredScoped(t *testing.T) {
 	for file, token := range map[string]string{
-		"fab.css":        "--ui-fab-container-size:",
-		"button.css":     "--ui-button-padding-y:",
-		"text-field.css": "--ui-text-field-textarea-min-height:",
-		"select.css":     "--ui-select-caret-reserve:",
-		"toast.css":      "--ui-toast-min-height:",
-		"switch.css":     "--ui-switch-handle-inset:",
-		"menu.css":       "--ui-menu-min-width:",
-		"data-table.css": "--ui-data-table-checkbox-column-width:",
-		"empty-state.css": "--ui-empty-state-icon-size:",
-		"banner.css":      "--ui-banner-icon-size:",
-		"callout.css":     "--ui-callout-icon-size:",
+		"fab.css":          "--ui-fab-container-size:",
+		"button.css":       "--ui-button-padding-y:",
+		"text-field.css":   "--ui-text-field-textarea-min-height:",
+		"select.css":       "--ui-select-caret-reserve:",
+		"toast.css":        "--ui-toast-min-height:",
+		"switch.css":       "--ui-switch-handle-inset:",
+		"menu.css":         "--ui-menu-min-width:",
+		"data-table.css":   "--ui-data-table-checkbox-column-width:",
+		"empty-state.css":  "--ui-empty-state-icon-size:",
+		"banner.css":       "--ui-banner-icon-size:",
+		"callout.css":      "--ui-callout-icon-size:",
 		"inline-alert.css": "--ui-inline-alert-icon-size:",
-		"skeleton.css":    "--ui-skeleton-avatar-size:",
-		"tabs.css":       "--ui-tabs-height:",
-		"chips.css":      "--ui-chip-height:",
-		"dialog.css":     "--ui-dialog-min-width:",
-		"radio.css":      "--ui-radio-dot-size:",
-		"checkbox.css":   "--ui-checkbox-mark-size:",
+		"skeleton.css":     "--ui-skeleton-avatar-size:",
+		"tabs.css":         "--ui-tabs-height:",
+		"chips.css":        "--ui-chip-height:",
+		"dialog.css":       "--ui-dialog-min-width:",
+		"radio.css":        "--ui-radio-dot-size:",
+		"checkbox.css":     "--ui-checkbox-mark-size:",
 	} {
 		css := sourceComponentCSS(t, file)
 		if !strings.Contains(css, token) {
@@ -450,10 +452,11 @@ func TestSpaceTokensConsumedByComponents(t *testing.T) {
 	// Demo and doc-only files must not count as component consumers: they carry
 	// preview scaffolding, not component primitives.
 	excluded := map[string]bool{
-		"tokens.css":          true, // defines the scale, not a consumer
-		"base.css":            true, // docs layout (site-header, prose, hero)
-		"demo-whatsapp.css":   true, // demo only (all selectors are .demo-wa-*)
-		"app.css":             true, // entry, imports and media tails
+		"tokens.css":                true, // defines the scale, not a consumer
+		"base.css":                  true, // docs layout (site-header, prose, hero)
+		"demo-whatsapp.css":         true, // demo only (all selectors are .demo-wa-*)
+		"recipe-admin-resource.css": true, // screen recipe layout (all selectors are .recipe-ar-*)
+		"app.css":                   true, // entry, imports and media tails
 	}
 
 	var consumers []string
@@ -533,10 +536,11 @@ func TestBorderTokensConsumedByComponents(t *testing.T) {
 	// Demo and doc-only files must not count as component consumers: they carry
 	// preview scaffolding, not component primitives.
 	excluded := map[string]bool{
-		"tokens.css":        true, // defines the scale, not a consumer
-		"base.css":          true, // docs layout (site-header, prose, hero)
-		"demo-whatsapp.css": true, // demo only (all selectors are .demo-wa-*)
-		"app.css":           true, // entry, imports and media tails
+		"tokens.css":                true, // defines the scale, not a consumer
+		"base.css":                  true, // docs layout (site-header, prose, hero)
+		"demo-whatsapp.css":         true, // demo only (all selectors are .demo-wa-*)
+		"recipe-admin-resource.css": true, // screen recipe layout (all selectors are .recipe-ar-*)
+		"app.css":                   true, // entry, imports and media tails
 	}
 
 	var consumers []string

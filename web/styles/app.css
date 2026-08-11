@@ -39,6 +39,7 @@
 @import "./tooltip.css";
 @import "./validation-summary.css";
 @import "./demo-whatsapp.css";
+@import "./recipe-admin-resource.css";
 
 @source "../templates";
 @source "../content";
