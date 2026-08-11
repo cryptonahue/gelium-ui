@@ -162,4 +162,39 @@ Cada theme publica `themes/<theme>/README.md` con:
 
 ---
 
+## 13. Anexo — Agregar un theme al bundle (mecanismo Phase H)
+
+El mecanismo mínimo (Phase H) es **bundle de todos los themes + selección por
+clase** en el documento raíz (`<html class="{{.ThemeClass}}">`, data-driven desde
+el server): sin marketplace, sin registry, sin JS de selección y sin rebuild por
+theme. Un theme entra al bundle con **dos pasos**:
+
+1. **Import en `web/styles/app.css`** — listar el theme explícitamente junto a
+   los demás (CSS no globbea, la lista es la fuente de verdad del bundle):
+
+   ```css
+   @import "../../themes/theme-basecoat/theme.css";
+   ```
+
+   Cada theme vive en `themes/<name>/theme.css`, autocontenido (luz + dark),
+   con su selector raíz propio `.theme-<name>`. `npm run build` inlinea todos
+   los imports en el único asset servido (`web/static/app.css`); la selección
+   en runtime NO necesita rebuild.
+
+2. **Allowlist de `themeClass()` en `internal/app/server.go`** — agregar la
+   clase `.theme-<name>` al slice allowlist en el MISMO cambio que crea
+   `themes/<name>/theme.css` y su import (regla "cuando exista en disco").
+   El default (`theme-material`) nunca cambia; un valor fuera de la lista cae
+   al default.
+
+Sin el paso 1, el selector `.theme-<name>` no está en el bundle y la clase no
+tiene efecto; sin el paso 2, el server no permite pedirla. Los tests del
+mecanismo (`web/styles_theme_mechanism_test.go`, `internal/app/theme_mechanism_test.go`)
+verifican que todo theme en disco tiene su selector raíz en el bundle compilado
+y que el bundle contiene exactamente los themes importados — un theme nuevo
+entra a la suite sin editar tests. **Ejemplo pendiente:** `theme-basecoat` es
+Phase I; hoy la allowlist contiene solo `theme-material`.
+
+---
+
 **Gate**: esta fase (A–C) cierra antes de Phase I (Basecoat). Un theme que requiera cambiar markup, clases, contratos o comportamiento no-JS es un cambio de core, no un theme, y se trata como tal.

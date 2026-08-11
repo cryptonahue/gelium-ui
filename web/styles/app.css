@@ -1,5 +1,15 @@
 @import "tailwindcss";
 @import "./tokens.css";
+/*
+ * Theme bundle (Phase H mechanism): one explicit @import per theme. CSS does
+ * not glob, so every theme ships as themes/<name>/theme.css with its own root
+ * selector (.theme-<name>, light + dark self-contained) and is listed here.
+ * Selection happens at runtime by class on the document root
+ * ({{.ThemeClass}}, allowlisted server-side): no JS, no rebuild, the tokens
+ * resolve by cascade. Add a new theme in two steps — import it here, then
+ * allowlist its class in themeClass() (internal/app/server.go). theme-basecoat
+ * joins this list in Phase I, not before its theme.css exists on disk.
+ */
 @import "../../themes/theme-material/theme.css";
 @import "./base.css";
 @import "./button.css";

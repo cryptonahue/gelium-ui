@@ -22,8 +22,14 @@ const defaultThemeClass = "theme-material"
 // themeClass resolves a requested theme to a safe CSS class. Theme identity is
 // server-driven and validated against an allowlist of themes that exist on
 // disk; unknown values fall back to the default so no page can inject an
-// arbitrary class or depend on a theme that does not exist. Extend the
-// allowlist as new themes (e.g. theme-basecoat) land.
+// arbitrary class or depend on a theme that does not exist.
+//
+// Allowlist rule (Phase H): a theme class only enters this list together with
+// its bundle entry — an import in web/styles/app.css AND themes/<name>/theme.css
+// on disk. theme-basecoat is deliberately absent today: it gets added here in
+// Phase I, at the same commit that creates themes/theme-basecoat and its
+// app.css import. Adding the string before the theme exists would let a page
+// select a theme that is not in the bundle.
 func themeClass(theme string) string {
 	for _, allowed := range []string{defaultThemeClass} {
 		if theme == allowed {
