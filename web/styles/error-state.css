@@ -1,0 +1,61 @@
+@layer components {
+  /* Error state: a server-rendered full-page status for a resource that could
+     not be delivered (404/500). It is the page-level failure variant of the
+     state family: role="alert" announces the failure as an actionable
+     condition, the oversized status code is decorative (aria-hidden — the
+     heading carries the meaning), and the optional retry is a real GET link.
+     Color is never the only signal: the code, heading and body text carry
+     meaning, and the forced-colors block keeps the failure distinguishable
+     under forced colors. The --ui-error-state-* tokens are declared scoped to
+     the root so the primitive works standalone; the theme may override them
+     globally. There is no animation, so no reduced-motion block. */
+  .ui-error-state {
+    --ui-error-state-padding: var(--ui-space-8);
+    --ui-error-state-gap: var(--ui-space-2);
+    --ui-error-state-code-color: var(--ui-color-danger);
+    --ui-error-state-title-color: var(--ui-color-fg);
+    --ui-error-state-body-color: var(--ui-color-fg-muted);
+
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    place-content: center;
+    gap: var(--ui-error-state-gap);
+    padding: var(--ui-error-state-padding);
+    text-align: center;
+  }
+
+  .ui-error-state-code {
+    margin: 0;
+    font: var(--ui-type-display-lg);
+    color: var(--ui-error-state-code-color);
+  }
+
+  .ui-error-state-title {
+    margin: 0;
+    font: var(--ui-type-title-lg);
+    color: var(--ui-error-state-title-color);
+  }
+
+  .ui-error-state-body {
+    margin: 0;
+    font: var(--ui-type-body-sm);
+    color: var(--ui-error-state-body-color);
+  }
+
+  .ui-error-state .ui-button {
+    margin-top: var(--ui-space-2);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-error-state-code,
+  .ui-error-state-title,
+  .ui-error-state-body {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-error-state a.ui-button { color: LinkText; }
+  .ui-error-state a.ui-button:focus-visible { outline-color: Highlight; }
+}

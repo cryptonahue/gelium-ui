@@ -33,6 +33,7 @@
 @import "./banner.css";
 @import "./callout.css";
 @import "./empty-state.css";
+@import "./error-state.css";
 @import "./inline-alert.css";
 @import "./skeleton.css";
 @import "./tooltip.css";

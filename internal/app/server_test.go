@@ -340,3 +340,90 @@ func TestBannerMarkupContracts(t *testing.T) {
 		t.Error("banner must omit the dismiss form when DismissHref is empty")
 	}
 }
+
+func renderErrorState(t *testing.T, view errorStateView) string {
+	t.Helper()
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/error-state.html"))
+	var rendered bytes.Buffer
+	if err := tmpl.ExecuteTemplate(&rendered, "error-state", view); err != nil {
+		t.Fatalf("execute error-state template: %v", err)
+	}
+	return rendered.String()
+}
+
+// TestErrorStateMarkupContracts proves the status code is the decorative
+// anchor (aria-hidden), the title is the single h1, the body is the muted
+// message, and the retry is a real GET link rendered only when Retry is set.
+func TestErrorStateMarkupContracts(t *testing.T) {
+	got := renderErrorState(t, errorStateView{
+		StatusCode: 404,
+		Title:      "Page not found",
+		Body:       "The page you are looking for does not exist or has moved.",
+		Retry:      true,
+		Href:       "/",
+		Label:      "Back to home",
+	})
+	for _, contract := range []string{
+		`class="ui-error-state" role="alert"`,
+		`class="ui-error-state-code" aria-hidden="true">404`,
+		`<h1 class="ui-error-state-title">Page not found</h1>`,
+		`class="ui-error-state-body">The page you are looking for does not exist or has moved.`,
+		`<a class="ui-button" href="/">Back to home</a>`,
+	} {
+		if !strings.Contains(got, contract) {
+			t.Errorf("error-state markup is missing contract %q", contract)
+		}
+	}
+	if count := strings.Count(got, "<h1"); count != 1 {
+		t.Errorf("error-state must render exactly one h1, got %d", count)
+	}
+
+	noRetry := renderErrorState(t, errorStateView{
+		StatusCode: 500,
+		Title:      "Something went wrong",
+		Body:       "This page could not be loaded. Please try again later.",
+	})
+	if strings.Contains(noRetry, "ui-button") {
+		t.Error("error-state must omit the retry link when Retry is false")
+	}
+}
+
+// TestUnknownRouteRendersErrorStatePage proves the catch-all serves the ERROR
+// STATE slot with the real 404 status and the full layout, instead of the
+// plain-text net/http default.
+func TestUnknownRouteRendersErrorStatePage(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/does-not-exist", nil))
+	if res.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusNotFound)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`class="ui-error-state" role="alert"`,
+		`class="ui-error-state-code" aria-hidden="true">404`,
+		`<h1 class="ui-error-state-title">Page not found</h1>`,
+		`class="ui-error-state-body">The page you are looking for does not exist or has moved.`,
+		`<a class="ui-button" href="/">Back to home</a>`,
+		`<main`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("404 page is missing contract %q", contract)
+		}
+	}
+	if strings.Contains(body, "404 page not found") {
+		t.Error("404 must not fall back to the plain net/http body")
+	}
+}
+
+// TestErrorSlotOmittedWhenNil proves the Error slot is optional: a nil
+// pageView.Error renders the normal content and no error state at all.
+func TestErrorSlotOmittedWhenNil(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	if strings.Contains(res.Body.String(), "ui-error-state") {
+		t.Error("layout must not render an error state when pageView.Error is nil")
+	}
+}

@@ -1,0 +1,6 @@
+{{define "error-state"}}<div class="ui-error-state" role="alert">
+  <p class="ui-error-state-code" aria-hidden="true">{{.StatusCode}}</p>
+  <h1 class="ui-error-state-title">{{.Title}}</h1>
+  <p class="ui-error-state-body">{{.Body}}</p>
+  {{if .Retry}}<a class="ui-button" href="{{.Href}}">{{.Label}}</a>{{end}}
+</div>{{end}}

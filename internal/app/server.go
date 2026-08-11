@@ -47,12 +47,28 @@ type bannerView struct {
 	DismissIcon template.HTML
 }
 
+// errorStateView is the server-driven view model for the page-level ERROR
+// STATE slot (Phase D pattern 7). A nil Error on pageView renders no error
+// state and the normal content instead. The status code is the canonical
+// attribute: the handler picks the real HTTP status (404/500) and the copy
+// per status. Retry is optional — a real GET link back to a known URL —
+// and everything works with 0 JS.
+type errorStateView struct {
+	StatusCode int
+	Title      string
+	Body       string
+	Retry      bool
+	Href       string
+	Label      string
+}
+
 type pageView struct {
 	Title                string
 	Content              template.HTML
 	ThemeClass           string
 	Nav                  []navLink
 	Banner               *bannerView
+	Error                *errorStateView
 	CTA                  *buttonView
 	Buttons              []buttonView
 	TextFields           []textFieldView
@@ -124,6 +140,15 @@ func New() http.Handler {
 	mux.HandleFunc("POST /demo/whatsapp/typing", s.whatsAppTyping)
 	mux.HandleFunc("POST /demo/whatsapp/read", s.whatsAppRead)
 	mux.HandleFunc("GET /static/{name}", s.staticAsset)
+	// 404 catch-all: any unknown GET path falls back to the styled ERROR STATE
+	// page (the mux gives the more specific patterns above priority). Post-only
+	// routes register a GET 405 companion below so a GET to them keeps the
+	// mux's modern method-mismatch semantics instead of being swallowed by the
+	// catch-all.
+	for _, path := range postOnlyPaths() {
+		mux.HandleFunc("GET "+path, methodNotAllowed)
+	}
+	mux.HandleFunc("GET /{path...}", s.notFound)
 	return mux
 }
 
@@ -131,6 +156,73 @@ func (s *server) health(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte("ok\n"))
+}
+
+// postOnlyPaths are the routes that only accept POST. A GET to any of them
+// must stay a 405 (the mux's modern method-mismatch semantics) even after the
+// catch-all 404, so each path also registers a GET methodNotAllowed companion.
+func postOnlyPaths() []string {
+	return []string{
+		"/examples/text-field/validate",
+		"/examples/toast/demo",
+		"/examples/select/menu",
+		"/examples/chips/remove",
+		"/examples/data-table/refresh",
+		"/demo/whatsapp/send",
+		"/demo/whatsapp/send-template",
+		"/demo/whatsapp/typing",
+		"/demo/whatsapp/read",
+	}
+}
+
+// methodNotAllowed answers a GET to a POST-only route with the net/http 405
+// Method Not Allowed response, preserving the Allow header the ServeMux would
+// otherwise emit.
+func methodNotAllowed(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Allow", "POST")
+	http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
+}
+
+// notFound serves the styled ERROR STATE page for unknown routes, replacing
+// the plain-text net/http default. It renders the full docs layout with the
+// Error slot set and the real 404 status.
+func (s *server) notFound(w http.ResponseWriter, _ *http.Request) {
+	s.renderErrorPage(w,
+		http.StatusNotFound,
+		"Page not found",
+		"The page you are looking for does not exist or has moved.",
+		true,
+		"/",
+		"Back to home",
+	)
+}
+
+// renderErrorPage renders the full docs layout with the ERROR STATE slot set
+// and the real HTTP status. It is the page-level failure path for the 404
+// catch-all and resource 500s; the layout template is already parsed, so a
+// failed template exec still falls back to a minimal plain response.
+func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body string, retry bool, href, label string) {
+	var page bytes.Buffer
+	data := pageView{
+		Title:      title,
+		ThemeClass: themeClass(""),
+		Nav:        navLinks(),
+		Error: &errorStateView{
+			StatusCode: status,
+			Title:      title,
+			Body:       body,
+			Retry:      retry,
+			Href:       href,
+			Label:      label,
+		},
+	}
+	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
+		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(status)
+	_, _ = w.Write(page.Bytes())
 }
 
 func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
@@ -174,7 +266,7 @@ func (s *server) renderMarkdownPage(w http.ResponseWriter, data pageView, conten
 func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, data pageView, contentPath string, status int) {
 	source, err := fs.ReadFile(s.assets, contentPath)
 	if err != nil {
-		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
+		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home")
 		return
 	}
 	s.renderMarkdownStatus(w, data, string(source), status)
@@ -190,7 +282,7 @@ func (s *server) renderMarkdown(w http.ResponseWriter, data pageView, source str
 func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, source string, status int) {
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
-		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
+		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home")
 		return
 	}
 

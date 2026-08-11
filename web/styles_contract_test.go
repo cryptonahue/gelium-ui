@@ -55,6 +55,7 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/banner.css",
 		"styles/callout.css",
 		"styles/empty-state.css",
+		"styles/error-state.css",
 		"styles/inline-alert.css",
 		"styles/skeleton.css",
 		"styles/tooltip.css",
