@@ -164,12 +164,13 @@ func (s *recipeFeedStore) takeToast() *toastView {
 
 // skeletonView is the production view model for the shared "skeleton" partial:
 // a server-driven loading placeholder (Avatar draws the avatar+title+lines
-// layout, Lines the count of placeholder text lines). The partial renders
-// role="status" plus an sr-only label.
+// layout, Lines is the slice of placeholder text lines to render). The partial
+// renders role="status" plus an sr-only label. Lines is a slice (not a count)
+// because Go templates can only range over slices/maps/chans, not counts.
 type skeletonView struct {
 	Avatar bool
 	Label  string
-	Lines  int
+	Lines  []int
 }
 
 // recipeFeedView is the feed screen: app shell + flash toast slot + Tabs (view
@@ -363,7 +364,7 @@ func newRecipeFeedView(viewParam, page string, flash *toastView) *recipeFeedView
 		Caption:      fmt.Sprintf("%d posts · page %d of %d", total, pageNum, totalPages),
 		Pagination:   pagination,
 		EmptyState:   recipeFeedEmptyState(viewValue),
-		Skeleton:     &skeletonView{Avatar: true, Label: "Loading the feed"},
+		Skeleton:     &skeletonView{Avatar: true, Label: "Loading the feed", Lines: []int{1, 2, 3}},
 		FlashToast:   flash,
 	}
 }

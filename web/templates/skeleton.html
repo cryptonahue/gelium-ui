@@ -5,6 +5,6 @@
     <span class="ui-skeleton-block ui-skeleton-block--line ui-skeleton-block--short"></span>{{end}}
     <span class="ui-skeleton-block ui-skeleton-block--title"></span>
     <span class="ui-skeleton-block ui-skeleton-block--line"></span>
-    {{if .Lines}}{{range $i := (printf "%*s" .Lines "")}}<span class="ui-skeleton-block ui-skeleton-block--line"></span>{{end}}{{end}}
+    {{range .Lines}}<span class="ui-skeleton-block ui-skeleton-block--line"></span>{{end}}
   </div>
 </div>{{end}}
