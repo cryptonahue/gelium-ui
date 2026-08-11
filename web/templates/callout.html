@@ -1,0 +1,6 @@
+{{define "callout"}}<aside class="ui-callout{{if .Variant}} ui-callout--{{.Variant}}{{end}}">
+  {{if .Icon}}<span class="ui-callout-icon" aria-hidden="true">{{.Icon}}</span>{{end}}
+  {{if .Heading}}<h3 class="ui-callout-heading">{{.Heading}}</h3>{{end}}
+  <p class="ui-callout-body">{{.Body}}</p>
+  {{if .CTA}}<a class="ui-button" href="{{.CTAHref}}">{{.CTALabel}}</a>{{end}}
+</aside>{{end}}

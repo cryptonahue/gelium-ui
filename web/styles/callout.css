@@ -1,0 +1,66 @@
+@layer components {
+  /* Callout: a contextual, ignorable note (tip box) rendered inline in
+     content — it explains context, tips and help, never a state signal. That
+     is why it carries no role, no state tones (error/warning/success live on
+     inline-alert and banner) and no dismiss: there is no state to clean up,
+     only content to read. The --ui-callout-* tokens are declared scoped to
+     the root so the primitive works standalone; the theme may override them
+     globally. The accent bar is the visual note mark; text (not color alone)
+     carries the meaning, and the forced-colors block keeps the note visible
+     under forced colors. There is no animation, so no reduced-motion block. */
+  .ui-callout {
+    --ui-callout-padding: var(--ui-space-3) var(--ui-space-4);
+    --ui-callout-gap: var(--ui-space-2);
+    --ui-callout-radius: var(--ui-radius-sm);
+    --ui-callout-icon-size: var(--ui-size-icon-sm);
+    --ui-callout-bg: var(--ui-color-surface-container);
+    --ui-callout-fg: var(--ui-color-fg);
+    --ui-callout-heading-color: var(--ui-color-fg);
+    --ui-callout-body-color: var(--ui-color-fg-muted);
+    --ui-callout-accent: var(--ui-color-fg-muted);
+
+    display: flex;
+    align-items: flex-start;
+    gap: var(--ui-callout-gap);
+    padding: var(--ui-callout-padding);
+    border-radius: var(--ui-callout-radius);
+    border-left: 4px solid var(--ui-callout-accent);
+    background: var(--ui-callout-bg);
+    color: var(--ui-callout-fg);
+  }
+
+  .ui-callout--info { --ui-callout-bg: color-mix(in srgb, var(--ui-color-info) 12%, var(--ui-color-surface)); --ui-callout-accent: var(--ui-color-info); }
+  .ui-callout--tip  { --ui-callout-bg: color-mix(in srgb, var(--ui-color-secondary) 20%, var(--ui-color-surface)); --ui-callout-accent: var(--ui-color-secondary-fg); }
+
+  .ui-callout-icon {
+    width: var(--ui-callout-icon-size);
+    height: var(--ui-callout-icon-size);
+    flex: none;
+    color: var(--ui-callout-accent);
+  }
+
+  .ui-callout-heading {
+    margin: 0;
+    color: var(--ui-callout-heading-color);
+    font: var(--ui-type-label-lg);
+  }
+
+  .ui-callout-body {
+    margin: 0;
+    color: var(--ui-callout-body-color);
+    font: var(--ui-type-body-sm);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-callout {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-callout-icon,
+  .ui-callout-heading,
+  .ui-callout-body {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+}
