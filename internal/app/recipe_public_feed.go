@@ -221,6 +221,7 @@ type recipeFeedItemView struct {
 func (s *server) recipePublicFeedList(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	view := newRecipeFeedView(q.Get("view"), q.Get("page"), feedDemoStore.takeToast())
+	applyRequestTheme(r, view)
 
 	if strings.EqualFold(r.Header.Get("HX-Request"), "true") {
 		s.renderRecipeTemplate(w, http.StatusOK, "recipe-public-feed-panel", view)
@@ -255,6 +256,7 @@ func (s *server) recipePublicFeedRefresh(w http.ResponseWriter, r *http.Request)
 	isHX := strings.EqualFold(r.Header.Get("HX-Request"), "true")
 
 	view := newRecipeFeedView("", "", feedDemoStore.takeToast())
+	applyRequestTheme(r, view)
 	view.Refreshed = true
 
 	if isHX {

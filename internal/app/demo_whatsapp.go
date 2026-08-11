@@ -545,7 +545,7 @@ func (s *server) whatsAppDemo(w http.ResponseWriter, r *http.Request) {
 		Conversations: conversations,
 		ActiveChat:    chat,
 		Search:        search,
-		ThemeClass:    themeClass(defaultThemeClass),
+		ThemeClass:    themeClass(themeFromRequest(r)),
 		Meta:          demoMetaES,
 	})
 }
@@ -553,7 +553,7 @@ func (s *server) whatsAppDemo(w http.ResponseWriter, r *http.Request) {
 func (s *server) whatsAppAdmin(w http.ResponseWriter, r *http.Request) {
 	view := whatsAppDemoStore.adminView(time.Now())
 	view.ActiveTab = "numbers"
-	view.ThemeClass = themeClass(defaultThemeClass)
+	view.ThemeClass = themeClass(themeFromRequest(r))
 	view.Meta = demoMetaES
 	s.templates.ExecuteTemplate(w, "demo-whatsapp-admin", view)
 }

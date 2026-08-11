@@ -293,6 +293,7 @@ func (s *server) recipeAdminResourceList(w http.ResponseWriter, r *http.Request)
 		r.URL.Query().Get("q"), r.URL.Query().Get("sort"), r.URL.Query().Get("dir"), r.URL.Query().Get("page"),
 		selection, resourceDemoStore.takeBanner(),
 	)
+	applyRequestTheme(r, view)
 
 	if strings.EqualFold(r.Header.Get("HX-Request"), "true") {
 		s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-panel", view)
@@ -303,6 +304,7 @@ func (s *server) recipeAdminResourceList(w http.ResponseWriter, r *http.Request)
 
 func (s *server) recipeAdminResourceNew(w http.ResponseWriter, r *http.Request) {
 	view := newRecipeAdminResourceFormView("create", "", "", "Pending", "", "", nil)
+	applyRequestTheme(r, view)
 	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-form", view)
 }
 
@@ -325,6 +327,7 @@ func (s *server) recipeAdminResourceEdit(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	view := newRecipeAdminResourceFormView("edit", id, item.Name, item.Status, item.Date, item.Owner, nil)
+	applyRequestTheme(r, view)
 	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-form", view)
 }
 
@@ -390,6 +393,7 @@ func (s *server) recipeAdminResourceRefresh(w http.ResponseWriter, r *http.Reque
 	isHX := strings.EqualFold(r.Header.Get("HX-Request"), "true")
 
 	view := newRecipeAdminResourceView("", "", "", "", nil, resourceDemoStore.takeBanner())
+	applyRequestTheme(r, view)
 	view.Refreshed = true
 
 	if isHX {
@@ -413,6 +417,7 @@ func (s *server) recipeAdminResourceRefresh(w http.ResponseWriter, r *http.Reque
 // validation summary (real links to each field error) and per-field errors.
 func (s *server) recipeAdminResourceFormInvalid(w http.ResponseWriter, r *http.Request, mode, id, name, status, date, owner string, errs []recipeFieldError) {
 	view := newRecipeAdminResourceFormView(mode, id, name, status, date, owner, errs)
+	applyRequestTheme(r, view)
 	w.Header().Set("X-Loom-Validation", "true")
 	s.renderRecipeTemplate(w, http.StatusUnprocessableEntity, "recipe-admin-resource-form", view)
 }
@@ -753,6 +758,25 @@ func recipeAdminFormValidation(errs []recipeFieldError) *validationSummaryView {
 
 // renderRecipeTemplate executes one recipe template into the response with the
 // given status.
+// applyRequestTheme applies the document-root theme selection (?theme= query,
+// Phase H) to a recipe view that carries a ThemeClass field. Recipe templates
+// are standalone (not the docs layout), so the query middleware alone cannot
+// reach them; handlers call this right after building their view.
+func applyRequestTheme(r *http.Request, view interface{}) {
+	if theme := themeFromRequest(r); theme != "" {
+		switch v := view.(type) {
+		case *recipeAdminResourceView:
+			v.ThemeClass = theme
+		case *recipeAdminResourceFormView:
+			v.ThemeClass = theme
+		case *recipeOpsQueueView:
+			v.ThemeClass = theme
+		case *recipeFeedView:
+			v.ThemeClass = theme
+		}
+	}
+}
+
 func (s *server) renderRecipeTemplate(w http.ResponseWriter, status int, name string, data interface{}) {
 	var page bytes.Buffer
 	if err := s.templates.ExecuteTemplate(&page, name, data); err != nil {
