@@ -77,15 +77,18 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/app.css",
 	}
 	var sb strings.Builder
-	// app.css imports the theme right after the core tokens; read it from the
-	// repository so raw-source assertions see the same cascade as the build.
-	sb.WriteString(themeCSS(t, defaultThemeName))
 	for _, path := range paths {
 		css, err := sourceStyles.ReadFile(path)
 		if err != nil {
 			t.Fatalf("read source app CSS %s: %v", path, err)
 		}
 		sb.Write(css)
+		// app.css imports the theme right after the core tokens (tokens.css
+		// then the theme), so raw-source assertions see the same cascade as the
+		// build: the core defaults first, then the theme overrides them.
+		if path == "styles/tokens.css" {
+			sb.WriteString(themeCSS(t, defaultThemeName))
+		}
 	}
 	return sb.String()
 }
