@@ -1,0 +1,9 @@
+{{define "hero"}}<section class="ui-hero{{if .Media}} ui-hero--has-media{{end}}">
+  {{if .Media}}<div class="ui-hero-media">{{.Media}}</div>{{end}}
+  <div class="ui-hero-content">
+    {{if .Eyebrow}}<p class="ui-hero-eyebrow">{{.Eyebrow}}</p>{{end}}
+    {{if .Title}}<h1 class="ui-hero-title">{{.Title}}</h1>{{end}}
+    {{if .Subtitle}}<p class="ui-hero-subtitle">{{.Subtitle}}</p>{{end}}
+    {{if .CTAs}}<div class="ui-hero-actions">{{range .CTAs}}{{template "button" .}}{{end}}</div>{{end}}
+  </div>
+</section>{{end}}

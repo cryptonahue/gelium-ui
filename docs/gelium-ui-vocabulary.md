@@ -269,6 +269,51 @@ Leyenda de estado en Gelium: **✅ implementado** · **◐ parcial** (ad-hoc) ·
 - **Mapping a Gelium**: `web/templates/footer.html`, `web/styles/footer.css`, slot `{{if .Footer}}` en `layout.html` tras `</main>`, datos `footerView{Brand, Sections[]{Title, Links[]navLink}, Legal}` en `internal/app/server.go`.
 - **JS**: 0.
 
+### Hero ✅ (Billboard; NO se llama Callout)
+
+- **Decisión de naming**: el "Hero" promocional de Protocol (full-width) NO se implementa como Callout — ese nombre ya es el tip box de Phase D. Es una **composición**: `h1` `--ui-type-display-lg` (la página posee un único h1, P2) + subtitle + CTA(s) (Button link) + media de fondo opcional con scrim.
+- **Anatomía**: `.ui-hero` → `.ui-hero-media` (fondo absoluto, variante `.ui-hero--has-media`) + `.ui-hero-content` (`.ui-hero-eyebrow`, `.ui-hero-title`, `.ui-hero-subtitle`, `.ui-hero-actions`).
+- **Semántica HTML**: `<section>` con `h1` de página; media decorativa fuera del flujo de lectura.
+- **Tokens**: scoped `--ui-hero-*` sobre `--ui-color-surface`/`scrim`, `--ui-type-display-lg`/`body-lg`, `--ui-space-*`; forced-colors; padding generoso en wide (media query).
+- **Mapping a Gelium**: `web/templates/hero.html`, `web/styles/hero.css`; desbloquea Landing/Public-Feed (Phase G).
+- **JS**: 0.
+
+### Split ✅
+
+- **Intención**: composición editorial de 2 columnas (media + cuerpo) que apila en narrow.
+- **Anatomía**: `.ui-split` (grid `repeat(2, minmax(0,1fr))`) → `.ui-split-media` (slot img/video) + `.ui-split-body` (`.ui-split-eyebrow`, `.ui-split-title`, `.ui-split-copy`, `.ui-split-action`).
+- **Semántica HTML**: `<section>`; la tipografía del cuerpo NO se aplica por defecto (el consumidor conserva el contrato `.prose`).
+- **Bidi**: RTL automático — las columnas fluyen en orden de dirección del documento (media primero → derecha en RTL), sin `left/right` literales.
+- **Tokens**: scoped `--ui-split-*` sobre `--ui-color-fg`/`fg-muted`, `--ui-type-headline-sm`/`body-lg`, `--ui-radius-sm`, `--ui-space-*`; forced-colors.
+- **Mapping a Gelium**: `web/templates/split.html`, `web/styles/split.css`; best-used-in: Landing/Public-Feed (Phase G), junto a Video.
+- **JS**: 0.
+
+### Feature Card ✅ (composición, NO primitiva)
+
+- **Decisión**: es **composición de Card + CTA Link**, no un componente nuevo: el wrapper `ui-feature-card` reusa `.ui-card` (elevated) + media + `.ui-card-title`/`.ui-card-body` + `.ui-card-action` (Button link). Variante horizontal descartada (deprecada upstream).
+- **Anatomía**: `.ui-feature-card` → `.ui-feature-card-media` (aspect-ratio literal 16:9, no tokenizado) + `.ui-feature-card-body`.
+- **CSS**: mínimo — solo geometría (media aspect, spacing); superficie/sombra/foco vienen de `.ui-card`.
+- **Mapping a Gelium**: `web/templates/feature-card.html`, `web/styles/feature-card.css`.
+- **JS**: 0.
+
+### Language Switcher ✅
+
+- **Intención**: cambiar el idioma del sitio; es **navegación GET, nunca POST**.
+- **Semántica HTML**: `<form method="get" action="{{.Action}}">` + `<label>` + `<select name="lang">` + **submit siempre visible** (cero auto-submit JS). El server responde al `?lang=<code>` con **303 a la URL localizada** y resuelve `<html lang>`/RTL server-side.
+- **Alcance**: el patrón es la **primitiva lista** (contrato); el modelo de locales (`?lang=` → 303) queda **fuera de alcance** — no hay i18n real todavía; el server debe resolverlo cuando exista.
+- **Tokens**: scoped `--ui-language-switcher-*` sobre `--ui-color-border`/`fg-muted`, `--ui-type-body-sm`, `--ui-radius-sm`, `--ui-space-*`; forced-colors.
+- **Mapping a Gelium**: `web/templates/language-switcher.html`, `web/styles/language-switcher.css`; se compone dentro del Footer (nav secundaria).
+- **JS**: 0.
+
+### Newsletter ✅
+
+- **Intención**: conversión de audiencia (suscripción); formulario **zero-JS** con contrato server completo.
+- **Semántica HTML**: `<aside class="ui-newsletter" aria-labelledby>` → título `h2` + descripción + `<form method="post" action="{{.Action}}">` con email (`type="email"` + `required`) + submit (Button). Success reemplaza el form por un `<p role="status">` persistente.
+- **Contrato server**: **POST + 422 + `X-Loom-Validation: true`** (header real del código; el roadmap lo escribe `X-Gelium-Validation`, ver `screen-recipes-audit.md:17`) en email inválido, re-render con `inline-alert--error` y valor preservado; **POST → 200 success** (ejemplo) o **POST + 303 → GET success** (producción, contrato d). HTMX opcional (swap del aside).
+- **Tokens**: scoped `--ui-newsletter-*` sobre `--ui-color-surface-container`/`error`, `--ui-type-headline-sm`, `--ui-radius-*`, `--ui-space-*`; forced-colors.
+- **Mapping a Gelium**: `web/templates/newsletter.html`, `web/styles/newsletter.css`, `internal/app/newsletter.go`, ejemplo `GET/POST /examples/newsletter` (noindex).
+- **JS**: 0 (HTMX opcional).
+
 ### Dialog ✅
 
 - **Aliases**: modal, alert dialog (confirm).

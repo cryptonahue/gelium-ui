@@ -13,58 +13,71 @@
 | # | Patrón | Estado | Tier | Implementación |
 |---|--------|--------|------|----------------|
 | 1 | **Article** | ✅ (≈ `.prose`) | 1 | `base.css` `.prose` + `layout.html:26`; contrato tipográfico + intro opcional (P2) |
-| 2 | **Billboard/Hero** | ✖ pendiente | 2 | Composición: formaliza `.landing-hero` huérfano + `.hero-action`; heading `--ui-type-display-lg` + desc + CTA Link + media opcional |
+| 2 | **Billboard/Hero** | ✅ | 2 | `hero.html`/`hero.css` + `styles_hero_test.go`; composición: `h1` `--ui-type-display-lg` + subtitle + CTA(s) (Button) + media de fondo opcional con scrim |
 | 3 | **Breadcrumb** | ✅ | 1 | `breadcrumb.html`/`breadcrumb.css` + `styles_breadcrumb_test.go`; markup canónico P1; GEO §9/§14 |
 | 4 | **Callout** | ✅ | — | `callout.html`/`callout.css` (Phase D); naming resuelto (tip box) |
 | 5 | **Card (slots públicos)** | ◐ pendiente | 2 | Extender `card.html` con media (`aspect-ratio`), tag (`--ui-badge`), meta, CTA (`--ui-card-action`) |
-| 6 | **CTA Link** | ✅ (≈ Button link) | 1 | `button.html:6` variante `Href` → `<a class="ui-button">`; reusado por Empty state/Banner/Callout |
-| 7 | **Feature Card** | ✖ pendiente | 2 | Composición Card + CTA Link (no primitiva); sin variante horizontal (deprecada upstream) |
+| 6 | **CTA Link** | ✅ (formalizado = Button link) | 1 | `button.html:6` variante `Href` → `<a class="ui-button">`; **no componente propio**; reusado por Empty state/Banner/Callout/Hero/Feature Card/Split |
+| 7 | **Feature Card** | ✅ | 2 | `feature-card.html`/`feature-card.css` + `styles_feature_card_test.go`; composición Card + media + CTA Link (no primitiva); sin variante horizontal (deprecada upstream) |
 | 8 | **Footer** | ✅ | 3 | `footer.html`/`footer.css` + slot en `layout.html` + `pageView.Footer`/`defaultFooter()` en `server.go`; `<details>/<summary>`; bloqueante Phase G |
-| 9 | **Language Switcher** | ✖ pendiente | 3 | GET `?lang=` → 303 a URL localizada; submit visible; requiere modelo de locales (`lang`/RTL) |
-| 10 | **Newsletter** | ✖ pendiente | 3 | POST + 422 `X-Gelium-Validation` + success view; reusa text-field/select/checkbox/button |
+| 9 | **Language Switcher** | ✅ | 3 | `language-switcher.html`/`language-switcher.css` + `styles_language_switcher_test.go`; GET `?lang=` → 303 a URL localizada; submit visible (no auto-submit JS) |
+| 10 | **Newsletter** | ✅ | 3 | `newsletter.html`/`newsletter.css` + `styles_newsletter_test.go` + handler `internal/app/newsletter.go`; POST + 422 `X-Loom-Validation` + success view (reusa inline-alert) |
 | 11 | **Notification Bar** | ✅ (≈ Banner) | 4 | Alias documental del Banner Gelium (`banner.html`, Phase D); variantes sticky/scripted diferidas |
 | 12 | **Section Heading** | ✅ | 1 | Utilidad tipográfica: `section-heading.html`/`section-heading.css`; siempre `h2`, nunca `h1` |
-| 13 | **Split** | ✖ pendiente | 2 | Composición grid 2 col (`.ui-split` + `.ui-split-body` + `.ui-split-media`); stack en narrow; bidi RTL |
+| 13 | **Split** | ✅ | 2 | `split.html`/`split.css` + `styles_split_test.go`; grid 2 col (`.ui-split` + `.ui-split-body` + `.ui-split-media`); stack en narrow; bidi RTL automático |
 | 14 | **Video** | ✅ | 1 | Contenedor responsive: `video.html`/`video.css`; `aspect-ratio` literal 16:9 (no se tokeniza); `<video controls>` nativo |
 
-**Resumen**: 4 existentes ✅ (Article, Callout, CTA Link, Notification Bar) + **4 nuevos ✅ en esta entrega** (Breadcrumb, Section Heading, Video, Footer) + 6 pendientes ✖/◐ (Billboard/Hero, Card slots, Feature Card, Language Switcher, Newsletter, Split).
+**Resumen**: 13 de 14 ✅ (todo Phase F implementado; Card slots queda como ◐ de extensión) + 1 pendiente (Card slots). Esta entrega añade los 5 restantes: **Billboard/Hero, Feature Card, Language Switcher, Newsletter, Split** + formaliza **CTA Link** (Button link, sin componente propio).
 
 ---
 
-## 2. Orden de implementación
+## 2. Orden de implementación (estado: completa excepto Card slots)
 
-### Tier 1 — 100% estáticos, cero server contract (paralelizables)
+### Tier 1 — 100% estáticos, cero server contract
 
-1. **Breadcrumb** ✅ — partial + CSS + tests; markup ya canónico (P1). Desbloquea GEO §9/§14.
+1. **Breadcrumb** ✅ — partial + CSS + tests; markup canónico (P1). Desbloquea GEO §9/§14.
 2. **Section Heading** ✅ — utilidad CSS + partial mínimo.
 3. **Video** ✅ — contenedor + partial mínimo; cero JS.
-4. **Article** — formalizar contrato `.prose` (tipografía + intro opcional); doc + posible utilidad CSS.
-5. **CTA Link** ✅ — cerrado por Button link; variante inline con icono opcional.
+4. **Article** ✅ — formalizado como `.prose` (contrato tipográfico); sin partial nuevo.
+5. **CTA Link** ✅ — **formalizado = Button link** (`button.html` variante `Href`); variante inline con icono opcional (no implementada, no requerida).
 
-### Tier 2 — composiciones de existentes (después de Card slots)
+### Tier 2 — composiciones de existentes
 
-6. **Card → slots públicos** (media + aspect-ratio, tag `--ui-badge`, meta, CTA `--ui-card-action`).
-7. **Feature Card** = Card + CTA Link (composición, CSS mínimo).
-8. **Split** = grid 2 col (body + media), bidi RTL; partial opcional.
-9. **Hero/Billboard** = composición que formaliza `.landing-hero` + `.hero-action`; útil para Landing (Phase G).
+6. **Card → slots públicos** ◐ — **único pendiente**: media (`aspect-ratio`), tag (`--ui-badge`), meta, CTA (`--ui-card-action`). No bloquea Feature Card (que declara su propia geometría media).
+7. **Feature Card** ✅ — `feature-card.html` + `feature-card.css`: composición Card + CTA Link (CSS mínimo, solo media aspect + spacing).
+8. **Split** ✅ — `split.html` + `split.css`: grid 2 col (body + media), stack en narrow, bidi RTL automático.
+9. **Hero/Billboard** ✅ — `hero.html` + `hero.css`: composición display `h1` + subtitle + CTA(s) + media de fondo; formaliza el `h1` de landing.
 
-### Tier 3 — server contract (necesitan handler Go + datos)
+### Tier 3 — server contract
 
-10. **Footer** ✅ — partial + slot en layout + modelo de datos (`footerView`); `<details>/<summary>`. **Bloqueante Phase G.**
-11. **Newsletter** — POST + 422 `X-Gelium-Validation` + success view (reusa text-field/select/checkbox/button).
-12. **Language Switcher** — GET form + 303; requiere modelo de locales (`lang`/RTL); se compone dentro del Footer.
+10. **Footer** ✅ — partial + slot en layout + modelo de datos (`footerView`); `<details>/<summary>`. **Bloqueante Phase G (entregado).**
+11. **Newsletter** ✅ — `newsletter.html`/`newsletter.css` + handler `internal/app/newsletter.go`: **POST + 422 `X-Loom-Validation`** (header real del código) + success view persistente; ejemplo en `GET/POST /examples/newsletter` (noindex).
+12. **Language Switcher** ✅ — `language-switcher.html`/`language-switcher.css`: **GET form + submit visible**, cero auto-submit JS. El **modelo de locales** (`?lang=` → 303 a URL localizada, swap `<html lang>`/RTL) queda **fuera de alcance** (no hay i18n real todavía) — el patrón es la primitiva lista; el server debe resolver `?lang=`.
 
-### Tier 4 — alias documental (sin código)
+### Tier 4 — alias documental
 
-13. **Notification Bar** ✅ → alias de Banner en `gelium-ui-vocabulary.md`.
+13. **Notification Bar** ✅ — alias de Banner en `gelium-ui-vocabulary.md`.
+
+---
+
+## 2.1 Decisiones de naming (Phase F)
+
+| Decisión | Estado |
+|---|---|
+| **Hero NO se llama Callout** — el "Callout" de Protocol (hero full-width) queda cubierto por `ui-hero`; el Callout Gelium (Phase D) es el tip box `<aside>` ignorable. Naming cerrado. | ✅ |
+| **Feature Card = composición**, no primitiva: `ui-feature-card` envuelve `.ui-card` + media + `.ui-card-title`/`.ui-card-body` + `.ui-card-action` (CTA Link). Sin variante horizontal (deprecada upstream). | ✅ |
+| **Language Switcher = GET navigation form**: `method="get"` + `<select name="lang">` + submit visible; el cambio de idioma es navegación (server responde 303 a la URL localizada), nunca POST. Cero auto-submit JS. | ✅ |
+| **Newsletter = POST + 422** con el header real del código **`X-Loom-Validation: true`** (documentado como `X-Gelium-Validation` en el roadmap; el código usa `X-Loom-Validation`, ver `screen-recipes-audit.md:17`). Error reusa `inline-alert--error`; success = texto `role="status"` persistente. | ✅ |
+| **CTA Link = Button link** — no se crea componente propio; `{{template "button" .CTA}}` con `Href` es la forma canónica. | ✅ |
+| **Card slots públicos** — único pendiente de Phase F (extensión de `card.html`, no bloquea los 5 entregados). | ◐ |
 
 ---
 
 ## 3. Reglas
 
-- **Zero-JS end-to-end**: Footer → `<details>/<summary>`; Language Switcher → GET form con submit visible; Newsletter → POST + 422. HTMX solo como enhancement.
-- **No-tokenizar**: `aspect-ratio` (Video), breakpoints y z-index NO se convierten en tokens públicos (geometría estructural, no escala de theme).
-- **Naming**: secciones NO son theme; no portar grid `mzp-*` ni naming `mzp-*`; Feature Card horizontal descartada.
+- **Zero-JS end-to-end**: Footer → `<details>/<summary>`; Language Switcher → GET form con submit visible; Newsletter → POST + 422 (HTMX solo como enhancement: `hx-post` + swap del fragmento del aside).
+- **No-tokenizar**: `aspect-ratio` (Video, Feature Card media), breakpoints y z-index NO se convierten en tokens públicos (geometría estructural, no escala de theme).
+- **Naming**: secciones NO son theme; no portar grid `mzp-*` ni naming `mzp-*`; Feature Card horizontal descartada; el "Hero" de Protocol no se llama Callout.
 - **Convención de partials Phase D**: `web/templates/<x>.html` (`{{define "x"}}`) + `web/styles/<x>.css` (`@layer components`, tokens scoped en root, forced-colors) + `@import` en `app.css` + `web/styles_<x>_test.go` + `sourceAppCSS` + `npm run build` regenera `static/app.css`.
 
 ---

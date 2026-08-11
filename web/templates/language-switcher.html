@@ -1,0 +1,9 @@
+{{define "language-switcher"}}<form class="ui-language-switcher" method="get" action="{{.Action}}">
+  {{if .Label}}<label class="ui-language-switcher-label" for="{{.ID}}">{{.Label}}</label>{{end}}
+  <div class="ui-language-switcher-control">
+    <select class="ui-language-switcher-select" id="{{.ID}}" name="lang">
+      {{range .Options}}<option value="{{.Value}}"{{if eq $.Current .Value}} selected{{end}}>{{.Label}}</option>{{end}}
+    </select>
+    {{template "button" .Submit}}
+  </div>
+</form>{{end}}

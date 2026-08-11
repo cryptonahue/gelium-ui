@@ -1,0 +1,108 @@
+@layer components {
+  /* Newsletter: a zero-JS subscription form in an aside. The server owns the
+     contract — POST + 422 (X-Loom-Validation) with an inline alert on invalid
+     email, persistent success view on valid — so the form never mutates state
+     client-side. The error reuses the inline-alert primitive; the success is a
+     status paragraph that replaces the form entirely. Tokens scoped to the
+     root. No animation, so no reduced-motion block. */
+  .ui-newsletter {
+    --ui-newsletter-padding: var(--ui-space-6) var(--ui-space-4);
+    --ui-newsletter-gap: var(--ui-space-3);
+    --ui-newsletter-radius: var(--ui-radius-lg);
+    --ui-newsletter-surface: var(--ui-color-surface-container);
+    --ui-newsletter-border: var(--ui-color-border);
+    --ui-newsletter-fg: var(--ui-color-fg);
+    --ui-newsletter-muted: var(--ui-color-fg-muted);
+    --ui-newsletter-title-type: var(--ui-type-headline-sm);
+
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-newsletter-gap);
+    padding: var(--ui-newsletter-padding);
+    border: 1px solid var(--ui-newsletter-border);
+    border-radius: var(--ui-newsletter-radius);
+    background: var(--ui-newsletter-surface);
+    color: var(--ui-newsletter-fg);
+  }
+
+  .ui-newsletter-title {
+    margin: 0;
+    font: var(--ui-newsletter-title-type);
+    color: var(--ui-newsletter-fg);
+  }
+
+  .ui-newsletter-description {
+    margin: 0;
+    font: var(--ui-type-body-sm);
+    color: var(--ui-newsletter-muted);
+  }
+
+  .ui-newsletter-success {
+    margin: 0;
+    font: var(--ui-type-body-sm);
+    color: var(--ui-newsletter-fg);
+  }
+
+  .ui-newsletter-form {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-newsletter-gap);
+  }
+
+  .ui-newsletter-field {
+    display: flex;
+    flex-direction: column;
+    gap: var(--ui-newsletter-gap);
+  }
+
+  .ui-newsletter-row {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ui-newsletter-gap);
+  }
+
+  .ui-newsletter-label {
+    font: var(--ui-type-label-lg);
+    color: var(--ui-newsletter-fg);
+  }
+
+  .ui-newsletter-input {
+    box-sizing: border-box;
+    min-width: 0;
+    flex: 1 1 14rem;
+    padding: var(--ui-space-2) var(--ui-space-3);
+    border: 1px solid var(--ui-newsletter-border);
+    border-radius: var(--ui-radius-sm);
+    background: var(--ui-color-surface);
+    color: var(--ui-newsletter-fg);
+    font: var(--ui-type-body-md);
+  }
+
+  .ui-newsletter-input:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+
+  .ui-newsletter-input[aria-invalid="true"] {
+    border-color: var(--ui-color-error);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-newsletter {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-newsletter-title,
+  .ui-newsletter-description,
+  .ui-newsletter-success {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-newsletter-input {
+    border-color: CanvasText;
+    color: FieldText;
+    forced-color-adjust: auto;
+  }
+}

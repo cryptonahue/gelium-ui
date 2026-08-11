@@ -1,0 +1,74 @@
+@layer components {
+  /* Split: a two-column public/content composition (media + body) that stacks
+     on narrow screens. It is pure layout — the copy is deliberately NOT styled
+     editorially so the consumer keeps the .prose/typography contract. The grid
+     tracks flow in the document direction, so RTL documents mirror the
+     columns automatically (media first → right in RTL) with no literal
+     left/right and no separate RTL override. Tokens are scoped to the root. */
+  .ui-split {
+    --ui-split-gap: var(--ui-space-6);
+    --ui-split-media-radius: var(--ui-radius-sm);
+    --ui-split-media-border: var(--ui-color-border);
+
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    align-items: center;
+    gap: var(--ui-split-gap);
+  }
+
+  .ui-split-media {
+    min-width: 0;
+    overflow: hidden;
+    border-radius: var(--ui-split-media-radius);
+  }
+
+  .ui-split-media img,
+  .ui-split-media video {
+    display: block;
+    width: 100%;
+    height: auto;
+  }
+
+  .ui-split-body { min-width: 0; }
+
+  /* No media → the body takes the full row instead of a half column. */
+  .ui-split-body:only-child { grid-column: 1 / -1; }
+
+  .ui-split-eyebrow {
+    margin: 0 0 var(--ui-space-1);
+    font: var(--ui-type-label-lg);
+    color: var(--ui-color-fg-muted);
+  }
+
+  .ui-split-title {
+    margin: 0 0 var(--ui-space-2);
+    font: var(--ui-type-headline-sm);
+    color: var(--ui-color-fg);
+  }
+
+  .ui-split-copy {
+    margin: 0;
+    font: var(--ui-type-body-lg);
+    color: var(--ui-color-fg-muted);
+  }
+
+  .ui-split-action { margin-top: var(--ui-space-4); }
+
+  /* Narrow: stack the media above the body. */
+  @media (max-width: 47.99rem) {
+    .ui-split { grid-template-columns: 1fr; }
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-split-media {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-split-eyebrow,
+  .ui-split-title,
+  .ui-split-copy {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+}

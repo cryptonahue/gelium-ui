@@ -340,6 +340,7 @@ type pageView struct {
 	NavigationDrawerDemo *navigationDrawerDemo
 	DataTableDemo        *dataTableDemo
 	TooltipDemo          *tooltipDemo
+	Newsletter           *newsletterView
 }
 
 type server struct {
@@ -374,6 +375,8 @@ func New() http.Handler {
 	mux.HandleFunc("POST /components/dialog/confirm", s.dialogConfirmPost)
 	mux.HandleFunc("POST /examples/chips/remove", s.chipsRemoveDemo)
 	mux.HandleFunc("POST /examples/data-table/refresh", s.dataTableRefreshDemo)
+	mux.HandleFunc("GET /examples/newsletter", s.newsletterExample)
+	mux.HandleFunc("POST /examples/newsletter", s.newsletterSubscribe)
 	mux.HandleFunc("GET /demo/whatsapp", s.whatsAppDemo)
 	mux.HandleFunc("GET /demo/whatsapp/admin", s.whatsAppAdmin)
 	mux.HandleFunc("POST /demo/whatsapp/send", s.whatsAppSend)

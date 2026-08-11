@@ -1,0 +1,56 @@
+@layer components {
+  /* Language switcher: a GET navigation form — changing language is a GET
+     ?lang=<code> navigation the server answers with a 303 to the localized
+     URL, never a POST mutation. The submit stays visible (no auto-submit
+     script), so the switcher works with zero JS. Tokens scoped to the root. */
+  .ui-language-switcher {
+    --ui-language-switcher-gap: var(--ui-space-2);
+    --ui-language-switcher-type: var(--ui-type-body-sm);
+    --ui-language-switcher-color: var(--ui-color-fg-muted);
+    --ui-language-switcher-border: var(--ui-color-border);
+    --ui-language-switcher-radius: var(--ui-radius-sm);
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ui-language-switcher-gap);
+  }
+
+  .ui-language-switcher-label {
+    font: var(--ui-language-switcher-type);
+    color: var(--ui-language-switcher-color);
+  }
+
+  .ui-language-switcher-control {
+    display: flex;
+    align-items: center;
+    gap: var(--ui-language-switcher-gap);
+  }
+
+  .ui-language-switcher-select {
+    box-sizing: border-box;
+    padding: var(--ui-space-1) var(--ui-space-3);
+    border: 1px solid var(--ui-language-switcher-border);
+    border-radius: var(--ui-language-switcher-radius);
+    background: var(--ui-color-surface);
+    color: var(--ui-color-fg);
+    font: var(--ui-language-switcher-type);
+  }
+
+  .ui-language-switcher-select:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-language-switcher-label {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-language-switcher-select {
+    border-color: CanvasText;
+    color: FieldText;
+    forced-color-adjust: auto;
+  }
+}
