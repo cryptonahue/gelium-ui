@@ -518,6 +518,188 @@ func TestComponentPageRendersMetadata(t *testing.T) {
 // TestCanonicalIsCleanWithoutQuery proves the canonical never carries query
 // state: a GET with ?foo=bar still resolves to the clean route path (contract
 // §16), because the canonical derives from the route, not the request query.
+// breadcrumbItem is the test view model for the breadcrumb partial. The
+// partial is a primitive with no production Go view model yet (it renders
+// server-side from page/section data), so the render test drives it directly.
+type breadcrumbItem struct {
+	Href    string
+	Label   string
+	Current bool
+}
+
+func renderBreadcrumb(t *testing.T, items []breadcrumbItem) string {
+	t.Helper()
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/breadcrumb.html"))
+	var rendered bytes.Buffer
+	if err := tmpl.ExecuteTemplate(&rendered, "breadcrumb", struct{ Items []breadcrumbItem }{Items: items}); err != nil {
+		t.Fatalf("execute breadcrumb template: %v", err)
+	}
+	return rendered.String()
+}
+
+func renderFooter(t *testing.T, view footerView) string {
+	t.Helper()
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/footer.html"))
+	var rendered bytes.Buffer
+	if err := tmpl.ExecuteTemplate(&rendered, "footer", view); err != nil {
+		t.Fatalf("execute footer template: %v", err)
+	}
+	return rendered.String()
+}
+
+// TestBreadcrumbMarkupContracts proves the P1 markup contract
+// (seo-patterns.md:50-64): nav → ol → li, every crumb but the last is a real
+// link, and the current crumb is a span with aria-current="page" — never an <a>.
+func TestBreadcrumbMarkupContracts(t *testing.T) {
+	got := renderBreadcrumb(t, []breadcrumbItem{
+		{Href: "/", Label: "Home"},
+		{Href: "/docs", Label: "Docs"},
+		{Label: "Button", Current: true},
+	})
+	for _, contract := range []string{
+		`<nav aria-label="Breadcrumb">`,
+		`<ol class="ui-breadcrumb">`,
+		`<li class="ui-breadcrumb-item"><a href="/">Home</a></li>`,
+		`<li class="ui-breadcrumb-item"><a href="/docs">Docs</a></li>`,
+		`<li class="ui-breadcrumb-item"><span aria-current="page">Button</span></li>`,
+	} {
+		if !strings.Contains(got, contract) {
+			t.Errorf("breadcrumb markup is missing contract %q", contract)
+		}
+	}
+
+	// A trail with no current crumb renders only links.
+	noCurrent := renderBreadcrumb(t, []breadcrumbItem{{Href: "/docs", Label: "Docs"}})
+	if !strings.Contains(noCurrent, `<a href="/docs">Docs</a>`) {
+		t.Error("breadcrumb must render non-current crumbs as links")
+	}
+	if strings.Contains(noCurrent, "aria-current") {
+		t.Error("breadcrumb must not render aria-current when no crumb is current")
+	}
+}
+
+// TestFooterMarkupContracts proves the footer partial renders the brand, the
+// secondary nav with native details/summary sections (collapsed by default),
+// and the legal line — zero JS.
+func TestFooterMarkupContracts(t *testing.T) {
+	got := renderFooter(t, footerView{
+		Brand: "Gelium UI",
+		Sections: []footerSection{
+			{Title: "Documentation", Links: []navLink{{Path: "/docs", Label: "Docs"}}},
+		},
+		Legal: "© 2026 Gelium UI · MIT",
+	})
+	for _, contract := range []string{
+		`<footer class="ui-footer">`,
+		`<p class="ui-footer-brand">Gelium UI</p>`,
+		`<nav class="ui-footer-nav" aria-label="Footer">`,
+		`<section class="ui-footer-section">`,
+		`<details class="ui-footer-details">`,
+		`<summary class="ui-footer-heading">Documentation</summary>`,
+		`<ul class="ui-footer-list">`,
+		`<a href="/docs">Docs</a>`,
+		`<p class="ui-footer-legal">© 2026 Gelium UI · MIT</p>`,
+	} {
+		if !strings.Contains(got, contract) {
+			t.Errorf("footer markup is missing contract %q", contract)
+		}
+	}
+	if strings.Contains(got, "<details open") {
+		t.Error("footer must render <details> collapsed by default (zero-JS accordion)")
+	}
+
+	// Nil-safe: brand and legal are optional and omitted when empty.
+	minimal := renderFooter(t, footerView{Sections: []footerSection{{Title: "S", Links: []navLink{{Path: "/", Label: "Home"}}}}})
+	if strings.Contains(minimal, "ui-footer-brand") || strings.Contains(minimal, "ui-footer-legal") {
+		t.Error("footer must omit brand and legal when empty")
+	}
+}
+
+// TestLayoutOmitsFooterWhenNil proves the pageView.Footer slot is optional: a
+// nil footer renders no <footer> and the layout still builds cleanly.
+func TestLayoutOmitsFooterWhenNil(t *testing.T) {
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	var page bytes.Buffer
+	data := pageView{Title: "no footer", ThemeClass: "theme-material", Nav: []navLink{{Path: "/", Label: "Home"}}}
+	if err := tmpl.ExecuteTemplate(&page, "layout", data); err != nil {
+		t.Fatalf("execute layout without footer: %v", err)
+	}
+	if strings.Contains(page.String(), "<footer") {
+		t.Error("layout must not render a footer when pageView.Footer is nil")
+	}
+}
+
+// TestLayoutRendersFooterAfterMain proves the footer slot renders after the
+// </main> landmark and before the toast region when pageView.Footer is set.
+func TestLayoutRendersFooterAfterMain(t *testing.T) {
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	var page bytes.Buffer
+	data := pageView{
+		Title:      "footer slot",
+		ThemeClass: "theme-material",
+		Nav:        []navLink{{Path: "/", Label: "Home"}},
+		Footer: &footerView{
+			Brand: "Gelium UI",
+			Sections: []footerSection{
+				{Title: "Components", Links: []navLink{{Path: "/components/button", Label: "Button"}}},
+			},
+			Legal: "© 2026 Gelium UI · MIT",
+		},
+	}
+	if err := tmpl.ExecuteTemplate(&page, "layout", data); err != nil {
+		t.Fatalf("execute layout with footer: %v", err)
+	}
+	body := page.String()
+	for _, contract := range []string{
+		`<footer class="ui-footer">`,
+		`<p class="ui-footer-brand">Gelium UI</p>`,
+		`class="ui-footer-heading">Components</summary>`,
+		`class="ui-footer-legal">© 2026 Gelium UI · MIT</p>`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("layout does not render footer contract %q", contract)
+		}
+	}
+
+	mainEnd := strings.Index(body, "</main>")
+	toastPos := strings.Index(body, "loom-toast-region")
+	footerPos := strings.Index(body, `<footer class="ui-footer">`)
+	if mainEnd < 0 || toastPos < 0 {
+		t.Fatal("layout is missing the main landmark or toast region")
+	}
+	if footerPos < mainEnd || footerPos > toastPos {
+		t.Error("footer slot must render after </main> and before the toast region")
+	}
+}
+
+// TestHomeRendersDefaultFooter proves the real home page ships the footer
+// chrome with the default site data: brand, Documentation/Components groups
+// derived from the nav, and the legal line.
+func TestHomeRendersDefaultFooter(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<footer class="ui-footer">`,
+		`<p class="ui-footer-brand">Gelium UI</p>`,
+		`<nav class="ui-footer-nav" aria-label="Footer">`,
+		`<summary class="ui-footer-heading">Documentation</summary>`,
+		`<summary class="ui-footer-heading">Components</summary>`,
+		`<a href="/components/button">Button</a>`,
+		`<p class="ui-footer-legal">© 2026 Gelium UI · MIT</p>`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("home is missing footer contract %q", contract)
+		}
+	}
+	if strings.Contains(body, "<details open") {
+		t.Error("live footer must not render expanded <details>")
+	}
+}
+
 func TestCanonicalIsCleanWithoutQuery(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button?foo=bar", nil))

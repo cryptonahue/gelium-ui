@@ -56,6 +56,40 @@ type bannerView struct {
 // attribute: the handler picks the real HTTP status (404/500) and the copy
 // per status. Retry is optional — a real GET link back to a known URL —
 // and everything works with 0 JS.
+// footerView is the server-driven view model for the page-level FOOTER slot
+// (Phase F public content pattern). The footer is the site chrome (brand,
+// secondary nav, legal) that every layout page renders; a nil Footer omits it
+// so partial layouts and tests can opt out. Sections collapse natively with
+// <details>/<summary> on narrow screens and stay forced-open on desktop —
+// zero JS. Links reuse navLink so the chrome can never drift from the nav.
+type footerView struct {
+	Brand    string
+	Sections []footerSection
+	Legal    string
+}
+
+// footerSection is one collapsible link group inside the footer secondary nav.
+type footerSection struct {
+	Title string
+	Links []navLink
+}
+
+// defaultFooter is the site-wide chrome data: the brand, the Documentation and
+// Components link groups (derived from the nav so they stay in lockstep), and
+// the legal line. It is injected at the render choke points; a consumer may
+// replace it per page by setting pageView.Footer explicitly.
+func defaultFooter() *footerView {
+	nav := navLinks()
+	return &footerView{
+		Brand: "Gelium UI",
+		Sections: []footerSection{
+			{Title: "Documentation", Links: []navLink{{Path: "/", Label: "Home"}, nav[0]}},
+			{Title: "Components", Links: nav[1:]},
+		},
+		Legal: "© 2026 Gelium UI · MIT",
+	}
+}
+
 type errorStateView struct {
 	StatusCode int
 	Title      string
@@ -232,6 +266,7 @@ type pageView struct {
 	ThemeClass           string
 	Nav                  []navLink
 	Banner               *bannerView
+	Footer               *footerView
 	Error                *errorStateView
 	CTA                  *buttonView
 	Buttons              []buttonView
@@ -373,6 +408,7 @@ func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body 
 		Title:      title,
 		ThemeClass: themeClass(""),
 		Nav:        navLinks(),
+		Footer:     defaultFooter(),
 		Error: &errorStateView{
 			StatusCode: status,
 			Title:      title,
@@ -455,6 +491,9 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, sour
 
 	var page bytes.Buffer
 	data.Nav = navLinks()
+	if data.Footer == nil {
+		data.Footer = defaultFooter()
+	}
 	data.Meta = resolveMeta(data, routePath)
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
 	data.ThemeClass = themeClass(data.ThemeClass)

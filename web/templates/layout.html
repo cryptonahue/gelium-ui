@@ -58,6 +58,7 @@
     {{if .TooltipDemo}}<section class="component-preview" aria-label="Tooltip examples">{{template "tooltip-demo" .TooltipDemo}}</section>{{end}}
     {{end}}
   </main>
+  {{if .Footer}}{{template "footer" .Footer}}{{end}}
   {{template "toast-region"}}
 </body>
 </html>{{end}}

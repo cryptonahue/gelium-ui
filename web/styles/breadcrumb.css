@@ -1,0 +1,61 @@
+@layer components {
+  /* Breadcrumb: the canonical P1 trail (nav → ol → li). The current crumb is a
+     span with aria-current="page" — never a link — and the separator is pure
+     CSS, so locale copy stays in the server data and no literal "›" leaks into
+     markup. Item type is the small label step in muted ink; the --ui-breadcrumb-*
+     tokens are scoped to the root so a consumer can retune gap/ink per
+     placement. There is no animation, so no reduced-motion block. */
+  .ui-breadcrumb {
+    --ui-breadcrumb-gap: var(--ui-space-1);
+    --ui-breadcrumb-type: var(--ui-type-label-sm);
+    --ui-breadcrumb-color: var(--ui-color-fg-muted);
+    --ui-breadcrumb-current-color: var(--ui-color-fg);
+    --ui-breadcrumb-separator: "›";
+
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: var(--ui-breadcrumb-gap);
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+
+  .ui-breadcrumb-item {
+    display: inline-flex;
+    align-items: center;
+    gap: var(--ui-breadcrumb-gap);
+    font: var(--ui-breadcrumb-type);
+  }
+
+  .ui-breadcrumb-item + .ui-breadcrumb-item::before {
+    content: var(--ui-breadcrumb-separator);
+    color: var(--ui-breadcrumb-color);
+  }
+
+  .ui-breadcrumb-item a {
+    color: var(--ui-breadcrumb-color);
+    text-decoration: none;
+  }
+
+  .ui-breadcrumb-item a:hover {
+    color: var(--ui-breadcrumb-current-color);
+    text-decoration: underline;
+  }
+
+  .ui-breadcrumb-item span {
+    color: var(--ui-breadcrumb-current-color);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-breadcrumb-item a {
+    color: LinkText;
+    forced-color-adjust: auto;
+  }
+  .ui-breadcrumb-item span,
+  .ui-breadcrumb-item + .ui-breadcrumb-item::before {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+}
