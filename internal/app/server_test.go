@@ -192,7 +192,8 @@ func TestThemeClassIsServerDrivenAndAllowlisted(t *testing.T) {
 	}{
 		{name: "empty falls back to default", theme: "", want: "theme-material"},
 		{name: "default passes the allowlist", theme: "theme-material", want: "theme-material"},
-		{name: "unknown theme falls back to default", theme: "theme-basecoat", want: "theme-material"},
+		{name: "basecoat passes the allowlist", theme: "theme-basecoat", want: "theme-basecoat"},
+		{name: "unknown theme falls back to default", theme: "theme-unknown", want: "theme-material"},
 		{name: "arbitrary injection falls back to default", theme: "onload=alert(1)", want: "theme-material"},
 	}
 	for _, tt := range tests {

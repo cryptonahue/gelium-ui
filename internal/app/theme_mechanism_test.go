@@ -1,10 +1,14 @@
 package app
 
 import (
+	"bytes"
+	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	webassets "loomui/web"
 )
 
 // TestThemeClassRenderedAndServedCSSCarriesRootSelector proves the Phase H
@@ -32,5 +36,35 @@ func TestThemeClassRenderedAndServedCSSCarriesRootSelector(t *testing.T) {
 	css := cssRes.Body.String()
 	if !strings.Contains(css, ".theme-material{") {
 		t.Error("served app.css must carry the .theme-material root selector for class-driven selection")
+	}
+}
+
+// TestBasecoatThemeClassRenderedAndServedCSSCarriesRootSelector proves the
+// second theme entered the Phase H mechanism end-to-end: a page rendered with
+// ThemeClass "theme-basecoat" puts the class on the document root and the
+// single served bundle carries the .theme-basecoat root selector, so swapping
+// the server-driven class switches the visual direction without a rebuild.
+func TestBasecoatThemeClassRenderedAndServedCSSCarriesRootSelector(t *testing.T) {
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	var page bytes.Buffer
+	data := pageView{
+		Title:      "basecoat render",
+		ThemeClass: "theme-basecoat",
+		Nav:        []navLink{{Path: "/", Label: "Home"}},
+	}
+	if err := tmpl.ExecuteTemplate(&page, "layout", data); err != nil {
+		t.Fatalf("execute layout with theme-basecoat: %v", err)
+	}
+	if !strings.Contains(page.String(), `<html lang="en" class="theme-basecoat">`) {
+		t.Error("layout must render the requested class on the document root")
+	}
+
+	cssRes := httptest.NewRecorder()
+	New().ServeHTTP(cssRes, httptest.NewRequest(http.MethodGet, "/static/app.css", nil))
+	if cssRes.Code != http.StatusOK {
+		t.Fatalf("app.css status = %d, want %d", cssRes.Code, http.StatusOK)
+	}
+	if !strings.Contains(cssRes.Body.String(), ".theme-basecoat{") {
+		t.Error("served app.css must carry the .theme-basecoat root selector for class-driven selection")
 	}
 }

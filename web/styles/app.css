@@ -7,10 +7,10 @@
  * Selection happens at runtime by class on the document root
  * ({{.ThemeClass}}, allowlisted server-side): no JS, no rebuild, the tokens
  * resolve by cascade. Add a new theme in two steps — import it here, then
- * allowlist its class in themeClass() (internal/app/server.go). theme-basecoat
- * joins this list in Phase I, not before its theme.css exists on disk.
+ * allowlist its class in themeClass() (internal/app/server.go).
  */
 @import "../../themes/theme-material/theme.css";
+@import "../../themes/theme-basecoat/theme.css";
 @import "./base.css";
 @import "./button.css";
 @import "./text-field.css";

@@ -26,12 +26,11 @@ const defaultThemeClass = "theme-material"
 //
 // Allowlist rule (Phase H): a theme class only enters this list together with
 // its bundle entry — an import in web/styles/app.css AND themes/<name>/theme.css
-// on disk. theme-basecoat is deliberately absent today: it gets added here in
-// Phase I, at the same commit that creates themes/theme-basecoat and its
-// app.css import. Adding the string before the theme exists would let a page
-// select a theme that is not in the bundle.
+// on disk. theme-basecoat joined the list in Phase I, at the same commit that
+// created themes/theme-basecoat and its app.css import. Adding a string before
+// the theme exists would let a page select a theme that is not in the bundle.
 func themeClass(theme string) string {
-	for _, allowed := range []string{defaultThemeClass} {
+	for _, allowed := range []string{defaultThemeClass, "theme-basecoat"} {
 		if theme == allowed {
 			return theme
 		}
