@@ -14,7 +14,7 @@ Cada término define: nombre canónico, aliases, intención, anatomía, semánti
 El vocabulario se organiza en **tres capas** (implícitas en la implementación real):
 
 1. **Patrones de datos** — muestran/agrupan entidades: Card, Panel, List, Data table, Table, Detail view.
-2. **Patrones de estado** — comunican condición: Empty state, Loading state, Skeleton, Inline alert, Banner, Callout, Toast.
+2. **Patrones de estado** — comunican condición: Empty state, Loading state, Skeleton, Inline alert, Banner, Callout, Toast, Success feedback (persistente).
 3. **Patrones de workflow** — representan procesos y transiciones: Queue, Board, Steps, Timeline, Feed.
 
 Además hay **mecanismos** (no patrones): Popover (primitiva web), Multi-select (capacidad sobre un patrón huésped), Form (patrón nativo).
@@ -136,6 +136,19 @@ Leyenda de estado en Gelium: **✅ implementado** · **◐ parcial** (ad-hoc) ·
 - **Cuándo usarlo**: contexto, tips, documentos, ayuda.
 - **Cuándo no**: requiere acción → Banner; error del campo → Inline alert.
 - **JS**: 0.
+
+### Success feedback ✅ (reuso, sin componente nuevo)
+
+- **Aliases**: success message, confirmation persistente.
+- **Intención**: confirmación **NO efímera** de una operación exitosa; sobrevive a la navegación.
+- **Implementación**: REUSA `inline-alert--success` (éxito de sección/form) y `banner--success` (éxito de página/operación global); NO es componente nuevo.
+- **Semántica HTML**: igual que el patrón reusado (`<div>` en ambos partials: `inline-alert.html:1`, `banner.html:1`).
+- **Estados/ARIA**: `role="status"` (polite) derivado del tone en ambos partials; `error` → `role="alert"`.
+- **Cuándo usarlo**: guardado exitoso de settings, operación global completada (POST + 303 → página destino re-renderiza el success persistente).
+- **Cuándo no**: feedback transitorio post-acción → Toast; error → `inline-alert--error` / `banner--error`.
+- **Server contract**: POST + 303 → la página destino re-renderiza el success persistente; NUNCA `HX-Trigger loom:toast` para persistente.
+- **JS**: 0.
+- **Relación con patterns**: contraparte persistente del Toast (transitorio).
 
 ### Toast ✅
 
@@ -302,7 +315,7 @@ Completan el vocabulario operativo, ya implementados y aceptados: Button (primar
 | Capa | JS |
 |---|---|
 | Patrones de datos (Card, Panel, List, Table, Detail view) | 0 |
-| Patrones de estado (Empty, Loading/Skeleton, Inline alert, Banner, Callout) | 0 |
+| Patrones de estado (Empty, Loading/Skeleton, Inline alert, Banner, Callout, Success feedback) | 0 |
 | Toast | J* (fallback no-JS real) |
 | Workflow (Queue, Board, Steps, Timeline, Feed) | 0; H opcional para refresh |
 | Overlays (Dialog, Drawer modal, Menu, Select menu) | D (primitivas declarativas + fallback server-rendered) |

@@ -236,6 +236,26 @@ func renderBanner(t *testing.T, view bannerView) string {
 	return rendered.String()
 }
 
+// inlineAlertView is the test view model for the inline-alert partial. The
+// partial is a primitive with no production Go view model yet (it renders
+// server-side inside sections and forms), so the render test drives it directly.
+type inlineAlertView struct {
+	Tone  string
+	Icon  template.HTML
+	Title string
+	Body  string
+}
+
+func renderInlineAlert(t *testing.T, view inlineAlertView) string {
+	t.Helper()
+	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/inline-alert.html"))
+	var rendered bytes.Buffer
+	if err := tmpl.ExecuteTemplate(&rendered, "inline-alert", view); err != nil {
+		t.Fatalf("execute inline-alert template: %v", err)
+	}
+	return rendered.String()
+}
+
 // TestLayoutOmitsBannerWhenNil proves the pageView.Banner slot is optional: a
 // nil banner renders nothing and the layout still builds cleanly.
 func TestLayoutOmitsBannerWhenNil(t *testing.T) {
@@ -296,6 +316,24 @@ func TestLayoutRendersBannerSlotBetweenHeaderAndMain(t *testing.T) {
 func TestBannerRoleIsDerivedFromTone(t *testing.T) {
 	for _, tone := range []string{"error", "success", "info", "warning"} {
 		got := renderBanner(t, bannerView{Tone: tone, Body: "x"})
+		want := "role=\"status\""
+		if tone == "error" {
+			want = "role=\"alert\""
+		}
+		if !strings.Contains(got, want) {
+			t.Errorf("tone %q must render %s", tone, want)
+		}
+	}
+}
+
+// TestInlineAlertRoleIsDerivedFromTone proves the inline-alert partial mirrors
+// the banner contract: role="alert" is reserved for the error tone and every
+// other tone announces politely as status — success included. This is the
+// render-level confirmation for the success persistent reuse (the tone CSS
+// alone was already pinned by TestInlineAlertTonesUseCoreTokens).
+func TestInlineAlertRoleIsDerivedFromTone(t *testing.T) {
+	for _, tone := range []string{"error", "success", "info", "warning"} {
+		got := renderInlineAlert(t, inlineAlertView{Tone: tone, Body: "x"})
 		want := "role=\"status\""
 		if tone == "error" {
 			want = "role=\"alert\""

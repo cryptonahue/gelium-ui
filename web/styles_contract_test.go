@@ -834,6 +834,22 @@ func TestCheckboxRadioReducedMotionCoverage(t *testing.T) {
 	}
 }
 
+// TestPersistentSuccessPartialsNeverToast is the Phase D guard for the
+// persistent-success contract: inline-alert and banner are server-rendered
+// persistent slots, so they must never emit the transient loom:toast signal
+// (HX-Trigger loom:toast) that the Toast pattern owns. Structural assertion
+// only — the persistent success vocabulary is a contract, not a value.
+func TestPersistentSuccessPartialsNeverToast(t *testing.T) {
+	for _, file := range []string{"inline-alert.html", "banner.html"} {
+		tmpl := repositoryFile(t, "web", "templates", file)
+		for _, forbidden := range []string{"loom:toast", "HX-Trigger"} {
+			if strings.Contains(tmpl, forbidden) {
+				t.Errorf("%s must not contain %q (persistent success is never announced via toast)", file, forbidden)
+			}
+		}
+	}
+}
+
 func repositoryFile(t *testing.T, path ...string) string {
 	t.Helper()
 	parts := append([]string{repositoryRoot(t)}, path...)
