@@ -10,6 +10,21 @@
 
 Estas reglas deciden **qué patrón usar y cómo combinarlo** en una pantalla server-rendered. No describen componentes: describen la elección entre ellos y su integración con los contratos server-driven. Toda screen recipe (Phase 4) y todo componente nuevo DEBE justificarse contra estas reglas (rationale obligatorio).
 
+## 2. Referencias de contratos (Phase E)
+
+Toda composición opera dentro de los contratos de Phase E. Estos son los documentos de referencia y qué aporta cada uno a la composición:
+
+| Contrato | Documento | Aporta a la composición |
+|---|---|---|
+| UX principles | `docs/gelium-ui-ux-principles.md` | Los principios de UX que toda pantalla respeta (HTML-first, no-JS end-to-end, native before ARIA). |
+| UX patterns | `docs/gelium-ui-ux-patterns.md` | Patrones de UX reutilizables para combinar superficies y componentes. |
+| Content rules | `docs/gelium-ui-content-rules.md` | Reglas de contenido (copy, etiquetas, microcopy) que toda superficie debe satisfacer. |
+| Accessibility contract | `docs/gelium-ui-accessibility-contract.md` | Contrato de accesibilidad WCAG 2.1 AA y el estado de los gaps G1-G11. |
+| SEO contract | `docs/gelium-ui-seo-contract.md` | Metadata server-driven por ruta: description, canonical, robots, OG, JSON-LD. |
+| SEO patterns | `docs/gelium-ui-seo-patterns.md` | Patrones de composición SEO: head server-driven, breadcrumbs, JSON-LD por tipo de página. |
+| GEO contract | `docs/gelium-ui-geo-contract.md` | Contrato GEO: entidad única **Gelium UI**, resúmenes citables, provenance visible. |
+| GEO patterns | `docs/gelium-ui-geo-patterns.md` | Patrones de contenido GEO: answer-first, headings, definiciones, citas visibles. |
+
 ## 2. Screen grammar (gramática de pantalla)
 
 Toda pantalla se describe como:
@@ -166,13 +181,16 @@ GAP = patrón de estado no implementado como componente reusable (Empty state, L
 Toda composición reutiliza los contratos existentes; NO se inventan otros:
 
 1. **Validación**: HTTP 422 + `X-Loom-Validation: true`; sin HX página completa 422; con HX fragmento. La validación nunca dispara toast.
-2. **Feedback transitorio**: `HX-Trigger: {"loom:toast":{"type":"info|success|warning|error","message":"…"}}`; sin JS toast inline persistente.
+2. **Feedback transitorio**: `HX-Trigger: {"loom:toast":{"type":"info|success|warning|error","message":"…"}}`; sin JS toast inline persistente. Los errores de transporte HTMX (red/5xx) muestran un toast genérico transitorio (`app.js`), nunca un mensaje de validación.
 3. **Estado de listados**: GET con params estables (`?q=&sort=&dir=&page=&selection=`), vocabularios cerrados sanitizados, `HX-Request` bifurca fragmento vs página completa, links preservan estado.
 4. **Mover estados (workflow)**: POST + 303 SeeOther redirect (patrón WhatsApp) — simple, sin fragmentos, funciona sin JS.
+5. **Indexabilidad (SEO/GEO)**: la metadata se resuelve server-driven en el choke point de render. Los demos (`/demo/*`) y ejemplos (`/examples/*`) son `noindex, nofollow`; el resto `index, follow`. Toda página indexable emite canonical sin query (`siteBaseURL` + ruta limpia), `lang` server-driven (`es` en demos WhatsApp) y JSON-LD básico en home. Restricciones completas en `docs/gelium-ui-seo-contract.md` (§4, §16) y `docs/gelium-ui-geo-contract.md` (entidad única **Gelium UI**).
 
 **Regla de oro**: si un estado es navegable (listado, filtro, sort, paginación, selección), es una URL. Sin URL = sin no-JS, sin deep-link, sin back.
 
 ## 10. Accessibility rules (composición)
+
+El contrato completo de accesibilidad (WCAG 2.1 AA, invariantes y estado de los gaps G1-G11) vive en `docs/gelium-ui-accessibility-contract.md`. Para composición, las reglas mínimas son:
 
 1. Estructura de landmarks: `<header>`, `<nav>`, `<main>`, `<aside>`, `<footer>` según el rol de cada superficie.
 2. Orden del documento = orden visual; no reorganizar con CSS para lectura.

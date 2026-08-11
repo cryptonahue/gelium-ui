@@ -2,9 +2,12 @@ package app
 
 import (
 	"bytes"
+	"encoding/json"
 	"html/template"
 	"io/fs"
 	"net/http"
+	"path"
+	"strings"
 
 	"github.com/yuin/goldmark"
 
@@ -62,7 +65,168 @@ type errorStateView struct {
 	Label      string
 }
 
+// siteBaseURL is the canonical origin for absolute URLs (canonical, og:url,
+// JSON-LD). Gelium UI ships with no production host yet — the docs are
+// embedded and self-hosted — so this is a documented placeholder origin
+// matching the SEO contract examples. Canonical URLs are built from it plus
+// the clean route path and never from the request Host, so metadata stays
+// stable across every deployment. Swap this single constant for the real
+// origin when a public domain exists.
+const siteBaseURL = "https://gelium-ui.example"
+
+const (
+	// homeDescription is the system description for the landing page.
+	homeDescription = "Gelium UI — themeable, open-code UI components for server-rendered applications. Native HTML semantics, zero component JavaScript, Material 3 design."
+	// docsDescription is the system description for the /docs index.
+	docsDescription = "Gelium UI component library, organized by category. Every page is dogfooded: it renders the real component it documents."
+	// defaultMetaDescription is the fallback description for any route without
+	// its own. Component pages derive a per-route description from their label
+	// so every URL stays unique (contract: one description per URL).
+	defaultMetaDescription = "Gelium UI — open-code, server-rendered UI components with native HTML semantics."
+)
+
+// metaView is the server-driven metadata model emitted into <head>. It is
+// theme-agnostic by contract: switching themes must not change a single byte
+// of SEO-relevant markup. A zero metaView renders a valid minimal head (the
+// layout guards every tag behind {{if}}), so error pages and partials keep
+// working without metadata.
+type metaView struct {
+	Title         string // mirrors pageView.Title (single source in the handler)
+	Description   string
+	Canonical     string
+	Robots        string // default "index, follow"
+	OGTitle       string
+	OGDescription string
+	OGType        string
+	JSONLD        template.JS // trusted structured data; emitted inside <script type="application/ld+json">
+	Lang          string      // default "en"
+}
+
+// jsonLDPublisher and webSiteLD are the home-page WebSite structured-data
+// types. They are marshaled with encoding/json so escaping and validity are
+// guaranteed (contract §12: no JSON built by string concatenation).
+type jsonLDPublisher struct {
+	Type string `json:"@type"`
+	Name string `json:"name"`
+}
+
+type webSiteLD struct {
+	Context    string          `json:"@context"`
+	Type       string          `json:"@type"`
+	Name       string          `json:"name"`
+	URL        string          `json:"url"`
+	InLanguage string          `json:"inLanguage"`
+	Publisher  jsonLDPublisher `json:"publisher"`
+}
+
+// websiteJSONLD is the home-page WebSite block, built once at startup. The
+// value is template.JS on purpose: inside a <script type="application/ld+json">
+// element, html/template escapes template.HTML as a JSON string, while
+// template.JS (a valid JS expression; JSON is valid JS) is emitted verbatim.
+var websiteJSONLD = func() template.JS {
+	b, err := json.Marshal(webSiteLD{
+		Context:    "https://schema.org",
+		Type:       "WebSite",
+		Name:       "Gelium UI",
+		URL:        siteBaseURL + "/",
+		InLanguage: "en",
+		Publisher:  jsonLDPublisher{Type: "Organization", Name: "Gelium UI"},
+	})
+	if err != nil {
+		return template.JS("")
+	}
+	return template.JS(b) // #nosec G203 -- trusted, system-generated JSON.
+}()
+
+// routePathForContent maps an embedded markdown file to its public route path.
+// Content files live at content/<route-segment>.md and render at
+// /components/<route-segment>; content/index.md renders at /. The convention
+// is what keeps the canonical URL clean and query-free.
+func routePathForContent(contentPath string) string {
+	base := path.Base(contentPath)
+	if base == "index.md" {
+		return "/"
+	}
+	return "/components/" + strings.TrimSuffix(base, ".md")
+}
+
+// componentLabel resolves the navigation label for a /components/* route from
+// the single route registry, so metadata never drifts from the nav.
+func componentLabel(routePath string) string {
+	for _, r := range componentRoutes() {
+		if r.Path == routePath {
+			return r.Label
+		}
+	}
+	return routePath
+}
+
+// componentDescription derives a unique per-route description for a component
+// page from its registry label (contract: one description per URL).
+func componentDescription(label string) string {
+	return "The " + label + " component in Gelium UI — server-rendered docs with native HTML semantics, zero component JavaScript."
+}
+
+// resolveMeta computes the page metadata for a route path at the single render
+// choke point. Fields already set by the handler (data.Meta) win; resolution
+// only fills what is still empty. Demos and examples are never indexed; every
+// other route defaults to "index, follow". The canonical is always the clean
+// route path — no query string can leak into it (contract §16).
+func resolveMeta(data pageView, routePath string) metaView {
+	meta := data.Meta
+	meta.Title = data.Title
+	if meta.Lang == "" {
+		meta.Lang = "en"
+	}
+	if meta.Robots == "" {
+		meta.Robots = "index, follow"
+	}
+	if strings.HasPrefix(routePath, "/demo/") || strings.HasPrefix(routePath, "/examples/") {
+		meta.Robots = "noindex, nofollow"
+	}
+
+	meta.Canonical = siteBaseURL + routePath
+
+	if meta.Description == "" {
+		switch {
+		case routePath == "/":
+			meta.Description = homeDescription
+		case routePath == "/docs":
+			meta.Description = docsDescription
+		case strings.HasPrefix(routePath, "/components/"):
+			meta.Description = componentDescription(componentLabel(routePath))
+		default:
+			meta.Description = defaultMetaDescription
+		}
+	}
+	if meta.OGType == "" {
+		switch {
+		case routePath == "/" || routePath == "/docs":
+			meta.OGType = "website"
+		case strings.HasPrefix(routePath, "/components/"):
+			meta.OGType = "article"
+		default:
+			meta.OGType = "website"
+		}
+	}
+	if meta.OGTitle == "" {
+		if routePath == "/" {
+			meta.OGTitle = "Gelium UI"
+		} else {
+			meta.OGTitle = meta.Title + " · Gelium UI"
+		}
+	}
+	if meta.OGDescription == "" {
+		meta.OGDescription = meta.Description
+	}
+	if routePath == "/" && meta.JSONLD == "" {
+		meta.JSONLD = websiteJSONLD
+	}
+	return meta
+}
+
 type pageView struct {
+	Meta                 metaView
 	Title                string
 	Content              template.HTML
 	ThemeClass           string
@@ -109,7 +273,7 @@ type server struct {
 	assets    fs.FS
 }
 
-// New builds the Loom UI documentation HTTP handler from embedded assets.
+// New builds the Gelium UI documentation HTTP handler from embedded assets.
 func New() http.Handler {
 	templates := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
 	s := &server{
@@ -139,6 +303,7 @@ func New() http.Handler {
 	mux.HandleFunc("POST /demo/whatsapp/send-template", s.whatsAppSendTemplate)
 	mux.HandleFunc("POST /demo/whatsapp/typing", s.whatsAppTyping)
 	mux.HandleFunc("POST /demo/whatsapp/read", s.whatsAppRead)
+	mux.HandleFunc("POST /demo/whatsapp/admin/webhook", s.whatsAppWebhookSave)
 	mux.HandleFunc("GET /static/{name}", s.staticAsset)
 	// 404 catch-all: any unknown GET path falls back to the styled ERROR STATE
 	// page (the mux gives the more specific patterns above priority). Post-only
@@ -172,6 +337,7 @@ func postOnlyPaths() []string {
 		"/demo/whatsapp/send-template",
 		"/demo/whatsapp/typing",
 		"/demo/whatsapp/read",
+		"/demo/whatsapp/admin/webhook",
 	}
 }
 
@@ -250,7 +416,7 @@ func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) home(w http.ResponseWriter, _ *http.Request) {
 	s.renderMarkdownPage(w, pageView{
-		Title: "Gelidium UI",
+		Title: "Gelium UI",
 		CTA: &buttonView{
 			Label:   "Read the docs",
 			Variant: "primary",
@@ -269,17 +435,18 @@ func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, data pageView, 
 		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home")
 		return
 	}
-	s.renderMarkdownStatus(w, data, string(source), status)
+	s.renderMarkdownStatus(w, data, string(source), routePathForContent(contentPath), status)
 }
 
 // renderMarkdown converts an in-memory Markdown string and renders it into the
 // docs layout. Used by pages that build their content programmatically (the
-// /docs index) as well as by pages served from embedded files.
-func (s *server) renderMarkdown(w http.ResponseWriter, data pageView, source string) {
-	s.renderMarkdownStatus(w, data, source, http.StatusOK)
+// /docs index) as well as by pages served from embedded files. routePath is
+// the public route identity used to resolve metadata.
+func (s *server) renderMarkdown(w http.ResponseWriter, data pageView, source, routePath string) {
+	s.renderMarkdownStatus(w, data, source, routePath, http.StatusOK)
 }
 
-func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, source string, status int) {
+func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, source, routePath string, status int) {
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
 		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home")
@@ -288,6 +455,7 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, sour
 
 	var page bytes.Buffer
 	data.Nav = navLinks()
+	data.Meta = resolveMeta(data, routePath)
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
 	data.ThemeClass = themeClass(data.ThemeClass)
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {

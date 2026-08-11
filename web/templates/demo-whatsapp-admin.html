@@ -1,10 +1,11 @@
 {{/* WhatsApp demo — admin/dev section (technical surface behind the 🛡 lock). */}}
 {{define "demo-whatsapp-admin"}}<!doctype html>
-<html lang="en" class="{{.ThemeClass}}">
+<html lang="{{or .Meta.Lang "es"}}" class="{{.ThemeClass}}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LoomChat · Modo administrador</title>
+  {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
   <link rel="stylesheet" href="/static/app.css?v=0.4.0">
   <script defer src="/static/htmx.min.js?v=0.4.0"></script>
   <script defer src="/static/app.js?v=0.4.0"></script>
@@ -69,7 +70,7 @@
 
       <section class="demo-wa-admin-panel" id="webhooks" aria-label="Webhooks">
         <h2 class="demo-wa-admin-title">Webhooks</h2>
-        <form method="post" action="/demo/whatsapp/admin" class="demo-wa-webhook-form">
+        <form method="post" action="/demo/whatsapp/admin/webhook" class="demo-wa-webhook-form">
           <label class="demo-wa-form-label" for="wh-url">URL</label>
           <input class="demo-wa-webhook-input" id="wh-url" type="url" name="webhook_url" value="{{.WebhookURL}}">
           <label class="demo-wa-form-label" for="wh-secret">Secret (whsec_…)</label>

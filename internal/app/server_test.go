@@ -70,7 +70,7 @@ func TestHomeRendersMarkdownInsideDogfoodedLayout(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Gelidium UI</h1>`,
+		`<h1>Gelium UI</h1>`,
 		`<main`,
 		`class="ui-button ui-button-primary"`,
 		`href="/components/button"`,
@@ -463,5 +463,76 @@ func TestErrorSlotOmittedWhenNil(t *testing.T) {
 	}
 	if strings.Contains(res.Body.String(), "ui-error-state") {
 		t.Error("layout must not render an error state when pageView.Error is nil")
+	}
+}
+
+// TestHomeRendersServerDrivenMetadata proves the home page emits the full
+// server-driven metadata contract: description, clean canonical, index robots,
+// a minimal OG set and the WebSite JSON-LD (SEO contract §1, §3, §6, §12).
+func TestHomeRendersServerDrivenMetadata(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<meta name="description" content="Gelium UI — themeable,`,
+		`<link rel="canonical" href="https://gelium-ui.example/">`,
+		`<meta name="robots" content="index, follow">`,
+		`<meta property="og:type" content="website">`,
+		`<meta property="og:title" content="Gelium UI">`,
+		`<meta property="og:url" content="https://gelium-ui.example/">`,
+		`<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite"`,
+		`<html lang="en" class="theme-material">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("home is missing metadata contract %q", contract)
+		}
+	}
+}
+
+// TestComponentPageRendersMetadata proves component pages resolve per-route
+// metadata (article OG type, clean canonical, index robots) from the render
+// choke point without any handler change.
+func TestComponentPageRendersMetadata(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<link rel="canonical" href="https://gelium-ui.example/components/button">`,
+		`<meta name="robots" content="index, follow">`,
+		`<meta property="og:type" content="article">`,
+		`<meta property="og:title" content="Button · Gelium UI">`,
+		`<meta property="og:url" content="https://gelium-ui.example/components/button">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("button docs is missing metadata contract %q", contract)
+		}
+	}
+}
+
+// TestCanonicalIsCleanWithoutQuery proves the canonical never carries query
+// state: a GET with ?foo=bar still resolves to the clean route path (contract
+// §16), because the canonical derives from the route, not the request query.
+func TestCanonicalIsCleanWithoutQuery(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button?foo=bar", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<link rel="canonical" href="https://gelium-ui.example/components/button">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("button docs is missing clean canonical %q", contract)
+		}
+	}
+	if strings.Contains(body, "?foo=bar") {
+		t.Error("canonical must not carry query state")
 	}
 }

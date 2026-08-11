@@ -1,16 +1,24 @@
 {{define "layout"}}<!doctype html>
-<html lang="en" class="{{.ThemeClass}}">
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>{{.Title}} · Gelidium UI</title>
+  <title>{{.Title}} · Gelium UI</title>
+  {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
+  {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
+  {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
+  {{if .Meta.OGTitle}}<meta property="og:type" content="{{or .Meta.OGType "website"}}">
+  <meta property="og:title" content="{{.Meta.OGTitle}}">
+  <meta property="og:description" content="{{.Meta.OGDescription}}">
+  <meta property="og:url" content="{{.Meta.Canonical}}">{{end}}
+  {{if .Meta.JSONLD}}<script type="application/ld+json">{{.Meta.JSONLD}}</script>{{end}}
   <link rel="stylesheet" href="/static/app.css?v=0.4.0">
   <script defer src="/static/htmx.min.js?v=0.4.0"></script>
   <script defer src="/static/app.js?v=0.4.0"></script>
 </head>
 <body>
   <header class="site-header">
-    <a class="brand" href="/">Gelidium UI</a>
+    <a class="brand" href="/">Gelium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
   </header>
   {{if .Banner}}{{template "banner" .Banner}}{{end}}

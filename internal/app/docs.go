@@ -83,7 +83,7 @@ var docsSections = []struct {
 func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	var md string
 	md += "# Documentation\n\n"
-	md += "The Gelidium UI component library, organized by category. Every page is dogfooded: it renders the real component it documents.\n\n"
+	md += "The Gelium UI component library, organized by category. Every page is dogfooded: it renders the real component it documents.\n\n"
 	for _, section := range docsSections {
 		md += "## " + section.Title + "\n\n"
 		md += section.Intro + "\n\n"
@@ -94,5 +94,5 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	}
 	md += "## Demos\n\n"
 	md += "- [WhatsApp manager](/demo/whatsapp) — a complete chat application built with the library.\n"
-	s.renderMarkdown(w, pageView{Title: "Documentation"}, md)
+	s.renderMarkdown(w, pageView{Title: "Documentation"}, md, "/docs")
 }

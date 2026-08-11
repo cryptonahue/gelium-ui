@@ -1,10 +1,11 @@
 {{/* WhatsApp demo — main non-technical UX (chat app like WhatsApp/Discord). */}}
 {{define "demo-whatsapp"}}<!doctype html>
-<html lang="en" class="{{.ThemeClass}}">
+<html lang="{{or .Meta.Lang "es"}}" class="{{.ThemeClass}}">
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
   <title>LoomChat · WhatsApp demo</title>
+  {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
   <link rel="stylesheet" href="/static/app.css?v=0.4.0">
   <script defer src="/static/htmx.min.js?v=0.4.0"></script>
   <script defer src="/static/app.js?v=0.4.0"></script>

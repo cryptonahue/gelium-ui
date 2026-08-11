@@ -66,13 +66,31 @@ document.addEventListener("htmx:beforeSwap", function (event) {
     return el;
   }
 
-  document.addEventListener("loom:toast", function (event) {
-    var detail = event.detail || {};
-    if (!detail.message || !region()) return;
-    var el = makeToast(detail.type, detail.message);
+  function showToast(type, message) {
+    if (!region()) return;
+    var el = makeToast(type, message);
     region().appendChild(el);
     window.requestAnimationFrame(function () { el.classList.add("ui-toast-show"); });
     schedule(el, el._timeoutMs);
+  }
+
+  document.addEventListener("loom:toast", function (event) {
+    var detail = event.detail || {};
+    if (!detail.message) return;
+    showToast(detail.type, detail.message);
+  });
+
+  // Transport-level HTMX failures (network down, 5xx) carry no server-driven
+  // toast, so surface a transient generic error instead of failing silently.
+  // 422-with-header validation never reaches here: the beforeSwap hook above
+  // already cleared isError for that case, keeping the "validation is never a
+  // toast" contract intact (G5).
+  var TRANSPORT_ERROR = "We couldn't reach the server. Try again.";
+  document.addEventListener("htmx:responseError", function () {
+    showToast("error", TRANSPORT_ERROR);
+  });
+  document.addEventListener("htmx:sendError", function () {
+    showToast("error", TRANSPORT_ERROR);
   });
 })();
 

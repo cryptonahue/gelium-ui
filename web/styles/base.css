@@ -32,7 +32,7 @@
   .prose p { color: var(--ui-color-fg-muted); line-height: 1.7; }
   .hero-action { margin-top: 2rem; }
 
-  /* Landing hero: the home page presents Gelidium UI above the fold with a
+  /* Landing hero: the home page presents Gelium UI above the fold with a
      larger display and a call to action, without changing the docs shell. */
   .landing-hero h1 { font: var(--ui-type-display-lg); max-width: 22ch; }
   .landing-hero p { font-size: 1.125rem; max-width: 48ch; }

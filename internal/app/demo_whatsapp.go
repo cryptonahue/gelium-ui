@@ -110,6 +110,7 @@ type whatsAppDemoView struct {
 	ActiveChat    *whatsAppChatView
 	Search        string
 	ThemeClass    string
+	Meta          metaView
 }
 
 // whatsAppNumberView is one row of the admin numbers table.
@@ -150,6 +151,7 @@ type whatsAppAdminView struct {
 	RateUsed            int // percent
 	ActiveTab           string
 	ThemeClass          string
+	Meta                metaView
 }
 
 // ----- mock store -----
@@ -457,6 +459,15 @@ func (s *whatsAppStore) markRead(convID string) {
 	}
 }
 
+// updateWebhook persists the admin webhook settings. The masked secret is a
+// demo placeholder, so no real credential ever leaves the page.
+func (s *whatsAppStore) updateWebhook(url, secret string) {
+	s.mu.Lock()
+	defer s.mu.Unlock()
+	s.WebhookURL = url
+	s.Secret = secret
+}
+
 func (s *whatsAppStore) adminView(now time.Time) whatsAppAdminView {
 	s.mu.Lock()
 	defer s.mu.Unlock()
@@ -535,6 +546,7 @@ func (s *server) whatsAppDemo(w http.ResponseWriter, r *http.Request) {
 		ActiveChat:    chat,
 		Search:        search,
 		ThemeClass:    themeClass(defaultThemeClass),
+		Meta:          demoMetaES,
 	})
 }
 
@@ -542,7 +554,29 @@ func (s *server) whatsAppAdmin(w http.ResponseWriter, r *http.Request) {
 	view := whatsAppDemoStore.adminView(time.Now())
 	view.ActiveTab = "numbers"
 	view.ThemeClass = themeClass(defaultThemeClass)
+	view.Meta = demoMetaES
 	s.templates.ExecuteTemplate(w, "demo-whatsapp-admin", view)
+}
+
+// demoMetaES is the shared metadata for both WhatsApp demo screens: Spanish
+// content (G2) and demo surfaces never indexed (SEO contract §4).
+var demoMetaES = metaView{
+	Lang:   "es",
+	Robots: "noindex, nofollow",
+}
+
+// whatsAppWebhookSave persists the admin webhook form and redirects back with
+// the POST+303 pattern, fixing the dead admin form that previously 405'd.
+func (s *server) whatsAppWebhookSave(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "bad form", http.StatusBadRequest)
+		return
+	}
+	whatsAppDemoStore.updateWebhook(
+		strings.TrimSpace(r.FormValue("webhook_url")),
+		r.FormValue("webhook_secret"),
+	)
+	http.Redirect(w, r, "/demo/whatsapp/admin", http.StatusSeeOther)
 }
 
 func (s *server) whatsAppSend(w http.ResponseWriter, r *http.Request) {

@@ -182,3 +182,79 @@ func TestWhatsAppTypingRouteResponds(t *testing.T) {
 		t.Fatalf("typing status = %d, want %d", res.Code, http.StatusSeeOther)
 	}
 }
+
+// TestWhatsAppDemoIsSpanishAndNoIndexed closes gap G2 (lang on Spanish demos)
+// and the SEO robots rule: the demo is es and never indexed.
+func TestWhatsAppDemoIsSpanishAndNoIndexed(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/demo/whatsapp", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("demo whatsapp status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<html lang="es" class="theme-material">`,
+		`<meta name="robots" content="noindex, nofollow">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("demo whatsapp is missing %q", contract)
+		}
+	}
+}
+
+// TestWhatsAppAdminIsSpanishAndNoIndexed is the admin section counterpart of
+// the Spanish/noindex contract.
+func TestWhatsAppAdminIsSpanishAndNoIndexed(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/demo/whatsapp/admin", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("demo whatsapp admin status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<html lang="es" class="theme-material">`,
+		`<meta name="robots" content="noindex, nofollow">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("demo whatsapp admin is missing %q", contract)
+		}
+	}
+}
+
+// TestWhatsAppAdminWebhookSaveRedirects closes gap G3: the admin webhook form
+// must POST to a real handler that persists and redirects (POST+303), instead
+// of 405'ing.
+func TestWhatsAppAdminWebhookSaveRedirects(t *testing.T) {
+	form := url.Values{}
+	form.Set("webhook_url", "https://example.com/hook")
+	form.Set("webhook_secret", "whsec_test")
+	req := httptest.NewRequest(http.MethodPost, "/demo/whatsapp/admin/webhook", strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, req)
+
+	if res.Code != http.StatusSeeOther {
+		t.Fatalf("webhook save status = %d, want %d", res.Code, http.StatusSeeOther)
+	}
+	if loc := res.Header().Get("Location"); loc != "/demo/whatsapp/admin" {
+		t.Errorf("redirect location = %q, want /demo/whatsapp/admin", loc)
+	}
+	res2 := httptest.NewRecorder()
+	New().ServeHTTP(res2, httptest.NewRequest(http.MethodGet, "/demo/whatsapp/admin", nil))
+	if !strings.Contains(res2.Body.String(), "https://example.com/hook") {
+		t.Error("saved webhook URL must render back in the admin form")
+	}
+}
+
+// TestWhatsAppAdminWebhookSaveGETIs405 keeps the POST-only semantics: a GET to
+// the webhook save route stays a 405.
+func TestWhatsAppAdminWebhookSaveGETIs405(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/demo/whatsapp/admin/webhook", nil))
+
+	if res.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("GET webhook save status = %d, want %d", res.Code, http.StatusMethodNotAllowed)
+	}
+}
