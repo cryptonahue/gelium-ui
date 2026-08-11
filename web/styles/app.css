@@ -42,6 +42,7 @@
 @import "./section-heading.css";
 @import "./video.css";
 @import "./demo-whatsapp.css";
+@import "./recipe-admin-resource.css";
 
 @source "../templates";
 @source "../content";

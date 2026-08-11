@@ -236,9 +236,9 @@ func renderBanner(t *testing.T, view bannerView) string {
 	return rendered.String()
 }
 
-// inlineAlertView is the production view model (server.go); the render test
-// below drives the partial directly to pin the tone→role derivation.
-
+// renderInlineAlert drives the inline-alert partial directly with the
+// production view model (Phase D pattern 3), pinning the tone→role
+// derivation (error → alert, rest → status).
 func renderInlineAlert(t *testing.T, view inlineAlertView) string {
 	t.Helper()
 	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/inline-alert.html"))

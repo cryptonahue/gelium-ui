@@ -6,12 +6,14 @@ Last updated: 2026-08-08
 
 ## Sources scanned
 
-- C:\Users\Nahuel\.agents\skills
-- C:\Users\Nahuel\.config\opencode\skills
-- C:\Users\Nahuel\.claude\skills
-- C:\Users\Nahuel\.gemini\skills
-- C:\Users\Nahuel\.codex\skills
-- C:\Users\Nahuel\.hermes\skills
+- /root/.config/opencode/skills
+- /root/.claude/skills
+- /root/.gemini/skills
+- /root/.cursor/skills
+- /root/.copilot/skills
+- /root/.codex/skills
+- /root/.qwen/skills
+- /root/.hermes/skills
 
 ## Contract
 
@@ -23,26 +25,23 @@ Last updated: 2026-08-08
 
 | Skill | Trigger / description | Scope | Path |
 | --- | --- | --- | --- |
-| `branch-pr` | Create Gentle AI pull requests with issue-first checks. Trigger: creating, opening, or preparing PRs for review. | user | `C:\Users\Nahuel\.agents\skills\branch-pr\SKILL.md` |
-| `chained-pr` | Trigger: PRs over 400 lines, stacked PRs, review slices. Split oversized changes into chained PRs that protect review focus. | user | `C:\Users\Nahuel\.agents\skills\chained-pr\SKILL.md` |
-| `cognitive-doc-design` | Design docs that reduce cognitive load. Trigger: writing guides, READMEs, RFCs, onboarding, architecture, or review-facing docs. | user | `C:\Users\Nahuel\.agents\skills\cognitive-doc-design\SKILL.md` |
-| `comment-writer` | Write warm, direct collaboration comments. Trigger: PR feedback, issue replies, reviews, Slack messages, or GitHub comments. | user | `C:\Users\Nahuel\.agents\skills\comment-writer\SKILL.md` |
-| `computer-use` | Use Orca's computer-use CLI to inspect and operate local desktop app windows through accessibility trees, screenshots, and safe UI actions. Use for desktop app interaction: list apps/windows, get app state, read visible UI, click controls, type, press keys, scroll, drag, set values, or perform accessibility actions. Also use for browser windows, webviews, Orca app UI, or other desktop UI. Triggers include "computer use", "orca computer", "read Spotify", "read Slack", "control/click/read in a desktop app", and "get app state". | user | `C:\Users\Nahuel\.agents\skills\computer-use\SKILL.md` |
-| `dogfood` | Exploratory QA of web apps: find bugs, evidence, reports. | user | `C:\Users\Nahuel\.hermes\skills\dogfood\SKILL.md` |
-| `find-skills` | Helps users discover and install agent skills when they ask questions like "how do I do X", "find a skill for X", "is there a skill that can...", or express interest in extending capabilities. This skill should be used when the user is looking for functionality that might exist as an installable skill. | user | `C:\Users\Nahuel\.agents\skills\find-skills\SKILL.md` |
-| `gentle-ai-bench` | Trigger: bench, journey, journeys, driven mode, gentle-ai-bench, journey corpus, j-numbers, bench axis. Author and verify gentle-ai bench journeys; go test ./bench never proves driven execution. | user | `C:\Users\Nahuel\.agents\skills\gentle-ai-bench\SKILL.md` |
-| `go-testing` | Trigger: Go tests, go test coverage, Bubbletea teatest, golden files. Apply focused Go testing patterns. | user | `C:\Users\Nahuel\.agents\skills\go-testing\SKILL.md` |
-| `htmx` | Trigger: htmx, hx-, hypermedia, AJAX attributes, server-rendered, SSE, WebSocket, hx-get, hx-post, hx-swap, hx-target, hx-trigger. Build modern UIs with HTML-centric hypermedia controls. | user | `C:\Users\Nahuel\.config\opencode\skills\htmx\SKILL.md` |
-| `issue-creation` | Create and triage GitHub issues from repository evidence. Trigger: issue creation, bug reports, feature requests, or issue approval. | user | `C:\Users\Nahuel\.agents\skills\issue-creation\SKILL.md` |
-| `judgment-day` | Trigger: judgment day, dual review, adversarial review, juzgar. Run explicit blind dual review with at most two scoped fix/re-judgment rounds. | user | `C:\Users\Nahuel\.agents\skills\judgment-day\SKILL.md` |
-| `orca-cli` | Use the public `orca` CLI to operate Orca-managed worktrees, folder contexts, terminals, repos, automations, worktree comments, and the browser embedded inside the Orca app. Use when the user says "$orca-cli", "use orca cli", "Orca worktree", "child worktree", "cardStatus", "spawn codex/claude in a worktree", "read/wait/send Orca terminal", "terminal send", "full handoff", "handover", "give this to another agent", "another worktree", "Orca browser", or "control the browser inside Orca". Prefer this over raw `git worktree`, ad hoc PTYs, Playwright, or Computer Use when the task touches Orca-managed state. Use Computer Use for browser windows, webviews, or desktop UI outside Orca's embedded browser. | user | `C:\Users\Nahuel\.agents\skills\orca-cli\SKILL.md` |
-| `orchestration` | Use Orca orchestration for structured multi-agent coordination: threaded messages, blocking ask/reply flows, task dispatch, worker_done/escalation waits, task DAGs, decision gates, coordinator loops, or decomposing work across agents. Use `orca-cli` instead for full ownership handoffs, including requests phrased as "hand off", "handoff", "handover", "give this to another agent", or "another worktree" when the user did not explicitly ask to supervise, monitor, wait for results, or coordinate a DAG. Use `orca-cli` for ordinary terminal control, lightweight terminal prompts, shell commands, Orca worktree management, reading or waiting on terminals, and automation of the browser embedded inside Orca. Use Computer Use for browser windows, webviews, Orca app UI, or desktop UI outside Orca's embedded browser. | user | `C:\Users\Nahuel\.agents\skills\orchestration\SKILL.md` |
-| `rdd-defect-workflow` | Trigger: RDD, receipt-driven development, review authority, receipt/lineage, correction/recovery, delivery gate/kill switch, bounded review defects. Guide work. | user | `C:\Users\Nahuel\.agents\skills\rdd-defect-workflow\SKILL.md` |
-| `skill-creator` | Trigger: new skills, agent instructions, documenting AI usage patterns. Create LLM-first skills with valid frontmatter. | user | `C:\Users\Nahuel\.agents\skills\skill-creator\SKILL.md` |
-| `skill-improver` | Trigger: improve skills, audit skills, refactor skills, skill quality. Audit and upgrade existing LLM-first skills. | user | `C:\Users\Nahuel\.agents\skills\skill-improver\SKILL.md` |
-| `systemic-issue-triage` | Trigger: new issue, bug report, triage, backlog, issue flood, community report, root cause, dead-end, blocked user. Attack issues by root class, never one-by-one; fixes must shrink the system, not grow it. | user | `C:\Users\Nahuel\.agents\skills\systemic-issue-triage\SKILL.md` |
-| `work-unit-commits` | Plan commits as reviewable work units. Trigger: implementation, commit splitting, chained PRs, or keeping tests and docs with code. | user | `C:\Users\Nahuel\.agents\skills\work-unit-commits\SKILL.md` |
-| `yuanbao` | Yuanbao (元宝) groups: @mention users, query info/members. | user | `C:\Users\Nahuel\.hermes\skills\yuanbao\SKILL.md` |
+| `branch-pr` | Create Gentle AI pull requests with issue-first checks. Trigger: creating, opening, or preparing PRs for review. | user | `/root/.config/opencode/skills/branch-pr/SKILL.md` |
+| `business-partnership-meetings` | Guide for business partnership meetings — equity, roles, salaries, vesting, LLC structure, and negotiation strategy. | user | `/root/.hermes/skills/business-partnership-meetings/SKILL.md` |
+| `chained-pr` | Trigger: PRs over 400 lines, stacked PRs, review slices. Split oversized changes into chained PRs that protect review focus. | user | `/root/.config/opencode/skills/chained-pr/SKILL.md` |
+| `cognitive-doc-design` | Design docs that reduce cognitive load. Trigger: writing guides, READMEs, RFCs, onboarding, architecture, or review-facing docs. | user | `/root/.config/opencode/skills/cognitive-doc-design/SKILL.md` |
+| `comment-writer` | Write warm, direct collaboration comments. Trigger: PR feedback, issue replies, reviews, Slack messages, or GitHub comments. | user | `/root/.config/opencode/skills/comment-writer/SKILL.md` |
+| `dogfood` | Exploratory QA of web apps: find bugs, evidence, reports. | user | `/root/.hermes/skills/dogfood/SKILL.md` |
+| `go-testing` | Trigger: Go tests, go test coverage, Bubbletea teatest, golden files. Apply focused Go testing patterns. | user | `/root/.config/opencode/skills/go-testing/SKILL.md` |
+| `innovacms` | InnovaCMS is a Filament/Laravel-based multi-tenant CMS (dark-kitchen delivery + themeable public sites + client-operations tooling). Load this umbrella when working on any InnovaCMS project, then drill down into the right subsystem skill for the area you're touching. | user | `/root/.hermes/skills/innovacms/SKILL.md` |
+| `innovacms-food-module` | InnovaCMS `innova/food` module — dark-kitchen + restaurant delivery system for Filament/Laravel. Covers the full data model (KitchenMenu → KitchenCategory → KitchenProduct with recipeLines), inventory (Warehouse/StockItem/StockMovement), operations (OperationalDay/InternalConsumption), and commerce (Order/Sale). Use when loading products into InnovaCMS for a food client (Comoencasa, Consert Marcos, future dark-kitchen projects), extending the schema with sale-price or recommended-badge fields, building seeder scripts for bulk product loads, or debugging why a product does not appear in the public menu. | user | `/root/.hermes/skills/innovacms-food-module/SKILL.md` |
+| `innovacms-themes` | InnovaCMS `innova/website` theme system — anatomy of a theme, resolution chain, override vs package precedence, token system, modular composition, routing, islands. Use when building a custom theme, debugging why the wrong theme renders, creating a new client site, or extending an existing theme (Cecilia Tavella, TherapyPuente, etc.). | user | `/root/.hermes/skills/innovacms-themes/SKILL.md` |
+| `issue-creation` | Create Gentle AI issues with issue-first checks. Trigger: creating GitHub issues, bug reports, or feature requests. | user | `/root/.config/opencode/skills/issue-creation/SKILL.md` |
+| `judgment-day` | Trigger: judgment day, dual review, adversarial review, juzgar. Run explicit blind dual review with at most two scoped fix/re-judgment rounds. | user | `/root/.config/opencode/skills/judgment-day/SKILL.md` |
+| `minimax-token-plan` | MiniMax Token Plan capabilities, quotas, and how to use web search, vision, speech, image generation, or music generation capabilities. Also when discussing plan capabilities, quotas, or multimodal features. | user | `/root/.hermes/skills/minimax-token-plan/SKILL.md` |
+| `skill-creator` | Trigger: new skills, agent instructions, documenting AI usage patterns. Create LLM-first skills with valid frontmatter. | user | `/root/.config/opencode/skills/skill-creator/SKILL.md` |
+| `skill-improver` | Trigger: improve skills, audit skills, refactor skills, skill quality. Audit and upgrade existing LLM-first skills. | user | `/root/.config/opencode/skills/skill-improver/SKILL.md` |
+| `work-unit-commits` | Plan commits as reviewable work units. Trigger: implementation, commit splitting, chained PRs, or keeping tests and docs with code. | user | `/root/.config/opencode/skills/work-unit-commits/SKILL.md` |
+| `yuanbao` | Yuanbao (元宝) groups: @mention users, query info/members. | user | `/root/.hermes/skills/yuanbao/SKILL.md` |
 
 ## Loading protocol
 

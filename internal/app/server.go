@@ -355,6 +355,17 @@ func New() http.Handler {
 	mux.HandleFunc("POST /demo/whatsapp/typing", s.whatsAppTyping)
 	mux.HandleFunc("POST /demo/whatsapp/read", s.whatsAppRead)
 	mux.HandleFunc("POST /demo/whatsapp/admin/webhook", s.whatsAppWebhookSave)
+	// Admin Resource screen recipe (Phase G): the list shares its path with the
+	// create action (GET renders, POST mutates), the edit/delete routes pair a
+	// GET form/confirm page with a POST mutation, and refresh is POST-only.
+	mux.HandleFunc("GET /recipes/admin-resource", s.recipeAdminResourceList)
+	mux.HandleFunc("POST /recipes/admin-resource", s.recipeAdminResourceCreate)
+	mux.HandleFunc("GET /recipes/admin-resource/new", s.recipeAdminResourceNew)
+	mux.HandleFunc("GET /recipes/admin-resource/{id}/edit", s.recipeAdminResourceEdit)
+	mux.HandleFunc("POST /recipes/admin-resource/{id}/edit", s.recipeAdminResourceUpdate)
+	mux.HandleFunc("GET /recipes/admin-resource/{id}/delete", s.recipeAdminResourceDeleteConfirm)
+	mux.HandleFunc("POST /recipes/admin-resource/{id}/delete", s.recipeAdminResourceDelete)
+	mux.HandleFunc("POST /recipes/admin-resource/refresh", s.recipeAdminResourceRefresh)
 	mux.HandleFunc("GET /static/{name}", s.staticAsset)
 	// 404 catch-all: any unknown GET path falls back to the styled ERROR STATE
 	// page (the mux gives the more specific patterns above priority). Post-only
@@ -389,6 +400,7 @@ func postOnlyPaths() []string {
 		"/demo/whatsapp/typing",
 		"/demo/whatsapp/read",
 		"/demo/whatsapp/admin/webhook",
+		"/recipes/admin-resource/refresh",
 	}
 }
 
