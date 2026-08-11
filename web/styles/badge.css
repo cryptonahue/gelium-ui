@@ -23,6 +23,16 @@
     font: var(--ui-type-label-sm);
     line-height: 1rem;
   }
+  /* Tone variants: a status marker that reuses the semantic color tokens
+     (danger/success/warning/info + their containers) instead of the default
+     error pair. Every tone carries its own label text — a tone is never used
+     color-only. error and success are solid (on-container), warning uses the
+     soft container + on-container pair, info uses the info color with the
+     --ui-color-info-fg on-color (defined per scheme in the core/theme). */
+  .ui-badge--error { background: var(--ui-color-danger); color: var(--ui-color-danger-fg); }
+  .ui-badge--success { background: var(--ui-color-success); color: var(--ui-color-success-fg); }
+  .ui-badge--warning { background: var(--ui-color-warning-container); color: var(--ui-color-warning-fg); }
+  .ui-badge--info { background: var(--ui-color-info); color: var(--ui-color-info-fg); }
   .badge-demo-list {
     display: flex;
     flex-wrap: wrap;

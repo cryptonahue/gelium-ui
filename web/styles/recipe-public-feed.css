@@ -1,0 +1,165 @@
+@layer components {
+  /* Public/Social Feed screen recipe (Phase G): layout scaffolding only.
+     Component primitives (.ui-*) supply all visuals; these .recipe-pf-* classes
+     compose them into the page (app bar, content column, tabs, feed cards,
+     loading placeholder, refresh). No ui- prefixed classes are introduced here
+     and every value reads a --ui-* token. */
+  .recipe-pf-root {
+    min-height: 100vh;
+    margin: 0;
+    background: var(--ui-color-canvas);
+    color: var(--ui-color-fg);
+    font-family: var(--ui-font-sans);
+  }
+  .recipe-pf-app {
+    display: flex;
+    flex-direction: column;
+    min-height: 100vh;
+  }
+
+  /* App bar */
+  .recipe-pf-appbar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 1rem;
+    padding: .5rem 1rem;
+    background: var(--ui-color-surface);
+    border-block-end: 1px solid var(--ui-color-border);
+  }
+  .recipe-pf-brand {
+    font-size: 1.125rem;
+    font-weight: 700;
+    letter-spacing: .01em;
+    color: inherit;
+    text-decoration: none;
+    white-space: nowrap;
+  }
+  .recipe-pf-brand-tag {
+    display: inline-block;
+    margin-inline-start: .5rem;
+    padding: .125rem .5rem;
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-color-secondary);
+    color: var(--ui-color-secondary-fg);
+    font-size: .75rem;
+    font-weight: 600;
+    vertical-align: middle;
+  }
+  .recipe-pf-appbar-actions {
+    display: flex;
+    align-items: center;
+    gap: .5rem;
+  }
+  .recipe-pf-back {
+    color: var(--ui-color-primary);
+    font: var(--ui-type-label-lg);
+    text-decoration: none;
+  }
+  .recipe-pf-back:hover { text-decoration: underline; }
+
+  /* Content column */
+  .recipe-pf-main {
+    box-sizing: border-box;
+    width: 100%;
+    max-width: 42rem;
+    margin-inline: auto;
+    padding: 1.5rem;
+    display: grid;
+    gap: 1.25rem;
+  }
+
+  .recipe-pf-header { display: grid; gap: .25rem; }
+  .recipe-pf-title {
+    margin: 0;
+    font: var(--ui-type-title-lg);
+    color: var(--ui-color-fg);
+  }
+  .recipe-pf-desc {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-md);
+  }
+
+  /* Feed panel */
+  .recipe-pf-panel {
+    display: grid;
+    gap: .75rem;
+    padding: 1rem;
+    background: var(--ui-color-surface);
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-md);
+  }
+  .recipe-pf-list {
+    display: grid;
+    gap: 1rem;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+  }
+  .recipe-pf-list-item { min-width: 0; }
+  .recipe-pf-card { padding: 1rem; }
+
+  /* Card anatomy */
+  .recipe-pf-card-head {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+  }
+  .recipe-pf-card-who { flex: 1; min-width: 0; }
+  .recipe-pf-card-author {
+    margin: 0;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-label-lg);
+  }
+  .recipe-pf-card-meta {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-sm);
+  }
+  .recipe-pf-card-body {
+    margin: .75rem 0 0;
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-lg);
+  }
+  .recipe-pf-card-actions {
+    display: flex;
+    align-items: center;
+    gap: .75rem;
+    margin-block-start: 1rem;
+  }
+  .recipe-pf-react { display: inline; }
+  .recipe-pf-caption {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-sm);
+  }
+
+  /* Loading placeholder (documented server-driven skeleton) */
+  .recipe-pf-loading { display: grid; gap: .5rem; }
+  .recipe-pf-loading-heading {
+    margin: 0;
+    font: var(--ui-type-title-md);
+    color: var(--ui-color-fg);
+  }
+  .recipe-pf-loading-note {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-sm);
+  }
+
+  /* Remote refresh */
+  .recipe-pf-refresh { display: grid; gap: .5rem; }
+  .recipe-pf-refresh-row { display: flex; align-items: center; gap: .75rem; }
+  .recipe-pf-progress { flex: none; }
+  .recipe-pf-refresh-hint {
+    margin: 0;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-body-sm);
+  }
+}
+
+@media (forced-colors: active) {
+  .recipe-pf-appbar,
+  .recipe-pf-panel { border-color: CanvasText; }
+}

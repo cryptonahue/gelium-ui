@@ -94,5 +94,10 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	}
 	md += "## Demos\n\n"
 	md += "- [WhatsApp manager](/demo/whatsapp) — a complete chat application built with the library.\n"
+	md += "\n## Screen recipes\n\n"
+	md += "Phase G screen recipes — full screens composed from the library primitives on the canonical server contract.\n\n"
+	md += "- [Admin Resource](/recipes/admin-resource) — a server-rendered resource manager (Data table + form + dialog + banner).\n"
+	md += "- [Ops Queue](/recipes/ops-queue) — a work queue with avatar, tone badges and POST+303 transitions.\n"
+	md += "- [Public/Social Feed](/recipes/public-feed) — a reverse-chronological activity feed with views, reactions and loading states.\n"
 	s.renderMarkdown(w, pageView{Title: "Documentation"}, md, "/docs")
 }

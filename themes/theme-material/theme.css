@@ -29,6 +29,7 @@
   --ui-color-warning-fg: #6a4b00;
   --ui-color-warning-container: #fff3d6;
   --ui-color-info: #4f5d75;
+  --ui-color-info-fg: #ffffff;
   --ui-color-danger-container: #fddcdc;
   --ui-color-scrim: rgb(0 0 0 / .32);
 
@@ -245,6 +246,7 @@
   --ui-color-warning-fg: #fdd663;
   --ui-color-warning-container: #3a3100;
   --ui-color-info: #d0bcff;
+  --ui-color-info-fg: #381e72;
   --ui-color-danger-container: #8c1d18;
   --ui-color-scrim: rgb(0 0 0 / .32);
 
@@ -304,6 +306,7 @@
     --ui-color-warning-fg: #fdd663;
     --ui-color-warning-container: #3a3100;
     --ui-color-info: #d0bcff;
+    --ui-color-info-fg: #381e72;
     --ui-color-danger-container: #8c1d18;
     --ui-color-scrim: rgb(0 0 0 / .32);
 

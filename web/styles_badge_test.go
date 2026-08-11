@@ -66,3 +66,39 @@ func TestEmbeddedCompiledCSSIncludesBadgeContracts(t *testing.T) {
 		}
 	}
 }
+
+// TestBadgeToneVariantsReuseSemanticTokens proves the tone variants reuse the
+// closed semantic color tokens (danger/success/warning/info + containers) so
+// every tone follows light/dark/forced-colors and never a raw literal.
+func TestBadgeToneVariantsReuseSemanticTokens(t *testing.T) {
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
+
+	for _, contract := range []string{
+		`.ui-badge--error { background: var(--ui-color-danger); color: var(--ui-color-danger-fg); }`,
+		`.ui-badge--success { background: var(--ui-color-success); color: var(--ui-color-success-fg); }`,
+		`.ui-badge--warning { background: var(--ui-color-warning-container); color: var(--ui-color-warning-fg); }`,
+		`.ui-badge--info { background: var(--ui-color-info); color: var(--ui-color-info-fg); }`,
+	} {
+		if !strings.Contains(css, contract) {
+			t.Errorf("source CSS is missing badge tone contract %q", contract)
+		}
+	}
+}
+
+// TestBadgeInfoToneTokenDefinedInCoreAndTheme proves the --ui-color-info-fg
+// on-color the info tone needs is closed across the core (neutral default) and
+// the Material theme (light + both dark routes).
+func TestBadgeInfoToneTokenDefinedInCoreAndTheme(t *testing.T) {
+	core, err := sourceStyles.ReadFile("styles/tokens.css")
+	if err != nil {
+		t.Fatalf("read core tokens: %v", err)
+	}
+	if !strings.Contains(string(core), "--ui-color-info-fg:") {
+		t.Error("core tokens.css must define --ui-color-info-fg (badge info tone on-color)")
+	}
+
+	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, defaultThemeName), " ")
+	if n := strings.Count(theme, "--ui-color-info-fg:"); n < 3 {
+		t.Errorf("theme-material must define --ui-color-info-fg in light + both dark routes, got %d definitions", n)
+	}
+}

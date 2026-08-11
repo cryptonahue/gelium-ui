@@ -1,0 +1,114 @@
+{{/* Ops Queue screen recipe (Phase G): a server-rendered work queue composed
+     from the List two-line, Avatar, Badge tone, Button, Empty state, Banner and
+     Toast primitives plus the standalone pagination partial. Layout scaffolding
+     uses recipe-oq-* classes (web/styles/recipe-ops-queue.css); every component
+     inside is a real .ui-* primitive. No-JS flow is complete: the filter is a
+     real GET form, every transition is POST+303 with a persistent success
+     banner, and refresh reuses the Data table refresh contract. */}}
+
+{{define "recipe-ops-queue"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Meta.Title}}</title>
+  {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
+  {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
+  {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
+  <link rel="stylesheet" href="/static/app.css?v=0.4.0">
+  <script defer src="/static/htmx.min.js?v=0.4.0"></script>
+  <script defer src="/static/app.js?v=0.4.0"></script>
+</head>
+<body class="recipe-oq-root">
+  <div class="recipe-oq-app">
+    <header class="recipe-oq-appbar">
+      <a class="recipe-oq-brand" href="/recipes/ops-queue">✳ Gelium UI <span class="recipe-oq-brand-tag">Ops Queue</span></a>
+      <nav class="recipe-oq-appbar-actions" aria-label="Ops Queue actions">
+        <a class="recipe-oq-back" href="/docs">Docs</a>
+      </nav>
+    </header>
+    {{if .Banner}}{{template "banner" .Banner}}{{end}}
+    <main class="recipe-oq-main" id="recipe-oq-main">
+      <header class="recipe-oq-header">
+        <div class="recipe-oq-header-text">
+          <h1 class="recipe-oq-title">{{.Title}}</h1>
+          <p class="recipe-oq-desc">{{.Description}}</p>
+        </div>
+      </header>
+
+      <form class="recipe-oq-filter" method="get" action="{{.FilterAction}}"
+            hx-get="{{.FilterAction}}" hx-target="#queue-panel" hx-swap="outerHTML">
+        <div class="ui-select ui-select-outlined">
+          <select id="recipe-oq-status" name="status">
+            <option value="">All statuses</option>
+            {{range .StatusOptions}}<option value="{{.Value}}"{{if eq $.StatusValue .Value}} selected{{end}}>{{.Label}}</option>{{end}}
+          </select>
+          <label class="ui-select-label" for="recipe-oq-status">Status</label>
+          <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+        </div>
+        <div class="ui-select ui-select-outlined">
+          <select id="recipe-oq-kind" name="kind">
+            <option value="">All kinds</option>
+            {{range .KindOptions}}<option value="{{.Value}}"{{if eq $.KindValue .Value}} selected{{end}}>{{.Label}}</option>{{end}}
+          </select>
+          <label class="ui-select-label" for="recipe-oq-kind">Kind</label>
+          <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+        </div>
+        <button class="ui-button ui-button-outline" type="submit">Filter</button>
+      </form>
+
+      <section class="recipe-oq-panel" aria-label="Work queue">
+        {{template "recipe-ops-queue-panel" .}}
+      </section>
+
+      <section class="recipe-oq-panel" aria-label="Remote refresh">
+        {{template "recipe-ops-queue-refresh-form" .}}
+      </section>
+    </main>
+  </div>
+  {{template "toast-region"}}
+</body>
+</html>{{end}}
+
+{{define "recipe-ops-queue-panel"}}
+<div id="queue-panel">
+  {{if .Items}}
+  <ul class="ui-list recipe-oq-list">
+    {{range .Items}}
+    <li class="ui-list-item ui-list-item--two-line recipe-oq-item">
+      {{template "avatar" .Avatar}}
+      <span class="ui-list-item-text">
+        <span class="ui-list-item-headline">{{.Subject}}</span>
+        <span class="ui-list-item-supporting">{{.Requester}} · {{.KindLabel}} · {{.ReceivedText}}{{if .Assignee}} · Assigned to {{.Assignee}}{{end}} · {{.SLAText}}</span>
+      </span>
+      <span class="ui-badge ui-badge-large ui-badge--{{.Tone}}">{{.StatusLabel}}</span>
+      <span class="recipe-oq-item-actions">
+        <form class="recipe-oq-action" method="post" action="{{.AdvanceAction}}">
+          <button class="ui-button ui-button-outline" type="submit">{{if .CanAdvance}}Advance{{else}}Completed{{end}}</button>
+        </form>
+        <form class="recipe-oq-action" method="post" action="{{.DequeueAction}}">
+          <button class="ui-button ui-button-text" type="submit">Remove</button>
+        </form>
+      </span>
+    </li>
+    {{end}}
+  </ul>
+  {{else}}
+  {{template "empty-state" .EmptyState}}
+  {{end}}
+  {{if .Pagination}}{{template "pagination" .Pagination}}{{end}}
+  <p class="recipe-oq-caption">{{.Caption}}</p>
+</div>
+{{end}}
+
+{{define "recipe-ops-queue-refresh-form"}}
+<form class="recipe-oq-refresh" method="post" action="/recipes/ops-queue/refresh#recipe-oq-main" novalidate
+      hx-post="/recipes/ops-queue/refresh" hx-target="this" hx-swap="outerHTML">
+  <div class="recipe-oq-refresh-row">
+    <button class="ui-button ui-button-outline" type="submit">Refresh queue</button>
+    {{if .Refreshed}}<span class="ui-progress recipe-oq-progress"><progress value="100" max="100"></progress></span>{{end}}
+  </div>
+  <p class="recipe-oq-refresh-hint">Refresh simulates a remote operation: the server re-evaluates the queue and reports the result. Without JavaScript the page reloads with an inline toast; with HTMX the refresh form swaps and the live region announces it.</p>
+  {{if .Refreshed}}{{if .RefreshToast}}{{template "toast" .RefreshToast}}{{end}}{{end}}
+</form>
+{{end}}

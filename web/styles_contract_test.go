@@ -34,6 +34,7 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/divider.css",
 		"styles/card.css",
 		"styles/badge.css",
+		"styles/avatar.css",
 		"styles/checkbox.css",
 		"styles/radio.css",
 		"styles/switch.css",
@@ -51,6 +52,7 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/menu.css",
 		"styles/navigation-drawer.css",
 		"styles/data-table.css",
+		"styles/pagination.css",
 		"styles/banner.css",
 		"styles/callout.css",
 		"styles/empty-state.css",
@@ -65,6 +67,8 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/video.css",
 		"styles/demo-whatsapp.css",
 		"styles/recipe-admin-resource.css",
+		"styles/recipe-ops-queue.css",
+		"styles/recipe-public-feed.css",
 		"styles/app.css",
 	}
 	var sb strings.Builder

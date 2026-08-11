@@ -1,0 +1,54 @@
+@layer components {
+  /* Pagination: the standalone reusable extraction of the Data table footer
+     nav. Previous/next plus numbered pages; every page is a real link so
+     no-JS navigation works, the current page is a span with
+     aria-current="page" and a state-layer style, and the boundary links are
+     aria-disabled spans. The --ui-pagination-* tokens are declared scoped to
+     the root so the primitive works standalone; the theme may override them
+     globally. */
+  .ui-pagination {
+    --ui-pagination-page-color: var(--ui-color-fg-muted);
+    --ui-pagination-active-color: var(--ui-color-primary);
+
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    flex-wrap: wrap;
+    gap: var(--ui-space-1);
+  }
+  .ui-pagination-page {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    min-width: 2rem;
+    height: 2rem;
+    padding: 0 var(--ui-space-2);
+    border-radius: var(--ui-radius-full);
+    color: var(--ui-pagination-page-color);
+    text-decoration: none;
+    outline: none;
+    font: var(--ui-type-label-sm);
+  }
+  .ui-pagination-page:hover { color: var(--ui-color-primary); }
+  .ui-pagination-page:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-pagination-page--current {
+    color: var(--ui-pagination-active-color);
+    font-weight: 600;
+  }
+  .ui-pagination-page--disabled {
+    color: var(--ui-pagination-page-color);
+    opacity: var(--ui-state-disabled-opacity);
+    pointer-events: none;
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-pagination-page { color: LinkText; }
+  .ui-pagination-page:focus-visible { outline-color: Highlight; }
+  .ui-pagination-page--current { color: Highlight; }
+  .ui-pagination-page--disabled { color: GrayText; opacity: 1; }
+}

@@ -1,0 +1,114 @@
+{{/* Public/Social Feed screen recipe (Phase G): a server-rendered,
+     reverse-chronological activity feed composed from Card, Avatar, Badge,
+     Tabs, Skeleton, Empty state, Button and Toast plus the standalone
+     pagination partial. Layout scaffolding uses recipe-pf-* classes
+     (web/styles/recipe-public-feed.css); every component inside is a real .ui-*
+     primitive. No-JS flow is complete: views are real tab links (?view=),
+     reactions are POST+303 with a flash toast, and the loading state is a
+     documented server-rendered Skeleton placeholder. */}}
+
+{{define "recipe-public-feed"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Meta.Title}}</title>
+  {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
+  {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
+  {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
+  <link rel="stylesheet" href="/static/app.css?v=0.4.0">
+  <script defer src="/static/htmx.min.js?v=0.4.0"></script>
+  <script defer src="/static/app.js?v=0.4.0"></script>
+</head>
+<body class="recipe-pf-root">
+  <div class="recipe-pf-app">
+    <header class="recipe-pf-appbar">
+      <a class="recipe-pf-brand" href="/recipes/public-feed">✳ Gelium UI <span class="recipe-pf-brand-tag">Public Feed</span></a>
+      <nav class="recipe-pf-appbar-actions" aria-label="Public Feed actions">
+        <a class="recipe-pf-back" href="/docs">Docs</a>
+      </nav>
+    </header>
+    {{if .FlashToast}}{{template "toast" .FlashToast}}{{end}}
+    <main class="recipe-pf-main" id="recipe-pf-main">
+      <header class="recipe-pf-header">
+        <h1 class="recipe-pf-title">{{.Title}}</h1>
+        <p class="recipe-pf-desc">{{.Description}}</p>
+      </header>
+
+      <nav class="ui-tabs" aria-label="Feed views">
+        <ul class="ui-tabs-list">
+          {{range .Views}}
+          <li class="ui-tabs-item">
+            <a class="ui-tab" href="{{.Href}}" hx-get="{{.Href}}" hx-target="#feed-panel" hx-swap="outerHTML"{{if .Active}} aria-current="page"{{end}}>
+              <span class="ui-tab-label">{{.Label}}</span>
+              <span class="ui-tab-indicator" aria-hidden="true"></span>
+            </a>
+          </li>
+          {{end}}
+        </ul>
+      </nav>
+
+      <section class="recipe-pf-panel" aria-label="Feed">
+        {{template "recipe-public-feed-panel" .}}
+      </section>
+
+      <section class="recipe-pf-loading" aria-labelledby="recipe-pf-loading-heading">
+        <h2 id="recipe-pf-loading-heading" class="recipe-pf-loading-heading">Initial loading state</h2>
+        <p class="recipe-pf-loading-note">The feed is server-rendered, so the first paint has no client loading phase. This is the placeholder the server serves on a simulated initial load — the Skeleton primitive (role="status", sr-only "Loading") instead of a spinner or an empty flash.</p>
+        {{if .Skeleton}}{{template "skeleton" .Skeleton}}{{end}}
+      </section>
+
+      <section class="recipe-pf-panel" aria-label="Remote refresh">
+        {{template "recipe-public-feed-refresh-form" .}}
+      </section>
+    </main>
+  </div>
+  {{template "toast-region"}}
+</body>
+</html>{{end}}
+
+{{define "recipe-public-feed-panel"}}
+<div id="feed-panel">
+  {{if .Items}}
+  <ol class="recipe-pf-list">
+    {{range .Items}}
+    <li class="recipe-pf-list-item">
+      <article class="ui-card ui-card-outlined recipe-pf-card" aria-label="Post by {{.Author}}">
+        <header class="recipe-pf-card-head">
+          {{template "avatar" .Avatar}}
+          <div class="recipe-pf-card-who">
+            <p class="recipe-pf-card-author">{{.Author}}</p>
+            <p class="recipe-pf-card-meta">{{.KindLabel}} · {{.RelativeTime}}</p>
+          </div>
+          {{if .New}}<span class="ui-badge ui-badge-large ui-badge--info">New</span>{{end}}
+        </header>
+        <p class="recipe-pf-card-body">{{.Body}}</p>
+        <footer class="recipe-pf-card-actions">
+          <form class="recipe-pf-react" method="post" action="{{.ReactAction}}">
+            <button class="ui-button ui-button-outline" type="submit">Like · {{.Likes}}</button>
+          </form>
+          <span class="ui-badge ui-badge-large">{{.Comments}} comments</span>
+        </footer>
+      </article>
+    </li>
+    {{end}}
+  </ol>
+  {{else}}
+  {{template "empty-state" .EmptyState}}
+  {{end}}
+  {{if .Pagination}}{{template "pagination" .Pagination}}{{end}}
+  <p class="recipe-pf-caption">{{.Caption}}</p>
+</div>
+{{end}}
+
+{{define "recipe-public-feed-refresh-form"}}
+<form class="recipe-pf-refresh" method="post" action="/recipes/public-feed/refresh#recipe-pf-main" novalidate
+      hx-post="/recipes/public-feed/refresh" hx-target="this" hx-swap="outerHTML">
+  <div class="recipe-pf-refresh-row">
+    <button class="ui-button ui-button-outline" type="submit">Refresh feed</button>
+    {{if .Refreshed}}<span class="ui-progress recipe-pf-progress"><progress value="100" max="100"></progress></span>{{end}}
+  </div>
+  <p class="recipe-pf-refresh-hint">Refresh simulates a remote operation: the server re-renders the feed and reports the result. Without JavaScript the page reloads with an inline toast; with HTMX the refresh form swaps and the live region announces it.</p>
+  {{if .Refreshed}}{{if .RefreshToast}}{{template "toast" .RefreshToast}}{{end}}{{end}}
+</form>
+{{end}}

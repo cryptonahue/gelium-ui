@@ -1,0 +1,60 @@
+@layer components {
+  /* Avatar: a circular surface (surface-container + fg) that shows initials or
+     an image. Sizes map onto the core --ui-size-* scale so geometry stays in
+     the system (sm=control, md=item, lg=item-lg); the --ui-avatar-* tokens are
+     declared scoped to the root so the primitive works standalone and the
+     theme may override them globally. Accessibility is handled in the template
+     (decorative avatars are aria-hidden, image avatars carry alt) — this file
+     only paints. */
+  .ui-avatar {
+    --ui-avatar-container: var(--ui-color-surface-container);
+    --ui-avatar-fg: var(--ui-color-fg);
+    --ui-avatar-size-sm: var(--ui-size-control);
+    --ui-avatar-size-md: var(--ui-size-item);
+    --ui-avatar-size-lg: var(--ui-size-item-lg);
+    --ui-avatar-font-sm: .75rem;
+    --ui-avatar-font-md: .875rem;
+    --ui-avatar-font-lg: 1rem;
+
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    box-sizing: border-box;
+    flex: none;
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-avatar-container);
+    color: var(--ui-avatar-fg);
+    font-family: var(--ui-font-sans);
+    font-weight: 600;
+    line-height: 1;
+    overflow: hidden;
+    user-select: none;
+  }
+  .ui-avatar--sm {
+    width: var(--ui-avatar-size-sm);
+    height: var(--ui-avatar-size-sm);
+    font-size: var(--ui-avatar-font-sm);
+  }
+  .ui-avatar--md {
+    width: var(--ui-avatar-size-md);
+    height: var(--ui-avatar-size-md);
+    font-size: var(--ui-avatar-font-md);
+  }
+  .ui-avatar--lg {
+    width: var(--ui-avatar-size-lg);
+    height: var(--ui-avatar-size-lg);
+    font-size: var(--ui-avatar-font-lg);
+  }
+  .ui-avatar-initials { line-height: 1; }
+  .ui-avatar-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-avatar { border: 1px solid CanvasText; }
+  .ui-avatar-image { forced-color-adjust: auto; }
+}

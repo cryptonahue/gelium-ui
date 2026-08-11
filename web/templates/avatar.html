@@ -1,0 +1,11 @@
+{{define "avatar"}}
+{{- if .ImageSrc -}}
+<span class="ui-avatar ui-avatar--{{or .Size "md"}}"{{if .Decorative}} aria-hidden="true"{{end}}>
+  <img class="ui-avatar-image" src="{{.ImageSrc}}" alt="{{if .Decorative}}{{else}}{{.ImageAlt}}{{end}}">
+</span>
+{{- else -}}
+<span class="ui-avatar ui-avatar--{{or .Size "md"}}"{{if .Decorative}} aria-hidden="true"{{end}}>
+  <span class="ui-avatar-initials">{{.Initials}}</span>
+</span>
+{{- end -}}
+{{end}}

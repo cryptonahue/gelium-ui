@@ -392,6 +392,19 @@ func New() http.Handler {
 	mux.HandleFunc("GET /recipes/admin-resource/{id}/delete", s.recipeAdminResourceDeleteConfirm)
 	mux.HandleFunc("POST /recipes/admin-resource/{id}/delete", s.recipeAdminResourceDelete)
 	mux.HandleFunc("POST /recipes/admin-resource/refresh", s.recipeAdminResourceRefresh)
+	// Ops Queue screen recipe (Phase G): the list is a GET page (filter by
+	// status/kind + server-side pagination), every transition is a POST+303
+	// mutation with a persistent success banner, and refresh is POST-only.
+	mux.HandleFunc("GET /recipes/ops-queue", s.recipeOpsQueueList)
+	mux.HandleFunc("POST /recipes/ops-queue/{id}/advance", s.recipeOpsQueueAdvance)
+	mux.HandleFunc("POST /recipes/ops-queue/{id}/dequeue", s.recipeOpsQueueDequeue)
+	mux.HandleFunc("POST /recipes/ops-queue/refresh", s.recipeOpsQueueRefresh)
+	// Public/Social Feed screen recipe (Phase G): the feed is a GET page (view
+	// tabs + server-side pagination), reactions are POST+303 with a flash
+	// toast, and refresh is POST-only.
+	mux.HandleFunc("GET /recipes/public-feed", s.recipePublicFeedList)
+	mux.HandleFunc("POST /recipes/public-feed/{id}/react", s.recipePublicFeedReact)
+	mux.HandleFunc("POST /recipes/public-feed/refresh", s.recipePublicFeedRefresh)
 	mux.HandleFunc("GET /static/{name}", s.staticAsset)
 	// 404 catch-all: any unknown GET path falls back to the styled ERROR STATE
 	// page (the mux gives the more specific patterns above priority). Post-only
@@ -427,6 +440,8 @@ func postOnlyPaths() []string {
 		"/demo/whatsapp/read",
 		"/demo/whatsapp/admin/webhook",
 		"/recipes/admin-resource/refresh",
+		"/recipes/ops-queue/refresh",
+		"/recipes/public-feed/refresh",
 	}
 }
 
