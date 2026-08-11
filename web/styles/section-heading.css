@@ -1,0 +1,23 @@
+@layer components {
+  /* Section Heading: a typographic utility, NOT a component (Phase F decision).
+     It always renders h2 — never h1, because the page owns a single h1 (P2).
+     Minimal scoped tokens keep the utility overridable without new theme work;
+     text-only means no forced-colors block is needed. */
+  .ui-section-heading {
+    --ui-section-heading-type: var(--ui-type-headline-sm);
+    --ui-section-heading-color: var(--ui-color-fg);
+    --ui-section-heading-margin: var(--ui-space-6) 0 var(--ui-space-3);
+
+    margin: var(--ui-section-heading-margin);
+    color: var(--ui-section-heading-color);
+    font: var(--ui-section-heading-type);
+  }
+
+  .ui-section-heading--centered { text-align: center; }
+
+  .ui-section-heading-eyebrow {
+    margin: 0 0 var(--ui-space-1);
+    font: var(--ui-type-label-lg);
+    color: var(--ui-color-fg-muted);
+  }
+}

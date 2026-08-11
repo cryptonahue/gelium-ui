@@ -1,0 +1,47 @@
+@layer components {
+  /* Video: a responsive container, NOT a content component (Phase F decision).
+     The ratio is literal (16:9 default, 4:3 modifier) because aspect-ratio is
+     deliberately NOT tokenized — it is structural geometry, like breakpoints
+     and z-index, not a theme scale value. Native controls keep the pattern
+     zero-JS; the fallback text is only a frame caption. */
+  .ui-video {
+    --ui-video-radius: var(--ui-radius-sm);
+    --ui-video-border: var(--ui-color-border);
+    --ui-video-bg: var(--ui-color-surface-container);
+
+    position: relative;
+    width: 100%;
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    border: 1px solid var(--ui-video-border);
+    border-radius: var(--ui-video-radius);
+    background: var(--ui-video-bg);
+  }
+
+  .ui-video video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: contain;
+  }
+
+  .ui-video--aspect-4-3 { aspect-ratio: 4 / 3; }
+
+  .ui-video-fallback {
+    margin: 0;
+    padding: var(--ui-space-3);
+    font: var(--ui-type-body-sm);
+    color: var(--ui-color-fg-muted);
+  }
+}
+
+@media (forced-colors: active) {
+  .ui-video {
+    border: 1px solid CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-video-fallback {
+    color: CanvasText;
+    forced-color-adjust: auto;
+  }
+}

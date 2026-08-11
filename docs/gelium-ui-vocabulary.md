@@ -236,10 +236,37 @@ Leyenda de estado en Gelium: **✅ implementado** · **◐ parcial** (ad-hoc) ·
 - **Mapping a Gelium**: `data-table.html:68-72`.
 - **JS**: 0 / H.
 
-### Breadcrumbs ✖
+### Breadcrumb ✅
 
-- **Intención**: ubicación jerárquica con navegación atrás.
-- **Semántica HTML**: `<nav aria-label="Breadcrumb">` → `<ol>` → `<li>` → `<a>`.
+- **Intención**: ubicación jerárquica con navegación atrás; patrón public/content de Phase F (bloquea GEO §9/§14).
+- **Anatomía**: `.ui-breadcrumb` (`<ol>`), `.ui-breadcrumb-item` (`<li>`); separador por CSS (`--ui-breadcrumb-separator`), nunca texto literal en markup (i18n).
+- **Semántica HTML**: `<nav aria-label="Breadcrumb">` → `<ol>` → `<li>` → `<a>`; el crumb actual es `<span aria-current="page">`, NUNCA un link (markup canónico P1, `seo-patterns.md:50-64`).
+- **Tokens**: scoped `--ui-breadcrumb-*` sobre `--ui-space-*`, `--ui-color-fg-muted`/`fg`, `--ui-type-label-sm`; forced-colors.
+- **Mapping a Gelium**: `web/templates/breadcrumb.html`, `web/styles/breadcrumb.css`, datos `[]crumb{Href,Label,Current}` derivados de `componentRoutes()`/`navLinks()` (misma fuente que el JSON-LD `BreadcrumbList`).
+- **JS**: 0.
+
+### Section Heading ✅ (utilidad tipográfica, NO componente)
+
+- **Decisión de Phase F**: es una **utilidad tipográfica**, no un componente: `.ui-section-heading` sobre `--ui-type-headline-sm` + `margin` con `--ui-space-*`; variante `.ui-section-heading--centered`; eyebrow/kicker opcional.
+- **Semántica HTML**: SIEMPRE `<h2>`, nunca `<h1>` — la página posee un único h1 (P2, `seo-patterns.md:90`).
+- **Mapping a Gelium**: `web/templates/section-heading.html`, `web/styles/section-heading.css`.
+- **JS**: 0.
+
+### Video ✅ (contenedor responsive, NO componente de contenido)
+
+- **Decisión de Phase F**: es un **contenedor responsive**, no un componente de contenido: `.ui-video` con `aspect-ratio` literal y `<video controls>` nativo; "best used inside another component" (Split/Card/Hero).
+- **Semántica HTML**: `<div class="ui-video">` → `<video controls poster loading="lazy">` → `<source>` + `<track kind="captions">` (a11y) + fallback. Sin autoplay.
+- **Regla**: `aspect-ratio` NO se tokeniza (geometría estructural, como breakpoints/z-index); variante `.ui-video--aspect-4-3`.
+- **Mapping a Gelium**: `web/templates/video.html`, `web/styles/video.css`.
+- **JS**: 0 (controles nativos).
+
+### Footer ✅
+
+- **Intención**: chrome de sitio (brand + nav secundaria + legal) en todas las páginas; bloqueante de Phase G y del contrato SEO §3.
+- **Anatomía**: `.ui-footer-brand`, `.ui-footer-nav` (grid → stack en narrow), `.ui-footer-section` con `.ui-footer-heading` (`<summary>`) + `.ui-footer-list`, `.ui-footer-legal`.
+- **Semántica HTML**: `<footer>` + nav secundaria + legal; secciones plegables con `<details>/<summary>` nativos (sin `open` → collapsed por defecto; desktop fuerza open por CSS).
+- **Tokens**: scoped `--ui-footer-*` sobre `--ui-color-surface`/`fg-muted`, `--ui-type-label-lg`/`body-sm`, `--ui-space-*`; forced-colors.
+- **Mapping a Gelium**: `web/templates/footer.html`, `web/styles/footer.css`, slot `{{if .Footer}}` en `layout.html` tras `</main>`, datos `footerView{Brand, Sections[]{Title, Links[]navLink}, Legal}` en `internal/app/server.go`.
 - **JS**: 0.
 
 ### Dialog ✅

@@ -37,6 +37,10 @@
 @import "./skeleton.css";
 @import "./tooltip.css";
 @import "./validation-summary.css";
+@import "./breadcrumb.css";
+@import "./footer.css";
+@import "./section-heading.css";
+@import "./video.css";
 @import "./demo-whatsapp.css";
 
 @source "../templates";

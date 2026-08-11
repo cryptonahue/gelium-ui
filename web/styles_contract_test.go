@@ -59,6 +59,10 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/skeleton.css",
 		"styles/tooltip.css",
 		"styles/validation-summary.css",
+		"styles/breadcrumb.css",
+		"styles/footer.css",
+		"styles/section-heading.css",
+		"styles/video.css",
 		"styles/demo-whatsapp.css",
 		"styles/app.css",
 	}

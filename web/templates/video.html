@@ -1,0 +1,7 @@
+{{define "video"}}<div class="ui-video{{if eq .Aspect "4:3"}} ui-video--aspect-4-3{{end}}">
+  <video controls{{if .Poster}} poster="{{.Poster}}"{{end}} loading="lazy"{{if .Track}} crossorigin="anonymous"{{end}}>
+    {{range .Sources}}<source src="{{.Src}}" type="{{.Type}}">{{end}}
+    {{if .Track}}<track kind="captions" src="{{.Track.Src}}" srclang="{{.Track.SrcLang}}" label="{{.Track.Label}}">{{end}}
+    {{if .Fallback}}<p class="ui-video-fallback">{{.Fallback}}</p>{{end}}
+  </video>
+</div>{{end}}
