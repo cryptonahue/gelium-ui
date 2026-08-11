@@ -1,11 +1,17 @@
 {{define "dialog"}}
 {{template "button" .Trigger}}
-<dialog class="ui-dialog" id="confirm-dialog" closedby="any" aria-labelledby="confirm-dialog-title" aria-describedby="confirm-dialog-description">
-  <h2 class="ui-dialog-headline" id="confirm-dialog-title">Confirm action</h2>
-  <div class="ui-dialog-content"><p id="confirm-dialog-description">This action will apply the selected changes. Do you want to continue?</p></div>
+{{end}}
+
+{{define "dialog-confirm"}}
+<div class="ui-dialog-page">
+  <h2 class="ui-dialog-headline" id="confirm-dialog-title">{{.Headline}}</h2>
+  <div class="ui-dialog-content"><p id="confirm-dialog-description">{{.Description}}</p></div>
   <div class="ui-dialog-actions">
     {{template "button" .Cancel}}
-    {{template "button" .Confirm}}
+    <form method="post" action="/components/dialog/confirm" novalidate>
+      <input type="hidden" name="action" value="confirm">
+      {{template "button" .Confirm}}
+    </form>
   </div>
-</dialog>
+</div>
 {{end}}

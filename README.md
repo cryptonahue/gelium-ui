@@ -51,7 +51,8 @@ Rutas disponibles:
 - `/` — home renderizada desde Markdown.
 - `/components/button` — documentación y preview real del Button.
 - `/components/text-field` — documentación, estados y demo HTMX real del Text field.
-- `/components/dialog` — documentación y preview del Dialog nativo; comandos declarativos y light dismiss se aplican en navegadores compatibles.
+- `/components/dialog` — documentación y preview del Dialog como variante página: trigger link a `/components/dialog/confirm`, Confirm como form POST real y Cancel como link de vuelta (fallback G1, sin JS). El modal `<dialog>` con comandos declarativos queda como mejora opt-in documentada.
+- `/components/dialog/confirm` — página de confirmación inline: `POST /components/dialog/confirm` redirige con 303 de vuelta a `/components/dialog?confirmed=1`, que muestra el resultado en un inline alert persistente.
 - `/components/toast` — documentation y demo HTMX del Toast: variantes, contrato `loom:toast` y fallback inline sin JS.
 - `POST /examples/text-field/validate` — validación server-side; devuelve 422 para vacío/whitespace y 200 para valores válidos. Sin JavaScript renderiza la página de documentación completa; con `HX-Request: true`, HTMX recibe únicamente el form actualizado como progressive enhancement.
 - `POST /examples/toast/demo` — feedback server-driven; devuelve `HX-Trigger: {"loom:toast":{...}}` para HTMX y, sin JavaScript, re-renderiza la página con un toast inline persistente. 422 para mensaje vacío.
@@ -117,7 +118,7 @@ El markup reusable está en `web/templates/button.html` y los estilos en `web/st
 
 ## Dialog open-code
 
-El markup reusable está en `web/templates/dialog.html` y los estilos en `web/styles/app.css`. El elemento `<dialog>` tiene soporte amplio, pero `command`/`commandfor` son Baseline Low, `request-close` es aún más reciente y `closedby` no es Baseline. En navegadores compatibles, los comandos declarativos y `closedby="any"` aportan apertura/cierre y light dismiss sin JavaScript del componente; para navegadores anteriores, el consumidor debe añadir un fallback server-rendered o adaptador. `@starting-style` y las transiciones de cierre/top layer con `overlay` son mejoras progresivas (estas últimas, Chromium-only y no interoperables), por lo que el motion puede ser instantáneo o asimétrico en otros navegadores. Incluye reduced motion, forced colors, nombres accesibles y acciones explícitas de Cancel/Confirm.
+El markup reusable está en `web/templates/dialog.html` y los estilos en `web/styles/app.css`. La base es una **variante página**: el trigger es un link real a una página de confirmación server-rendered, Confirm es un form POST real (303 de vuelta) y Cancel un link de regreso — funcional en todo navegador, 0 JS, sin markup de overlay. El `<dialog>` modal con `command`/`commandfor` queda como mejora opt-in para navegadores actuales (`command`/`commandfor` son **Baseline 2025 — Newly available**); `request-close` es más reciente y `closedby` no es Baseline, por lo que el modal nunca es el único camino y ninguna página Gelium deja un control inerte. `@starting-style` y las transiciones de cierre/top layer con `overlay` son mejoras progresivas (estas últimas, Chromium-only y no interoperables), por lo que el motion del modal puede ser instantáneo o asimétrico en otros navegadores. Incluye reduced motion, forced colors, nombres accesibles y acciones explícitas de Cancel/Confirm.
 
 ## Alcance
 

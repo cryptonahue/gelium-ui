@@ -236,15 +236,8 @@ func renderBanner(t *testing.T, view bannerView) string {
 	return rendered.String()
 }
 
-// inlineAlertView is the test view model for the inline-alert partial. The
-// partial is a primitive with no production Go view model yet (it renders
-// server-side inside sections and forms), so the render test drives it directly.
-type inlineAlertView struct {
-	Tone  string
-	Icon  template.HTML
-	Title string
-	Body  string
-}
+// inlineAlertView is the production view model (server.go); the render test
+// below drives the partial directly to pin the tone→role derivation.
 
 func renderInlineAlert(t *testing.T, view inlineAlertView) string {
 	t.Helper()

@@ -71,23 +71,16 @@
 {{end}}
 
 {{define "select-menu-demo"}}
-<form class="ui-select m3-select" id="select-menu-field" method="post"
+<form class="ui-select ui-select-filled" id="select-menu-field" method="post"
       action="/examples/select/menu#select-menu-example" novalidate
       hx-post="/examples/select/menu" hx-target="this" hx-swap="outerHTML">
-  <button type="button" class="m3-select-trigger" command="show-modal" commandfor="select-menu"
-          aria-haspopup="menu">
-    <span>{{.Label}}</span>
-    <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
-  </button>
-  <dialog class="ui-select-menu" id="select-menu" closedby="any" aria-label="Plan options">
+  <select id="select-menu" name="value"{{if .Error}} aria-invalid="true" aria-describedby="select-menu-error"{{end}}>
     {{range .Options}}
-    <button type="submit" class="ui-select-menu-item" name="value" value="{{.Value}}"{{if $.Open}}{{if .Selected}} aria-selected="true"{{end}}{{end}}>{{.Label}}</button>
+    <option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>
     {{end}}
-    <div class="ui-select-menu-divider" role="separator"></div>
-    <button type="button" class="ui-select-menu-item" command="request-close">Close</button>
-  </dialog>
-  {{if .Error}}<p class="ui-select-menu-error" role="alert">{{.Error}}</p>{{end}}
-  <input type="hidden" name="id" value="{{.ID}}">
-  <input type="hidden" name="value" value="{{.Value}}">
+  </select>
+  <label class="ui-select-label" for="select-menu">Plan</label>
+  <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
+  {{if .Error}}<p class="ui-select-error" id="select-menu-error" role="alert">{{.Error}}</p>{{end}}
 </form>
 {{end}}

@@ -7,7 +7,7 @@ import (
 	"testing"
 )
 
-func TestDialogDocsRouteDogfoodsNativeDeclarativeDialog(t *testing.T) {
+func TestDialogDocsRouteDogfoodsPageVariantTriggerLink(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/dialog", nil))
 	if res.Code != http.StatusOK {
@@ -16,35 +16,78 @@ func TestDialogDocsRouteDogfoodsNativeDeclarativeDialog(t *testing.T) {
 	body := res.Body.String()
 	for _, contract := range []string{
 		`<title>Dialog · Gelium UI</title>`, `<h1>Dialog</h1>`, `href="/components/dialog"`,
-		`id="confirm-dialog-title"`, `id="confirm-dialog-description"`,
-		`command="show-modal" commandfor="confirm-dialog"`,
-		`command="request-close" commandfor="confirm-dialog"`,
-		`command="close" commandfor="confirm-dialog" value="confirm"`,
-		`class="ui-button ui-button-text"`, `autofocus`,
+		`<a class="ui-button ui-button-primary" href="/components/dialog/confirm">`,
+		`<span>Open confirmation dialog</span></a>`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("dialog docs are missing %q", contract)
 		}
 	}
-	dialog := openingTagWithID(t, body, "dialog", "confirm-dialog")
-	for _, attribute := range []string{`closedby="any"`, `aria-labelledby="confirm-dialog-title"`, `aria-describedby="confirm-dialog-description"`} {
-		if !strings.Contains(dialog, attribute) {
-			t.Errorf("dialog = %q, want %s", dialog, attribute)
-		}
-	}
-	for _, forbidden := range []string{" open", " role=", " aria-modal=", " tabindex="} {
-		if strings.Contains(dialog, forbidden) {
-			t.Errorf("dialog = %q, must omit redundant attribute %s", dialog, forbidden)
-		}
-	}
-	for _, id := range []string{"confirm-dialog", "confirm-dialog-title", "confirm-dialog-description"} {
-		if got := strings.Count(body, `id="`+id+`"`); got != 1 {
-			t.Errorf("id %q occurs %d times, want exactly once", id, got)
+	preview := body[strings.Index(body, `aria-label="Dialog example"`):]
+	for _, forbidden := range []string{`command=`, `commandfor=`, `closedby=`, `<dialog`, `ui-dialog-`} {
+		if strings.Contains(preview, forbidden) {
+			t.Errorf("dialog preview must not ship inert command-based controls: %q", forbidden)
 		}
 	}
 }
 
-func TestDialogDocsExplainProgressiveBrowserCompatibility(t *testing.T) {
+func TestDialogConfirmRouteRendersInlineAction(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/dialog/confirm", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<title>Dialog · Gelium UI</title>`, `<h1>Dialog</h1>`,
+		`class="ui-dialog-page"`,
+		`id="confirm-dialog-title"`, `id="confirm-dialog-description"`,
+		`<form method="post" action="/components/dialog/confirm"`,
+		`<input type="hidden" name="action" value="confirm">`,
+		`<a class="ui-button ui-button-text" href="/components/dialog">`,
+		`<span>Cancel</span></a>`,
+		`class="ui-button ui-button-text" type="submit"`,
+		`<span>Confirm</span></button>`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("dialog confirm page is missing %q", contract)
+		}
+	}
+}
+
+func TestDialogConfirmPostRedirectsBackWith303(t *testing.T) {
+	res := httptest.NewRecorder()
+	req := httptest.NewRequest(http.MethodPost, "/components/dialog/confirm", strings.NewReader("action=confirm"))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	New().ServeHTTP(res, req)
+
+	if res.Code != http.StatusSeeOther {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusSeeOther)
+	}
+	if got := res.Header().Get("Location"); got != "/components/dialog?confirmed=1" {
+		t.Errorf("Location = %q, want /components/dialog?confirmed=1", got)
+	}
+}
+
+func TestDialogDocsShowPersistentAlertAfterConfirmed(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/dialog?confirmed=1", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`class="ui-inline-alert ui-inline-alert--success"`,
+		`role="status"`,
+		`class="ui-inline-alert-body">Action confirmed.`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("dialog docs after confirm are missing %q", contract)
+		}
+	}
+}
+
+func TestDialogDocsExplainPageVariantAndModalCompatibility(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/dialog", nil))
 	if res.Code != http.StatusOK {
@@ -53,15 +96,13 @@ func TestDialogDocsExplainProgressiveBrowserCompatibility(t *testing.T) {
 
 	body := res.Body.String()
 	for _, contract := range []string{
+		"page variant",
 		"supporting browsers",
-		"Baseline Low",
-		"no component JavaScript fallback",
-		"server-rendered fallback or adapter",
+		"Baseline 2025",
+		"no component JavaScript",
+		"opt-in",
 		"request-close",
-		"newer than the invoker commands",
 		"not Baseline",
-		"Chromium-only",
-		"instant or asymmetric",
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("dialog docs are missing compatibility contract %q", contract)
@@ -75,6 +116,7 @@ func TestDialogDocsRouteKeepsMethodAndUnknownRouteSemantics(t *testing.T) {
 		want         int
 	}{
 		{http.MethodPost, "/components/dialog", http.StatusMethodNotAllowed},
+		{http.MethodGet, "/components/dialog/confirm/missing", http.StatusNotFound},
 		{http.MethodGet, "/components/dialog/missing", http.StatusNotFound},
 	} {
 		res := httptest.NewRecorder()

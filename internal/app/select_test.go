@@ -41,7 +41,7 @@ func TestSelectDocsRouteKeepsOnlyGETSemantics(t *testing.T) {
 	}
 }
 
-func TestSelectMenuDocsRouteDogfoodsServerDrivenMenu(t *testing.T) {
+func TestSelectMenuDocsRouteDogfoodsNativeSelectField(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/select", nil))
 
@@ -50,26 +50,30 @@ func TestSelectMenuDocsRouteDogfoodsServerDrivenMenu(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`class="ui-select-menu"`,
 		`aria-label="Select menu example"`,
-		`command="show-modal"`,
-		`commandfor="select-menu"`,
+		`class="ui-select ui-select-filled"`,
+		`<select id="select-menu" name="value">`,
+		`<option value="standard">Standard</option>`,
+		`<option value="priority" selected>Priority</option>`,
+		`<option value="enterprise">Enterprise</option>`,
 		`hx-post="/examples/select/menu"`,
 		`hx-target="this"`,
 		`hx-swap="outerHTML"`,
-		`command="request-close"`,
-		`class="ui-select-menu-item"`,
-		`aria-selected="true"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("select menu docs are missing %q", contract)
 		}
 	}
+	for _, gone := range []string{`command=`, `commandfor=`, `closedby=`, `class="ui-select-menu"`, `aria-selected="true"`, `<dialog`} {
+		if strings.Contains(body, gone) {
+			t.Errorf("select menu docs must not contain dead M3 markup %q", gone)
+		}
+	}
 }
 
-func TestSelectMenuChangeNoHSetsValueAndRendersSessionState(t *testing.T) {
+func TestSelectMenuChangeNoHReflectsSelectionInNativeSelect(t *testing.T) {
 	res := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodPost, "/examples/select/menu", strings.NewReader("value=priority&id=select-menu"))
+	req := httptest.NewRequest(http.MethodPost, "/examples/select/menu", strings.NewReader("value=standard"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	New().ServeHTTP(res, req)
 
@@ -80,17 +84,18 @@ func TestSelectMenuChangeNoHSetsValueAndRendersSessionState(t *testing.T) {
 	if !strings.Contains(body, `<!doctype html>`) || !strings.Contains(body, `<title>Select · Gelium UI</title>`) {
 		t.Error("no-HX response must be a complete documentation page")
 	}
-	if !strings.Contains(body, `value="priority"`) {
-		t.Error("selected value must be reflected in the session state")
+	menu := body[strings.Index(body, `id="select-menu-field"`):]
+	if !strings.Contains(menu, `<option value="standard" selected>Standard</option>`) {
+		t.Error("the chosen option must be marked selected in the native select")
 	}
-	if !strings.Contains(body, `aria-selected="true"`) {
-		t.Error("selected menu item must carry aria-selected")
+	if strings.Contains(menu, `<option value="priority" selected>Priority</option>`) {
+		t.Error("the previously selected option must not stay selected")
 	}
 }
 
 func TestSelectMenuChangeHXReturnsFragmentReflectingSelection(t *testing.T) {
 	res := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodPost, "/examples/select/menu", strings.NewReader("value=priority&id=select-menu"))
+	req := httptest.NewRequest(http.MethodPost, "/examples/select/menu", strings.NewReader("value=priority"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("HX-Request", "true")
 	New().ServeHTTP(res, req)
@@ -102,20 +107,20 @@ func TestSelectMenuChangeHXReturnsFragmentReflectingSelection(t *testing.T) {
 	if strings.Contains(body, `<!doctype html>`) || strings.Contains(body, `<title>`) {
 		t.Error("HX response must be a fragment, not a complete document")
 	}
-	if !strings.Contains(body, `class="ui-select m3-select"`) {
-		t.Errorf("fragment must return the M3 select wrapper, got %q", body)
+	if !strings.Contains(body, `class="ui-select ui-select-filled"`) {
+		t.Errorf("fragment must return the native select field wrapper, got %q", body)
 	}
-	if !strings.Contains(body, `value="priority"`) {
-		t.Error("fragment must persist the newly selected value on the hidden input")
+	if !strings.Contains(body, `<select id="select-menu" name="value">`) {
+		t.Error("fragment must return the native select control")
 	}
-	if strings.Contains(body, `aria-selected="true"`) {
-		t.Error("closed-menu fragment must not contain the open menu list")
+	if !strings.Contains(body, `<option value="priority" selected>Priority</option>`) {
+		t.Error("fragment must persist the newly selected option on the native select")
 	}
 }
 
 func TestSelectMenuChangeRejectsUnknownValueWith422(t *testing.T) {
 	res := httptest.NewRecorder()
-	req := httptest.NewRequest(http.MethodPost, "/examples/select/menu", strings.NewReader("value=not-a-plan&id=select-menu"))
+	req := httptest.NewRequest(http.MethodPost, "/examples/select/menu", strings.NewReader("value=not-a-plan"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("HX-Request", "true")
 	New().ServeHTTP(res, req)
@@ -129,5 +134,8 @@ func TestSelectMenuChangeRejectsUnknownValueWith422(t *testing.T) {
 	body := res.Body.String()
 	if !strings.Contains(body, "Select a valid option") {
 		t.Error("422 fragment must carry a visible validation error")
+	}
+	if !strings.Contains(body, `aria-invalid="true"`) {
+		t.Error("422 fragment must mark the native select as aria-invalid")
 	}
 }

@@ -16,7 +16,6 @@
 @import "./radio.css";
 @import "./switch.css";
 @import "./select.css";
-@import "./select-menu.css";
 @import "./slider.css";
 @import "./progress.css";
 @import "./icon-button.css";
@@ -68,7 +67,6 @@
   .ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 { transition: none; }
   .ui-switch input[type="checkbox"], .ui-switch-track, .ui-switch-handle { transition: none; }
   .ui-select select, .ui-select-label, .ui-select-caret { transition: none; }
-  .ui-select-menu, .ui-select-menu-item, .m3-select-trigger { transition: none; }
   .ui-slider input[type="range"]::-webkit-slider-thumb,
   .ui-slider input[type="range"]::-moz-range-thumb { transition: none; }
   .ui-progress progress { transition: none; }
@@ -122,6 +120,7 @@
     opacity: 1;
   }
   .ui-dialog { border: 2px solid WindowText; }
+  .ui-dialog-page { border: 2px solid WindowText; }
   .ui-toast { border: 1px solid CanvasText; forced-color-adjust: auto; }
   .ui-toast-message { color: CanvasText; forced-color-adjust: auto; }
   .ui-toast-icon-info, .ui-toast-icon-success, .ui-toast-icon-warning, .ui-toast-icon-error { color: CanvasText; }
@@ -175,17 +174,7 @@
   }
   .ui-select select[aria-invalid="true"] ~ .ui-select-label,
   .ui-select select[aria-invalid="true"] ~ .ui-select-caret { color: Mark; }
-  .ui-select-menu { border: 1px solid CanvasText; background: Canvas; color: CanvasText; }
-  .ui-select-menu-item { color: CanvasText; }
-  .ui-select-menu-item[aria-selected="true"] { background: Highlight; color: HighlightText; }
-  .ui-select-menu-error { color: CanvasText; }
-  .m3-select-trigger {
-    border-color: CanvasText;
-    background: Canvas;
-    color: CanvasText;
-    forced-color-adjust: auto;
-  }
-  .m3-select-trigger:focus-visible { outline-color: Highlight; }
+  .ui-select-error { color: Mark; }
   .ui-slider input[type="range"]::-webkit-slider-runnable-track,
   .ui-slider input[type="range"]::-webkit-slider-thumb,
   .ui-slider input[type="range"]::-moz-range-track,

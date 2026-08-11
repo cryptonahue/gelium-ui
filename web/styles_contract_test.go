@@ -38,7 +38,6 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/radio.css",
 		"styles/switch.css",
 		"styles/select.css",
-		"styles/select-menu.css",
 		"styles/slider.css",
 		"styles/progress.css",
 		"styles/icon-button.css",

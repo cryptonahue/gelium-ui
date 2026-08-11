@@ -6,25 +6,32 @@ import (
 	"testing"
 )
 
-func TestSelectMenuPrimitiveCSSMapsMaterialMenuSurfaceAndItems(t *testing.T) {
+// TestSelectMenuDemoUsesNativeSelectFieldSurface proves the server-driven
+// Select menu demo dogfoods the Select component's own field surface (the
+// native <select>) instead of the old M3 dialog menu: the dead trigger and the
+// menu surface must not ship, and the field's validation styling must apply.
+func TestSelectMenuDemoUsesNativeSelectFieldSurface(t *testing.T) {
 	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
 
 	for _, contract := range []string{
-		`.ui-select-menu {`,
-		`min-width: var(--ui-select-menu-min-width);`,
-		`border-radius: var(--ui-select-menu-radius);`,
-		`background: var(--ui-select-menu-container);`,
-		`box-shadow: var(--ui-select-menu-elevation);`,
-		`.ui-select-menu-item {`,
-		`min-height: var(--ui-select-menu-item-height);`,
-		`font: var(--ui-type-label-lg);`,
-		`.ui-select-menu-item:hover {`,
-		`.ui-select-menu-item[aria-selected="true"] { background: var(--ui-select-menu-item-selected);`,
-		`.ui-select-menu-divider {`,
-		`height: 1px;`,
+		`.ui-select {`,
+		`.ui-select select {`,
+		`appearance: none;`,
+		`height: var(--ui-select-height);`,
+		`border-radius: var(--ui-select-radius);`,
+		`.ui-select-filled select { background: var(--ui-select-container-filled); border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent; border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);`,
+		`.ui-select select[aria-invalid="true"] { border-color: var(--ui-select-error);`,
+		`.ui-select-error {`,
+		`color: var(--ui-select-error);`,
 	} {
 		if !strings.Contains(css, contract) {
-			t.Errorf("source CSS is missing select-menu contract %q", contract)
+			t.Errorf("source CSS is missing native select field contract %q", contract)
+		}
+	}
+
+	for _, gone := range []string{".ui-select-menu", ".m3-select-trigger", "closedby"} {
+		if strings.Contains(css, gone) {
+			t.Errorf("dead M3 menu markup/CSS %q must not ship once the native select is the base control", gone)
 		}
 	}
 
@@ -34,17 +41,20 @@ func TestSelectMenuPrimitiveCSSMapsMaterialMenuSurfaceAndItems(t *testing.T) {
 	}
 	forced := css[forcedIndex:]
 	for _, contract := range []string{
-		`.ui-select-menu { border: 1px solid CanvasText;`,
-		`.ui-select-menu-item[aria-selected="true"] { background: Highlight;`,
+		`.ui-select select { border-color: CanvasText;`,
+		`.ui-select-error { color: Mark;`,
 	} {
 		if !strings.Contains(forced, contract) {
-			t.Errorf("select menu must stay distinguishable in forced colors; missing %q", contract)
+			t.Errorf("the select menu demo field must stay distinguishable in forced colors; missing %q", contract)
 		}
 	}
 
 	reduced := entryMediaBlock(t, css, "@media (prefers-reduced-motion: reduce)")
-	if !strings.Contains(reduced, ".ui-select-menu") {
-		t.Error("reduced-motion CSS must disable select-menu transitions")
+	if !strings.Contains(reduced, ".ui-select") {
+		t.Error("reduced-motion CSS must keep disabling the select field transitions")
+	}
+	if strings.Contains(reduced, ".ui-select-menu") {
+		t.Error("reduced-motion CSS must not reference the removed M3 menu")
 	}
 }
 
@@ -66,20 +76,25 @@ func TestSelectMenuThemeDefinesPublicUIFamily(t *testing.T) {
 	}
 }
 
-func TestEmbeddedCompiledCSSIncludesSelectMenuContracts(t *testing.T) {
+func TestEmbeddedCompiledCSSExcludesDeadSelectMenu(t *testing.T) {
 	compiled, err := Assets.ReadFile("static/app.css")
 	if err != nil {
 		t.Fatalf("read embedded compiled app CSS: %v", err)
 	}
 	css := string(compiled)
 	for _, contract := range []string{
-		`.ui-select-menu`,
-		`var(--ui-select-menu-container)`,
-		`var(--ui-select-menu-item-height)`,
+		`.ui-select`,
+		`var(--ui-select-height)`,
+		`var(--ui-select-outline)`,
 		`@media (forced-colors:active)`,
 	} {
 		if !strings.Contains(css, contract) {
-			t.Errorf("embedded compiled select-menu CSS is missing %q", contract)
+			t.Errorf("embedded compiled select CSS is missing %q", contract)
+		}
+	}
+	for _, gone := range []string{".ui-select-menu", ".m3-select-trigger"} {
+		if strings.Contains(css, gone) {
+			t.Errorf("embedded compiled CSS must not contain the removed M3 menu %q", gone)
 		}
 	}
 }

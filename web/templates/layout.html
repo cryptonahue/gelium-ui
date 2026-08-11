@@ -28,7 +28,14 @@
     {{if .Buttons}}<section class="component-preview" aria-label="Button examples">{{range .Buttons}}{{template "button" .}}{{end}}</section>{{end}}
     {{if .TextFields}}<section class="component-preview text-field-preview" aria-label="Text field examples">{{range .TextFields}}{{template "text-field" .}}{{end}}</section>{{end}}
     {{if .ValidationForm}}<section class="component-preview" aria-label="Text field validation example" id="validation-example">{{template "validation-form" .ValidationForm}}</section>{{end}}
-    {{if .Dialog}}<section class="component-preview dialog-preview" aria-label="Dialog example">{{template "dialog" .Dialog}}</section>{{end}}
+    {{if .Dialog}}<section class="component-preview dialog-preview" aria-label="Dialog example">
+      {{if .InlineAlert}}{{template "inline-alert" .InlineAlert}}{{end}}
+      {{template "dialog" .Dialog}}
+    </section>{{end}}
+    {{if .DialogConfirm}}<section class="component-preview dialog-preview" aria-label="Dialog confirm example">
+      {{if .InlineAlert}}{{template "inline-alert" .InlineAlert}}{{end}}
+      {{template "dialog-confirm" .DialogConfirm}}
+    </section>{{end}}
     {{if .Toasts}}<section class="component-preview toast-preview" aria-label="Toast examples">{{range .Toasts}}{{template "toast" .}}{{end}}</section>{{end}}
     {{if .ToastDemo}}<section class="component-preview toast-demo-preview" aria-label="Toast demo" id="toast-demo">{{template "toast-demo-form" .ToastDemo}}</section>{{end}}
     {{if .ElevationDemo}}<section class="component-preview" aria-label="Elevation example">{{template "elevation-demo" .ElevationDemo}}</section>{{end}}

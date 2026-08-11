@@ -95,6 +95,11 @@
     background: var(--ui-select-list-bg);
     color: var(--ui-select-list-fg);
   }
+  .ui-select-error {
+    margin: var(--ui-space-1) 0 0;
+    color: var(--ui-select-error);
+    font: var(--ui-type-body-sm);
+  }
   .select-demo-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));

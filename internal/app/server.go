@@ -50,6 +50,18 @@ type bannerView struct {
 	DismissIcon template.HTML
 }
 
+// inlineAlertView is the server-driven view model for the section/form-level
+// INLINE ALERT slot (Phase D pattern 6). A nil InlineAlert on pageView renders
+// no alert. Tone is a closed vocabulary (info|success|warning|error) and the
+// role derives from it (error → alert, everything else → status). It is a
+// persistent server-rendered signal, never a transient toast.
+type inlineAlertView struct {
+	Tone  string
+	Icon  template.HTML
+	Title string
+	Body  string
+}
+
 // errorStateView is the server-driven view model for the page-level ERROR
 // STATE slot (Phase D pattern 7). A nil Error on pageView renders no error
 // state and the normal content instead. The status code is the canonical
@@ -233,11 +245,13 @@ type pageView struct {
 	Nav                  []navLink
 	Banner               *bannerView
 	Error                *errorStateView
+	InlineAlert          *inlineAlertView
 	CTA                  *buttonView
 	Buttons              []buttonView
 	TextFields           []textFieldView
 	ValidationForm       *validationFormView
 	Dialog               *dialogView
+	DialogConfirm        *dialogConfirmView
 	Toasts               []toastView
 	ToastDemo            *toastDemoView
 	ElevationDemo        *elevationDemo
@@ -295,6 +309,8 @@ func New() http.Handler {
 	mux.HandleFunc("POST /examples/text-field/validate", s.validateTextField)
 	mux.HandleFunc("POST /examples/toast/demo", s.toastDemo)
 	mux.HandleFunc("POST /examples/select/menu", s.selectMenu)
+	mux.HandleFunc("GET /components/dialog/confirm", s.dialogConfirm)
+	mux.HandleFunc("POST /components/dialog/confirm", s.dialogConfirmPost)
 	mux.HandleFunc("POST /examples/chips/remove", s.chipsRemoveDemo)
 	mux.HandleFunc("POST /examples/data-table/refresh", s.dataTableRefreshDemo)
 	mux.HandleFunc("GET /demo/whatsapp", s.whatsAppDemo)

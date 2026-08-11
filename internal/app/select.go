@@ -8,30 +8,25 @@ import (
 
 type selectDemo struct{}
 
-// selectMenuOption is one server-driven menu item in the Select menu demo.
-// Selected marks the currently chosen option so the docs page can render
-// aria-selected; the HX fragment renders Open=false and omits the marks so a
-// closed menu never leaks the "open list" structure into the response.
+// selectMenuOption is one option of the server-driven Select menu demo.
+// Selected marks the currently chosen option so the docs page can render the
+// native <select>'s selected option.
 type selectMenuOption struct {
 	Value    string
 	Label    string
 	Selected bool
 }
 
-// selectMenuDemo is the view model for the progressive menu demo: a native
-// <dialog> opened by command/commandfor, whose items are submit buttons that
-// post the chosen value back to the server. Without command support the menu
-// stays closed and the native <select> field remains the fallback control.
+// selectMenuDemo is the view model for the server-driven Select menu demo: a
+// real native <select> whose value is posted back to the server. The control is
+// the Select component's own field surface, so the form works in every browser
+// with zero component JavaScript and no Invoker Commands dependency.
 type selectMenuDemo struct {
-	ID      string
-	Value   string
-	Label   string
 	Options []selectMenuOption
 	Error   string
-	Open    bool
 }
 
-// selectMenuOptions is the closed vocabulary of the server-driven menu demo.
+// selectMenuOptions is the closed vocabulary of the server-driven demo.
 // Unknown values must be rejected with a 422 so the docs page can teach the
 // validation contract without inventing arbitrary options.
 var selectMenuOptions = []selectMenuOption{
@@ -45,10 +40,6 @@ var selectMenuOptions = []selectMenuOption{
 // second field is populated.
 func defaultSelectMenuDemo() selectMenuDemo {
 	return selectMenuDemo{
-		ID:    "select-menu",
-		Value: "priority",
-		Label: "Priority",
-		Open:  true,
 		Options: []selectMenuOption{
 			{Value: "standard", Label: "Standard", Selected: false},
 			{Value: "priority", Label: "Priority", Selected: true},
@@ -66,9 +57,12 @@ func (s *server) selectDocs(w http.ResponseWriter, _ *http.Request) {
 	}, "content/select.md")
 }
 
-// selectFromClosedSet picks the option whose value matches, returning a demo
-// whose selection label follows the chosen option. Unknown values keep the
-// previous state so the field never shows a fabricated option.
+// selectMenu completes the no-JS server round-trip for the Select menu demo:
+// the native <select> posts its value and the server validates it against the
+// closed vocabulary, then re-renders. Without JavaScript the whole
+// documentation page is re-rendered; with HTMX only the form fragment is
+// swapped. Unknown values are rejected with a 422 and carry the validation
+// header plus a visible inline error.
 func (s *server) selectMenu(w http.ResponseWriter, r *http.Request) {
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "invalid form", http.StatusBadRequest)
@@ -85,8 +79,6 @@ func (s *server) selectMenu(w http.ResponseWriter, r *http.Request) {
 		demo.Options[i].Selected = false
 		if demo.Options[i].Value == value {
 			demo.Options[i].Selected = true
-			demo.Value = value
-			demo.Label = demo.Options[i].Label
 			found = true
 		}
 	}
@@ -105,10 +97,9 @@ func (s *server) selectMenu(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	// HX request: return only the form fragment so htmx swaps the closed menu
-	// field. A 422 carries the validation header plus the visible error; a
-	// success returns the updated closed menu without the open-list marks.
-	demo.Open = false
+	// HX request: return only the form fragment so htmx swaps the updated
+	// native select field. A 422 carries the validation header plus the
+	// visible error; a success returns the field with the new selection.
 	if status == http.StatusUnprocessableEntity {
 		w.Header().Set("X-Loom-Validation", "true")
 	}

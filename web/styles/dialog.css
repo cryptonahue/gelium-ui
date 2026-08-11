@@ -44,4 +44,18 @@
     .ui-dialog[open] { translate: 0 -50px; scale: .35; opacity: 0; }
     .ui-dialog[open]::backdrop { opacity: 0; }
   }
+  /* Page variant (G1 base): the same headline/content/actions surface rendered
+     inline as normal page content instead of a top-layer modal. No animation,
+     no overlay, no focus trap — the trigger is a real link and Confirm a real
+     form POST, so the flow works in every browser with zero component JS. */
+  .ui-dialog-page {
+    --ui-dialog-max-width: 560px;
+    width: min(100%, var(--ui-dialog-max-width));
+    box-sizing: border-box;
+    margin: 0;
+    border-radius: var(--ui-dialog-radius);
+    background: var(--ui-dialog-container);
+    color: var(--ui-dialog-fg);
+  }
+  .ui-dialog-page .ui-dialog-actions form { margin: 0; }
 }
