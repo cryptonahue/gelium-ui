@@ -19,9 +19,9 @@
       </nav>
     </header>
 
-    <div class="demo-wa-admin">
+    <main class="demo-wa-admin">
       <nav class="demo-wa-admin-nav" aria-label="Secciones de administración">
-        <a class="demo-wa-admin-tab demo-wa-admin-tab--active" href="#numbers">Números</a>
+        <a class="demo-wa-admin-tab demo-wa-admin-tab--active" href="#numbers" aria-current="location">Números</a>
         <a class="demo-wa-admin-tab" href="#qr">QR Codes</a>
         <a class="demo-wa-admin-tab" href="#webhooks">Webhooks</a>
         <a class="demo-wa-admin-tab" href="#templates">Plantillas</a>
@@ -40,7 +40,7 @@
                 <td><span class="demo-wa-quality demo-wa-quality--{{.Quality}}">{{.Quality}}</span></td>
                 <td>{{.VerifiedName}}</td>
                 <td>{{.Throughput}}</td>
-                <td><a href="#" class="demo-wa-admin-action">⚙</a> <a href="#" class="demo-wa-admin-action">🗑</a></td>
+                <td><a href="#" class="demo-wa-admin-action" aria-label="Configurar número">⚙</a> <a href="#" class="demo-wa-admin-action" aria-label="Eliminar número">🗑</a></td>
               </tr>
               {{end}}
             </tbody>
@@ -60,7 +60,7 @@
                 <td>{{.Code}}</td>
                 <td>{{.Prefilled}}</td>
                 <td><a href="{{.DeepLinkURL}}">{{.DeepLinkURL}}</a></td>
-                <td><a href="#" class="demo-wa-admin-action">✎</a> <a href="#" class="demo-wa-admin-action">🗑</a></td>
+                <td><a href="#" class="demo-wa-admin-action" aria-label="Editar código QR">✎</a> <a href="#" class="demo-wa-admin-action" aria-label="Eliminar código QR">🗑</a></td>
               </tr>
               {{end}}
             </tbody>
@@ -116,7 +116,7 @@
       <section class="demo-wa-admin-panel" id="tokens" aria-label="API y tokens">
         <h2 class="demo-wa-admin-title">API / Tokens</h2>
         <div class="demo-wa-token-card">
-          <div class="demo-wa-token-row"><span class="demo-wa-token-label">Token activo</span><code class="demo-wa-mono">{{.TokenMasked}}</code> <a class="demo-wa-admin-action" href="#">👁</a> <a class="demo-wa-admin-action" href="#">copiar</a> <a class="demo-wa-admin-action" href="#">rotar</a></div>
+          <div class="demo-wa-token-row"><span class="demo-wa-token-label">Token activo</span><code class="demo-wa-mono">{{.TokenMasked}}</code> <a class="demo-wa-admin-action" href="#" aria-label="Ver token">👁</a> <a class="demo-wa-admin-action" href="#">copiar</a> <a class="demo-wa-admin-action" href="#">rotar</a></div>
           <div class="demo-wa-token-row"><span class="demo-wa-token-label">Base URL</span><code class="demo-wa-mono">{{.BaseURL}}</code></div>
           <div class="demo-wa-token-row"><span class="demo-wa-token-label">Límites</span><span>{{.RateLimitMsg}}</span></div>
           <div class="demo-wa-token-row">
@@ -126,7 +126,7 @@
           </div>
         </div>
       </section>
-    </div>
+    </main>
   </div>
   {{template "toast-region"}}
 </body>

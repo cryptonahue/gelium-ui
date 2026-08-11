@@ -123,6 +123,25 @@ func TestDataTableDocsRouteFiltersRowsServerSide(t *testing.T) {
 	}
 }
 
+// TestDataTableFilterLabeledFromVisibleLabel closes gap G6: the filter input
+// must be named by its visible "Filter" label, never overridden with an
+// aria-label that shadows the visible text.
+func TestDataTableFilterLabeledFromVisibleLabel(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/data-table", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("data table docs status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	if strings.Contains(body, `aria-label="Filter by name or status"`) {
+		t.Error("filter input must not override the visible label with an aria-label (G6)")
+	}
+	if !strings.Contains(body, `<label class="data-table-demo-filter-label" for="data-table-demo-q">Filter</label>`) {
+		t.Error("filter input must be labeled by the visible Filter label")
+	}
+}
+
 func TestDataTableDocsRouteKeepsOnlyGETSemantics(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodPost, "/components/data-table", nil))

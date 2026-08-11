@@ -41,7 +41,7 @@ Components are delivered as native semantic markup server-rendered. ARIA is addi
 | Form | `<form>` + `<label>` + `fieldset/legend` | Server-driven |
 
 **Application in Gelium UI**
-- `web/templates/*.html` implement the roots above; `menu.html` uses `ul.ui-menu` with native item controls; `tabs.html` renders `<a>` tabs with `aria-current`; `dialog.html` uses `<dialog closedby="any">`; `select.html` uses native `<select>` for the plain select and `<dialog>` for the select menu.
+- `web/templates/*.html` implement the roots above; `menu.html` uses `ul.ui-menu` with native item controls; `tabs.html` renders `<a>` tabs with `aria-current`; `dialog.html` uses `<dialog closedby="any">`; `select.html` uses native `<select>` for both the plain select and the select-menu demo (the G1 fix replaced the `<dialog>` menu with the component's own native `<select>`).
 - `role="link"` on disabled `<a>` is intentional in the disabled-link pattern (`button.html:4`); `role="separator"` on `li.ui-menu-divider` is valid.
 
 **Evidence / tests**
@@ -61,7 +61,7 @@ Every control must have an accessible name. Text content is the default source; 
 - Decorative icons: `.ui-icon`, spinner, caret, error icon all use `aria-hidden="true"` (+ `focusable="false"` where they are SVGs).
 - Loading buttons keep a real name: `sr-only` "Loading {Label}" + visible label hidden from AT (`button.html:4,9`).
 - CTA links use their visible text; icon + text buttons use text.
-- **Rule against overriding visible labels**: `aria-label` must not shadow a visible `<label>`/caption (known drift G6 in demos must not be reproduced in components).
+- **Rule against overriding visible labels**: `aria-label` must not shadow a visible `<label>`/caption (G6 — the demo overrides were removed; components never reproduce the pattern).
 
 **Evidence / tests**
 - `web/styles_icon_button_test.go`, `web/styles_fab_test.go`, `web/styles_icon_test.go` (icon SVG `aria-hidden`/`focusable` contract).
@@ -95,7 +95,7 @@ Form controls are labeled with a native `<label for="…">`. Help text and error
 - `text-field.html:4-5`: `<label for="{{.ID}}">`; on error the control gets `aria-invalid="true"` + `aria-describedby="{{.ID}}-error"`; otherwise helper via `aria-describedby="{{.ID}}-help"`.
 - Error message `<p id="{{.ID}}-error" role="alert">`; helper `<p id="{{.ID}}-help">` with optional `role="status"`.
 - Data table uses `aria-label` on checkboxes (there is no visible label per checkbox) — acceptable for icon-like controls inside cells.
-- The filter input in the demo pairs a visible "Filter" label with `aria-describedby` semantics; the `aria-label` override on the same input is a known demo drift (G6), not a component contract.
+- The filter input in the demo is named by its visible "Filter" label; the previous `aria-label` override was removed as part of G6, so the visible label is the single name source.
 
 **Evidence / tests**
 - `web/styles_text_field_test.go` (`aria-invalid`, `aria-describedby` wiring; forced-colors input contract).
@@ -111,7 +111,7 @@ The full task must be operable by keyboard using native contracts: `Tab` for nav
 **Application in Gelium UI**
 - Tabs: real links + `aria-current="page"` (`tabs.html:10`); no arrows, no `tablist` — a documented decision; link keyboard (Tab/Enter) is sufficient and expected.
 - Dialog: native `closedby="any"` + Escape + focus trap (`dialog.html:3`).
-- Select menu: `<dialog closedby="any">`, items are submit buttons, Tab navigates, Escape/light-dismiss closes (`select.html:82-88`).
+- Select menu: native `<select>` (the G1 fix) — arrow keys, type-ahead and Escape are native; the docs page demo posts the value server-side (`select.html:77-81`).
 - Menu popover: native Popover API — Escape + light dismiss; items are real controls; Tab navigation (no roving focus, because no `role="menu"`).
 - Segmented buttons, radio/checkbox/switch/slider/select: native arrow behavior via real inputs in `fieldset`.
 - Data table: sort/filter/pagination are real links; checkboxes native.
@@ -162,7 +162,7 @@ When a modal overlay closes, focus must return to the element that opened it. Th
 **Application in Gelium UI**
 - Dialog: native `showModal` restores focus to the trigger on close; the trigger is the `command="show-modal"`/`commandfor` button (`dialog.go:17`, `button.html:9`).
 - Menu popover: native Popover API handles focus in/out.
-- Documented fallback: in browsers without Invoker Commands (non-Chromium), the overlay trigger does not open — this is G1 (pending Phase E server-rendered fallback). When a fallback is delivered, restoration to the trigger must be preserved.
+- **G1 resolved**: the base flow is a server-rendered page — the dialog trigger is a real link to `/components/dialog/confirm` and the select-menu demo is a native `<select>` (commit `86a7f71`); "restoration" for the page variant is the Cancel link back. The `<dialog>` + Invoker Commands remains as an opt-in progressive enhancement only.
 
 **Evidence / tests**
 - `web/styles_dialog_test.go`, `web/styles_menu_test.go` (popover contract).
@@ -176,10 +176,10 @@ When a modal overlay closes, focus must return to the element that opened it. Th
 Dialogs must close on `Escape` and on cancel, with both the "close/cancel" command and the top layer behavior natively connected. The dialog must not require JS to close.
 
 **Application in Gelium UI**
-- `<dialog closedby="any">` — Escape, cancel, light-dismiss all close natively (`dialog.html:3`, `select.html:82`).
-- Cancel button carries `autofocus` + `command="request-close"` (`dialog.go:18`); Confirm uses `command="close"`; the Select menu close uses `command="request-close"` (`select.html:87`).
+- `<dialog closedby="any">` — Escape, cancel, light-dismiss all close natively (`dialog.html:3`).
+- Cancel button carries `autofocus` + `command="request-close"` (`dialog.go:18`); Confirm uses `command="close"`.
 - Invoker Commands (`command`/`commandfor`) are the no-JS opening mechanism in supporting browsers.
-- **Known limitation (G1)**: in non-Chromium browsers without Invoker Commands the trigger button is inert; Phase E must ship a server-rendered fallback (page/detail variant or real native `<select>`) while keeping the Escape/cancel contract.
+- **G1 resolved**: the base dialog flow is the server-rendered confirm page (`/components/dialog/confirm`) and the select-menu demo is a native `<select>` (commit `86a7f71`); the modal keeps the Escape/cancel contract where it exists.
 
 **Evidence / tests**
 - `web/styles_dialog_test.go`, `web/styles_select_menu_test.go` (closedby contract), `web/styles_button_test.go` (command attributes preserved).
@@ -227,7 +227,7 @@ Server-side validation failures return HTTP 422 with the `X-Loom-Validation: tru
 
 **Application in Gelium UI**
 - Contract header: `X-Loom-Validation: true` (`text_field.go:88`); `app.js:1-9` instructs HTMX to swap 422-with-header as success.
-- Per-field: `text-field.html:5,8` (`aria-invalid` + `role="alert"` + `aria-describedby`); `select.html:89` (`ui-select-menu-error` `role="alert"`).
+- Per-field: `text-field.html:5,8` (`aria-invalid` + `role="alert"` + `aria-describedby`); `select.html:84` (`ui-select-error` `role="alert"`).
 - Validation summary: `validation-summary.html` — `role="alert"` container, heading level configurable, `<ul>` of `<li><a href="#{field}-error">` anchors that jump natively to the field.
 - Value preservation on 422 (`text_field.go:62`); focus recovery via autofocus (§1.7).
 - Rule "validation ≠ toast" enforced in `toast.go:129-133` and by contract.
@@ -262,7 +262,7 @@ Under `prefers-reduced-motion: reduce` every animation/transition that could cau
 **Application in Gelium UI**
 - Central block in `app.css:60-77` (button, text-field, dialog, toast, elevation, switch, select, select-menu, slider, progress, fab, list) + per-component blocks (tabs, navigation-*, segmented-button, icon-button, tooltip, menu, chips, data-table, skeleton, toast, text-field).
 - Static state primitives (empty-state, callout, error-state, inline-alert, validation-summary, banner) deliberately declare no animation and no reduced-motion block — enforced by tests.
-- Known residual (G11, low): checkbox/radio activation `scale(.92)` still animates under reduced motion.
+- **G11 resolved**: the checkbox/radio `:active` `scale(.92)` is dropped under reduced motion (`checkbox.css:95`, `radio.css:103`).
 
 **Evidence / tests**
 - `web/styles_toast_test.go`, `web/styles_tooltip_test.go`, `web/styles_text_field_test.go`, `web/styles_tabs_test.go`, `web/styles_skeleton_test.go` (must declare reduced-motion block) and `styles_empty_state_test.go` / `styles_callout_test.go` / `styles_error_state_test.go` / `styles_inline_alert_test.go` / `styles_validation_summary_test.go` / `styles_banner_test.go` (must NOT declare it).
@@ -293,7 +293,7 @@ Text and UI components must meet WCAG 2.1 AA contrast (4.5:1 body text, 3:1 larg
 **Application in Gelium UI**
 - Roles drive color: `--ui-color-fg` on `--ui-color-canvas`, `--ui-color-danger` for errors, `--ui-color-fg-muted` for secondary text, etc. (`theme-material/theme.css`, `tokens.css`).
 - Audit baseline (Phase E evidence): the Material palette satisfies AA by design (e.g. `--ui-color-fg-muted #49454f` on `#fff7ff`; danger ≈ 8:1); demo tones also comply.
-- Known token drift: `--ui-color-error` vs `--ui-color-danger` — Phase A unifies to `danger` with an alias; `demo-whatsapp.css:403` hardcodes a fallback (G11) that Phase A removes.
+- Token drift **G11 resolved**: `--ui-color-error` is a compatibility alias of the canonical `--ui-color-danger` (`tokens.css:38`) and no component hardcodes a fallback; consumers reference `danger` (or the alias, which resolves to it).
 
 **Evidence / tests**
 - `internal/app/server_test.go` (`TestMaterialDarkThemeKeepsFilledFieldDistinctFromSurface`, `TestMaterialThemeDefinesTextFieldTypescaleTokens`, `TestMaterialThemeExposesSemanticFoundationContracts`).
@@ -344,19 +344,19 @@ Tracked in `docs/handoffs/ux-accessibility-audit.md` §8 and `docs/gelium-ui-sys
 
 | Gap | Severity | Description | Status |
 |---|---|---|---|
-| **G1** — Overlays without no-Chromium fallback | Critical | Dialog and Select menu open only via Invoker Commands (`command`/`commandfor`); in Firefox/Safari the trigger is an inert button; `select-menu.css:2-8` promises a native `<select>` fallback that is not rendered | **PENDING (Phase E)** — server-rendered fallback not delivered; keep the `closedby="any"` Escape/cancel contract (§1.9) |
-| **G2** — `lang="en"` on Spanish demos | High | `demo-whatsapp.html`, `demo-whatsapp-admin.html` declare `lang="en"` while content is Spanish — SR reads Spanish with an English voice; also `layout.html` hardcodes `lang="en"` | **PENDING (Phase E)** — demos still `lang="en"` |
-| **G3** — Dead webhook form | High | Admin webhook form `POST /demo/whatsapp/admin` has no registered POST handler → 405 with no feedback; several placeholder `href="#"` links and an inert "regenerate" button | **PENDING (Phase E)** — only `GET /demo/whatsapp/admin` is registered (`server.go:137`); POST missing |
+| **G1** — Overlays without no-Chromium fallback | Critical | Dialog and Select menu open only via Invoker Commands (`command`/`commandfor`); in Firefox/Safari the trigger is an inert button; `select-menu.css:2-8` promises a native `<select>` fallback that is not rendered | **RESOLVED (commit `86a7f71`)** — the select-menu demo is the component's own native `<select>` (no dead form) and the dialog trigger is a real link to the server-rendered `/components/dialog/confirm` page; the `<dialog>` + Invoker Commands stays only as an opt-in enhancement. Escape/cancel contract kept where the modal exists (§1.9) |
+| **G2** — `lang="en"` on Spanish demos | High | `demo-whatsapp.html`, `demo-whatsapp-admin.html` declare `lang="en"` while content is Spanish — SR reads Spanish with an English voice; also `layout.html` hardcodes `lang="en"` | **RESOLVED (commit `9504216`)** — both demos render `lang="es"` (`demoMetaES`); `layout.html` keeps `en` for the English docs site |
+| **G3** — Dead webhook form | High | Admin webhook form `POST /demo/whatsapp/admin` has no registered POST handler → 405 with no feedback; several placeholder `href="#"` links and an inert "regenerate" button | **RESOLVED (commit `9504216`)** — `POST /demo/whatsapp/admin/webhook` persists and redirects (POST+303); placeholder `href="#"` demo links and the inert "regenerate" button remain documented demo scaffolding |
 | **G4** — Data table without empty state | High | 0 rows rendered as a `0 rows` caption + empty tbody; "Select all" checkbox wrongly `checked` with 0 rows | **RESOLVED (Phase D)** — `data_table.go` renders an `empty-state` row with `colspan`; select-all is omitted when `Total == 0`; covered by `data_table_test.go` |
-| **G5** — No transport error feedback in HTMX | High | `app.js` handles only 422-with-header; a 500/network failure during an HTMX request shows nothing (no `hx-on::response-error`, no transport live region, no retry) | **PENDING (Phase E)** — not implemented in `app.js`; keep 422 ≠ transport error |
-| G6 | Medium | Accessible-name drift: `aria-label` overrides visible labels (filter, slider, progress) in demos | **PENDING** (demo cleanup) |
-| G7 | Medium | No skip link; `main` landmark missing in the admin demo | **PENDING** |
-| G8 | Medium | No `aria-expanded` on popover/menu/select triggers | **PENDING** |
-| G9 | Medium | Admin active tabs class-only (`aria-current` missing); emoji action links without `aria-label` | **PENDING** |
-| G10 | Low | Invalid `aria-selected` on select-menu buttons; redundant `role="list"`; no-JS toast dismiss handler unbound; tooltip rich action not mouse-clickable | **PENDING** |
-| G11 | Low | Checkbox/radio activation animation under reduced motion; `--ui-color-error` drift | **PENDING** (Phase A unifies token; reduced-motion fix pending) |
+| **G5** — No transport error feedback in HTMX | High | `app.js` handles only 422-with-header; a 500/network failure during an HTMX request shows nothing (no `hx-on::response-error`, no transport live region, no retry) | **RESOLVED (commit `9504216`)** — `app.js:88-94` surfaces a generic error toast on `htmx:responseError`/`htmx:sendError`; the 422-with-header hook keeps "validation is never a toast" intact |
+| G6 | Medium | Accessible-name drift: `aria-label` overrides visible labels (filter, slider, progress) in demos | **RESOLVED** — the `aria-label` overrides were removed; every control is named by its visible `<label>` (`data-table.html:10`, `slider.html`, `progress.html`); covered by tests |
+| G7 | Medium | No skip link; `main` landmark missing in the admin demo | **RESOLVED** — `layout.html` ships a skip link as the first focusable element (`#main-content`) with a `:focus` treatment (`base.css`); the admin demo exposes a `<main class="demo-wa-admin">` |
+| G8 | Medium | No `aria-expanded` on popover/menu/select triggers | **RESOLVED** — the three menu popover triggers carry `aria-expanded="false"` (`menu.html`); the native `<select>` needs none; the dialog/drawer modal trigger remains UA-managed (no JS to keep the attribute in sync — documented nuance) |
+| G9 | Medium | Admin active tabs class-only (`aria-current` missing); emoji action links without `aria-label` | **RESOLVED** — the active admin tab carries `aria-current="location"` and every emoji-only action link has an `aria-label` (`demo-whatsapp-admin.html`) |
+| G10 | Low | Invalid `aria-selected` on select-menu buttons; redundant `role="list"`; no-JS toast dismiss handler unbound; tooltip rich action not mouse-clickable | **PARTIALLY RESOLVED** — `aria-selected` is gone (native `<select>`), redundant `role="list"` removed from the demo; the no-JS toast dismiss affordance and the tooltip rich action remain documented demo limitations |
+| G11 | Low | Checkbox/radio activation animation under reduced motion; `--ui-color-error` drift | **RESOLVED** — the `:active` `scale(.92)` is dropped under reduced motion (`checkbox.css`, `radio.css`); `--ui-color-error` is a compatibility alias of the canonical `--ui-color-danger` (`tokens.css:38`) with no hardcoded fallbacks |
 
-**Summary**: G4 resolved in Phase D. G1, G2, G3, G5 remain pending and are assigned to Phase E.
+**Summary**: G1–G9 fully resolved (G1, G2, G3, G5 in Phase E commits `86a7f71`/`9504216`; G6–G9 in the cleanup slice); G10/G11 partially resolved with the remaining demo-scaffold limitations documented in their rows.
 
 ---
 

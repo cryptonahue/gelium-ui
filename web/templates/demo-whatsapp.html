@@ -28,7 +28,7 @@
         <div class="demo-wa-sidebar-head">
           <span class="demo-wa-heading-label">Conversaciones</span>
         </div>
-        <ul class="demo-wa-conversations" role="list">
+        <ul class="demo-wa-conversations">
           {{range .Conversations}}
           <li>
             <a class="demo-wa-conv{{if .Active}} demo-wa-conv--active{{end}}" href="/demo/whatsapp?c={{.ID}}">

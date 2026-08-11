@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"encoding/json"
 	"html/template"
 	"net/http"
 	"net/http/httptest"
@@ -702,5 +703,208 @@ func TestCanonicalIsCleanWithoutQuery(t *testing.T) {
 	}
 	if strings.Contains(body, "?foo=bar") {
 		t.Error("canonical must not carry query state")
+	}
+}
+
+// TestRobotsTxtPolicy proves GET /robots.txt serves the crawl policy over plain
+// text: the public docs site is allowed, the demo/example/recipe surfaces are
+// disallowed, and the generated sitemap is advertised (SEO contract §4).
+func TestRobotsTxtPolicy(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/robots.txt", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	if got := res.Header().Get("Content-Type"); got != "text/plain; charset=utf-8" {
+		t.Errorf("Content-Type = %q, want plain UTF-8 text", got)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		"User-agent: *",
+		"Allow: /",
+		"Disallow: /demo/",
+		"Disallow: /examples/",
+		"Disallow: /recipes/",
+		"Sitemap: https://gelium-ui.example/sitemap.xml",
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("robots.txt is missing %q", contract)
+		}
+	}
+}
+
+// TestSitemapXMLDerivedFromRegistry proves GET /sitemap.xml lists exactly the
+// indexable pages from the route registry — home, /docs and every component —
+// once each, with absolute URLs, and never lists the noindex/recipe surfaces.
+func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/sitemap.xml", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	if got := res.Header().Get("Content-Type"); got != "application/xml; charset=utf-8" {
+		t.Errorf("Content-Type = %q, want application/xml", got)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<?xml version="1.0" encoding="UTF-8"?>`,
+		`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
+		`<loc>https://gelium-ui.example/</loc>`,
+		`<loc>https://gelium-ui.example/docs</loc>`,
+		`<loc>https://gelium-ui.example/components/button</loc>`,
+		`<loc>https://gelium-ui.example/components/data-table</loc>`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("sitemap is missing %q", contract)
+		}
+	}
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+2 {
+		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + all components)", got, len(componentRoutes())+2)
+	}
+	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
+		if strings.Contains(body, excluded) {
+			t.Errorf("sitemap must not list noindex/form surface %q", excluded)
+		}
+	}
+}
+
+// TestComponentPageRendersStructuredData proves every /components/* page emits
+// a single valid JSON-LD block with the BreadcrumbList trail
+// (Home > Components > page) and a TechArticle carrying the page headline and
+// canonical URL (SEO contract §12).
+func TestComponentPageRendersStructuredData(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<script type="application/ld+json">`,
+		`"@context":"https://schema.org"`,
+		`"@type":"BreadcrumbList"`,
+		`"name":"Home"`,
+		`"name":"Components"`,
+		`"item":"https://gelium-ui.example/components/button"`,
+		`"@type":"TechArticle"`,
+		`"headline":"Button · Gelium UI"`,
+		`"url":"https://gelium-ui.example/components/button"`,
+		`"name":"Gelium UI"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("button docs JSON-LD is missing %q", contract)
+		}
+	}
+	if !json.Valid([]byte(extractJSONLD(t, body))) {
+		t.Error("component JSON-LD must parse with encoding/json")
+	}
+}
+
+// extractJSONLD returns the text inside the first application/ld+json script.
+func extractJSONLD(t *testing.T, body string) string {
+	t.Helper()
+	const open = `<script type="application/ld+json">`
+	start := strings.Index(body, open)
+	if start < 0 {
+		t.Fatal("body has no ld+json script")
+	}
+	start += len(open)
+	end := strings.Index(body[start:], `</script>`)
+	if end < 0 {
+		t.Fatal("ld+json script is not closed")
+	}
+	return body[start : start+end]
+}
+
+// TestHomeRendersOGImageAndTwitterCard proves the home page ships the default
+// og:image placeholder and the matching large-image twitter:card (SEO contract
+// §6).
+func TestHomeRendersOGImageAndTwitterCard(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<meta property="og:image" content="https://gelium-ui.example/og.png">`,
+		`<meta name="twitter:card" content="summary_large_image">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("home is missing %q", contract)
+		}
+	}
+}
+
+// TestComponentPageRendersOGImage proves component pages also carry the default
+// og:image placeholder so every indexable page ships a social image.
+func TestComponentPageRendersOGImage(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<meta property="og:image" content="https://gelium-ui.example/og.png">`,
+		`<meta name="twitter:card" content="summary_large_image">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("button docs is missing %q", contract)
+		}
+	}
+}
+
+// TestLayoutRendersSkipLinkToMain proves every layout page ships the skip link
+// as the first focusable element targeting the main landmark (G7).
+func TestLayoutRendersSkipLinkToMain(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<a class="ui-skip-link" href="#main-content">Skip to main content</a>`,
+		`<main id="main-content" class="docs-shell">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("home is missing %q", contract)
+		}
+	}
+	skipPos := strings.Index(body, `class="ui-skip-link"`)
+	mainPos := strings.Index(body, `id="main-content"`)
+	if skipPos < 0 || mainPos < 0 || skipPos > mainPos {
+		t.Error("skip link must render before the main landmark")
+	}
+}
+
+// TestComponentBreadcrumbTrailMatchesStructuredData proves the visible
+// breadcrumb on a component page is Home > Components > <label>, matching the
+// BreadcrumbList JSON-LD so the rendered navigation and the structured data
+// never disagree (SEO contract §11).
+func TestComponentBreadcrumbTrailMatchesStructuredData(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<nav aria-label="Breadcrumb">`,
+		`<a href="/">Home</a>`,
+		`<a href="/docs">Components</a>`,
+		`<span aria-current="page">Button</span>`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("component breadcrumb is missing %q", contract)
+		}
 	}
 }

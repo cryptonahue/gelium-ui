@@ -81,6 +81,9 @@ func TestCheckboxReducedMotionDisablesTransitions(t *testing.T) {
 	if !strings.Contains(css, `.ui-checkbox input[type="checkbox"] { transition: none; }`) {
 		t.Error("checkbox reduced-motion must disable the control transition")
 	}
+	if !strings.Contains(css, `.ui-checkbox:active:not(:disabled) input[type="checkbox"] { transform: none; }`) {
+		t.Error("checkbox reduced-motion must drop the active scale transform (G11)")
+	}
 }
 
 func TestEmbeddedCompiledCSSIncludesCheckboxContracts(t *testing.T) {

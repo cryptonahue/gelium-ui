@@ -91,4 +91,5 @@
 
 @media (prefers-reduced-motion: reduce) {
   .ui-checkbox input[type="checkbox"] { transition: none; }
+  .ui-checkbox:active:not(:disabled) input[type="checkbox"] { transform: none; }
 }

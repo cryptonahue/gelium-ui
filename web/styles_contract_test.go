@@ -866,6 +866,25 @@ func TestPersistentSuccessPartialsNeverToast(t *testing.T) {
 	}
 }
 
+// TestSkipLinkCSSWiredIntoAppCSS proves the layout skip link ships a real
+// visual treatment in the compiled app CSS (G7): it is visually hidden until
+// keyboard focus brings it into view, so it never shows on the page but stays
+// reachable.
+func TestSkipLinkCSSWiredIntoAppCSS(t *testing.T) {
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
+	for _, contract := range []string{
+		`.ui-skip-link {`,
+		`position: absolute;`,
+		`transform: translateY(-100%);`,
+		`.ui-skip-link:focus {`,
+		`transform: translateY(0);`,
+	} {
+		if !strings.Contains(css, contract) {
+			t.Errorf("app CSS is missing skip-link contract %q", contract)
+		}
+	}
+}
+
 func repositoryFile(t *testing.T, path ...string) string {
 	t.Helper()
 	parts := append([]string{repositoryRoot(t)}, path...)

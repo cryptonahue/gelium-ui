@@ -23,12 +23,32 @@ func TestMenuDocsRouteDogfoodsPopoverAndAnatomy(t *testing.T) {
 		`popover`,
 		`popovertarget=`,
 		`popovertargetaction=`,
+		`aria-expanded="false"`,
 		`<ul`,
 		`<li`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("menu docs are missing %q", contract)
 		}
+	}
+}
+
+// TestMenuPopoverTriggersDeclareExpandedState closes gap G8: every popover
+// trigger must expose aria-expanded so assistive tech knows the surface is
+// currently collapsed. Each popover trigger carries the attribute.
+func TestMenuPopoverTriggersDeclareExpandedState(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/menu", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("menu docs status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	if got := strings.Count(body, `aria-expanded="false"`); got != 3 {
+		t.Errorf("popover triggers with aria-expanded = %d, want 3 (Actions, Navigate, Select)", got)
+	}
+	if strings.Count(body, `aria-haspopup="menu"`) != strings.Count(body, `aria-expanded="false"`) {
+		t.Error("every aria-haspopup trigger must pair with aria-expanded (G8)")
 	}
 }
 
