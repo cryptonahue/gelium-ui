@@ -79,6 +79,9 @@ func TestRadioReducedMotionDisablesTransitions(t *testing.T) {
 	if !strings.Contains(css, `.ui-radio input[type="radio"], .ui-radio-mark::after { transition: none; }`) {
 		t.Error("radio reduced-motion must disable the control and dot transitions")
 	}
+	if !strings.Contains(css, `.ui-radio:active:not(:disabled) input[type="radio"] { transform: none; }`) {
+		t.Error("radio reduced-motion must drop the active scale transform (G11)")
+	}
 }
 
 func TestEmbeddedCompiledCSSIncludesRadioContracts(t *testing.T) {

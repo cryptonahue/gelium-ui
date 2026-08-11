@@ -10,20 +10,23 @@
   {{if .Meta.OGTitle}}<meta property="og:type" content="{{or .Meta.OGType "website"}}">
   <meta property="og:title" content="{{.Meta.OGTitle}}">
   <meta property="og:description" content="{{.Meta.OGDescription}}">
-  <meta property="og:url" content="{{.Meta.Canonical}}">{{end}}
+  <meta property="og:url" content="{{.Meta.Canonical}}">
+  {{if .Meta.OGImage}}<meta property="og:image" content="{{.Meta.OGImage}}">{{end}}
+  <meta name="twitter:card" content="{{if .Meta.OGImage}}summary_large_image{{else}}summary{{end}}">{{end}}
   {{if .Meta.JSONLD}}<script type="application/ld+json">{{.Meta.JSONLD}}</script>{{end}}
   <link rel="stylesheet" href="/static/app.css?v=0.4.0">
   <script defer src="/static/htmx.min.js?v=0.4.0"></script>
   <script defer src="/static/app.js?v=0.4.0"></script>
 </head>
 <body>
+  <a class="ui-skip-link" href="#main-content">Skip to main content</a>
   <header class="site-header">
     <a class="brand" href="/">Gelium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
   </header>
   {{if .Breadcrumb}}{{template "breadcrumb" .Breadcrumb}}{{end}}
   {{if .Banner}}{{template "banner" .Banner}}{{end}}
-  <main class="docs-shell">
+  <main id="main-content" class="docs-shell">
     {{if .Error}}{{template "error-state" .Error}}{{else}}<article class="prose">{{.Content}}</article>
     {{if .CTA}}<div class="hero-action">{{template "button" .CTA}}</div>{{end}}
     {{if .Buttons}}<section class="component-preview" aria-label="Button examples">{{range .Buttons}}{{template "button" .}}{{end}}</section>{{end}}

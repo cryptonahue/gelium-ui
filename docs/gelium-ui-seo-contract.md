@@ -52,7 +52,7 @@ value set for a route is:
 | `OGTitle` / `OGDescription` | `string` | yes | derived from `Title` / `Description` | `<meta property="og:title">` etc. |
 | `OGType` | `string` | yes | `website` (home, /docs) or `article` (component pages) | `<meta property="og:type">` |
 | `OGURL` | `string` | yes | = `Canonical` | `<meta property="og:url">` |
-| `OGImage` | `string` | optional | static site asset path (absolute via `BASE_URL`) | `<meta property="og:image">` |
+| `OGImage` | `string` | yes (placeholder) | default `https://gelium-ui.example/og.png`; a real static asset path replaces it when shipped | `<meta property="og:image">` |
 | `TwitterCard` | `string` | yes | `summary` (default) / `summary_large_image` if `OGImage` | `<meta name="twitter:card">` |
 | `JSONLD` | `template.HTML` | yes | per page type (see §12) | `<script type="application/ld+json">` |
 | `Lang` | `string` | yes | `en` (fixed, `layout.html:2`); `hreflang` future (§17) | `lang="en"` |
@@ -146,13 +146,18 @@ references the sitemap.
 **Implementation**:
 - Meta: default `index, follow`; the resolver overrides to `noindex, nofollow` for the demo routes
   (`/demo/*`) and any POST companion pages (list at `postOnlyPaths()`, `server.go:164-176`).
-- `robots.txt`: a new `GET /robots.txt` handler serving a static template:
+- `robots.txt`: a `GET /robots.txt` handler (`server.go:119-133`) serving the crawl policy as a
+  static template:
   ```text
   User-agent: *
   Allow: /
+  Disallow: /demo/
+  Disallow: /examples/
+  Disallow: /recipes/
   Sitemap: https://gelium-ui.example/sitemap.xml
   ```
-  Registered alongside `GET /healthz` in `New()` (`server.go:121-153`).
+  The demo, example and recipe surfaces are excluded from crawling; the sitemap is advertised.
+  Registered alongside `GET /healthz` in `New()`.
 
 **Example**:
 
@@ -169,8 +174,9 @@ references the sitemap.
 it cannot drift from the actual library. Only `index, follow` GET pages are listed; canonical URLs
 are absolute.
 
-**Implementation**: `GET /sitemap.xml` handler iterates `componentRoutes()` plus `/`, `/docs` and
-any other indexable page, and emits:
+**Implementation**: `GET /sitemap.xml` handler (`server.go:154-199`) iterates `sitemapPaths()`
+(`/`, `/docs` + every `componentRoutes()` entry) and emits one `<url><loc>` per page with an
+absolute canonical URL and no `lastmod` (static content):
 
 ```xml
 <?xml version="1.0" encoding="UTF-8"?>
@@ -182,8 +188,10 @@ any other indexable page, and emits:
 </urlset>
 ```
 
-Referenced from `robots.txt` and from the layout as a `<link rel="sitemap">` (optional). Tested by
-an assertion that every `componentRoutes()` path appears exactly once.
+`Content-Type` is `application/xml`; the document is marshaled with `encoding/xml` from the route
+registry so it can never drift from the library. Referenced from `robots.txt`. Tested by
+`TestSitemapXMLDerivedFromRegistry` (`server_test.go`): every `componentRoutes()` path appears
+exactly once and noindex/form surfaces (`/demo/`, `/examples/`, `/recipes/`) are absent.
 
 ---
 
@@ -194,9 +202,11 @@ an assertion that every `componentRoutes()` path appears exactly once.
 canonical metadata fields, never written a second time by hand (single source of truth).
 
 **Implementation**: the layout renders the OG block from `pageMeta`; `og:type` is `website` for
-home and `/docs`, `article` for component pages. `og:url` equals `Canonical`. `twitter:card` is
-`summary` by default, `summary_large_image` when `OGImage` is set. The image is a single static
-asset (e.g. `/static/og-cover.png`) so no per-page asset pipeline is required.
+home and `/docs`, `article` for component pages. `og:url` equals `Canonical`. Every layout page
+resolves a default `OGImage` (`https://gelium-ui.example/og.png`, `server.go:104`) and the layout
+emits `og:image` when set plus a `twitter:card` derived from it — `summary_large_image` when an
+image is set, `summary` otherwise (`layout.html:13-17`). The `og.png` asset itself is not shipped
+yet; the placeholder origin is the documented contract so the markup stays stable.
 
 **Example**:
 
@@ -205,7 +215,7 @@ asset (e.g. `/static/og-cover.png`) so no per-page asset pipeline is required.
 <meta property="og:title" content="Dialog · Gelium UI">
 <meta property="og:description" content="A modal dialog built on native semantics with a no-JS fallback.">
 <meta property="og:url" content="https://gelium-ui.example/components/dialog">
-<meta property="og:image" content="https://gelium-ui.example/static/og-cover.png">
+<meta property="og:image" content="https://gelium-ui.example/og.png">
 <meta name="twitter:card" content="summary_large_image">
 ```
 
@@ -324,13 +334,17 @@ JSON (must parse with `encoding/json` in tests). Types:
 |---|---|
 | `/` | `WebSite` (+ `Organization`/`SoftwareSourceCode` for the repo) |
 | `/docs` | `CollectionPage`/`WebPage` |
-| `/components/*` | `BreadcrumbList` + `SoftwareApplication` + optional `TechArticle` |
+| `/components/*` | `@graph` of `BreadcrumbList` + `TechArticle` |
 | demos | none (noindex) |
 
-**Implementation**: `pageView.Meta.JSONLD template.HTTP` is populated by the resolver and emitted by
-the layout before `</head>`. Values are derived from the registry and fixed system facts (version
-`0.4.0` from `package.json:3`, license MIT). No JSON is built by string concatenation in templates;
-Go `encoding/json` marshals a typed struct so escaping and validity are guaranteed.
+**Implementation**: `pageView.Meta.JSONLD template.JS` is populated by the resolver and emitted by
+the layout before `</head>`. The home page ships the `WebSite` block; every registered component
+page ships a single `@graph` document with the `BreadcrumbList` trail (Home > Components > page,
+matching the visible breadcrumb) plus a `TechArticle` carrying the page headline and canonical URL
+(`componentJSONLD`, `server.go:214-260`). Values are derived from the registry and fixed system
+facts (version `0.4.0` from `package.json:3`, license MIT). No JSON is built by string
+concatenation in templates; Go `encoding/json` marshals typed structs so escaping and validity are
+guaranteed (tested with `json.Valid` in `server_test.go`).
 
 **Example**:
 

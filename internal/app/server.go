@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"encoding/json"
+	"encoding/xml"
 	"html/template"
 	"io/fs"
 	"net/http"
@@ -169,9 +170,16 @@ type metaView struct {
 	OGTitle       string
 	OGDescription string
 	OGType        string
+	OGImage       string
 	JSONLD        template.JS // trusted structured data; emitted inside <script type="application/ld+json">
 	Lang          string      // default "en"
 }
+
+// ogImagePlaceholder is the default social image URL emitted as og:image on
+// every layout page. The actual PNG is not shipped yet — the placeholder origin
+// is documented in the SEO contract so the markup contract stays stable until
+// a real asset lands.
+const ogImagePlaceholder = siteBaseURL + "/og.png"
 
 // jsonLDPublisher and webSiteLD are the home-page WebSite structured-data
 // types. They are marshaled with encoding/json so escaping and validity are
@@ -209,6 +217,77 @@ var websiteJSONLD = func() template.JS {
 	return template.JS(b) // #nosec G203 -- trusted, system-generated JSON.
 }()
 
+// jsonLDBreadcrumb is the BreadcrumbList entity emitted on component pages.
+// It mirrors the visible breadcrumb trail (Home > Components > page) so the
+// structured data never disagrees with the rendered navigation (contract §12).
+type jsonLDBreadcrumb struct {
+	Type  string           `json:"@type"`
+	Items []jsonLDListItem `json:"itemListElement"`
+}
+
+// jsonLDListItem is one crumb of the BreadcrumbList. Item is the canonical
+// absolute URL; the current page is the last item.
+type jsonLDListItem struct {
+	Type     string `json:"@type"`
+	Position int    `json:"position"`
+	Name     string `json:"name"`
+	Item     string `json:"item"`
+}
+
+// jsonLDArticle is the TechArticle/Article entity emitted on component pages
+// with the page headline and canonical URL, authored and published by the
+// Gelium UI organization entity.
+type jsonLDArticle struct {
+	Type       string          `json:"@type"`
+	Headline   string          `json:"headline"`
+	URL        string          `json:"url"`
+	InLanguage string          `json:"inLanguage"`
+	Author     jsonLDPublisher `json:"author"`
+	Publisher  jsonLDPublisher `json:"publisher"`
+}
+
+// jsonLDGraph wraps the per-page entities in a single @graph document so the
+// layout emits one <script type="application/ld+json"> block per page.
+type jsonLDGraph struct {
+	Context string `json:"@context"`
+	Graph   []any  `json:"@graph"`
+}
+
+// componentJSONLD builds the @graph structured data for a registered
+// /components/* page: the BreadcrumbList trail plus a TechArticle carrying the
+// page headline and canonical URL. Built with encoding/json so escaping and
+// validity are guaranteed (contract §12: no JSON by string concatenation).
+func componentJSONLD(routePath string) template.JS {
+	label := componentLabel(routePath)
+	canonical := siteBaseURL + routePath
+	graph := jsonLDGraph{
+		Context: "https://schema.org",
+		Graph: []any{
+			jsonLDBreadcrumb{
+				Type: "BreadcrumbList",
+				Items: []jsonLDListItem{
+					{Type: "ListItem", Position: 1, Name: "Home", Item: siteBaseURL + "/"},
+					{Type: "ListItem", Position: 2, Name: "Components", Item: siteBaseURL + "/docs"},
+					{Type: "ListItem", Position: 3, Name: label, Item: canonical},
+				},
+			},
+			jsonLDArticle{
+				Type:       "TechArticle",
+				Headline:   label + " · Gelium UI",
+				URL:        canonical,
+				InLanguage: "en",
+				Author:     jsonLDPublisher{Type: "Organization", Name: "Gelium UI"},
+				Publisher:  jsonLDPublisher{Type: "Organization", Name: "Gelium UI"},
+			},
+		},
+	}
+	b, err := json.Marshal(graph)
+	if err != nil {
+		return template.JS("")
+	}
+	return template.JS(b) // #nosec G203 -- trusted, system-generated JSON.
+}
+
 // routePathForContent maps an embedded markdown file to its public route path.
 // Content files live at content/<route-segment>.md and render at
 // /components/<route-segment>; content/index.md renders at /. The convention
@@ -230,6 +309,31 @@ func componentLabel(routePath string) string {
 		}
 	}
 	return routePath
+}
+
+// componentRouteLabel returns the registry label for a registered component
+// docs page and whether the path is one. Unregistered /components/* paths
+// (e.g. /components/dialog/confirm) report false so they never fabricate a
+// component identity in the breadcrumb or structured data.
+func componentRouteLabel(routePath string) (string, bool) {
+	for _, r := range componentRoutes() {
+		if r.Path == routePath {
+			return r.Label, true
+		}
+	}
+	return "", false
+}
+
+// componentBreadcrumb is the trail for a registered component docs page:
+// Home > Components > <label>. It mirrors the BreadcrumbList JSON-LD emitted
+// for the same page, so the visible breadcrumb and the structured data always
+// agree (contract §11). The Components crumb links to the /docs index.
+func componentBreadcrumb(label, routePath string) *breadcrumbView {
+	return &breadcrumbView{Items: []breadcrumbItem{
+		{Href: "/", Label: "Home"},
+		{Href: "/docs", Label: "Components"},
+		{Label: label, Current: true},
+	}}
 }
 
 // componentDescription derives a unique per-route description for a component
@@ -290,8 +394,16 @@ func resolveMeta(data pageView, routePath string) metaView {
 	if meta.OGDescription == "" {
 		meta.OGDescription = meta.Description
 	}
+	if meta.OGImage == "" {
+		meta.OGImage = ogImagePlaceholder
+	}
 	if routePath == "/" && meta.JSONLD == "" {
 		meta.JSONLD = websiteJSONLD
+	}
+	if meta.JSONLD == "" {
+		if _, ok := componentRouteLabel(routePath); ok {
+			meta.JSONLD = componentJSONLD(routePath)
+		}
 	}
 	return meta
 }
@@ -359,6 +471,8 @@ func New() http.Handler {
 
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", s.health)
+	mux.HandleFunc("GET /sitemap.xml", s.sitemap)
+	mux.HandleFunc("GET /robots.txt", s.robots)
 	mux.HandleFunc("GET /{$}", s.home)
 	mux.HandleFunc("GET /docs", s.docsIndex)
 	for _, r := range componentRoutes() {
@@ -409,6 +523,69 @@ func (s *server) health(w http.ResponseWriter, _ *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte("ok\n"))
+}
+
+// robotsTxt is the fixed robots.txt policy. The public docs site is fully
+// crawlable except the demo, example and recipe surfaces (noindex or form
+// flows), and the sitemap is advertised so crawlers discover every indexable
+// page in one hop (SEO contract §4).
+const robotsTxt = "User-agent: *\n" +
+	"Allow: /\n" +
+	"Disallow: /demo/\n" +
+	"Disallow: /examples/\n" +
+	"Disallow: /recipes/\n" +
+	"Sitemap: " + siteBaseURL + "/sitemap.xml\n"
+
+// robots serves the robots.txt policy over plain text.
+func (s *server) robots(w http.ResponseWriter, _ *http.Request) {
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	_, _ = w.Write([]byte(robotsTxt))
+}
+
+// sitemapURL is one <url> entry in the server-generated sitemap.
+type sitemapURL struct {
+	XMLName xml.Name `xml:"url"`
+	Loc     string   `xml:"loc"`
+}
+
+// urlset is the sitemap document emitted at /sitemap.xml with the sitemaps.org
+// namespace every crawler expects.
+type urlset struct {
+	XMLName xml.Name     `xml:"urlset"`
+	Xmlns   string       `xml:"xmlns,attr"`
+	URLs    []sitemapURL `xml:"url"`
+}
+
+// sitemapPaths is the canonical list of indexable public pages: home, /docs and
+// every registered component route, derived from the route registry so the
+// sitemap can never drift from the library (contract §5). Demo, example and
+// recipe surfaces are excluded (noindex or form flows).
+func sitemapPaths() []string {
+	paths := []string{"/", "/docs"}
+	for _, r := range componentRoutes() {
+		paths = append(paths, r.Path)
+	}
+	return paths
+}
+
+// sitemap serves the server-generated sitemap.xml built from the route
+// registry: one <url><loc> per indexable page, absolute URLs, no lastmod
+// (static content). Content-Type is application/xml per the sitemap protocol.
+func (s *server) sitemap(w http.ResponseWriter, _ *http.Request) {
+	urls := make([]sitemapURL, 0, len(sitemapPaths()))
+	for _, p := range sitemapPaths() {
+		urls = append(urls, sitemapURL{Loc: siteBaseURL + p})
+	}
+	doc, err := xml.MarshalIndent(urlset{
+		Xmlns: "http://www.sitemaps.org/schemas/sitemap/0.9",
+		URLs:  urls,
+	}, "", "  ")
+	if err != nil {
+		http.Error(w, "sitemap unavailable", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "application/xml; charset=utf-8")
+	_, _ = w.Write(append([]byte(xml.Header), doc...))
 }
 
 // postOnlyPaths are the routes that only accept POST. A GET to any of them
@@ -549,7 +726,11 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, sour
 		data.Footer = defaultFooter()
 	}
 	if data.Breadcrumb == nil && routePath != "/" {
-		data.Breadcrumb = defaultBreadcrumb(data.Title)
+		if label, ok := componentRouteLabel(routePath); ok {
+			data.Breadcrumb = componentBreadcrumb(label, routePath)
+		} else {
+			data.Breadcrumb = defaultBreadcrumb(data.Title)
+		}
 	}
 	data.Meta = resolveMeta(data, routePath)
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).

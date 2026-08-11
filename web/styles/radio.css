@@ -100,4 +100,5 @@
 @media (prefers-reduced-motion: reduce) {
   .ui-radio input[type="radio"],
   .ui-radio-mark::after { transition: none; }
+  .ui-radio:active:not(:disabled) input[type="radio"] { transform: none; }
 }

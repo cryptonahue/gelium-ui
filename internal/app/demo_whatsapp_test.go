@@ -167,10 +167,57 @@ func TestWhatsAppAdminRendersTechnicalSurface(t *testing.T) {
 		`cloud.datafyapi.com.br`,
 		`HMAC-SHA256`,
 		`x-datafy`,
+		`<main class="demo-wa-admin">`,
+		`aria-current="location"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("admin section is missing %q", contract)
 		}
+	}
+}
+
+// TestWhatsAppAdminLandmarksAndLabels closes gaps G7 and G9: the admin demo
+// exposes a main landmark, marks the active tab with aria-current (not
+// class-only), and labels every emoji-only action link so the emoji glyph is
+// never the accessible name.
+func TestWhatsAppAdminLandmarksAndLabels(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/demo/whatsapp/admin", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("demo whatsapp admin status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<main class="demo-wa-admin">`,
+		`demo-wa-admin-tab--active" href="#numbers" aria-current="location">Números`,
+		`aria-label="Configurar número">⚙`,
+		`aria-label="Eliminar número">🗑`,
+		`aria-label="Editar código QR">✎`,
+		`aria-label="Eliminar código QR">🗑`,
+		`aria-label="Ver token">👁`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("admin demo is missing %q", contract)
+		}
+	}
+}
+
+// TestWhatsAppDemoDropsRedundantListRole closes gap G10: a native <ul> must not
+// restate its own semantics with role="list".
+func TestWhatsAppDemoDropsRedundantListRole(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/demo/whatsapp", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("demo whatsapp status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	if !strings.Contains(body, `<ul class="demo-wa-conversations">`) {
+		t.Error("conversations list must render as a plain native ul")
+	}
+	if strings.Contains(body, `role="list"`) {
+		t.Error("demo must not carry the redundant role=list on a native ul (G10)")
 	}
 }
 

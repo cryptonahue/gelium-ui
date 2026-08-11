@@ -25,6 +25,26 @@
   .brand { font: var(--ui-type-title-lg); text-decoration: none; }
   .site-header nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
   .site-header nav a { color: var(--ui-color-primary); font: var(--ui-type-label-lg); }
+
+  /* Skip link (G7): the first focusable element on every layout page. It sits
+     off the top edge until keyboard focus brings it into view, so keyboard and
+     screen-reader users can bypass the header nav and jump straight to the
+     main landmark. Focus stays visible with the primary surface. */
+  .ui-skip-link {
+    position: absolute;
+    inset-inline-start: 0;
+    top: 0;
+    transform: translateY(-100%);
+    z-index: 20;
+    padding: .5rem 1rem;
+    border-radius: 0 0 var(--ui-radius-md) 0;
+    background: var(--ui-color-primary);
+    color: var(--ui-color-primary-fg);
+    font: var(--ui-type-label-lg);
+    text-decoration: none;
+  }
+  .ui-skip-link:focus { transform: translateY(0); }
+
   .docs-shell { width: min(68rem, calc(100% - 2rem)); margin: 4rem auto; }
   .prose { max-width: 48rem; }
   .prose h1 { margin: 0 0 1rem; font: var(--ui-type-display-sm); }
