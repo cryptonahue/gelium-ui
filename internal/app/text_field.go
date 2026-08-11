@@ -25,8 +25,8 @@ type validationFormView struct {
 	Submit buttonView
 }
 
-func (s *server) textFieldDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, textFieldPage(defaultValidationForm()), "content/text-field.md")
+func (s *server) textFieldDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, textFieldPage(defaultValidationForm()), "content/text-field.md")
 }
 
 func textFieldPage(validationForm validationFormView) pageView {
@@ -74,7 +74,7 @@ func (s *server) validateTextField(w http.ResponseWriter, r *http.Request) {
 	data := defaultValidationForm()
 	data.Field = field
 	if !isHX {
-		s.renderMarkdownPageStatus(w, textFieldPage(data), "content/text-field.md", status)
+		s.renderMarkdownPageStatus(w, r, textFieldPage(data), "content/text-field.md", status)
 		return
 	}
 

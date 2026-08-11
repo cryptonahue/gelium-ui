@@ -135,7 +135,7 @@ func (s *server) navigationDrawerDocs(w http.ResponseWriter, r *http.Request) {
 	for i := range demo.Drawers {
 		demo.Drawers[i].Destinations = markDrawerActive(demo.Drawers[i].Destinations, r.URL.Path)
 	}
-	s.renderMarkdownPage(w, pageView{
+	s.renderMarkdownPage(w, r, pageView{
 		Title:                "Navigation drawer",
 		NavigationDrawerDemo: &demo,
 	}, "content/navigation-drawer.md")

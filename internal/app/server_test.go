@@ -909,3 +909,32 @@ func TestComponentBreadcrumbTrailMatchesStructuredData(t *testing.T) {
 		}
 	}
 }
+
+// TestThemeQueryParamSelectsTheme proves the document-root theme selection
+// (Phase H): a valid ?theme= query renders that theme's class on the document
+// root without JS, an unknown theme falls back to the default, and the
+// default stays theme-material when no query is present.
+func TestThemeQueryParamSelectsTheme(t *testing.T) {
+	cases := []struct {
+		name  string
+		query string
+		want  string
+	}{
+		{name: "basecoat via query", query: "?theme=basecoat", want: `class="theme-basecoat"`},
+		{name: "material via query", query: "?theme=material", want: `class="theme-material"`},
+		{name: "unknown falls back to default", query: "?theme=unknown", want: `class="theme-material"`},
+		{name: "no query keeps default", query: "", want: `class="theme-material"`},
+	}
+	for _, tc := range cases {
+		t.Run(tc.name, func(t *testing.T) {
+			res := httptest.NewRecorder()
+			New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button"+tc.query, nil))
+			if res.Code != http.StatusOK {
+				t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+			}
+			if !strings.Contains(res.Body.String(), tc.want) {
+				t.Errorf("rendered page missing %q", tc.want)
+			}
+		})
+	}
+}

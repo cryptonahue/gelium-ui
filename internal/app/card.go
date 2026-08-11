@@ -16,8 +16,8 @@ type cardDemo struct {
 	Action cardDemoCard
 }
 
-func (s *server) cardDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) cardDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title: "Card",
 		CardDemo: &cardDemo{
 			Static: cardDemoCard{

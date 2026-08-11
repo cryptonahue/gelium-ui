@@ -48,9 +48,9 @@ func defaultSelectMenuDemo() selectMenuDemo {
 	}
 }
 
-func (s *server) selectDocs(w http.ResponseWriter, _ *http.Request) {
+func (s *server) selectDocs(w http.ResponseWriter, r *http.Request) {
 	demo := defaultSelectMenuDemo()
-	s.renderMarkdownPage(w, pageView{
+	s.renderMarkdownPage(w, r, pageView{
 		Title:          "Select",
 		SelectDemo:     &selectDemo{},
 		SelectMenuDemo: &demo,
@@ -89,7 +89,7 @@ func (s *server) selectMenu(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !isHX {
-		s.renderMarkdownPageStatus(w, pageView{
+		s.renderMarkdownPageStatus(w, r, pageView{
 			Title:          "Select",
 			SelectDemo:     &selectDemo{},
 			SelectMenuDemo: &demo,

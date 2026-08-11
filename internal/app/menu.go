@@ -21,8 +21,8 @@ import (
 // per-item data: the template is the reusable, copyable markup.
 type menuDemo struct{}
 
-func (s *server) menuDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) menuDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title:    "Menu",
 		MenuDemo: &menuDemo{},
 	}, "content/menu.md")

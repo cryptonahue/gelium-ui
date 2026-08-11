@@ -55,8 +55,8 @@ func chipsPage(demo chipsDemo) pageView {
 	}
 }
 
-func (s *server) chipsDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, chipsPage(defaultChipsDemo()), "content/chips.md")
+func (s *server) chipsDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, chipsPage(defaultChipsDemo()), "content/chips.md")
 }
 
 // chipsRemoveDemo completes a no-JS server round-trip for the removable input
@@ -85,5 +85,5 @@ func (s *server) chipsRemoveDemo(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 
-	s.renderMarkdownPageStatus(w, chipsPage(demo), "content/chips.md", http.StatusOK)
+	s.renderMarkdownPageStatus(w, r, chipsPage(demo), "content/chips.md", http.StatusOK)
 }

@@ -48,7 +48,7 @@ const (
 
 func (s *server) tabsDocs(w http.ResponseWriter, r *http.Request) {
 	demo := newTabsDemo(r.URL.Query().Get("tab"), r.URL.Query().Get("sub"))
-	s.renderMarkdownPage(w, pageView{
+	s.renderMarkdownPage(w, r, pageView{
 		Title:    "Tabs",
 		TabsDemo: demo,
 	}, "content/tabs.md")

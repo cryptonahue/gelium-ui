@@ -139,7 +139,7 @@ func (s *server) navigationTabDocs(w http.ResponseWriter, r *http.Request) {
 	for i := range demo.Rows {
 		demo.Rows[i].Destinations = markNavigationTabActive(demo.Rows[i].Destinations, r.URL.Path)
 	}
-	s.renderMarkdownPage(w, pageView{
+	s.renderMarkdownPage(w, r, pageView{
 		Title:             "Navigation tab",
 		NavigationTabDemo: &demo,
 	}, "content/navigation-tab.md")

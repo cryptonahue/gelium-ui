@@ -24,8 +24,8 @@ import (
 // existing Button and Icon button contracts.
 type tooltipDemo struct{}
 
-func (s *server) tooltipDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) tooltipDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title:       "Tooltip",
 		TooltipDemo: &tooltipDemo{},
 	}, "content/tooltip.md")

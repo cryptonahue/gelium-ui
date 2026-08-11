@@ -24,8 +24,8 @@ const decorativeIconSVG template.HTML = `<svg class="ui-icon" aria-hidden="true"
 // visible text supplies the accessible name.
 const namedIconSVG template.HTML = `<svg class="ui-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-6h2v6Zm0-8h-2V7h2v2Z"></path></svg>` // #nosec G203 -- trusted, internal meaningful icon glyph.
 
-func (s *server) iconDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) iconDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title: "Icon",
 		IconDemo: &iconDemo{
 			DecorativeSVG: decorativeIconSVG,

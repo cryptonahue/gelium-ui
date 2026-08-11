@@ -101,8 +101,8 @@ func defaultToastDemo() toastDemoView {
 	}
 }
 
-func (s *server) toastDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, toastPage(defaultToastDemo()), "content/toast.md")
+func (s *server) toastDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, toastPage(defaultToastDemo()), "content/toast.md")
 }
 
 // toastTriggerJSON encodes the wire contract of the HX-Trigger response header:
@@ -170,7 +170,7 @@ func (s *server) toastDemo(w http.ResponseWriter, r *http.Request) {
 	demo.Toast = inline
 
 	if !isHX {
-		s.renderMarkdownPageStatus(w, toastPage(demo), "content/toast.md", status)
+		s.renderMarkdownPageStatus(w, r, toastPage(demo), "content/toast.md", status)
 		return
 	}
 

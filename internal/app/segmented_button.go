@@ -18,8 +18,8 @@ import (
 // the reusable, copyable markup, mirroring Checkbox/Switch/List.
 type segmentedButtonDemo struct{}
 
-func (s *server) segmentedButtonDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) segmentedButtonDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title:               "Segmented buttons",
 		SegmentedButtonDemo: &segmentedButtonDemo{},
 	}, "content/segmented-button.md")

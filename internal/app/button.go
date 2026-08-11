@@ -19,8 +19,8 @@ type buttonView struct {
 	Autofocus  bool
 }
 
-func (s *server) buttonDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) buttonDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title: "Button",
 		Buttons: []buttonView{
 			{Label: "Save changes", Variant: "primary", IconSVG: saveIconSVG},

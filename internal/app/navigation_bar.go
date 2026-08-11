@@ -131,7 +131,7 @@ func (s *server) navigationBarDocs(w http.ResponseWriter, r *http.Request) {
 	for i := range demo.Bars {
 		demo.Bars[i].Destinations = markActive(demo.Bars[i].Destinations, r.URL.Path)
 	}
-	s.renderMarkdownPage(w, pageView{
+	s.renderMarkdownPage(w, r, pageView{
 		Title:             "Navigation bar",
 		NavigationBarDemo: &demo,
 	}, "content/navigation-bar.md")

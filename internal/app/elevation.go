@@ -19,8 +19,8 @@ func elevationLevels() []elevationDemoLevel {
 	}
 }
 
-func (s *server) elevationDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) elevationDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title: "Elevation",
 		ElevationDemo: &elevationDemo{
 			Levels: elevationLevels(),

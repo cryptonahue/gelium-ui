@@ -66,7 +66,7 @@ contract demonstration only (` + "`noindex`" + `).
 
 func (s *server) newsletterExample(w http.ResponseWriter, r *http.Request) {
 	newsletter := defaultNewsletter()
-	s.renderMarkdown(w, pageView{
+	s.renderMarkdown(w, r, pageView{
 		Title:      "Newsletter",
 		Newsletter: &newsletter,
 	}, newsletterExampleMarkdown, "/examples/newsletter")
@@ -101,7 +101,7 @@ func (s *server) newsletterSubscribe(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !isHX {
-		s.renderMarkdownStatus(w, pageView{
+		s.renderMarkdownStatus(w, r, pageView{
 			Title:      "Newsletter",
 			Newsletter: &data,
 		}, newsletterExampleMarkdown, "/examples/newsletter", status)

@@ -146,7 +146,7 @@ func (s *server) dataTableDocs(w http.ResponseWriter, r *http.Request) {
 		return
 	}
 
-	s.renderMarkdownPage(w, pageView{
+	s.renderMarkdownPage(w, r, pageView{
 		Title:         "Data table",
 		DataTableDemo: demo,
 	}, "content/data-table.md")
@@ -416,7 +416,7 @@ func (s *server) dataTableRefreshDemo(w http.ResponseWriter, r *http.Request) {
 
 	toast := newToast("success", "data-table-refresh-result", "Data refreshed.")
 	demo.RefreshToast = &toast
-	s.renderMarkdownPageStatus(w, pageView{
+	s.renderMarkdownPageStatus(w, r, pageView{
 		Title:         "Data table",
 		DataTableDemo: demo,
 	}, "content/data-table.md", http.StatusOK)

@@ -24,8 +24,8 @@ type iconButtonDemo struct {
 	Buttons []iconButtonView
 }
 
-func (s *server) iconButtonDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) iconButtonDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title: "Icon button",
 		IconButtonDemo: &iconButtonDemo{
 			Buttons: []iconButtonView{

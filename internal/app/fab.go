@@ -76,8 +76,8 @@ func defaultFabDemo() *fabDemo {
 	}
 }
 
-func (s *server) fabDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) fabDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title:   "Floating action button (FAB)",
 		FabDemo: defaultFabDemo(),
 	}, "content/fab.md")

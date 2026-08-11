@@ -33,15 +33,15 @@ func (s *server) dialogDocs(w http.ResponseWriter, r *http.Request) {
 			Body: "Action confirmed.",
 		}
 	}
-	s.renderMarkdownPage(w, data, "content/dialog.md")
+	s.renderMarkdownPage(w, r, data, "content/dialog.md")
 }
 
 // dialogConfirm renders the page variant of the Dialog: the same headline and
 // description the modal variant shows, but inline as normal page content, with
 // Confirm as a real form POST and Cancel as a link back. This is the G1
 // fallback: it works in every browser with zero component JavaScript.
-func (s *server) dialogConfirm(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) dialogConfirm(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title: "Dialog",
 		DialogConfirm: &dialogConfirmView{
 			Headline:    "Confirm action",

@@ -2,6 +2,7 @@ package app
 
 import (
 	"bytes"
+	"context"
 	"encoding/json"
 	"encoding/xml"
 	"html/template"
@@ -18,6 +19,42 @@ import (
 // defaultThemeClass is the theme applied when none is requested. The value must
 // match a class owned by a theme that ships on disk (themes/*/theme.css).
 const defaultThemeClass = "theme-material"
+
+// themeContextKey carries the theme selected via the ?theme= query parameter
+// through the request context (Phase H: selection from the document root, no JS).
+type themeContextKey struct{}
+
+// themeFromRequest returns the theme selected by ?theme= if present and valid,
+// otherwise the empty string (so callers fall back to themeClass("") → default).
+func themeFromRequest(r *http.Request) string {
+	if v, ok := r.Context().Value(themeContextKey{}).(string); ok {
+		return v
+	}
+	return ""
+}
+
+// themeQueryMiddleware validates the optional ?theme= query parameter against
+// the themeClass allowlist and stores the resolved class in the request
+// context. Unknown or absent values leave the context empty so every render
+// keeps the default theme. This is the document-root selection mechanism:
+// http://host/any-route?theme=basecoat renders with the Basecoat direction.
+// The query accepts either the full class ("theme-basecoat") or the short
+// theme name ("basecoat"), both normalized through themeClass.
+func themeQueryMiddleware(next http.Handler) http.Handler {
+	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		if raw := r.URL.Query().Get("theme"); raw != "" {
+			name := raw
+			if !strings.HasPrefix(name, "theme-") {
+				name = "theme-" + name
+			}
+			if resolved := themeClass(name); resolved != defaultThemeClass {
+				ctx := context.WithValue(r.Context(), themeContextKey{}, resolved)
+				r = r.WithContext(ctx)
+			}
+		}
+		next.ServeHTTP(w, r)
+	})
+}
 
 // themeClass resolves a requested theme to a safe CSS class. Theme identity is
 // server-driven and validated against an allowlist of themes that exist on
@@ -537,10 +574,10 @@ func New() http.Handler {
 		mux.HandleFunc("GET "+path, methodNotAllowed)
 	}
 	mux.HandleFunc("GET /{path...}", s.notFound)
-	return mux
+	return themeQueryMiddleware(mux)
 }
 
-func (s *server) health(w http.ResponseWriter, _ *http.Request) {
+func (s *server) health(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write([]byte("ok\n"))
@@ -558,7 +595,7 @@ const robotsTxt = "User-agent: *\n" +
 	"Sitemap: " + siteBaseURL + "/sitemap.xml\n"
 
 // robots serves the robots.txt policy over plain text.
-func (s *server) robots(w http.ResponseWriter, _ *http.Request) {
+func (s *server) robots(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	_, _ = w.Write([]byte(robotsTxt))
 }
@@ -592,7 +629,7 @@ func sitemapPaths() []string {
 // sitemap serves the server-generated sitemap.xml built from the route
 // registry: one <url><loc> per indexable page, absolute URLs, no lastmod
 // (static content). Content-Type is application/xml per the sitemap protocol.
-func (s *server) sitemap(w http.ResponseWriter, _ *http.Request) {
+func (s *server) sitemap(w http.ResponseWriter, r *http.Request) {
 	urls := make([]sitemapURL, 0, len(sitemapPaths()))
 	for _, p := range sitemapPaths() {
 		urls = append(urls, sitemapURL{Loc: siteBaseURL + p})
@@ -633,7 +670,7 @@ func postOnlyPaths() []string {
 // methodNotAllowed answers a GET to a POST-only route with the net/http 405
 // Method Not Allowed response, preserving the Allow header the ServeMux would
 // otherwise emit.
-func methodNotAllowed(w http.ResponseWriter, _ *http.Request) {
+func methodNotAllowed(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Allow", "POST")
 	http.Error(w, "405 method not allowed", http.StatusMethodNotAllowed)
 }
@@ -641,7 +678,7 @@ func methodNotAllowed(w http.ResponseWriter, _ *http.Request) {
 // notFound serves the styled ERROR STATE page for unknown routes, replacing
 // the plain-text net/http default. It renders the full docs layout with the
 // Error slot set and the real 404 status.
-func (s *server) notFound(w http.ResponseWriter, _ *http.Request) {
+func (s *server) notFound(w http.ResponseWriter, r *http.Request) {
 	s.renderErrorPage(w,
 		http.StatusNotFound,
 		"Page not found",
@@ -704,8 +741,8 @@ func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
 	_, _ = w.Write(asset)
 }
 
-func (s *server) home(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) home(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title: "Themeable open-code UI components for server-rendered apps",
 		CTA: &buttonView{
 			Label:   "Read the docs",
@@ -715,28 +752,28 @@ func (s *server) home(w http.ResponseWriter, _ *http.Request) {
 	}, "content/index.md")
 }
 
-func (s *server) renderMarkdownPage(w http.ResponseWriter, data pageView, contentPath string) {
-	s.renderMarkdownPageStatus(w, data, contentPath, http.StatusOK)
+func (s *server) renderMarkdownPage(w http.ResponseWriter, r *http.Request, data pageView, contentPath string) {
+	s.renderMarkdownPageStatus(w, r, data, contentPath, http.StatusOK)
 }
 
-func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, data pageView, contentPath string, status int) {
+func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, r *http.Request, data pageView, contentPath string, status int) {
 	source, err := fs.ReadFile(s.assets, contentPath)
 	if err != nil {
 		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home")
 		return
 	}
-	s.renderMarkdownStatus(w, data, string(source), routePathForContent(contentPath), status)
+	s.renderMarkdownStatus(w, r, data, string(source), routePathForContent(contentPath), status)
 }
 
 // renderMarkdown converts an in-memory Markdown string and renders it into the
 // docs layout. Used by pages that build their content programmatically (the
 // /docs index) as well as by pages served from embedded files. routePath is
 // the public route identity used to resolve metadata.
-func (s *server) renderMarkdown(w http.ResponseWriter, data pageView, source, routePath string) {
-	s.renderMarkdownStatus(w, data, source, routePath, http.StatusOK)
+func (s *server) renderMarkdown(w http.ResponseWriter, r *http.Request, data pageView, source, routePath string) {
+	s.renderMarkdownStatus(w, r, data, source, routePath, http.StatusOK)
 }
 
-func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, source, routePath string, status int) {
+func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, data pageView, source, routePath string, status int) {
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
 		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home")
@@ -757,7 +794,13 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, sour
 	}
 	data.Meta = resolveMeta(data, routePath)
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
-	data.ThemeClass = themeClass(data.ThemeClass)
+	// Document-root theme selection (Phase H): a valid ?theme= query overrides
+	// the handler default; otherwise the handler value (or the default) wins.
+	if q := themeFromRequest(r); q != "" {
+		data.ThemeClass = q
+	} else {
+		data.ThemeClass = themeClass(data.ThemeClass)
+	}
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
 		return

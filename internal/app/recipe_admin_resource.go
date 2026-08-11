@@ -301,7 +301,7 @@ func (s *server) recipeAdminResourceList(w http.ResponseWriter, r *http.Request)
 	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-list", view)
 }
 
-func (s *server) recipeAdminResourceNew(w http.ResponseWriter, _ *http.Request) {
+func (s *server) recipeAdminResourceNew(w http.ResponseWriter, r *http.Request) {
 	view := newRecipeAdminResourceFormView("create", "", "", "Pending", "", "", nil)
 	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-form", view)
 }

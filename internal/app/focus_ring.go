@@ -6,8 +6,8 @@ import (
 
 type focusRingDemo struct{}
 
-func (s *server) focusRingDocs(w http.ResponseWriter, _ *http.Request) {
-	s.renderMarkdownPage(w, pageView{
+func (s *server) focusRingDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
 		Title:         "Focus ring",
 		FocusRingDemo: &focusRingDemo{},
 	}, "content/focus-ring.md")
