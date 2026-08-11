@@ -60,10 +60,17 @@ func TestNavigationDrawerDocsRouteServerDerivesActiveDestination(t *testing.T) {
 	}
 	// Every active destination must be the current page: the --active class and
 	// aria-current must always co-occur and never appear on another destination.
-	if got := strings.Count(body, `aria-current="page"`); got < 1 {
-		t.Errorf("expected at least one aria-current=\"page\", got %d", got)
+	// Count only inside the standard drawer <nav> block (the page breadcrumb
+	// also uses aria-current="page" for its current crumb and must not skew
+	// this check).
+	navStart := strings.Index(body, `<nav class="ui-navigation-drawer`)
+	navBody := body[navStart:]
+	navEnd := strings.Index(navBody, "</nav>")
+	if navStart < 0 || navEnd < 0 {
+		t.Fatal("standard drawer nav block not found in rendered body")
 	}
-	if got, want := strings.Count(body, `ui-navigation-drawer-destination--active"`), strings.Count(body, `aria-current="page"`); got != want {
+	navBlock := navBody[:navEnd]
+	if got, want := strings.Count(navBlock, `ui-navigation-drawer-destination--active"`), strings.Count(navBlock, `aria-current="page"`); got != want {
 		t.Errorf("--active class count %d != aria-current count %d", got, want)
 	}
 }

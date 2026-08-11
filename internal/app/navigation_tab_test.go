@@ -56,9 +56,18 @@ func TestNavTabDocsRouteServerDerivesActiveTab(t *testing.T) {
 	// regexp anchors on the class-name boundary so the hide-inactive-label row
 	// (where --active is followed by another modifier) is still counted, while
 	// the escaped code samples in the Markdown anatomy (quote-escaped to
-	// &#34;) are excluded.
-	activeClass := regexp.MustCompile(`ui-nav-tab--active(?:\s|")`).FindAllString(body, -1)
-	if got, want := len(activeClass), strings.Count(body, `aria-current="page"`); got != want {
+	// &#34;) are excluded. Count only inside the nav-tab block (the page
+	// breadcrumb also uses aria-current="page" for its current crumb and must
+	// not skew this check).
+	navStart := strings.Index(body, `class="ui-nav-tab"`)
+	navBody := body[navStart:]
+	navEnd := strings.Index(navBody, "</nav>")
+	if navStart < 0 || navEnd < 0 {
+		t.Fatal("nav-tab block not found in rendered body")
+	}
+	navBlock := navBody[:navEnd]
+	activeClass := regexp.MustCompile(`ui-nav-tab--active(?:\s|")`).FindAllString(navBlock, -1)
+	if got, want := len(activeClass), strings.Count(navBlock, `aria-current="page"`); got != want {
 		t.Errorf("--active class count %d != aria-current count %d", got, want)
 	}
 }

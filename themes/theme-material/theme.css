@@ -206,14 +206,6 @@
   --ui-select-disabled-opacity: var(--ui-state-disabled-opacity);
   --ui-select-list-bg: var(--ui-color-canvas);
   --ui-select-list-fg: var(--ui-color-fg);
-  --ui-select-menu-container: #ece6f0;
-  --ui-select-menu-radius: 4px;
-  --ui-select-menu-elevation: var(--ui-shadow-2);
-  --ui-select-menu-min-width: 210px;
-  --ui-select-menu-item-height: 48px;
-  --ui-select-menu-item-fg: var(--ui-color-fg);
-  --ui-select-menu-item-selected: #e6e0e9;
-  --ui-select-menu-divider: var(--ui-color-border);
 
   /* State, focus, and motion */
   --ui-state-hover-opacity: .08;
@@ -266,8 +258,6 @@
   --ui-progress-track: #49454f;
   --ui-card-container-filled: #36343b;
   --ui-select-container-filled: #4a4458;
-  --ui-select-menu-container: #36343b;
-  --ui-select-menu-item-selected: #4a4458;
   --ui-dialog-container: #2b2930;
   --ui-dialog-fg: #e6e0e9;
   --ui-dialog-body: #cac4d0;
@@ -327,8 +317,6 @@
     --ui-slider-inactive: #49454f;
     --ui-progress-track: #49454f;
     --ui-select-container-filled: #4a4458;
-    --ui-select-menu-container: #36343b;
-    --ui-select-menu-item-selected: #4a4458;
     --ui-dialog-container: #2b2930;
     --ui-dialog-fg: #e6e0e9;
     --ui-dialog-body: #cac4d0;

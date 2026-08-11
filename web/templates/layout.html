@@ -21,6 +21,7 @@
     <a class="brand" href="/">Gelium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
   </header>
+  {{if .Breadcrumb}}{{template "breadcrumb" .Breadcrumb}}{{end}}
   {{if .Banner}}{{template "banner" .Banner}}{{end}}
   <main class="docs-shell">
     {{if .Error}}{{template "error-state" .Error}}{{else}}<article class="prose">{{.Content}}</article>

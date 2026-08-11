@@ -50,6 +50,31 @@ type bannerView struct {
 	DismissIcon template.HTML
 }
 
+// breadcrumbView is the server-driven view model for the BREADCRUMB public
+// content pattern (Phase F). A nil Breadcrumb on pageView renders no breadcrumb.
+// The last item with Current=true renders as <span aria-current="page">; the
+// rest are real links. Zero JS, native <nav>/<ol> semantics.
+type breadcrumbView struct {
+	Items []breadcrumbItem
+}
+
+// breadcrumbItem is one crumb: a real link (Href) or the current page marker
+// (Current=true renders the label without a link).
+type breadcrumbItem struct {
+	Href    string
+	Label   string
+	Current bool
+}
+
+// defaultBreadcrumb builds the standard Home > <label> trail for a page label.
+// Components pages can override with a deeper trail by setting pageView.Breadcrumb.
+func defaultBreadcrumb(label string) *breadcrumbView {
+	return &breadcrumbView{Items: []breadcrumbItem{
+		{Href: "/", Label: "Home"},
+		{Label: label, Current: true},
+	}}
+}
+
 // inlineAlertView is the server-driven view model for the section/form-level
 // INLINE ALERT slot (Phase D pattern 6). A nil InlineAlert on pageView renders
 // no alert. Tone is a closed vocabulary (info|success|warning|error) and the
@@ -278,6 +303,7 @@ type pageView struct {
 	ThemeClass           string
 	Nav                  []navLink
 	Banner               *bannerView
+	Breadcrumb           *breadcrumbView
 	Footer               *footerView
 	Error                *errorStateView
 	InlineAlert          *inlineAlertView
@@ -480,7 +506,7 @@ func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) home(w http.ResponseWriter, _ *http.Request) {
 	s.renderMarkdownPage(w, pageView{
-		Title: "Gelium UI",
+		Title: "Themeable open-code UI components for server-rendered apps",
 		CTA: &buttonView{
 			Label:   "Read the docs",
 			Variant: "primary",
@@ -521,6 +547,9 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, data pageView, sour
 	data.Nav = navLinks()
 	if data.Footer == nil {
 		data.Footer = defaultFooter()
+	}
+	if data.Breadcrumb == nil && routePath != "/" {
+		data.Breadcrumb = defaultBreadcrumb(data.Title)
 	}
 	data.Meta = resolveMeta(data, routePath)
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).

@@ -1,8 +1,8 @@
-# Loom UI
+# Gelium UI
 
 > Themeable, open-code UI components for Tailwind CSS and HTMX.
 
-Current release: **v0.4.0**, adding a Loom-only Toast component for server-driven, transient feedback — an accessible `aria-live` region, an HTMX `loom:toast` trigger contract, a complete no-JS inline fallback, and a minimal framework-free auto-dismiss enhancement.
+Current release: **v0.4.0**, adding a Gelium-only Toast component for server-driven, transient feedback — an accessible `aria-live` region, an HTMX `loom:toast` trigger contract, a complete no-JS inline fallback, and a minimal framework-free auto-dismiss enhancement.
 
 Este primer vertical slice es una aplicación de documentación server-rendered en Go. Usa HTML semántico, componentes copiables, un theme Material basado en tokens propios `--ui-*`, Tailwind CSS 4 y HTMX servido localmente.
 
@@ -36,14 +36,29 @@ Los tests usan `httptest` y verifican comportamiento de handlers, forms URL-enco
 
 ## Ejecutar
 
-```bash
-go run ./cmd/loom
+## Ejecutar
+
+El sitio de documentación se sirve desde tu propia aplicación usando `internal/app.New()`:
+
+```go
+package main
+
+import (
+	"log"
+	"net/http"
+
+	"loomui/internal/app"
+)
+
+func main() {
+	log.Fatal(http.ListenAndServe(":8787", app.New()))
+}
 ```
 
 La aplicación escucha en `http://localhost:8787`. Para elegir otro puerto:
 
 ```bash
-PORT=3000 go run ./cmd/loom
+PORT=3000 go run ./cmd/loom   # dentro de tu aplicación consumidora
 ```
 
 Rutas disponibles:
@@ -64,13 +79,14 @@ Rutas disponibles:
 ## Estructura real
 
 ```text
-loom-ui/
-├── cmd/loom/
-│   ├── main.go
-│   └── main_test.go
+loom-ui/                  (ruta física del repo)
 ├── internal/app/
-│   ├── server.go
-│   └── server_test.go
+│   ├── server.go         (http.Handler via app.New())
+│   ├── routes.go         (registro de rutas)
+│   ├── docs.go
+│   ├── demo_whatsapp.go
+│   ├── recipe_admin_resource.go
+│   └── ..._test.go
 ├── scripts/
 │   └── copy-htmx.mjs
 ├── themes/theme-material/
@@ -88,13 +104,16 @@ loom-ui/
 │   │   ├── app.js
 │   │   └── htmx.min.js
 │   ├── styles/
-│   │   └── app.css
+│   │   ├── app.css
+│   │   ├── tokens.css   (core tokens, defaults neutros)
+│   │   ├── empty-state.css, skeleton.css, inline-alert.css, …
+│   │   └── …
 │   └── templates/
+│       ├── layout.html
 │       ├── button.html
 │       ├── dialog.html
-│       ├── layout.html
-│       ├── text-field.html
-│       └── toast.html
+│       ├── empty-state.html, skeleton.html, banner.html, …
+│       └── …
 ├── go.mod
 ├── go.sum
 ├── package.json
@@ -104,6 +123,10 @@ loom-ui/
 ### Nota sobre `embed`
 
 Go no permite que una directiva `//go:embed` lea rutas padre con `..`. Por eso `web/assets.go` vive junto al árbol `web/` y embebe `templates`, `content` y los assets compilados de `static`. El source independiente del theme permanece en `themes/theme-material/theme.css`; Tailwind lo integra en `web/static/app.css`, que es el asset final embebido.
+
+### Nota sobre el binario
+
+El repositorio es una **librería embebible**: `internal/app.New()` devuelve un `http.Handler` listo para servir el sitio de documentación. No hay un `cmd/` en el repo; los consumidores sirven el handler desde su propia aplicación (o con un main mínimo de 5 líneas). El proyecto se ejecuta y verifica con `go test ./...` y `npm run build`.
 
 ## Button open-code
 
@@ -126,4 +149,4 @@ El alcance actual incluye Button, Text field, Dialog y Toast open-code, con un f
 
 ## Licencia
 
-Loom UI se distribuye bajo la [licencia MIT](LICENSE).
+Gelium UI se distribuye bajo la [licencia MIT](LICENSE).

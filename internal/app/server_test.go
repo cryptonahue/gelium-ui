@@ -511,15 +511,8 @@ func TestComponentPageRendersMetadata(t *testing.T) {
 // TestCanonicalIsCleanWithoutQuery proves the canonical never carries query
 // state: a GET with ?foo=bar still resolves to the clean route path (contract
 // §16), because the canonical derives from the route, not the request query.
-// breadcrumbItem is the test view model for the breadcrumb partial. The
-// partial is a primitive with no production Go view model yet (it renders
-// server-side from page/section data), so the render test drives it directly.
-type breadcrumbItem struct {
-	Href    string
-	Label   string
-	Current bool
-}
-
+// renderBreadcrumb drives the breadcrumb partial directly using the
+// production breadcrumbItem view model (server.go).
 func renderBreadcrumb(t *testing.T, items []breadcrumbItem) string {
 	t.Helper()
 	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/breadcrumb.html"))

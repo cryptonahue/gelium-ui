@@ -58,7 +58,10 @@ func TestSelectMenuDemoUsesNativeSelectFieldSurface(t *testing.T) {
 	}
 }
 
-func TestSelectMenuThemeDefinesPublicUIFamily(t *testing.T) {
+func TestSelectMenuThemeDoesNotDefineDeadFamily(t *testing.T) {
+	// The M3 menu was removed in the G1 fix (native <select> is the base
+	// control). The select-menu token family is dead: the theme must not
+	// carry it, otherwise the dead tokens linger without consumers.
 	theme := themeCSS(t, "theme-material")
 	for _, token := range []string{
 		"--ui-select-menu-container:",
@@ -70,8 +73,8 @@ func TestSelectMenuThemeDefinesPublicUIFamily(t *testing.T) {
 		"--ui-select-menu-item-selected:",
 		"--ui-select-menu-divider:",
 	} {
-		if !strings.Contains(theme, token) {
-			t.Errorf("theme is missing select-menu token %q", token)
+		if strings.Contains(theme, token) {
+			t.Errorf("theme must not define dead select-menu token %q after the G1 native-select fix", token)
 		}
 	}
 }
