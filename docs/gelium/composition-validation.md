@@ -112,10 +112,10 @@ rule left unlisted without rationale).
 ```bash
 # JSON syntax + schema conformance (see §A)
 jq empty docs/gelium/schemas/*.json docs/gelium/schemas/contracts/*.json
-python3 -m jsonschema -i docs/gelium/contracts/admin-resource.json docs/gelium/schemas/screen-recipe.schema.json
-python3 -m jsonschema -i docs/gelium/contracts/inbox-conversation.json docs/gelium/schemas/screen-recipe.schema.json
-python3 -m jsonschema -i docs/gelium/contracts/public-marketing-page.json docs/gelium/schemas/screen-recipe.schema.json
-python3 -m jsonschema -i docs/gelium/contracts/inbox-flow.json docs/gelium/schemas/flow.schema.json
+python3 -m jsonschema -i docs/gelium/schemas/contracts/admin-resource.json docs/gelium/schemas/screen-recipe.schema.json
+python3 -m jsonschema -i docs/gelium/schemas/contracts/inbox-conversation.json docs/gelium/schemas/screen-recipe.schema.json
+python3 -m jsonschema -i docs/gelium/schemas/contracts/public-marketing-page.json docs/gelium/schemas/screen-recipe.schema.json
+python3 -m jsonschema -i docs/gelium/schemas/contracts/inbox-flow.json docs/gelium/schemas/flow.schema.json
 
 # Documentation slice hygiene
 git diff --check

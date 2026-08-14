@@ -45,10 +45,10 @@ component/recipe/theme/documentary workflows (`gelium-ui-agent-prompts.md`).
 | Implemented recipes | `docs/gelium-ui-screen-recipes.md` |
 | Components | `docs/gelium-ui-component-registry.md` |
 | Patterns | `docs/gelium-ui-pattern-registry.md` |
-| Protocol model | `docs/gelium/ux-composition-model.md` |
-| Decision rules (R-*) | `docs/gelium/ux-decision-rules.md` |
-| Schemas | `docs/gelium/schemas/screen-recipe.schema.json`, `docs/gelium/schemas/flow.schema.json` |
-| Validation | `docs/gelium/composition-validation.md` |
+| Protocol model | [docs/gelium/ux-composition-model.md](../gelium/ux-composition-model.md) |
+| Decision rules (R-*) | [docs/gelium/ux-decision-rules.md](../gelium/ux-decision-rules.md) |
+| Schemas | [docs/gelium/schemas/screen-recipe.schema.json](../gelium/schemas/screen-recipe.schema.json), [docs/gelium/schemas/flow.schema.json](../gelium/schemas/flow.schema.json) |
+| Validation | [docs/gelium/composition-validation.md](../gelium/composition-validation.md) |
 | Accessibility | `docs/gelium-ui-accessibility-contract.md` |
 | Content rules | `docs/gelium-ui-content-rules.md` |
 | SEO/GEO | `docs/gelium-ui-seo-contract.md`, `docs/gelium-ui-geo-contract.md` |
