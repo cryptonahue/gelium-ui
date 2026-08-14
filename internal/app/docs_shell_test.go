@@ -1,6 +1,7 @@
 package app
 
 import (
+	"html"
 	"net/http"
 	"net/http/httptest"
 	"strings"
@@ -146,6 +147,161 @@ func TestDocsShellActiveAndIAGroups(t *testing.T) {
 			t.Errorf("sidebar missing recipe href %q", path)
 		}
 	}
+}
+
+// TestDocsShellChromeActivePeersAndIA (task 3.1) proves exact active-route peers,
+// full docsSections IA labels, theme switcher ?theme=-only links, and root class
+// for ?theme=basecoat on shell pages.
+func TestDocsShellChromeActivePeersAndIA(t *testing.T) {
+	t.Run("button peers not current dual nav", func(t *testing.T) {
+		body := getOKBody(t, "/components/button")
+		// Dual mobile+desktop nav: Button is current in both trees.
+		buttonCurrent := `class="ui-list-item-link is-current" href="/components/button" aria-current="page"`
+		if got := strings.Count(body, buttonCurrent); got != 2 {
+			t.Fatalf("Button aria-current nav markers = %d, want 2 (mobile+desktop)", got)
+		}
+		// Actions peers must never carry aria-current="page".
+		for _, peer := range []string{
+			"/components/icon-button",
+			"/components/fab",
+			"/components/chips",
+			"/components/segmented-button",
+			"/components/menu",
+		} {
+			if strings.Contains(body, `href="`+peer+`" aria-current="page"`) ||
+				strings.Contains(body, `href="`+peer+`"aria-current="page"`) {
+				t.Errorf("peer %q must not be aria-current=page", peer)
+			}
+			// Peer links exist but use the non-current list-item class.
+			if !strings.Contains(body, `class="ui-list-item-link" href="`+peer+`"`) {
+				t.Errorf("sidebar missing non-current peer link %q", peer)
+			}
+		}
+		// Docs hub must not be current on a component page.
+		if strings.Contains(body, `href="/docs" aria-current="page"`) {
+			t.Error("/docs must not be current on /components/button")
+		}
+	})
+
+	t.Run("docs hub current", func(t *testing.T) {
+		body := getOKBody(t, "/docs")
+		hubCurrent := `class="ui-list-item-link is-current" href="/docs" aria-current="page"`
+		if got := strings.Count(body, hubCurrent); got != 2 {
+			t.Fatalf("Documentation hub aria-current markers = %d, want 2", got)
+		}
+		if strings.Contains(body, `href="/components/button" aria-current="page"`) {
+			t.Error("component links must not be current on /docs")
+		}
+	})
+
+	t.Run("all docsSections group titles in chrome", func(t *testing.T) {
+		body := getOKBody(t, "/docs")
+		// Top-level IA blocks + every docsSections category title.
+		want := []string{
+			"Getting started",
+			"Patterns",
+			"Recipes",
+			"Themes",
+		}
+		for _, section := range docsSections {
+			want = append(want, section.Title)
+		}
+		for _, group := range want {
+			// Group labels use the docs-nav-group-label marker (not prose h2 only).
+			// Titles may contain "&" which html/template escapes to &amp;.
+			marker := `class="docs-nav-group-label">` + html.EscapeString(group) + `<`
+			if !strings.Contains(body, marker) {
+				t.Errorf("sidebar missing group label marker for %q", group)
+			}
+		}
+	})
+
+	t.Run("theme links only theme query on path", func(t *testing.T) {
+		// Extra query params must be stripped from switcher hrefs.
+		body := getOKBody(t, "/components/button?foo=bar&theme=material")
+		for _, slug := range []string{"material", "basecoat"} {
+			want := `href="/components/button?theme=` + slug + `"`
+			if !strings.Contains(body, want) {
+				t.Errorf("topbar theme switcher missing exact href %q", want)
+			}
+		}
+		// Must not re-emit non-theme query state into chrome links.
+		if strings.Contains(body, `theme=material&foo=`) ||
+			strings.Contains(body, `foo=bar&theme=`) ||
+			strings.Contains(body, `?foo=bar`) {
+			t.Error("theme switcher must not preserve non-theme query params")
+		}
+	})
+
+	t.Run("basecoat theme class on root without client script", func(t *testing.T) {
+		body := getOKBody(t, "/components/button?theme=basecoat")
+		if !strings.Contains(body, `class="theme-basecoat"`) {
+			t.Error(`?theme=basecoat must set class="theme-basecoat" on the document root`)
+		}
+		// Shell still present; theme does not drop chrome.
+		if !strings.Contains(body, `class="docs-topbar"`) {
+			t.Error("theme query must keep docs shell chrome")
+		}
+	})
+}
+
+// TestDocsShellPathsStableNoRedirect (task 3.3) proves shell paths stay 200
+// without a redirect matrix when the chrome ships.
+func TestDocsShellPathsStableNoRedirect(t *testing.T) {
+	for _, path := range []string{
+		"/docs",
+		"/docs/patterns",
+		"/docs/themes",
+		"/components/button",
+		"/components/data-table",
+	} {
+		t.Run(path, func(t *testing.T) {
+			res := httptest.NewRecorder()
+			New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, path, nil))
+			if res.Code != http.StatusOK {
+				t.Fatalf("status = %d, want %d (no redirect)", res.Code, http.StatusOK)
+			}
+			if loc := res.Header().Get("Location"); loc != "" {
+				t.Errorf("unexpected redirect Location=%q", loc)
+			}
+		})
+	}
+}
+
+// TestDocsShellFooterAndJSONLDRegressions (task 3.3) keeps footer IA and
+// component structured data stable under the docs shell.
+func TestDocsShellFooterAndJSONLDRegressions(t *testing.T) {
+	body := getOKBody(t, "/components/button")
+	for _, contract := range []string{
+		`<footer class="ui-footer">`,
+		`<p class="ui-footer-brand">Gelium UI</p>`,
+		`class="ui-footer-heading">Getting started</summary>`,
+		`class="ui-footer-heading">Actions</summary>`,
+		`class="ui-footer-heading">Patterns</summary>`,
+		`class="ui-footer-heading">Recipes</summary>`,
+		`class="ui-footer-heading">Themes</summary>`,
+		`<a href="/docs/patterns">Patterns</a>`,
+		`<a href="/docs/themes">Themes</a>`,
+		`<a href="/recipes/admin-resource">Admin Resource</a>`,
+		`"@type":"BreadcrumbList"`,
+		`"@type":"TechArticle"`,
+		`"item":"https://gelium-ui.example/components/button"`,
+		`"url":"https://gelium-ui.example/components/button"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("shell page missing footer/JSON-LD contract %q", contract)
+		}
+	}
+}
+
+func getOKBody(t *testing.T, path string) string {
+	t.Helper()
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, path, nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("GET %s status = %d, want %d", path, res.Code, http.StatusOK)
+	}
+	return res.Body.String()
 }
 
 // TestHomeUnchangedByDocsShell is the negative home contract for PR2 focused runs.

@@ -872,29 +872,62 @@ func TestComponentPageRendersOGImage(t *testing.T) {
 }
 
 // TestLayoutRendersSkipLinkToMain proves every layout page ships the skip link
-// as the first focusable element targeting the main landmark (G7).
+// as the first focusable element targeting the main landmark (G7). Home keeps
+// the legacy centered column; docs shell routes use main.docs-shell-content
+// inside the two-pane frame (task 3.2).
 func TestLayoutRendersSkipLinkToMain(t *testing.T) {
-	res := httptest.NewRecorder()
-	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
-
-	if res.Code != http.StatusOK {
-		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	tests := []struct {
+		name      string
+		path      string
+		mainClass string
+	}{
+		{
+			name:      "home legacy centered column",
+			path:      "/",
+			mainClass: `<main id="main-content" class="docs-shell docs-content">`,
+		},
+		{
+			name:      "docs shell content column",
+			path:      "/docs",
+			mainClass: `<main id="main-content" class="docs-shell-content">`,
+		},
+		{
+			name:      "component shell content column",
+			path:      "/components/button",
+			mainClass: `<main id="main-content" class="docs-shell-content">`,
+		},
 	}
-	body := res.Body.String()
-	for _, contract := range []string{
-		`<a class="ui-skip-link" href="#main-content">Skip to main content</a>`,
-		// Home keeps the legacy centered column (docs-content); shell routes
-		// use the two-pane frame without this utility class on main.
-		`<main id="main-content" class="docs-shell docs-content">`,
-	} {
-		if !strings.Contains(body, contract) {
-			t.Errorf("home is missing %q", contract)
-		}
-	}
-	skipPos := strings.Index(body, `class="ui-skip-link"`)
-	mainPos := strings.Index(body, `id="main-content"`)
-	if skipPos < 0 || mainPos < 0 || skipPos > mainPos {
-		t.Error("skip link must render before the main landmark")
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res := httptest.NewRecorder()
+			New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, tt.path, nil))
+			if res.Code != http.StatusOK {
+				t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+			}
+			body := res.Body.String()
+			for _, contract := range []string{
+				`<a class="ui-skip-link" href="#main-content">Skip to main content</a>`,
+				tt.mainClass,
+			} {
+				if !strings.Contains(body, contract) {
+					t.Errorf("%s is missing %q", tt.path, contract)
+				}
+			}
+			// Shell pages must not keep the home-only centered main utility.
+			if tt.path != "/" {
+				if strings.Contains(body, `class="docs-shell docs-content"`) {
+					t.Errorf("%s must not use home main.docs-shell.docs-content", tt.path)
+				}
+				if strings.Contains(body, `class="site-header"`) {
+					t.Errorf("%s must not render legacy site-header", tt.path)
+				}
+			}
+			skipPos := strings.Index(body, `class="ui-skip-link"`)
+			mainPos := strings.Index(body, `id="main-content"`)
+			if skipPos < 0 || mainPos < 0 || skipPos > mainPos {
+				t.Error("skip link must render before the main landmark")
+			}
+		})
 	}
 }
 
