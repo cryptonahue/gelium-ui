@@ -97,7 +97,7 @@
   .ui-slider input[type="range"]::-moz-range-thumb { transition: none; }
   .ui-progress progress { transition: none; }
   .ui-fab { transition: none; }
-  .ui-list .ui-list-item::before, .ui-list-item-link, .ui-list-item-label { transition: none; }
+  .ui-list .ui-list-item::before, .ui-list-item::before, .ui-list-item-link, .ui-list-item-label { transition: none; }
 }
 
 @media (forced-colors: active) {

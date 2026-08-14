@@ -169,10 +169,17 @@ func TestMaterialThemeDefinesTextFieldTypescaleTokens(t *testing.T) {
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/static/app.css", nil))
 	css := res.Body.String()
 
+	// Phase B decomposition (R1): the compiled bundle carries the decomposed
+	// per-step tokens (size/weight/line-height) in the theme, and the core
+	// alias composes them into the font: shorthand consumers use.
 	for _, token := range []string{
-		`--ui-type-body-lg:400 1rem/1.5rem var(--ui-font-sans)`,
-		`--ui-type-body-sm:400 .75rem/1rem var(--ui-font-sans)`,
-		`--ui-type-label-sm:500 .75rem/1rem var(--ui-font-sans)`,
+		`--ui-type-body-lg-size:1rem`,
+		`--ui-type-body-lg-weight:400`,
+		`--ui-type-body-lg:var(--ui-type-body-lg-weight) var(--ui-type-body-lg-size)/var(--ui-type-body-lg-line-height) var(--ui-type-body-lg-family)`,
+		`--ui-type-body-sm-size:.75rem`,
+		`--ui-type-body-sm-weight:400`,
+		`--ui-type-label-sm-size:.75rem`,
+		`--ui-type-label-sm-weight:500`,
 	} {
 		if !strings.Contains(css, token) {
 			t.Errorf("compiled Material theme is missing text-field typescale definition %q", token)

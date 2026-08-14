@@ -10,8 +10,8 @@ func TestMaterialThemeDefinesDialogSemanticsInEveryColorScheme(t *testing.T) {
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
 	for _, contract := range []string{
 		`--ui-dialog-radius:`,
-		`--ui-type-dialog-headline:`,
-		`--ui-type-dialog-body:`,
+		`--ui-type-dialog-headline-size:`,
+		`--ui-type-dialog-body-size:`,
 		`--ui-dialog-container:`,
 		`--ui-dialog-fg:`,
 		`--ui-dialog-body:`,

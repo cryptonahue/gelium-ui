@@ -474,7 +474,7 @@
     justify-content: space-between;
     align-items: center;
   }
-  .demo-wa-admin-subtitle { margin: .5rem 0 0; font: var(--ui-type-title-md); }
+  .demo-wa-admin-subtitle { margin: .5rem 0 0; font: var(--ui-type-title-md); letter-spacing: var(--ui-type-title-md-letter-spacing); }
   .demo-wa-admin-add { font: var(--ui-type-label-lg); color: var(--ui-color-primary); text-decoration: none; }
   .demo-wa-admin-table-wrap { overflow-x: auto; }
   .demo-wa-admin-table {

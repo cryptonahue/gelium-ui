@@ -75,7 +75,8 @@
     border-radius: var(--ui-radius-xs, var(--ui-radius-sm));
     background: var(--ui-color-surface-container, var(--ui-color-canvas));
     color: var(--ui-color-fg-muted);
-    font: var(--ui-type-label-md, var(--ui-type-label-lg));
+    font: var(--ui-type-label-md);
+    letter-spacing: var(--ui-type-label-md-letter-spacing);
   }
   .docs-topbar .ui-theme-switcher {
     margin-inline-start: 0;
@@ -138,7 +139,8 @@
     margin: .75rem 0 .25rem;
     padding-inline: var(--ui-space-4, 1rem);
     color: var(--ui-color-fg-muted);
-    font: var(--ui-type-label-md, var(--ui-type-label-lg));
+    font: var(--ui-type-label-md);
+    letter-spacing: var(--ui-type-label-md-letter-spacing);
     text-transform: none;
   }
   .docs-nav-list {

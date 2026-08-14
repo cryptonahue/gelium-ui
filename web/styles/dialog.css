@@ -22,8 +22,8 @@
     transition: opacity var(--ui-motion-short) var(--ui-easing-standard), translate var(--ui-motion-short) var(--ui-easing-standard), scale var(--ui-motion-short) var(--ui-easing-standard), overlay var(--ui-motion-short) allow-discrete, display var(--ui-motion-short) allow-discrete;
     transition-behavior: allow-discrete;
   }
-  .ui-dialog-headline { margin: 0; padding: var(--ui-space-6) var(--ui-space-6) 0; font: var(--ui-type-dialog-headline); }
-  .ui-dialog-content { padding: var(--ui-space-6); color: var(--ui-dialog-body); font: var(--ui-type-dialog-body); }
+  .ui-dialog-headline { margin: 0; padding: var(--ui-space-6) var(--ui-space-6) 0; font: var(--ui-type-dialog-headline); letter-spacing: var(--ui-type-dialog-headline-letter-spacing); }
+  .ui-dialog-content { padding: var(--ui-space-6); color: var(--ui-dialog-body); font: var(--ui-type-dialog-body); letter-spacing: var(--ui-type-dialog-body-letter-spacing); }
   .ui-dialog-content > :first-child { margin-block-start: 0; }
   .ui-dialog-content > :last-child { margin-block-end: 0; }
   .ui-dialog-actions { display: flex; flex-wrap: nowrap; justify-content: flex-end; gap: var(--ui-space-2); padding: var(--ui-space-4) var(--ui-space-6) var(--ui-space-6); }

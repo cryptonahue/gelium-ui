@@ -35,6 +35,7 @@
   .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
   .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label {
     font: var(--ui-type-label-sm);
+    letter-spacing: var(--ui-type-label-sm-letter-spacing);
   }
   .ui-text-field-control:dir(rtl) > label { transform-origin: right top; }
   .ui-text-field-control:focus-within > label { color: var(--ui-color-primary); }
@@ -131,7 +132,7 @@
   }
   .ui-text-field-error.ui-text-field-filled .ui-text-field-control:hover:not(:focus-within):has(input:not(:disabled)),
   .ui-text-field-error.ui-text-field-filled .ui-text-field-control:hover:not(:focus-within):has(textarea:not(:disabled)) { border-color: var(--ui-field-error); }
-  .ui-text-field-message { margin: 0; padding: var(--ui-space-1) var(--ui-space-4) 0; color: var(--ui-color-fg-muted); font: var(--ui-type-body-sm); }
+  .ui-text-field-message { margin: 0; padding: var(--ui-space-1) var(--ui-space-4) 0; color: var(--ui-color-fg-muted); font: var(--ui-type-body-sm); letter-spacing: var(--ui-type-body-sm-letter-spacing); }
   .ui-text-field-disabled .ui-text-field-control > label,
   .ui-text-field-disabled input,
   .ui-text-field-disabled textarea,

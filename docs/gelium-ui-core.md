@@ -279,6 +279,35 @@ Auditar y resolver; decisión por token:
 | disabled | `var(--ui-state-disabled-opacity)` sobre el control |
 | selected | `:checked`/`aria-current`/`aria-sort` + color de selección del theme |
 
+## 5.9 Theme-neutral foundations (Phase B)
+
+Estado tras Phase B (theme-neutral foundations):
+
+- **Typography descompuesta**: los 12 steps (`display-lg|sm`, `headline-sm`,
+  `title-lg|md`, `body-lg|md|sm`, `label-lg|sm`, `dialog-headline|body`) viven
+  como tokens por propiedad `--ui-type-<step>-{size,weight,line-height,letter-spacing,family}`
+  en el core; los shorthands `--ui-type-<step>` son aliases que componen una
+  sola declaración `font:`. Los themes sobrescriben **solo valores descompuestos**,
+  nunca los aliases. Equivalencia de output verificada por golden snapshot
+  (`web/testdata/type_baseline.json`, light + dark).
+- **label-md cerrado**: `--ui-type-label-md` es un step propio (core default
+  500 .875rem/1.25rem + override por theme), consumido por el theme switcher
+  (`base.css`, `docs-shell.css`) **sin fallback**. Delta visual intencional y
+  documentado: antes caía a `label-lg` (600).
+- **Consumer gating**: no existen `--ui-density-*`, `--ui-z-*`, `--ui-breakpoint-*`
+  ni motion medium/easing sin consumidor migrado en el mismo cambio; la geometría
+  vive en `--ui-size-*`; dialog/popover usan top layer (`::backdrop`, sin z-index).
+  Los invariantes lo garantizan por test (`TestConsumerGatedInvariants`).
+- **Focus**: estrategia global única — `:focus-visible` + `.ui-focus-ring`
+  consumen `--ui-focus-thickness`, `--ui-focus-offset`, `--ui-color-focus-ring`;
+  literales de focus en componentes prohibidos (`TestNoFocusLiterals`); bajo
+  forced colors, `outline-color: Highlight`.
+- **Reduced motion / forced colors**: estrategia core consolidada en `app.css`;
+  bloques locales permitidos solo si son component-specific. Audit exhaustivo
+  (`TestReducedMotionAudit`) enumera toda transition/animation de componentes y
+  exige neutralización (`transition:none`/`animation:none`); `TestForcedColorsPresence`
+  cubre focus (`Highlight`) y borders de sistema.
+
 ## 6. HTML-first
 
 Reglas del markup (derivadas de la implementación, `web/templates/*.html`):

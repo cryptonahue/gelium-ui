@@ -137,11 +137,100 @@
   --ui-font-sans: ui-sans-serif, system-ui, sans-serif;
   --ui-font-mono: ui-monospace, SFMono-Regular, Consolas, monospace;
 
-  /* Typescale — display-lg and title-md are the typescale tokens the core
-     must own: the landing hero (base.css) consumes display-lg, and the
-     WhatsApp manager demo admin subtitle (demo-whatsapp.css) consumes
-     title-md, so an unthemed document still gets usable type sizes. They
-     mirror the theme shorthand form `weight size/line-height family`. */
-  --ui-type-display-lg: 400 3.5rem/4rem var(--ui-font-sans);
-  --ui-type-title-md: 500 1rem/1.5rem var(--ui-font-sans);
+  /* Typescale — Phase B decomposition (R1). The 12 steps are decomposed into
+     per-step property tokens --ui-type-<step>-{size,weight,line-height,
+     letter-spacing,family}; the shorthand --ui-type-<step> is an alias that
+     composes them in a single font: value (`weight size/line-height family`).
+     Themes override the decomposed values ONLY and never redeclare the
+     aliases, so alias output equals the pre-change shorthand (snapshot
+     equivalence). letter-spacing cannot live inside a font: shorthand, so it
+     is a separate per-step token every consumer may opt into; the current
+     value is normal (matching the font-shorthand reset), tracking is deferred
+     (D3). label-md is the R2 closure step: a new core default (500
+     .875rem/1.25rem, deliberately distinct from label-lg's 600) consumed by
+     the theme switcher and docs shell with no fallback. The defaults mirror
+     the Material form so an unthemed document still gets usable type
+     (display-lg and title-md are consumed by base.css and the WhatsApp
+     demo). */
+  --ui-type-display-sm-size: 2.25rem;
+  --ui-type-display-sm-weight: 400;
+  --ui-type-display-sm-line-height: 2.75rem;
+  --ui-type-display-sm-letter-spacing: normal;
+  --ui-type-display-sm-family: var(--ui-font-sans);
+  --ui-type-display-lg-size: 3.5rem;
+  --ui-type-display-lg-weight: 400;
+  --ui-type-display-lg-line-height: 4rem;
+  --ui-type-display-lg-letter-spacing: normal;
+  --ui-type-display-lg-family: var(--ui-font-sans);
+  --ui-type-headline-sm-size: 1.5rem;
+  --ui-type-headline-sm-weight: 400;
+  --ui-type-headline-sm-line-height: 2rem;
+  --ui-type-headline-sm-letter-spacing: normal;
+  --ui-type-headline-sm-family: var(--ui-font-sans);
+  --ui-type-title-lg-size: 1.375rem;
+  --ui-type-title-lg-weight: 500;
+  --ui-type-title-lg-line-height: 1.75rem;
+  --ui-type-title-lg-letter-spacing: normal;
+  --ui-type-title-lg-family: var(--ui-font-sans);
+  --ui-type-title-md-size: 1rem;
+  --ui-type-title-md-weight: 500;
+  --ui-type-title-md-line-height: 1.5rem;
+  --ui-type-title-md-letter-spacing: normal;
+  --ui-type-title-md-family: var(--ui-font-sans);
+  --ui-type-body-lg-size: 1rem;
+  --ui-type-body-lg-weight: 400;
+  --ui-type-body-lg-line-height: 1.5rem;
+  --ui-type-body-lg-letter-spacing: normal;
+  --ui-type-body-lg-family: var(--ui-font-sans);
+  --ui-type-body-md-size: 1rem;
+  --ui-type-body-md-weight: 400;
+  --ui-type-body-md-line-height: 1.5rem;
+  --ui-type-body-md-letter-spacing: normal;
+  --ui-type-body-md-family: var(--ui-font-sans);
+  --ui-type-body-sm-size: .75rem;
+  --ui-type-body-sm-weight: 400;
+  --ui-type-body-sm-line-height: 1rem;
+  --ui-type-body-sm-letter-spacing: normal;
+  --ui-type-body-sm-family: var(--ui-font-sans);
+  --ui-type-label-lg-size: .875rem;
+  --ui-type-label-lg-weight: 600;
+  --ui-type-label-lg-line-height: 1.25rem;
+  --ui-type-label-lg-letter-spacing: normal;
+  --ui-type-label-lg-family: var(--ui-font-sans);
+  --ui-type-label-md-size: .875rem;
+  --ui-type-label-md-weight: 500;
+  --ui-type-label-md-line-height: 1.25rem;
+  --ui-type-label-md-letter-spacing: normal;
+  --ui-type-label-md-family: var(--ui-font-sans);
+  --ui-type-label-sm-size: .75rem;
+  --ui-type-label-sm-weight: 500;
+  --ui-type-label-sm-line-height: 1rem;
+  --ui-type-label-sm-letter-spacing: normal;
+  --ui-type-label-sm-family: var(--ui-font-sans);
+  --ui-type-dialog-headline-size: 1.5rem;
+  --ui-type-dialog-headline-weight: 400;
+  --ui-type-dialog-headline-line-height: 2rem;
+  --ui-type-dialog-headline-letter-spacing: normal;
+  --ui-type-dialog-headline-family: var(--ui-font-sans);
+  --ui-type-dialog-body-size: .875rem;
+  --ui-type-dialog-body-weight: 400;
+  --ui-type-dialog-body-line-height: 1.25rem;
+  --ui-type-dialog-body-letter-spacing: normal;
+  --ui-type-dialog-body-family: var(--ui-font-sans);
+
+  /* Type aliases — single font: composition of the decomposed tokens above.
+     Consumers keep using --ui-type-<step>; themes never redeclare these. */
+  --ui-type-display-sm: var(--ui-type-display-sm-weight) var(--ui-type-display-sm-size)/var(--ui-type-display-sm-line-height) var(--ui-type-display-sm-family);
+  --ui-type-display-lg: var(--ui-type-display-lg-weight) var(--ui-type-display-lg-size)/var(--ui-type-display-lg-line-height) var(--ui-type-display-lg-family);
+  --ui-type-headline-sm: var(--ui-type-headline-sm-weight) var(--ui-type-headline-sm-size)/var(--ui-type-headline-sm-line-height) var(--ui-type-headline-sm-family);
+  --ui-type-title-lg: var(--ui-type-title-lg-weight) var(--ui-type-title-lg-size)/var(--ui-type-title-lg-line-height) var(--ui-type-title-lg-family);
+  --ui-type-title-md: var(--ui-type-title-md-weight) var(--ui-type-title-md-size)/var(--ui-type-title-md-line-height) var(--ui-type-title-md-family);
+  --ui-type-body-lg: var(--ui-type-body-lg-weight) var(--ui-type-body-lg-size)/var(--ui-type-body-lg-line-height) var(--ui-type-body-lg-family);
+  --ui-type-body-md: var(--ui-type-body-md-weight) var(--ui-type-body-md-size)/var(--ui-type-body-md-line-height) var(--ui-type-body-md-family);
+  --ui-type-body-sm: var(--ui-type-body-sm-weight) var(--ui-type-body-sm-size)/var(--ui-type-body-sm-line-height) var(--ui-type-body-sm-family);
+  --ui-type-label-lg: var(--ui-type-label-lg-weight) var(--ui-type-label-lg-size)/var(--ui-type-label-lg-line-height) var(--ui-type-label-lg-family);
+  --ui-type-label-md: var(--ui-type-label-md-weight) var(--ui-type-label-md-size)/var(--ui-type-label-md-line-height) var(--ui-type-label-md-family);
+  --ui-type-label-sm: var(--ui-type-label-sm-weight) var(--ui-type-label-sm-size)/var(--ui-type-label-sm-line-height) var(--ui-type-label-sm-family);
+  --ui-type-dialog-headline: var(--ui-type-dialog-headline-weight) var(--ui-type-dialog-headline-size)/var(--ui-type-dialog-headline-line-height) var(--ui-type-dialog-headline-family);
+  --ui-type-dialog-body: var(--ui-type-dialog-body-weight) var(--ui-type-dialog-body-size)/var(--ui-type-dialog-body-line-height) var(--ui-type-dialog-body-family);
 }

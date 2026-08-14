@@ -2,6 +2,8 @@ package web
 
 import (
 	"embed"
+	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -189,20 +191,22 @@ func TestSurfaceContainerTokenClosedAcrossCoreAndEveryScheme(t *testing.T) {
 }
 
 // TestDisplayLgTokenClosedAcrossCoreAndTheme proves the --ui-type-display-lg
-// gap is closed: the core owns the neutral shorthand default and the Material
-// theme defines the Material value. Presence only — never a concrete value.
+// gap is closed under the Phase B decomposition (R1): the core owns the
+// shorthand alias (a font: composition of decomposed tokens) and the Material
+// theme defines the decomposed display-lg values. Presence only — never a
+// concrete value.
 func TestDisplayLgTokenClosedAcrossCoreAndTheme(t *testing.T) {
 	core, err := sourceStyles.ReadFile("styles/tokens.css")
 	if err != nil {
 		t.Fatalf("read core tokens: %v", err)
 	}
 	if !strings.Contains(string(core), "--ui-type-display-lg:") {
-		t.Error("core tokens.css must define --ui-type-display-lg (neutral default)")
+		t.Error("core tokens.css must define the --ui-type-display-lg alias (Phase B decomposition)")
 	}
 
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
-	if !strings.Contains(theme, "--ui-type-display-lg:") {
-		t.Error("theme-material must define --ui-type-display-lg")
+	if !strings.Contains(theme, "--ui-type-display-lg-size:") || !strings.Contains(theme, "--ui-type-display-lg-weight:") {
+		t.Error("theme-material must define the decomposed display-lg values (--ui-type-display-lg-size / -weight)")
 	}
 }
 
@@ -233,21 +237,22 @@ func TestFontSansOverriddenByMaterialTheme(t *testing.T) {
 }
 
 // TestTitleMdTokenClosedAcrossCoreAndTheme proves the --ui-type-title-md gap
-// is closed: the core owns the neutral shorthand default (consumed by the
-// WhatsApp demo admin subtitle) and the Material theme defines its override.
-// Presence only — never a concrete value.
+// is closed under the Phase B decomposition (R1): the core owns the shorthand
+// alias (a font: composition of decomposed tokens) and the Material theme
+// defines the decomposed title-md values. Presence only — never a concrete
+// value.
 func TestTitleMdTokenClosedAcrossCoreAndTheme(t *testing.T) {
 	core, err := sourceStyles.ReadFile("styles/tokens.css")
 	if err != nil {
 		t.Fatalf("read core tokens: %v", err)
 	}
 	if !strings.Contains(string(core), "--ui-type-title-md:") {
-		t.Error("core tokens.css must define --ui-type-title-md (neutral default)")
+		t.Error("core tokens.css must define the --ui-type-title-md alias (Phase B decomposition)")
 	}
 
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
-	if !strings.Contains(theme, "--ui-type-title-md:") {
-		t.Error("theme-material must define --ui-type-title-md")
+	if !strings.Contains(theme, "--ui-type-title-md-size:") || !strings.Contains(theme, "--ui-type-title-md-weight:") {
+		t.Error("theme-material must define the decomposed title-md values (--ui-type-title-md-size / -weight)")
 	}
 }
 
@@ -1041,4 +1046,636 @@ func TestDarkTokensDefinedOnceSingleMechanism(t *testing.T) {
 			}
 		})
 	}
+}
+
+// typeScaleSteps are the 12 typescale steps the core decomposes (Phase B,
+// R1). Each step owns five decomposed tokens
+// (--ui-type-<step>-{size,weight,line-height,letter-spacing,family}) plus a
+// shorthand alias composing them. label-md is excluded here: it is a new
+// Phase B step (R2) with no pre-change baseline to snapshot.
+var typeScaleSteps = []string{
+	"display-lg", "display-sm", "headline-sm",
+	"title-lg", "title-md",
+	"body-lg", "body-md", "body-sm",
+	"label-lg", "label-sm",
+	"dialog-headline", "dialog-body",
+}
+
+// typeStepProps are the five decomposed property suffixes of the Phase B
+// decomposition contract (R1). letter-spacing is part of the per-step token
+// set even though the font: shorthand alias cannot express it — the token
+// exists so a consumer can opt into tracking per step.
+var typeStepProps = []string{"size", "weight", "line-height", "letter-spacing", "family"}
+
+// typeBaseline reads the golden fixture that captured the pre-change shorthand
+// values per theme (web/testdata/type_baseline.json). The fixture is the
+// snapshot contract: after decomposition, composing each alias from the
+// decomposed props must reproduce the baseline exactly.
+func typeBaseline(t *testing.T) map[string]map[string]string {
+	t.Helper()
+	raw := repositoryFile(t, "web", "testdata", "type_baseline.json")
+	var baseline map[string]map[string]string
+	if err := json.Unmarshal([]byte(raw), &baseline); err != nil {
+		t.Fatalf("parse type baseline fixture: %v", err)
+	}
+	return baseline
+}
+
+// decomposeThemeStep extracts the five decomposed --ui-type-<step>-* values a
+// theme declares in its light block. Every theme must own all five props per
+// step (the decomposition contract), so a missing prop fails the test.
+func decomposeThemeStep(t *testing.T, lightCSS, step string) map[string]string {
+	t.Helper()
+	props := map[string]string{}
+	for _, prop := range typeStepProps {
+		re := regexp.MustCompile(`--ui-type-` + regexp.QuoteMeta(step) + `-` + regexp.QuoteMeta(prop) + `\s*:\s*([^;]+);`)
+		m := re.FindStringSubmatch(lightCSS)
+		if m == nil {
+			// Report the missing prop so the failure names the gap, then
+			// return what we have — the caller's equivalence check will also
+			// fail loudly.
+			t.Errorf("theme must define the decomposed token --ui-type-%s-%s (Phase B decomposition)", step, prop)
+			continue
+		}
+		props[prop] = strings.TrimSpace(m[1])
+	}
+	return props
+}
+
+// composeTypeAlias reproduces the Phase B alias composition (design D1):
+// the shorthand is a single font: value built from the decomposed parts —
+// `weight size/line-height family`. letter-spacing cannot live in a font:
+// shorthand, so it is intentionally not part of the alias.
+func composeTypeAlias(props map[string]string) string {
+	return fmt.Sprintf("%s %s/%s %s",
+		props["weight"], props["size"], props["line-height"], props["family"])
+}
+
+// TestTypeAliasSnapshotEquivalence is the Phase B R1 snapshot contract: after
+// decomposing the 12 shorthand type tokens into per-step props in the core and
+// moving the values into the themes as decomposed overrides, composing each
+// alias from the decomposed parts must reproduce the golden baseline captured
+// pre-change — zero visual diff in light. Dark is asserted identical because
+// the type family is never redefined in the dark class route.
+func TestTypeAliasSnapshotEquivalence(t *testing.T) {
+	baseline := typeBaseline(t)
+
+	for _, theme := range availableThemes(t) {
+		theme := theme
+		t.Run(theme, func(t *testing.T) {
+			themeWant, ok := baseline[theme]
+			if !ok {
+				t.Fatalf("type baseline fixture has no entry for theme %q (regenerate web/testdata/type_baseline.json)", theme)
+			}
+			light, darkClass, _ := splitThemeSchemes(t, theme)
+
+			// Dark equivalence: the type family lives in light only, so
+			// resolving any alias under the dark class route yields the same
+			// composed value as light. Assert the dark block declares no
+			// --ui-type-* token at all.
+			if strings.Contains(darkClass, "--ui-type-") {
+				t.Errorf("%s dark class route must not redefine any --ui-type-* token (type is scheme-independent; dark resolves identical)", theme)
+			}
+
+			for _, step := range typeScaleSteps {
+				props := decomposeThemeStep(t, light, step)
+				got := composeTypeAlias(props)
+				want := strings.Join(strings.Fields(themeWant[step]), " ")
+				gotNorm := strings.Join(strings.Fields(got), " ")
+				if gotNorm != want {
+					t.Errorf("%s: composed --ui-type-%s = %q, want baseline %q (decomposition changed the resolved value)",
+						theme, step, gotNorm, want)
+				}
+			}
+		})
+	}
+}
+
+// TestTypeAliasesComposeDecomposedTokens proves the alias contract of the
+// decomposition (R1): every shorthand --ui-type-<step> in the core must be a
+// single font: composition of its five decomposed tokens — never a standalone
+// literal value. Themes own the decomposed values; the core owns the alias
+// shape.
+func TestTypeAliasesComposeDecomposedTokens(t *testing.T) {
+	core, err := sourceStyles.ReadFile("styles/tokens.css")
+	if err != nil {
+		t.Fatalf("read core tokens: %v", err)
+	}
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(string(core), " ")
+	for _, step := range typeScaleSteps {
+		want := fmt.Sprintf("--ui-type-%s: var(--ui-type-%s-weight) var(--ui-type-%s-size)/var(--ui-type-%s-line-height) var(--ui-type-%s-family);",
+			step, step, step, step, step)
+		if !strings.Contains(css, want) {
+			t.Errorf("core tokens.css must define --ui-type-%s as a font: composition of its decomposed tokens, got missing %q", step, want)
+		}
+	}
+}
+
+// TestThemesNeverRedeclareTypeAliases proves the ownership split of the
+// decomposition (R1): themes override the five decomposed props per step and
+// must NEVER redeclare the shorthand alias (that would fork the alias from the
+// core composition and break snapshot equivalence).
+func TestThemesNeverRedeclareTypeAliases(t *testing.T) {
+	for _, theme := range availableThemes(t) {
+		theme := theme
+		t.Run(theme, func(t *testing.T) {
+			css := themeCSS(t, theme)
+			for _, step := range typeScaleSteps {
+				re := regexp.MustCompile(`--ui-type-` + regexp.QuoteMeta(step) + `\s*:`)
+				if m := re.FindString(css); m != "" {
+					t.Errorf("%s must not redeclare the shorthand alias %s (themes override decomposed values only)", theme, m)
+				}
+			}
+		})
+	}
+}
+
+// TestLabelMdClosure is the Phase B R2 contract: --ui-type-label-md is a NEW
+// core default with its own Material override — an independent step, never an
+// alias of label-lg. The theme switcher (base.css) and the docs shell
+// (docs-shell.css) must consume var(--ui-type-label-md) with NO label-lg
+// fallback, and the token must be defined standalone in the core and in both
+// themes.
+func TestLabelMdClosure(t *testing.T) {
+	// 1. Core defines label-md standalone (decomposed + alias), never as a
+	// label-lg alias.
+	core, err := sourceStyles.ReadFile("styles/tokens.css")
+	if err != nil {
+		t.Fatalf("read core tokens: %v", err)
+	}
+	coreCSS := string(core)
+	if !strings.Contains(coreCSS, "--ui-type-label-md:") {
+		t.Error("core tokens.css must define the --ui-type-label-md alias (Phase B R2)")
+	}
+	for _, prop := range typeStepProps {
+		if !strings.Contains(coreCSS, "--ui-type-label-md-"+prop+":") {
+			t.Errorf("core tokens.css must define the decomposed label-md token --ui-type-label-md-%s", prop)
+		}
+	}
+	if strings.Contains(coreCSS, "--ui-type-label-md: var(--ui-type-label-lg)") {
+		t.Error("core must define --ui-type-label-md standalone, never as var(--ui-type-label-lg)")
+	}
+
+	// 2. Every theme defines the decomposed label-md values standalone (never
+	// via label-lg) in its light block.
+	for _, theme := range availableThemes(t) {
+		theme := theme
+		t.Run(theme, func(t *testing.T) {
+			light, _, _ := splitThemeSchemes(t, theme)
+			for _, prop := range typeStepProps {
+				if !strings.Contains(light, "--ui-type-label-md-"+prop+":") {
+					t.Errorf("%s light scheme must define the decomposed label-md token --ui-type-label-md-%s", theme, prop)
+				}
+			}
+			if strings.Contains(light, "--ui-type-label-md: var(--ui-type-label-lg)") {
+				t.Errorf("%s must define label-md standalone, never as var(--ui-type-label-lg)", theme)
+			}
+		})
+	}
+
+	// 3. The switcher (base.css) and docs shell (docs-shell.css) consume
+	// var(--ui-type-label-md) with NO fallback. Each file must contain at
+	// least one bare var(--ui-type-label-md) reference (the font: shorthand)
+	// and zero label-lg fallbacks; the label-md-letter-spacing consumer on
+	// the same rules references the decomposed token and must not be mistaken
+	// for a bare consumption.
+	for _, file := range []string{"base.css", "docs-shell.css"} {
+		css, err := sourceStyles.ReadFile("styles/" + file)
+		if err != nil {
+			t.Fatalf("read %s: %v", file, err)
+		}
+		content := string(css)
+		if strings.Contains(content, "var(--ui-type-label-md, var(--ui-type-label-lg))") {
+			t.Errorf("%s must consume var(--ui-type-label-md) with NO label-lg fallback (R2 closure)", file)
+		}
+		if !regexp.MustCompile(`var\(--ui-type-label-md\)`).MatchString(content) {
+			t.Errorf("%s must reference the bare var(--ui-type-label-md) (font: shorthand), got only decomposed token references", file)
+		}
+	}
+}
+
+// TestConsumerGatedInvariants is the Phase B R3 contract (D1, D3): no
+// density/z/breakpoint families, no motion-medium/easing token without a real
+// consumer, and every new Phase B token must have at least one var() consumer
+// (no orphans). Geometry stays in --ui-size-*; dialog/popover use the top
+// layer. A future token added without a consumer trips this test.
+func TestConsumerGatedInvariants(t *testing.T) {
+	// 1. The forbidden families must not exist as definitions anywhere under
+	// web/styles or themes (density/z/breakpoint are deferred, D3).
+	sources := allStyleSources(t)
+	for _, forbidden := range []string{"--ui-density-", "--ui-z-", "--ui-breakpoint-"} {
+		var offenders []string
+		for _, src := range sources {
+			for token := range findTokenDefinitions(src.css, forbidden) {
+				offenders = append(offenders, src.name+":"+token)
+			}
+		}
+		if len(offenders) > 0 {
+			t.Errorf("forbidden consumer-gated family %s must not be defined (D3 defers): %v", forbidden, offenders)
+		}
+	}
+
+	// 2. Every motion/easing token defined in the core or a theme must have at
+	// least one var() consumer in component or layout CSS. A motion-medium or
+	// new easing with no consumer trips here.
+	motionDefs := map[string]string{} // token -> where defined
+	for _, src := range sources {
+		for name, def := range findTokenDefinitions(src.css, "--ui-motion-") {
+			motionDefs[name] = src.name + ": " + def
+		}
+		for name, def := range findTokenDefinitions(src.css, "--ui-easing-") {
+			motionDefs[name] = src.name + ": " + def
+		}
+	}
+	for token, where := range motionDefs {
+		if !hasVarConsumer(token, sources) {
+			t.Errorf("motion/easing token %s has zero var() consumers (defined at %s) — D3 defers tokens without a migrated consumer", token, where)
+		}
+	}
+
+	// 3. Every Phase B type token (the decomposed steps plus label-md) must
+	// have at least one var() consumer: aliases consume the 4 font-composed
+	// props, the letter-spacing declarations consume the tracking props, and
+	// base.css/docs-shell consume the label-md alias.
+	for _, step := range append(append([]string{}, typeScaleSteps...), "label-md") {
+		for _, prop := range typeStepProps {
+			token := "--ui-type-" + step + "-" + prop
+			if !hasVarConsumer(token, sources) {
+				t.Errorf("Phase B token %s has zero var() consumers (orphan)", token)
+			}
+		}
+	}
+}
+
+// styleSource is one CSS source file scanned by the consumer-gated invariants.
+type styleSource struct {
+	name string
+	css  string
+}
+
+// allStyleSources concatenates every CSS file under web/styles plus every
+// theme's theme.css, tagged by file name, so consumer scans can attribute
+// definitions to their owning file.
+func allStyleSources(t *testing.T) []styleSource {
+	t.Helper()
+	var sources []styleSource
+	entries, err := sourceStyles.ReadDir("styles")
+	if err != nil {
+		t.Fatalf("list styles dir: %v", err)
+	}
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".css") {
+			continue
+		}
+		css, err := sourceStyles.ReadFile("styles/" + entry.Name())
+		if err != nil {
+			t.Fatalf("read styles/%s: %v", entry.Name(), err)
+		}
+		sources = append(sources, styleSource{name: "web/styles/" + entry.Name(), css: string(css)})
+	}
+	for _, theme := range availableThemes(t) {
+		sources = append(sources, styleSource{name: "themes/" + theme + "/theme.css", css: themeCSS(t, theme)})
+	}
+	return sources
+}
+
+// findTokenDefinitions returns every --ui-<family>...: definition found in a
+// CSS blob, as token -> raw definition line.
+func findTokenDefinitions(css, family string) map[string]string {
+	out := map[string]string{}
+	re := regexp.MustCompile(`(--ui-` + regexp.QuoteMeta(strings.TrimPrefix(family, "--ui-")) + `[a-z0-9-]*)\s*:\s*([^;]+);`)
+	for _, m := range re.FindAllStringSubmatch(css, -1) {
+		if _, ok := out[m[1]]; !ok {
+			out[m[1]] = strings.TrimSpace(m[2])
+		}
+	}
+	return out
+}
+
+// hasVarConsumer reports whether any scanned source references the token via
+// var().
+func hasVarConsumer(token string, sources []styleSource) bool {
+	needle := "var(" + token
+	for _, src := range sources {
+		if strings.Contains(src.css, needle) {
+			return true
+		}
+	}
+	return false
+}
+
+// TestNoFocusLiterals is the Phase B R4 contract (D4, single focus strategy):
+// every component :focus-visible outline must derive from the shared focus
+// tokens (--ui-focus-thickness / --ui-focus-offset / --ui-color-focus-ring),
+// never from hardcoded widths, colors, or offsets. The global rule lives in
+// focus-ring.css; component-specific :focus-visible rules may exist but must
+// reference the tokens only.
+func TestNoFocusLiterals(t *testing.T) {
+	excluded := map[string]bool{
+		"focus-ring.css": true, // owns the token-driven global rule
+		"tokens.css":     true, // owns the token values
+		"app.css":        true, // entry; its forced-colors tail maps focus to Highlight
+	}
+	entries, err := sourceStyles.ReadDir("styles")
+	if err != nil {
+		t.Fatalf("list styles dir: %v", err)
+	}
+
+	checked := 0
+	for _, entry := range entries {
+		name := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(name, ".css") || excluded[name] {
+			continue
+		}
+		content, err := sourceStyles.ReadFile("styles/" + name)
+		if err != nil {
+			t.Fatalf("read %s: %v", name, err)
+		}
+		css := string(content)
+		// Only look inside :focus-visible rule bodies.
+		re := regexp.MustCompile(`(?s):focus-visible[^{]*\{([^}]*)\}`)
+		for _, m := range re.FindAllStringSubmatch(css, -1) {
+			body := m[1]
+			for _, line := range strings.Split(body, "\n") {
+				line = strings.TrimSpace(line)
+				if !strings.Contains(line, "outline") {
+					continue
+				}
+				// Allowed: token-driven outline/outline-offset/outline-color
+				// declarations, and outline: none/0 suppression (the text
+				// field paints its own border focus). Forced-colors
+				// Highlight is a system color, allowed by spec (D4).
+				if strings.Contains(line, "var(--ui-focus-") ||
+					strings.Contains(line, "var(--ui-color-focus-ring)") ||
+					strings.Contains(line, "outline-color: Highlight") ||
+					strings.Contains(line, "outline: none") ||
+					strings.Contains(line, "outline: 0") {
+					continue
+				}
+				t.Errorf("%s: focus-visible outline %q must derive from --ui-focus-*/--ui-color-focus-ring (no literals)", name, line)
+			}
+		}
+		checked++
+	}
+	if checked == 0 {
+		t.Fatal("focus literal scan must cover at least one component file")
+	}
+}
+
+// TestForcedColorsPresence is the Phase B R4 contract (D4/D5): under
+// forced-colors, focus outlines must map to Highlight, and component borders
+// must use system colors instead of theme tokens. The consolidated strategy
+// lives in app.css; component-local forced-colors blocks may exist when
+// component-specific — both are scanned here, plus the compiled bundle the
+// browser actually receives.
+func TestForcedColorsPresence(t *testing.T) {
+	// 1. Source contract: the global focus ring maps to Highlight in the
+	// app.css forced-colors tail (the consolidated strategy home, D5).
+	appCSS, err := sourceStyles.ReadFile("styles/app.css")
+	if err != nil {
+		t.Fatalf("read app.css: %v", err)
+	}
+	if !strings.Contains(string(appCSS), `:focus-visible, .ui-focus-ring:focus-visible { outline-color: Highlight; }`) {
+		t.Error("app.css forced-colors tail must map the global focus ring (:focus-visible, .ui-focus-ring) to Highlight")
+	}
+
+	// 2. Compiled bundle: the served asset carries the forced-colors block
+	// with the Highlight focus mapping (minifier lowercases system colors, so
+	// match case-insensitively).
+	compiled := compiledAppCSS(t)
+	if !strings.Contains(compiled, "@media (forced-colors:") {
+		t.Error("compiled app.css must carry the forced-colors media block")
+	}
+	if !regexp.MustCompile(`(?i):focus-visible[^{]*\{[^}]*outline-color:\s*highlight`).MatchString(compiled) {
+		t.Error("compiled app.css must map a focus-visible rule to Highlight under forced colors")
+	}
+
+	// 3. Border hygiene: every border/border-color declaration inside every
+	// forced-colors block (app.css tail or component-local) must use a system
+	// color, never a theme token or literal color. Structural scan across all
+	// sources.
+	systemColor := regexp.MustCompile(`(?i)(CanvasText|Canvas|ButtonText|ButtonFace|GrayText|Highlight|HighlightText|LinkText|Mark|Field|FieldText|Window|WindowText)`)
+	fcBlock := regexp.MustCompile(`(?s)@media \(forced-colors: active\)\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
+	checked := 0
+	for _, src := range allStyleSources(t) {
+		for _, m := range fcBlock.FindAllStringSubmatch(src.css, -1) {
+			block := m[1]
+			ruleRe := regexp.MustCompile(`(?s)([^{}]+)\{([^{}]*)\}`)
+			for _, rule := range ruleRe.FindAllStringSubmatch(block, -1) {
+				selector, body := rule[1], rule[2]
+				for _, decl := range strings.Split(body, ";") {
+					decl = strings.TrimSpace(decl)
+					lower := strings.ToLower(decl)
+					if !strings.HasPrefix(lower, "border") && !strings.HasPrefix(lower, "outline") {
+						continue
+					}
+					// Suppressions and transparent/gradient shorthands are
+					// allowed; anything else must carry a system color.
+					if strings.Contains(lower, ":none") || strings.Contains(lower, ":0") ||
+						strings.Contains(lower, "transparent") || strings.Contains(lower, "forced-color-adjust") {
+						continue
+					}
+					if strings.Contains(decl, ":") && !systemColor.MatchString(decl) {
+						t.Errorf("%s forced-colors rule %q declares %q without a system color (borders use system colors under forced colors)", src.name, strings.TrimSpace(selector), decl)
+					}
+				}
+			}
+			checked++
+		}
+	}
+	if checked == 0 {
+		t.Fatal("forced-colors scan must cover at least one media block")
+	}
+}
+
+// TestReducedMotionAudit is the Phase B R5 contract (D5): every component
+// transition/animation must be neutralized (transition:none / animation:none)
+// under prefers-reduced-motion, either in the consolidated app.css block or in
+// a component-local block (allowed when component-specific). The audit
+// enumerates every declaration from the sources, so an uncovered animation
+// fails loudly instead of drifting.
+func TestReducedMotionAudit(t *testing.T) {
+	// Neutralization selector sets: app.css consolidated block + every
+	// component's local block.
+	appCSS, err := sourceStyles.ReadFile("styles/app.css")
+	if err != nil {
+		t.Fatalf("read app.css: %v", err)
+	}
+	neutralized := reducedMotionSelectors(t, string(appCSS))
+
+	entries, err := sourceStyles.ReadDir("styles")
+	if err != nil {
+		t.Fatalf("list styles dir: %v", err)
+	}
+
+	// selector -> owning file for every class-driven transition/animation.
+	type motionDecl struct {
+		file string
+		sel  string
+		prop string
+		val  string
+	}
+	var decls []motionDecl
+	checked := 0
+
+	for _, entry := range entries {
+		name := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(name, ".css") || name == "tokens.css" || name == "app.css" {
+			continue
+		}
+		content, err := sourceStyles.ReadFile("styles/" + name)
+		if err != nil {
+			t.Fatalf("read %s: %v", name, err)
+		}
+		css := string(content)
+
+		// Merge the component's own local reduced-motion neutralizations
+		// into the global set before auditing its declarations.
+		for s := range reducedMotionSelectors(t, css) {
+			neutralized[s] = true
+		}
+
+		// Strip reduced-motion blocks so the enumeration only sees the
+		// declarations that need coverage (not their neutralizations).
+		cssNoRM := reducedMotionBlocksRe.ReplaceAllString(css, "")
+
+		for _, rule := range cssRules(t, cssNoRM) {
+			for _, dm := range motionDeclRe.FindAllStringSubmatch(rule.body, -1) {
+				prop, val := dm[1], strings.TrimSpace(dm[2])
+				if val == "none" {
+					continue
+				}
+				for _, s := range strings.Split(rule.selector, ",") {
+					s = strings.TrimSpace(s)
+					if s == "" || strings.HasPrefix(s, "@") {
+						continue
+					}
+					checked++
+					decls = append(decls, motionDecl{file: name, sel: s, prop: prop, val: val})
+				}
+			}
+		}
+	}
+	if checked == 0 {
+		t.Fatal("reduced-motion audit must enumerate at least one transition/animation declaration")
+	}
+
+	// Every declaration's selector must be covered by a neutralization: the
+	// neutralized selector's class set is a subset of the moving selector's
+	// class set (the rule that kills the motion targets the same or a wider
+	// element). Element-only selectors are matched exactly.
+	for _, d := range decls {
+		movingClasses := cssClasses(d.sel)
+		covered := false
+		for n := range neutralized {
+			if n == d.sel {
+				covered = true
+				break
+			}
+			nClasses := cssClasses(n)
+			if len(movingClasses) > 0 && len(nClasses) > 0 && classSetSubset(nClasses, movingClasses) {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			t.Errorf("%s: %s on %q (%s) is not neutralized under prefers-reduced-motion — add transition:none/animation:none in app.css or a component-local block",
+				d.file, d.prop, d.sel, d.val)
+		}
+	}
+}
+
+// motionDeclRe matches a transition/animation declaration inside a rule body.
+var motionDeclRe = regexp.MustCompile(`(transition|animation)\s*:\s*([^;]+);`)
+
+// reducedMotionBlocksRe matches a full @media (prefers-reduced-motion) block.
+// reducedMotionBlocksRe matches the opening of a prefers-reduced-motion
+// media block; reducedMotionBlocks extracts the full balanced body.
+var reducedMotionBlocksRe = regexp.MustCompile(`(?s)@media\s*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)\s*\{`)
+
+// reducedMotionBlocks returns every complete @media (prefers-reduced-motion:
+// reduce) { ... } block in css, balanced by brace depth.
+func reducedMotionBlocks(css string) []string {
+	var blocks []string
+	for _, m := range reducedMotionBlocksRe.FindAllStringIndex(css, -1) {
+		depth := 0
+		for i := m[1] - 1; i < len(css); i++ {
+			switch css[i] {
+			case '{':
+				depth++
+			case '}':
+				depth--
+				if depth == 0 {
+					blocks = append(blocks, css[m[0]:i+1])
+					break
+				}
+			}
+		}
+	}
+	return blocks
+}
+
+// cssRule is one parsed rule (selector + body).
+type cssRule struct {
+	selector string
+	body     string
+}
+
+// cssRules parses top-level and nested rules, skipping comments and keyframes.
+func cssRules(t *testing.T, css string) []cssRule {
+	t.Helper()
+	var rules []cssRule
+	// Strip comments so selectors never include /* ... */ text.
+	css = regexp.MustCompile(`(?s)/\*.*?\*/`).ReplaceAllString(css, "")
+	// Iterate over every selector { body } pair; bodies without nested braces.
+	for _, m := range regexp.MustCompile(`([^{}@][^{}]*)\{([^{}]*)\}`).FindAllStringSubmatch(css, -1) {
+		sel := strings.TrimSpace(m[1])
+		body := m[2]
+		if sel == "" || strings.HasPrefix(sel, "@") {
+			continue
+		}
+		rules = append(rules, cssRule{selector: sel, body: body})
+	}
+	return rules
+}
+
+// cssClasses returns the set of class names a selector references.
+func cssClasses(selector string) map[string]bool {
+	out := map[string]bool{}
+	for _, m := range regexp.MustCompile(`\.([a-zA-Z0-9_-]+)`).FindAllStringSubmatch(selector, -1) {
+		out[m[1]] = true
+	}
+	return out
+}
+
+// classSetSubset reports whether every class in sub is present in super.
+func classSetSubset(sub, super map[string]bool) bool {
+	for c := range sub {
+		if !super[c] {
+			return false
+		}
+	}
+	return true
+}
+
+// reducedMotionSelectors returns every selector neutralized by
+// transition:none / animation:none inside the prefers-reduced-motion blocks of
+// one CSS blob.
+func reducedMotionSelectors(t *testing.T, css string) map[string]bool {
+	t.Helper()
+	out := map[string]bool{}
+	for _, m := range reducedMotionBlocks(css) {
+		for _, rule := range cssRules(t, m) {
+			if !strings.Contains(rule.body, "transition: none") && !strings.Contains(rule.body, "animation: none") {
+				continue
+			}
+			for _, s := range strings.Split(rule.selector, ",") {
+				s = strings.TrimSpace(s)
+				if s != "" {
+					out[s] = true
+				}
+			}
+		}
+	}
+	return out
 }

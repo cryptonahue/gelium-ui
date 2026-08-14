@@ -110,20 +110,76 @@
   --ui-font-sans: "Geist Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
   --ui-font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
 
-  /* Typescale — derived from the Tailwind text steps the Vega style pack
-     hardcodes (text-sm buttons, text-base inputs, text-xs badges). */
-  --ui-type-display-sm: 600 2.25rem/2.75rem var(--ui-font-sans);
-  --ui-type-display-lg: 600 3rem/3.5rem var(--ui-font-sans);
-  --ui-type-headline-sm: 600 1.25rem/1.75rem var(--ui-font-sans);
-  --ui-type-title-lg: 600 1.125rem/1.625rem var(--ui-font-sans);
-  --ui-type-title-md: 600 1rem/1.5rem var(--ui-font-sans);
-  --ui-type-body-lg: 400 1rem/1.5rem var(--ui-font-sans);
-  --ui-type-body-md: 400 .875rem/1.375rem var(--ui-font-sans);
-  --ui-type-body-sm: 400 .75rem/1.125rem var(--ui-font-sans);
-  --ui-type-label-lg: 500 .875rem/1.25rem var(--ui-font-sans);
-  --ui-type-label-sm: 500 .75rem/1rem var(--ui-font-sans);
-  --ui-type-dialog-headline: 600 1.25rem/1.75rem var(--ui-font-sans);
-  --ui-type-dialog-body: 400 .875rem/1.375rem var(--ui-font-sans);
+  /* Typescale — Phase B decomposition (R1): the theme overrides the five
+     decomposed per-step tokens; the --ui-type-<step> aliases live in the core
+     and compose them, so alias output equals the pre-change shorthand. */
+  --ui-font-sans: "Geist Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --ui-font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --ui-type-display-sm-size: 2.25rem;
+  --ui-type-display-sm-weight: 600;
+  --ui-type-display-sm-line-height: 2.75rem;
+  --ui-type-display-sm-letter-spacing: normal;
+  --ui-type-display-sm-family: var(--ui-font-sans);
+  --ui-type-display-lg-size: 3rem;
+  --ui-type-display-lg-weight: 600;
+  --ui-type-display-lg-line-height: 3.5rem;
+  --ui-type-display-lg-letter-spacing: normal;
+  --ui-type-display-lg-family: var(--ui-font-sans);
+  --ui-type-headline-sm-size: 1.25rem;
+  --ui-type-headline-sm-weight: 600;
+  --ui-type-headline-sm-line-height: 1.75rem;
+  --ui-type-headline-sm-letter-spacing: normal;
+  --ui-type-headline-sm-family: var(--ui-font-sans);
+  --ui-type-title-lg-size: 1.125rem;
+  --ui-type-title-lg-weight: 600;
+  --ui-type-title-lg-line-height: 1.625rem;
+  --ui-type-title-lg-letter-spacing: normal;
+  --ui-type-title-lg-family: var(--ui-font-sans);
+  --ui-type-title-md-size: 1rem;
+  --ui-type-title-md-weight: 600;
+  --ui-type-title-md-line-height: 1.5rem;
+  --ui-type-title-md-letter-spacing: normal;
+  --ui-type-title-md-family: var(--ui-font-sans);
+  --ui-type-body-lg-size: 1rem;
+  --ui-type-body-lg-weight: 400;
+  --ui-type-body-lg-line-height: 1.5rem;
+  --ui-type-body-lg-letter-spacing: normal;
+  --ui-type-body-lg-family: var(--ui-font-sans);
+  --ui-type-body-md-size: .875rem;
+  --ui-type-body-md-weight: 400;
+  --ui-type-body-md-line-height: 1.375rem;
+  --ui-type-body-md-letter-spacing: normal;
+  --ui-type-body-md-family: var(--ui-font-sans);
+  --ui-type-body-sm-size: .75rem;
+  --ui-type-body-sm-weight: 400;
+  --ui-type-body-sm-line-height: 1.125rem;
+  --ui-type-body-sm-letter-spacing: normal;
+  --ui-type-body-sm-family: var(--ui-font-sans);
+  --ui-type-label-lg-size: .875rem;
+  --ui-type-label-lg-weight: 500;
+  --ui-type-label-lg-line-height: 1.25rem;
+  --ui-type-label-lg-letter-spacing: normal;
+  --ui-type-label-lg-family: var(--ui-font-sans);
+  --ui-type-label-md-size: .875rem;
+  --ui-type-label-md-weight: 500;
+  --ui-type-label-md-line-height: 1.25rem;
+  --ui-type-label-md-letter-spacing: normal;
+  --ui-type-label-md-family: var(--ui-font-sans);
+  --ui-type-label-sm-size: .75rem;
+  --ui-type-label-sm-weight: 500;
+  --ui-type-label-sm-line-height: 1rem;
+  --ui-type-label-sm-letter-spacing: normal;
+  --ui-type-label-sm-family: var(--ui-font-sans);
+  --ui-type-dialog-headline-size: 1.25rem;
+  --ui-type-dialog-headline-weight: 600;
+  --ui-type-dialog-headline-line-height: 1.75rem;
+  --ui-type-dialog-headline-letter-spacing: normal;
+  --ui-type-dialog-headline-family: var(--ui-font-sans);
+  --ui-type-dialog-body-size: .875rem;
+  --ui-type-dialog-body-weight: 400;
+  --ui-type-dialog-body-line-height: 1.375rem;
+  --ui-type-dialog-body-letter-spacing: normal;
+  --ui-type-dialog-body-family: var(--ui-font-sans);
 
   /* Size — Basecoat density: controls are h-9 (2.25rem) instead of Material's
      2.5rem. The field stays 3rem instead of Basecoat's 2.25rem so Gelium's
@@ -277,8 +333,9 @@
   /* State, focus, and motion. State opacities approximate Basecoat's
      color-swap hover (bg-primary/80 => ~20% mix; hover:bg-muted => solid
      fill) inside Gelium's color-mix state-layer model; disabled matches
-     Basecoat's opacity-50. Motion uses Tailwind's duration-100/200/300 and
-     the default ease. */
+     Basecoat's opacity-50. Motion uses Tailwind's duration-100/300 and
+     the default ease; there is no medium step (D3 defers tokens without
+     a migrated consumer). */
   --ui-state-hover-opacity: .20;
   --ui-state-focus-opacity: .10;
   --ui-state-pressed-opacity: .20;
@@ -287,7 +344,6 @@
   --ui-focus-thickness: 3px;
   --ui-focus-offset: 2px;
   --ui-motion-short: 100ms;
-  --ui-motion-medium: 200ms;
   --ui-motion-long: 300ms;
   --ui-easing-standard: cubic-bezier(.4, 0, .2, 1);
 }
