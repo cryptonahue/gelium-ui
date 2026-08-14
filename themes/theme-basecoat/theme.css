@@ -95,15 +95,18 @@
 
   /* Toast — Vega .toast-content popover surface (bg-popover, border,
      shadow-lg, rounded-2xl). The Gelium contract stays server-driven
-     (aria-live + loom:toast); only the aesthetic is taken. */
+     (aria-live + loom:toast); only the aesthetic is taken. Icons derive from
+     the core semantic colors; the error icon keeps a theme-owned token so it
+     can diverge from --ui-color-danger. */
   --ui-toast-container: #ffffff;
   --ui-toast-fg: #0a0a0a;
   --ui-toast-radius: 1rem;
   --ui-toast-action: #171717;
-  --ui-toast-icon-info: #4f5d75;
-  --ui-toast-icon-success: #2e7d32;
-  --ui-toast-icon-warning: #b9930a;
-  --ui-toast-icon-error: #b91c1c;
+  --ui-toast-icon-info: var(--ui-color-info);
+  --ui-toast-icon-success: var(--ui-color-success);
+  --ui-toast-icon-warning: var(--ui-color-warning);
+  --ui-color-toast-icon-error: #b91c1c;
+  --ui-toast-icon-error: var(--ui-color-toast-icon-error);
 
   /* Fonts — Vega prefers Geist Sans/Mono with system fallbacks; the fonts are
      not bundled, so uninstalled stacks resolve to the fallbacks. */
@@ -394,10 +397,14 @@
   --ui-toast-container: #171717;
   --ui-toast-fg: #fafafa;
   --ui-toast-action: #e5e5e5;
-  --ui-toast-icon-info: #93c5fd;
-  --ui-toast-icon-success: #81c995;
-  --ui-toast-icon-warning: #fdd663;
-  --ui-toast-icon-error: #f87171;
+  --ui-color-toast-icon-info: #93c5fd;
+  --ui-color-toast-icon-success: #81c995;
+  --ui-color-toast-icon-warning: #fdd663;
+  --ui-color-toast-icon-error: #f87171;
+  --ui-toast-icon-info: var(--ui-color-toast-icon-info);
+  --ui-toast-icon-success: var(--ui-color-toast-icon-success);
+  --ui-toast-icon-warning: var(--ui-color-toast-icon-warning);
+  --ui-toast-icon-error: var(--ui-color-toast-icon-error);
 
   --ui-card-container-elevated: #171717;
   --ui-card-container-filled: #262626;

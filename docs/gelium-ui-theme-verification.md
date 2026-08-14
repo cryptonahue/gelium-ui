@@ -42,11 +42,12 @@ La matriz vive en `web/styles_theme_matrix_test.go`:
 - `TestThemeMatrixCoversEveryAvailableTheme` — itera `availableThemes(t)` (glob de `themes/*/theme.css`,
   nunca una ruta hardcodeada). Por cada theme y componente verifica, por presencia (no valor):
   - la familia `--ui-<componente>-*` está definida en el bloque **light**;
-  - cobertura dark en las **dos rutas** (clase `.theme-dark` + `@media (prefers-color-scheme: dark)`):
+  - cobertura dark en la **ruta de clase única** (`.theme-<name>.theme-dark` / `.dark` /
+    `[data-theme="dark"]`):
     - **directa** (field, dialog, toast, card, switch, slider, progress, fab, select y la familia semántica
-      de color): al menos un token de la familia redefinido en cada ruta dark;
+      de color): al menos un token de la familia redefinido en la ruta dark;
     - **derivada** (badge, checkbox, radio, divider): la familia vive en light y referencia `--ui-color-*`
-      semánticos; la legibilidad dark viene de que ambos bloques dark redefinen esos colores.
+      semánticos; la legibilidad dark viene de que la ruta dark redefine esos colores.
   - el componente cubre sus estados documentados con `var(--ui-*)`, nunca literales
     (`TestThemeMatrixStateCoverageIsTokenDriven`).
 - `TestSourceAppCSSKeepsCoreBeforeThemeCascade` — `sourceAppCSS` respeta el orden del build:
@@ -62,9 +63,9 @@ Un theme pasa la suite si y solo si cumple **todo** lo siguiente:
       (`--ui-<componente>-*` para button-vía-color-semántico, text-field `--ui-field-*`, dialog, toast,
       card, badge, checkbox, radio, switch, slider, progress, fab, select, divider).
 - [ ] Light + dark autocontenido en un solo `themes/<name>/theme.css`, con selector raíz `.theme-<name>`.
-- [ ] Dark cubierto en **las dos rutas**: clase (`.<name>.theme-dark`/`.dark`/`[data-theme="dark"]`)
-      **y** `@media (prefers-color-scheme: dark)`. O bien redefine la familia directamente, o bien
-      garantiza que los `--ui-color-*` semánticos que la familia referencia se redefinen en ambas rutas.
+- [ ] Dark cubierto en la **ruta de clase única** (`.theme-<name>.theme-dark`/`.dark`/`[data-theme="dark"]`),
+      sin bloques `@media (prefers-color-scheme: dark)`. O bien redefine la familia directamente, o bien
+      garantiza que los `--ui-color-*` semánticos que la familia referencia se redefinen en esa ruta.
 - [ ] Naming canónico `--ui-*`; `danger` es el canónico (no `error`).
 - [ ] Cero tokens muertos, cero gaps: todo `var(--ui-*)` referenciado por los componentes tiene definición.
 - [ ] `npm run build` + `go test ./...` + `go vet ./...` verdes **sin aseverar valores Material**.
@@ -100,4 +101,4 @@ editar tests:
 | Orden `tokens.css` → theme en el build | `TestSourceAppCSSKeepsCoreBeforeThemeCascade` | ✅ sincronizado |
 | Lista de imports de `sourceAppCSS` vs `app.css` | verificación de orden en el helper | ✅ sincronizado |
 | Literales de color en componentes | `TestNoColorLiteralsInComponents` (excluye tokens/demo/app + bloques forced-colors) | ✅ cubre 50 archivos |
-| Valor hex Material en tests | refactor a presencia (fab/dialog/toast ya migrados) | ✅ sin aserciones de valor |
+| Valor hex en tests de toast | `TestToastIconTokensDeriveFromCore` — presencia (una vez por familia en light y dark class route) + derivación `--ui-color-*`, cero hex | ✅ sincronizado |
