@@ -91,75 +91,144 @@ Leyenda de estado en Gelium: **✅ implementado** · **◐ parcial** (ad-hoc) ·
 
 ## 3. Patrones de estado
 
-### Empty state ◐ (componente reusable pendiente)
+Los patrones de estado comunican la condición de la interfaz: qué está pasando, qué falló, qué falta. La regla del roadmap es **persistente-contextual ≠ transitorio-acción**: el feedback que debe sobrevivir a la interacción (errores, validaciones, confirmaciones, ausencia de datos) es **persistente** y vive anclado a su contexto; el feedback del resultado inmediato de una acción es **transitorio** y desaparece solo.
+
+**No confundir:**
+- **Persistente (contextual)**: Empty state, Inline alert, Banner, Callout, Error state, Validation summary, Success feedback.
+- **Transitorio (acción)**: Toast, Loading state.
+
+| Pattern | Partial | CSS | Test |
+|---|---|---|---|
+| Empty state | empty-state.html | empty-state.css | styles_empty_state_test.go |
+| Loading state | button.html `aria-busy` | button.css | styles_button_test.go |
+| Skeleton | skeleton.html | skeleton.css | styles_skeleton_test.go |
+| Inline alert | inline-alert.html | inline-alert.css | styles_inline_alert_test.go |
+| Banner | banner.html | banner.css | styles_banner_test.go |
+| Callout | callout.html | callout.css | styles_callout_test.go |
+| Error state | error-state.html | error-state.css | styles_error_state_test.go |
+| Validation summary | validation-summary.html | validation-summary.css | styles_validation_summary_test.go |
+| Success feedback | reuso inline-alert--success / banner--success | — | — |
+| Toast | toast.html | toast.css | styles_toast_test.go |
+
+### Empty state ✅ · Persistente
 
 - **Aliases**: empty, no data, vacío.
 - **Intención**: comunicar que no hay datos y guiar al usuario (mensaje + opcional CTA).
-- **Semántica HTML**: región con heading + texto + opcional acción; hoy ad-hoc `demo-wa-empty`.
+- **Semántica HTML**: región con heading + texto + opcional acción (`<div role="status">` en `empty-state.html:1`).
+- **Estados**: vacío (estado único; opcional compact).
+- **Accesibilidad**: `role="status"` (polite) en el contenedor; el CTA es un control real con foco propio.
+- **Server contract**: none.
 - **Cuándo usarlo**: listados server-side sin resultados (gap real: tabla muestra `0 rows` sin guía).
+- **Cuándo no**: feedback del resultado de una acción → Toast; aviso global → Banner.
+- **Mapping a Gelium**: `web/templates/empty-state.html`, `web/styles/empty-state.css`, `web/styles_empty_state_test.go`.
 - **JS**: 0.
-- **Nota**: requisito bloqueante de Phase 4; convertir en componente reusable.
 
-### Loading state / Skeleton ◐ / ✖
+### Loading state / Skeleton ✅ · Transitorio
 
 - **Aliases**: loading, placeholder, skeleton.
 - **Intención**: indicar carga de datos sin bloquear; Skeleton muestra la forma del contenido futuro.
-- **Estado actual**: solo Button loading (`aria-busy`) y Progress determinate/indeterminate; Skeleton no existe.
+- **Composición**: Button con `aria-busy` (`button.html`) + Progress determinate/indeterminate (`progress.html`) + Skeleton (`skeleton.html`); NO es un partial nuevo.
+- **Semántica HTML**: estado en el control (`aria-busy`) o región de progreso (`role="progressbar"`); Skeleton como placeholders estáticos.
+- **Estados**: loading (Button `aria-busy`, Progress determinate/indeterminate); skeleton (forma del contenido futuro).
+- **Accesibilidad**: `aria-busy` en el control durante la carga; Progress anuncia progreso; Skeleton estático, no interactivo.
+- **Server contract**: none (la fase de carga se renderiza desde el servidor).
 - **Cuándo usarlo**: feeds, dashboards, carga inicial de listados.
+- **Cuándo no**: feedback del resultado de una acción → Toast; ausencia de datos → Empty state.
+- **Mapping a Gelium**: `web/templates/button.html` (`aria-busy`), `web/templates/progress.html`, `web/templates/skeleton.html`; tests `styles_button_test.go`, `styles_progress_test.go`, `styles_skeleton_test.go`.
 - **JS**: 0 (CSS puro).
-- **Nota**: requisito bloqueante de Phase 4.
 
-### Inline alert ◐ (componente reusable pendiente)
+### Inline alert ✅ · Persistente
 
 - **Aliases**: inline error, field error, alert.
 - **Intención**: mensaje **persistente ligado al contexto** de un formulario/sección; sobrevive a la interacción.
-- **Semántica HTML**: `<p role="alert">` junto al campo con `aria-invalid` en el control.
+- **Semántica HTML**: `<p role="alert">` (tone error) o `role="status"` (resto) junto al campo con `aria-invalid` en el control; partial `inline-alert.html:1` (`<div role="alert|status">` según tone).
+- **Estados**: error, warning, info, success (tone).
+- **Accesibilidad**: `role="alert"` en tone error; `role="status"` en el resto; el campo conserva `aria-invalid` + `aria-describedby`.
+- **Server contract**: 422 con errores de campo (campo + mensaje); re-render del partial con el valor preservado.
 - **Cuándo usarlo**: errores de validación (contrato 422), advertencias de sección.
 - **Cuándo no**: feedback transitorio → Toast; aviso global → Banner.
-- **Mapping a Gelium**: hoy `text-field.html:8`, `select.html:89` (error de campo).
+- **Mapping a Gelium**: `web/templates/inline-alert.html`, `web/styles/inline-alert.css`, `web/styles_inline_alert_test.go`; hoy `text-field.html:8`, `select.html:89` (error de campo).
 - **JS**: 0.
 
-### Banner ✖
+### Banner ✅ · Persistente
 
 - **Aliases**: site banner, notice.
 - **Intención**: aviso **persistente a nivel página/sitio** que exige acción (sesión expirada, mantenimiento, consent).
-- **Semántica HTML**: región con rol `alert`/`status`, sin auto-dismiss.
+- **Semántica HTML**: región con `role="alert"` (tone error) o `role="status"` (resto), sin auto-dismiss (`banner.html:1`).
+- **Estados**: error, warning, info, success (tone); dismiss explícito por POST.
+- **Accesibilidad**: `role="alert"` en tone error; `role="status"` en el resto; dismiss por POST explícito, nunca temporizado.
+- **Server contract**: re-render del partial desde el servidor; el dismiss es un POST explícito.
 - **Cuándo usarlo**: errores globales de Auth, mantenimiento, consentimiento.
 - **Cuándo no**: nota ignorable → Callout; resultado transitorio → Toast.
+- **Mapping a Gelium**: `web/templates/banner.html`, `web/styles/banner.css`, `web/styles_banner_test.go`.
 - **JS**: 0.
 
-### Callout ✖
+### Callout ✅ · Persistente
 
 - **Aliases**: note, tip, info box.
 - **Intención**: contenido **informativo/promocional** sin urgencia ni requisito de acción.
-- **Semántica HTML**: `<aside>` o bloque con heading opcional.
+- **Semántica HTML**: `<aside>` con heading opcional (`callout.html:1`).
+- **Estados**: estático (variantes informativas).
+- **Accesibilidad**: contenido estático leído en orden de documento; sin roles dinámicos.
+- **Server contract**: none.
 - **Cuándo usarlo**: contexto, tips, documentos, ayuda.
 - **Cuándo no**: requiere acción → Banner; error del campo → Inline alert.
+- **Mapping a Gelium**: `web/templates/callout.html`, `web/styles/callout.css`, `web/styles_callout_test.go`.
 - **JS**: 0.
 
-### Success feedback ✅ (reuso, sin componente nuevo)
+### Error state ✅ · Persistente
+
+- **Aliases**: error page, fatal error, pantalla de error.
+- **Intención**: comunicar un error **no recuperable en contexto** (HTTP 4xx/5xx) y ofrecer una vía de salida (retry / inicio).
+- **Semántica HTML**: región `role="alert"` con código + heading + mensaje + retry CTA opcional (`error-state.html:1-5`).
+- **Estados**: error (código + título + cuerpo); retry opcional.
+- **Accesibilidad**: `role="alert"` en la región; el código es decorativo (`aria-hidden="true"`); el CTA es un enlace real con foco propio.
+- **Server contract**: respuesta de error 4xx/5xx renderiza el partial — nunca Toast.
+- **Cuándo usarlo**: 404, 500, fallos de operación crítica sin contexto de formulario.
+- **Cuándo no**: error recuperable de campo → Inline alert / Validation summary; resultado transitorio → Toast.
+- **Mapping a Gelium**: `web/templates/error-state.html`, `web/styles/error-state.css`, `web/styles_error_state_test.go`.
+- **JS**: 0.
+
+### Validation summary ✅ · Persistente
+
+- **Aliases**: error summary, resumen de errores.
+- **Intención**: resumir al inicio del formulario los campos que requieren atención, con enlaces a cada uno.
+- **Semántica HTML**: región `role="alert"` + heading ("N campos requieren atención") + `<ul>` de `<a href="#{campo}-error">` (`validation-summary.html:1-6`).
+- **Estados**: error de validación (1+ campos).
+- **Accesibilidad**: `role="alert"` al renderizar; cada enlace lleva al campo, que conserva `aria-invalid` + `aria-describedby`; heading jerárquico (`h{level}`).
+- **Server contract**: 422 renderiza el summary con los items de error.
+- **Cuándo usarlo**: formularios con validación server-side (contrato 422).
+- **Cuándo no**: un solo campo con error → Inline alert; resultado transitorio → Toast.
+- **Mapping a Gelium**: `web/templates/validation-summary.html`, `web/styles/validation-summary.css`, `web/styles_validation_summary_test.go`.
+- **JS**: 0.
+
+### Success feedback ✅ · Persistente
 
 - **Aliases**: success message, confirmation persistente.
 - **Intención**: confirmación **NO efímera** de una operación exitosa; sobrevive a la navegación.
 - **Implementación**: REUSA `inline-alert--success` (éxito de sección/form) y `banner--success` (éxito de página/operación global); NO es componente nuevo.
 - **Semántica HTML**: igual que el patrón reusado (`<div>` en ambos partials: `inline-alert.html:1`, `banner.html:1`).
-- **Estados/ARIA**: `role="status"` (polite) derivado del tone en ambos partials; `error` → `role="alert"`.
+- **Estados**: success (persistente); error → tone error del patrón reusado.
+- **Accesibilidad**: `role="status"` (polite) derivado del tone en ambos partials; `error` → `role="alert"`.
 - **Cuándo usarlo**: guardado exitoso de settings, operación global completada (POST + 303 → página destino re-renderiza el success persistente).
 - **Cuándo no**: feedback transitorio post-acción → Toast; error → `inline-alert--error` / `banner--error`.
 - **Server contract**: POST + 303 → la página destino re-renderiza el success persistente; NUNCA `HX-Trigger loom:toast` para persistente.
+- **Mapping a Gelium**: reuso de `web/templates/inline-alert.html` (tone success) y `web/templates/banner.html` (tone success); sin partial propio.
 - **JS**: 0.
 - **Relación con patterns**: contraparte persistente del Toast (transitorio).
 
-### Toast ✅
+### Toast ✅ · Transitorio
 
 - **Aliases**: snackbar, notification. (Decisión Gelium: no crear Snackbar separado; usar solo como referencia visual.)
 - **Intención**: feedback **transitorio del resultado de una acción**; no bloquea; auto-dismiss.
 - **Anatomía**: `.ui-toast-{info|success|warning|error}`, `.ui-toast-message`, `.ui-toast-action`.
 - **Semántica HTML**: `role="status"` (info/success) o `role="alert"` (error) en región `#loom-toast-region aria-live="polite"`.
 - **Estados**: variantes info/success/warning/error; auto-dismiss 4s/8s pausable; dismiss manual.
+- **Accesibilidad**: `role="status"`/`role="alert"` según variante + `aria-live="polite"` en la región (`toast.html:10`).
+- **Server contract**: operación server-driven dispara el toast vía HX-Trigger (prefijo congelado — referencia únicamente; nunca para persistente).
 - **Cuándo usarlo**: resultado de operaciones server-driven (`HX-Trigger loom:toast`).
 - **Cuándo no**: validación de campos (NUNCA, `toast.go:129-133`); feedback persistente/crítico → Inline alert o Banner.
-- **Mapping a Gelium**: `web/templates/toast.html`, `/components/toast`.
+- **Mapping a Gelium**: `web/templates/toast.html`, `web/styles/toast.css`, `web/styles_toast_test.go`, `/components/toast`.
 - **JS**: J* — sin JS toast inline persistente; con JS región aria-live + auto-dismiss.
 - **Relación con patterns**: feedback de operaciones en Queue, Data table refresh, Resource Editor.
 
