@@ -1,0 +1,60 @@
+@layer components {
+  /* Marketing landing frame: composes hero / feature-card / split / section-heading.
+     Tokens only — no parallel design system. */
+
+  .ui-landing-main {
+    width: min(72rem, calc(100% - 2rem));
+    margin: 0 auto;
+    padding: 2rem 0 4rem;
+  }
+
+  .ui-landing {
+    display: flex;
+    flex-direction: column;
+    gap: clamp(2.5rem, 6vw, 4rem);
+  }
+
+  .ui-landing-section {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+  }
+
+  .ui-landing-feature-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(16rem, 1fr));
+    gap: 1.25rem;
+  }
+
+  .ui-landing-code {
+    margin: 0;
+    padding: 1.25rem 1.5rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-md);
+    background: var(--ui-color-surface-container, var(--ui-color-surface));
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-sm, var(--ui-type-body-md));
+    font-family: var(--ui-font-mono, ui-monospace, monospace);
+    line-height: 1.6;
+    overflow: auto;
+    white-space: pre;
+  }
+
+  .ui-landing-cta-band {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 1.25rem;
+    padding: clamp(2rem, 5vw, 3rem) 1.5rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-lg);
+    background: var(--ui-color-surface);
+    box-shadow: var(--ui-shadow-1);
+    text-align: center;
+  }
+
+  .ui-landing-cta-band-action {
+    display: flex;
+    justify-content: center;
+  }
+}

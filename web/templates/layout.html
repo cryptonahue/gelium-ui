@@ -39,13 +39,16 @@
   <header class="site-header">
     <a class="brand" href="/">Gelium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
-    {{if .ThemeSwitcher}}{{template "theme-switcher" .ThemeSwitcher}}{{end}}
+    <div class="site-header-end">
+      {{if .ThemeSwitcher}}{{template "theme-switcher" .ThemeSwitcher}}{{end}}
+      {{if .SchemeSwitcher}}{{template "color-scheme-switcher" .SchemeSwitcher}}{{end}}
+    </div>
   </header>
   {{if .Breadcrumb}}{{template "breadcrumb" .Breadcrumb}}{{end}}
   {{if .Banner}}{{template "banner" .Banner}}{{end}}
-  <main id="main-content" class="docs-shell docs-content">
+  <main id="main-content" class="{{if .Landing}}ui-landing-main{{else}}docs-shell docs-content{{end}}">
   {{end}}
-    {{if .Error}}{{template "error-state" .Error}}{{else}}<article class="prose">{{.Content}}</article>
+    {{if .Error}}{{template "error-state" .Error}}{{else if .Landing}}{{template "landing" .Landing}}{{else}}<article class="prose">{{.Content}}</article>
     {{if .CTA}}<div class="hero-action">{{template "button" .CTA}}</div>{{end}}
     {{if .Buttons}}<section class="component-preview" aria-label="Button examples">{{range .Buttons}}{{template "button" .}}{{end}}</section>{{end}}
     {{if .TextFields}}<section class="component-preview text-field-preview" aria-label="Text field examples">{{range .TextFields}}{{template "text-field" .}}{{end}}</section>{{end}}

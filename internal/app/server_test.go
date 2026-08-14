@@ -60,7 +60,7 @@ func TestHealthzReturnsPlainTextOK(t *testing.T) {
 	}
 }
 
-func TestHomeRendersMarkdownInsideDogfoodedLayout(t *testing.T) {
+func TestHomeRendersMarketingLanding(t *testing.T) {
 	req := httptest.NewRequest(http.MethodGet, "/", nil)
 	res := httptest.NewRecorder()
 
@@ -71,15 +71,30 @@ func TestHomeRendersMarkdownInsideDogfoodedLayout(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Gelium UI</h1>`,
-		`<main`,
+		`class="ui-landing"`,
+		`class="ui-hero`,
+		`Server-rendered components`,
 		`class="ui-button ui-button-primary"`,
+		`href="/docs"`,
 		`href="/components/button"`,
+		`class="ui-feature-card`,
+		`class="ui-split`,
+		`Admin Resource`,
+		`class="site-header"`,
+		`aria-label="Appearance"`,
 		`src="/static/htmx.min.js?v=0.4.0"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("home does not contain contract %q", contract)
 		}
+	}
+	// Must not keep the old Markdown-only home article as the primary surface.
+	if strings.Contains(body, `<article class="prose">`) {
+		t.Error("marketing landing must not render prose article shell")
+	}
+	// Must not use the docs two-pane chrome on home.
+	if strings.Contains(body, `class="docs-topbar"`) {
+		t.Error("home must not render docs shell topbar")
 	}
 }
 
@@ -476,14 +491,17 @@ func TestHomeRendersServerDrivenMetadata(t *testing.T) {
 		`<link rel="canonical" href="https://gelium-ui.example/">`,
 		`<meta name="robots" content="index, follow">`,
 		`<meta property="og:type" content="website">`,
-		`<meta property="og:title" content="Gelium UI">`,
 		`<meta property="og:url" content="https://gelium-ui.example/">`,
 		`<script type="application/ld+json">{"@context":"https://schema.org","@type":"WebSite"`,
-		`<html lang="en" class="theme-material">`,
+		`class="theme-material"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("home is missing metadata contract %q", contract)
 		}
+	}
+	// OG title follows page title for the marketing landing.
+	if !strings.Contains(body, `<meta property="og:title"`) {
+		t.Error("home must emit og:title")
 	}
 }
 
@@ -882,9 +900,9 @@ func TestLayoutRendersSkipLinkToMain(t *testing.T) {
 		mainClass string
 	}{
 		{
-			name:      "home legacy centered column",
+			name:      "home marketing landing main",
 			path:      "/",
-			mainClass: `<main id="main-content" class="docs-shell docs-content">`,
+			mainClass: `<main id="main-content" class="ui-landing-main">`,
 		},
 		{
 			name:      "docs shell content column",

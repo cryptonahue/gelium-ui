@@ -206,10 +206,15 @@ func TestDocsShellColorSchemeSwitcher(t *testing.T) {
 		}
 	})
 
-	t.Run("home has no scheme switcher", func(t *testing.T) {
+	t.Run("home marketing chrome has appearance without docs shell", func(t *testing.T) {
 		body := getOKBody(t, "/")
-		if strings.Contains(body, `aria-label="Appearance"`) {
-			t.Error("home legacy layout must not render Appearance switcher")
+		// Marketing landing may expose Appearance on the site header, but must
+		// not use the docs two-pane shell chrome.
+		if strings.Contains(body, `class="docs-topbar"`) {
+			t.Error("home must not render docs-topbar")
+		}
+		if !strings.Contains(body, `class="site-header"`) {
+			t.Error("home must keep site-header")
 		}
 	})
 }

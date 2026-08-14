@@ -25,6 +25,14 @@
   .brand { font: var(--ui-type-title-lg); text-decoration: none; }
   .site-header nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
   .site-header nav a { color: var(--ui-color-primary); font: var(--ui-type-label-lg); }
+  .site-header-end {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: .75rem 1rem;
+    margin-inline-start: auto;
+  }
+  .site-header .ui-theme-switcher { margin-inline-start: 0; }
 
   /* Theme direction switcher: product labels, plain ?theme= links, 0 JS. */
   .ui-theme-switcher {

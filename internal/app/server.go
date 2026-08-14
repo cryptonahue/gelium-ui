@@ -657,8 +657,11 @@ type pageView struct {
 	// ThemeSwitcher is the 0-JS ?theme= chrome. On shell routes it lives in the
 	// topbar; on legacy header routes it may sit in the site-header.
 	ThemeSwitcher *themeSwitcherView
-	// SchemeSwitcher is the 0-JS Light/Dark control (docs topbar, right side).
-	SchemeSwitcher       *themeSwitcherView
+	// SchemeSwitcher is the 0-JS Light/Dark control (docs topbar / site header).
+	SchemeSwitcher *themeSwitcherView
+	// Landing enables the marketing home composition (hero, features, recipes).
+	// When non-nil, layout renders the landing template instead of Markdown prose.
+	Landing              *landingView
 	Banner               *bannerView
 	Breadcrumb           *breadcrumbView
 	Footer               *footerView
@@ -944,17 +947,6 @@ func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Cache-Control", "no-cache")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(asset)
-}
-
-func (s *server) home(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{
-		Title: "Themeable open-code UI components for server-rendered apps",
-		CTA: &buttonView{
-			Label:   "Read the docs",
-			Variant: "primary",
-			Href:    "/docs",
-		},
-	}, "content/index.md")
 }
 
 func (s *server) renderMarkdownPage(w http.ResponseWriter, r *http.Request, data pageView, contentPath string) {
