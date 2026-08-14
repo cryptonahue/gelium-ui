@@ -1189,3 +1189,67 @@ func TestThemesNeverRedeclareTypeAliases(t *testing.T) {
 		})
 	}
 }
+
+// TestLabelMdClosure is the Phase B R2 contract: --ui-type-label-md is a NEW
+// core default with its own Material override — an independent step, never an
+// alias of label-lg. The theme switcher (base.css) and the docs shell
+// (docs-shell.css) must consume var(--ui-type-label-md) with NO label-lg
+// fallback, and the token must be defined standalone in the core and in both
+// themes.
+func TestLabelMdClosure(t *testing.T) {
+	// 1. Core defines label-md standalone (decomposed + alias), never as a
+	// label-lg alias.
+	core, err := sourceStyles.ReadFile("styles/tokens.css")
+	if err != nil {
+		t.Fatalf("read core tokens: %v", err)
+	}
+	coreCSS := string(core)
+	if !strings.Contains(coreCSS, "--ui-type-label-md:") {
+		t.Error("core tokens.css must define the --ui-type-label-md alias (Phase B R2)")
+	}
+	for _, prop := range typeStepProps {
+		if !strings.Contains(coreCSS, "--ui-type-label-md-"+prop+":") {
+			t.Errorf("core tokens.css must define the decomposed label-md token --ui-type-label-md-%s", prop)
+		}
+	}
+	if strings.Contains(coreCSS, "--ui-type-label-md: var(--ui-type-label-lg)") {
+		t.Error("core must define --ui-type-label-md standalone, never as var(--ui-type-label-lg)")
+	}
+
+	// 2. Every theme defines the decomposed label-md values standalone (never
+	// via label-lg) in its light block.
+	for _, theme := range availableThemes(t) {
+		theme := theme
+		t.Run(theme, func(t *testing.T) {
+			light, _, _ := splitThemeSchemes(t, theme)
+			for _, prop := range typeStepProps {
+				if !strings.Contains(light, "--ui-type-label-md-"+prop+":") {
+					t.Errorf("%s light scheme must define the decomposed label-md token --ui-type-label-md-%s", theme, prop)
+				}
+			}
+			if strings.Contains(light, "--ui-type-label-md: var(--ui-type-label-lg)") {
+				t.Errorf("%s must define label-md standalone, never as var(--ui-type-label-lg)", theme)
+			}
+		})
+	}
+
+	// 3. The switcher (base.css) and docs shell (docs-shell.css) consume
+	// var(--ui-type-label-md) with NO fallback. Each file must contain at
+	// least one bare var(--ui-type-label-md) reference (the font: shorthand)
+	// and zero label-lg fallbacks; the label-md-letter-spacing consumer on
+	// the same rules references the decomposed token and must not be mistaken
+	// for a bare consumption.
+	for _, file := range []string{"base.css", "docs-shell.css"} {
+		css, err := sourceStyles.ReadFile("styles/" + file)
+		if err != nil {
+			t.Fatalf("read %s: %v", file, err)
+		}
+		content := string(css)
+		if strings.Contains(content, "var(--ui-type-label-md, var(--ui-type-label-lg))") {
+			t.Errorf("%s must consume var(--ui-type-label-md) with NO label-lg fallback (R2 closure)", file)
+		}
+		if !regexp.MustCompile(`var\(--ui-type-label-md\)`).MatchString(content) {
+			t.Errorf("%s must reference the bare var(--ui-type-label-md) (font: shorthand), got only decomposed token references", file)
+		}
+	}
+}

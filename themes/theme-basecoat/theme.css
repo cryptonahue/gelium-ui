@@ -160,6 +160,11 @@
   --ui-type-label-lg-line-height: 1.25rem;
   --ui-type-label-lg-letter-spacing: normal;
   --ui-type-label-lg-family: var(--ui-font-sans);
+  --ui-type-label-md-size: .875rem;
+  --ui-type-label-md-weight: 500;
+  --ui-type-label-md-line-height: 1.25rem;
+  --ui-type-label-md-letter-spacing: normal;
+  --ui-type-label-md-family: var(--ui-font-sans);
   --ui-type-label-sm-size: .75rem;
   --ui-type-label-sm-weight: 500;
   --ui-type-label-sm-line-height: 1rem;

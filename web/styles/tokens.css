@@ -146,9 +146,12 @@
      equivalence). letter-spacing cannot live inside a font: shorthand, so it
      is a separate per-step token every consumer may opt into; the current
      value is normal (matching the font-shorthand reset), tracking is deferred
-     (D3). The defaults mirror the Material form so an unthemed document still
-     gets usable type (display-lg and title-md are consumed by base.css and
-     the WhatsApp demo). */
+     (D3). label-md is the R2 closure step: a new core default (500
+     .875rem/1.25rem, deliberately distinct from label-lg's 600) consumed by
+     the theme switcher and docs shell with no fallback. The defaults mirror
+     the Material form so an unthemed document still gets usable type
+     (display-lg and title-md are consumed by base.css and the WhatsApp
+     demo). */
   --ui-type-display-sm-size: 2.25rem;
   --ui-type-display-sm-weight: 400;
   --ui-type-display-sm-line-height: 2.75rem;
@@ -194,6 +197,11 @@
   --ui-type-label-lg-line-height: 1.25rem;
   --ui-type-label-lg-letter-spacing: normal;
   --ui-type-label-lg-family: var(--ui-font-sans);
+  --ui-type-label-md-size: .875rem;
+  --ui-type-label-md-weight: 500;
+  --ui-type-label-md-line-height: 1.25rem;
+  --ui-type-label-md-letter-spacing: normal;
+  --ui-type-label-md-family: var(--ui-font-sans);
   --ui-type-label-sm-size: .75rem;
   --ui-type-label-sm-weight: 500;
   --ui-type-label-sm-line-height: 1rem;
@@ -221,6 +229,7 @@
   --ui-type-body-md: var(--ui-type-body-md-weight) var(--ui-type-body-md-size)/var(--ui-type-body-md-line-height) var(--ui-type-body-md-family);
   --ui-type-body-sm: var(--ui-type-body-sm-weight) var(--ui-type-body-sm-size)/var(--ui-type-body-sm-line-height) var(--ui-type-body-sm-family);
   --ui-type-label-lg: var(--ui-type-label-lg-weight) var(--ui-type-label-lg-size)/var(--ui-type-label-lg-line-height) var(--ui-type-label-lg-family);
+  --ui-type-label-md: var(--ui-type-label-md-weight) var(--ui-type-label-md-size)/var(--ui-type-label-md-line-height) var(--ui-type-label-md-family);
   --ui-type-label-sm: var(--ui-type-label-sm-weight) var(--ui-type-label-sm-size)/var(--ui-type-label-sm-line-height) var(--ui-type-label-sm-family);
   --ui-type-dialog-headline: var(--ui-type-dialog-headline-weight) var(--ui-type-dialog-headline-size)/var(--ui-type-dialog-headline-line-height) var(--ui-type-dialog-headline-family);
   --ui-type-dialog-body: var(--ui-type-dialog-body-weight) var(--ui-type-dialog-body-size)/var(--ui-type-dialog-body-line-height) var(--ui-type-dialog-body-family);

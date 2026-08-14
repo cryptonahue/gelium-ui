@@ -321,3 +321,28 @@ func TestThemeMatrixDefaultThemeIsPartOfDiscovery(t *testing.T) {
 	}
 	t.Fatalf("the contract matrix must cover %q, the repository's only theme", defaultThemeName)
 }
+
+// TestThemeMatrixLabelMdDefinedPerTheme is the Phase B R2 extension of the
+// formal matrix: every theme must define the label-md type family in its light
+// scheme (the decomposed --ui-type-label-md-* tokens). label-md is the R2
+// closure step — a real step, never an alias of label-lg — so the matrix
+// covers it like any other family the components consume.
+func TestThemeMatrixLabelMdDefinedPerTheme(t *testing.T) {
+	for _, theme := range availableThemes(t) {
+		theme := theme
+		t.Run(theme, func(t *testing.T) {
+			light, _, _ := splitThemeSchemes(t, theme)
+			for _, prop := range typeStepProps {
+				token := "--ui-type-label-md-" + prop + ":"
+				if !strings.Contains(light, token) {
+					t.Errorf("%s light scheme must define the label-md decomposed token %s (R2 closure)", theme, token)
+				}
+			}
+			// Closure: the theme must never define label-md as a label-lg
+			// alias (that would defeat the R2 split).
+			if strings.Contains(light, "--ui-type-label-md: var(--ui-type-label-lg)") {
+				t.Errorf("%s must define label-md standalone, never as var(--ui-type-label-lg)", theme)
+			}
+		})
+	}
+}
