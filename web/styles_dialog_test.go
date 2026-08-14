@@ -17,23 +17,26 @@ func TestMaterialThemeDefinesDialogSemanticsInEveryColorScheme(t *testing.T) {
 		`--ui-dialog-body:`,
 		`--ui-dialog-scrim:`,
 		`.theme-material.theme-dark,`,
-		`@media (prefers-color-scheme: dark)`,
 	} {
 		if !strings.Contains(theme, contract) {
 			t.Errorf("Material dialog theme contract is missing %q", contract)
 		}
 	}
 	// Every surface/foreground/scrim token must be defined once per scheme:
-	// light, explicit dark, and media dark. The contract is token presence
-	// across schemes, not a concrete hex value.
+	// light and the single explicit dark class route. The contract is token
+	// presence across schemes, not a concrete hex value — and never a dark
+	// media route (single dark mechanism).
+	if strings.Contains(theme, "@media (prefers-color-scheme: dark)") {
+		t.Error("Material theme must not define a dark media route (single dark mechanism is the class route)")
+	}
 	for _, token := range []string{
 		"--ui-dialog-container:",
 		"--ui-dialog-fg:",
 		"--ui-dialog-body:",
 		"--ui-dialog-scrim:",
 	} {
-		if got := strings.Count(theme, token); got != 3 {
-			t.Errorf("dark dialog semantics must be defined for explicit and preferred dark schemes: %s appears %d times, want 3", token, got)
+		if got := strings.Count(theme, token); got != 2 {
+			t.Errorf("dark dialog semantics must be defined once in light and once in the single dark class route: %s appears %d times, want 2", token, got)
 		}
 	}
 }

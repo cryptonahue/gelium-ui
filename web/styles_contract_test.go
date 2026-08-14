@@ -162,8 +162,8 @@ func entryMediaBlock(t *testing.T, css, media string) string {
 
 // TestSurfaceContainerTokenClosedAcrossCoreAndEveryScheme proves the
 // --ui-color-surface-container gap is closed: the core owns a neutral default
-// and the Material theme defines the token in light, explicit dark, and media
-// dark schemes. Presence only — never a concrete hex value.
+// and the Material theme defines the token in light and in the single explicit
+// dark class route. Presence only — never a concrete hex value.
 func TestSurfaceContainerTokenClosedAcrossCoreAndEveryScheme(t *testing.T) {
 	core, err := sourceStyles.ReadFile("styles/tokens.css")
 	if err != nil {
@@ -174,8 +174,17 @@ func TestSurfaceContainerTokenClosedAcrossCoreAndEveryScheme(t *testing.T) {
 	}
 
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
-	if got := strings.Count(theme, "--ui-color-surface-container:"); got != 3 {
-		t.Errorf("theme-material must define --ui-color-surface-container in light, explicit dark, and media dark schemes, got %d", got)
+	// Single dark mechanism: the token is defined once in light and once in the
+	// explicit dark class route — never in a dark media block (3 definitions
+	// would mean the duplicated class+media routine has leaked back).
+	if got := strings.Count(theme, "--ui-color-surface-container:"); got != 2 {
+		t.Errorf("theme-material must define --ui-color-surface-container once in light and once in the single dark class route, got %d", got)
+	}
+	if !strings.Contains(theme, ".theme-material.theme-dark,") {
+		t.Error("theme-material must declare the explicit dark class route (.theme-material.theme-dark)")
+	}
+	if strings.Contains(theme, "@media (prefers-color-scheme: dark)") {
+		t.Error("theme-material must not define a dark media route (single dark mechanism is the class route)")
 	}
 }
 
@@ -644,28 +653,29 @@ func TestSemanticColorTokensDefinedInCore(t *testing.T) {
 }
 
 // TestSemanticColorTokensOverriddenByMaterialTheme proves the Material theme
-// overrides every semantic status token in light, explicit dark, and media dark
-// schemes. Each token must appear once per scheme, so a closed override matrix
-// appears at least three times in theme.css. Presence only.
+// overrides every semantic status token in light and in the single explicit
+// dark class route. Each token must appear exactly twice (light + dark class),
+// so a closed override matrix never needs the duplicated media dark route.
+// Presence only.
 func TestSemanticColorTokensOverriddenByMaterialTheme(t *testing.T) {
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, defaultThemeName), " ")
 	for _, token := range semanticColorCoreTokens {
-		if n := strings.Count(theme, token+":"); n < 3 {
-			t.Errorf("theme-material must override %s in light + both dark routes, got %d definitions", token, n)
+		if n := strings.Count(theme, token+":"); n != 2 {
+			t.Errorf("theme-material must override %s once in light and once in the single dark class route, got %d definitions", token, n)
 		}
 	}
 	// The dialog-scrim component token must remain as a compatibility alias of
-	// the core scrim, in every scheme, so dialog.css and navigation-drawer.css
-	// keep resolving it.
-	if n := strings.Count(theme, "--ui-dialog-scrim: var(--ui-color-scrim)"); n < 3 {
-		t.Errorf("theme-material must alias --ui-dialog-scrim to --ui-color-scrim in all schemes, got %d definitions", n)
+	// the core scrim, in light and the dark class route, so dialog.css and
+	// navigation-drawer.css keep resolving it.
+	if n := strings.Count(theme, "--ui-dialog-scrim: var(--ui-color-scrim)"); n != 2 {
+		t.Errorf("theme-material must alias --ui-dialog-scrim to --ui-color-scrim in light and the dark class route, got %d definitions", n)
 	}
 }
 
 // TestToastIconTokensDeriveFromCore proves the four --ui-toast-icon-* tokens the
-// theme owns no longer carry color literals: they re-point to the core semantic
-// colors in every scheme (light, explicit dark, media dark), so icon hues stay
-// locked to the status palette.
+// theme owns no longer carry color literals that drift: they re-point to the
+// core semantic colors in light, and the inverted-surface dark values live in
+// the single dark class route (never duplicated in a media block).
 func TestToastIconTokensDeriveFromCore(t *testing.T) {
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, defaultThemeName), " ")
 	// The toast uses an inverted surface: light = dark container (#322f35),
@@ -687,16 +697,17 @@ func TestToastIconTokensDeriveFromCore(t *testing.T) {
 			t.Errorf("theme-material must define toast icon value %q with accessible contrast on the inverted surface", want)
 		}
 	}
-	// Light scheme defines the four light-on-dark values; dark schemes
-	// (class and media) define the dark-on-light values, twice each.
+	// Light scheme defines the four light-on-dark values once; the dark class
+	// route defines the dark-on-light values once each (single mechanism — no
+	// class+media duplication).
 	for _, derive := range []string{
 		"--ui-toast-icon-info: #d0bcff",
 		"--ui-toast-icon-success: #81c995",
 		"--ui-toast-icon-warning: #fdd663",
 		"--ui-toast-icon-error: #f2b8b5",
 	} {
-		if n := strings.Count(theme, derive); n < 1 {
-			t.Errorf("theme-material must define light-scheme toast icon %q at least once, got %d", derive, n)
+		if n := strings.Count(theme, derive); n != 1 {
+			t.Errorf("theme-material must define light-scheme toast icon %q exactly once, got %d", derive, n)
 		}
 	}
 	for _, derive := range []string{
@@ -705,8 +716,8 @@ func TestToastIconTokensDeriveFromCore(t *testing.T) {
 		"--ui-toast-icon-warning: #7a5700",
 		"--ui-toast-icon-error: #b3261e",
 	} {
-		if n := strings.Count(theme, derive); n < 2 {
-			t.Errorf("theme-material must define dark-scheme toast icon %q in class and media, got %d", derive, n)
+		if n := strings.Count(theme, derive); n != 1 {
+			t.Errorf("theme-material must define dark-scheme toast icon %q exactly once in the dark class route, got %d", derive, n)
 		}
 	}
 }
