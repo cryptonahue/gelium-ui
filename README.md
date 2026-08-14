@@ -97,8 +97,11 @@ gelium-ui/                 (producto Gelium UI; carpeta física `loom-ui`)
 │   └── ..._test.go
 ├── scripts/
 │   └── copy-htmx.mjs
-├── themes/theme-material/
-│   └── theme.css
+├── themes/
+│   ├── theme-material/
+│   │   └── theme.css
+│   └── theme-basecoat/
+│       └── theme.css
 ├── web/
 │   ├── assets.go
 │   ├── content/
@@ -130,7 +133,7 @@ gelium-ui/                 (producto Gelium UI; carpeta física `loom-ui`)
 
 ### Nota sobre `embed`
 
-Go no permite que una directiva `//go:embed` lea rutas padre con `..`. Por eso `web/assets.go` vive junto al árbol `web/` y embebe `templates`, `content` y los assets compilados de `static`. El source independiente del theme permanece en `themes/theme-material/theme.css`; Tailwind lo integra en `web/static/app.css`, que es el asset final embebido.
+Go no permite que una directiva `//go:embed` lea rutas padre con `..`. Por eso `web/assets.go` vive junto al árbol `web/` y embebe `templates`, `content` y los assets compilados de `static`. El source independiente de cada theme permanece en `themes/<theme>/theme.css` (theme-material y theme-basecoat); Tailwind los integra vía `@import` en `web/styles/app.css` y produce `web/static/app.css`, que es el asset final embebido. La selección es por clase en el documento raíz (`class="{{.ThemeClass}}"`, `layout.html:2`), sin JS ni rebuild.
 
 ### Nota sobre el binario
 

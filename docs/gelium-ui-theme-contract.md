@@ -192,8 +192,9 @@ tiene efecto; sin el paso 2, el server no permite pedirla. Los tests del
 mecanismo (`web/styles_theme_mechanism_test.go`, `internal/app/theme_mechanism_test.go`)
 verifican que todo theme en disco tiene su selector raíz en el bundle compilado
 y que el bundle contiene exactamente los themes importados — un theme nuevo
-entra a la suite sin editar tests. **Ejemplo pendiente:** `theme-basecoat` es
-Phase I; hoy la allowlist contiene solo `theme-material`.
+entra a la suite sin editar tests. **Ejemplo aplicado:** `theme-basecoat`
+entró a la allowlist en Phase I junto a su `theme.css` y su import en `app.css`
+(ver `docs/gelium-ui-theme-registry.md` §5).
 
 ---
 

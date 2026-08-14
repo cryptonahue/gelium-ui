@@ -76,17 +76,20 @@ Un theme pasa la suite si y solo si cumple **todo** lo siguiente:
 
 El flujo operativo paso a paso está en `docs/gelium-ui-theme-implementation-guide.md`.
 
-## 4. Cómo se extiende la matriz cuando exista theme-basecoat
+## 4. Cómo se extendió la matriz para theme-basecoat (Phase I, aplicado)
 
-1. Crear `themes/theme-basecoat/theme.css` con `.theme-basecoat { … }` (light + dark autocontenido).
-2. **No se edita ningún test**: `availableThemes` descubre `theme-basecoat` por glob y la matriz lo
-   recorre automáticamente.
-3. `app.css` añade un import explícito (`@import "../../themes/theme-basecoat/theme.css";`) y la clase
-   del theme se activa en runtime desde el template (mecanismo Phase H).
-4. Si Basecoat necesita una familia nueva o una divergencia de variante, se resuelve como **decisión del
-   theme contract** (extender el core con contrato, o documentar divergencia), nunca CSS de theme sobre
+Theme-basecoat ya existe y entró a la suite con el mismo procedimiento — sin
+editar tests:
+
+1. Se creó `themes/theme-basecoat/theme.css` con `.theme-basecoat { … }` (light + dark autocontenido).
+2. **No se editó ningún test**: `availableThemes` descubre `theme-basecoat` por glob y la matriz lo
+   recorre automáticamente (`web/styles_basecoat_test.go` pin la cobertura de Phase I además de la matriz).
+3. `app.css` añade el import explícito (`@import "../../themes/theme-basecoat/theme.css";`) y la clase
+   del theme se activa en runtime desde el template (`class="{{.ThemeClass}}"`, allowlist en `themeClass()`).
+4. Las divergencias (floating label, variantes fuera de scope) se resolvieron como **decisión del
+   theme contract** — documentadas en `themes/theme-basecoat/README.md` §5, sin CSS de theme sobre
    markup distinto.
-5. Si el test `TestThemeMatrixCoversEveryAvailableTheme` falla para basecoat, el error nombra
+5. Si `TestThemeMatrixCoversEveryAvailableTheme` falla para basecoat, el error nombra
    exactamente la familia o el color semántico faltante por componente y por ruta dark — es la checklist
    automatizada.
 

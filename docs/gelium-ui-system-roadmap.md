@@ -22,7 +22,7 @@ un core UI universal
 + themes intercambiables
 ```
 
-No es solamente una colección de componentes Material: es un sistema UI reutilizable. El próximo theme será **Basecoat UI**. Shadcn no se implementa todavía como runtime ni como port directo; más adelante puede convertirse en un preset o dirección visual "shadcn-like".
+No es solamente una colección de componentes Material: es un sistema UI reutilizable. El segundo theme, **Basecoat UI**, está implementado como dirección visual (`themes/theme-basecoat/theme.css`, Phase I). Shadcn no se implementa todavía como runtime ni como port directo; más adelante puede convertirse en un preset o dirección visual "shadcn-like".
 
 ## Estado actual del sistema (baseline)
 
@@ -31,6 +31,7 @@ No es solamente una colección de componentes Material: es un sistema UI reutili
 | Core Go + Markdown + embed | Completado | `cmd/gelium`, `internal/app`, `web/assets.go` |
 | Build Tailwind CSS 4 + HTMX local | Completado | `package.json`, `web/static/` |
 | Theme Material light/dark | Completado | `themes/theme-material/theme.css` |
+| Theme Basecoat light/dark (Phase I) | Completado | `themes/theme-basecoat/theme.css`, `themes/theme-basecoat/README.md` |
 | Componentes Material (contract Gelium) | 20+ entregados | `COMPONENT-ROADMAP.md`, `web/templates/`, tests |
 | Tokens públicos `--ui-*` | Parcial; no formalizado como contrato | `themes/theme-material/theme.css` |
 | Core agnóstico (desacoplado de Material) | **No existe todavía** | — |
