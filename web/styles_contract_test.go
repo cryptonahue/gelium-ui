@@ -677,53 +677,46 @@ func TestSemanticColorTokensOverriddenByMaterialTheme(t *testing.T) {
 	}
 }
 
-// TestToastIconTokensDeriveFromCore proves the four --ui-toast-icon-* tokens the
-// theme owns no longer carry color literals that drift: they re-point to the
-// core semantic colors in light, and the inverted-surface dark values live in
-// the single dark class route (never duplicated in a media block).
+// TestToastIconTokensDeriveFromCore proves the four --ui-toast-icon-* tokens
+// each theme owns no longer carry color literals that drift: per discovered
+// theme (glob, never a hardcoded path), every family is defined exactly once
+// in light and exactly once in the single dark class route, and each
+// definition derives from a --ui-color-* semantic token — never a bare color
+// literal. The toast uses an inverted surface (light = dark container, dark =
+// light container), so icons are light on the dark container and dark on the
+// light container to keep contrast; those deliberate per-scheme values are the
+// theme-owned --ui-color-toast-icon-* tokens (not core status tokens, which
+// would render at 1.14-1.60:1 on the inverted surface).
 func TestToastIconTokensDeriveFromCore(t *testing.T) {
-	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, defaultThemeName), " ")
-	// The toast uses an inverted surface: light = dark container (#322f35),
-	// dark = light container (#ece6f0). Icons must therefore be light on the
-	// dark container and dark on the light container to keep contrast. These
-	// are deliberate per-scheme values (not core status tokens, which would
-	// render at 1.14-1.60:1 on the inverted surface).
-	for _, want := range []string{
-		"--ui-toast-icon-info: #d0bcff",
-		"--ui-toast-icon-success: #81c995",
-		"--ui-toast-icon-warning: #fdd663",
-		"--ui-toast-icon-error: #f2b8b5",
-		"--ui-toast-icon-info: #6750a4",
-		"--ui-toast-icon-success: #2e7d32",
-		"--ui-toast-icon-warning: #7a5700",
-		"--ui-toast-icon-error: #b3261e",
-	} {
-		if !strings.Contains(theme, want) {
-			t.Errorf("theme-material must define toast icon value %q with accessible contrast on the inverted surface", want)
-		}
-	}
-	// Light scheme defines the four light-on-dark values once; the dark class
-	// route defines the dark-on-light values once each (single mechanism — no
-	// class+media duplication).
-	for _, derive := range []string{
-		"--ui-toast-icon-info: #d0bcff",
-		"--ui-toast-icon-success: #81c995",
-		"--ui-toast-icon-warning: #fdd663",
-		"--ui-toast-icon-error: #f2b8b5",
-	} {
-		if n := strings.Count(theme, derive); n != 1 {
-			t.Errorf("theme-material must define light-scheme toast icon %q exactly once, got %d", derive, n)
-		}
-	}
-	for _, derive := range []string{
-		"--ui-toast-icon-info: #6750a4",
-		"--ui-toast-icon-success: #2e7d32",
-		"--ui-toast-icon-warning: #7a5700",
-		"--ui-toast-icon-error: #b3261e",
-	} {
-		if n := strings.Count(theme, derive); n != 1 {
-			t.Errorf("theme-material must define dark-scheme toast icon %q exactly once in the dark class route, got %d", derive, n)
-		}
+	hexLiteral := regexp.MustCompile(`#[0-9a-fA-F]{3,8}\b`)
+	for _, theme := range availableThemes(t) {
+		theme := theme
+		t.Run(theme, func(t *testing.T) {
+			light, darkClass, _ := splitThemeSchemes(t, theme)
+			for _, scheme := range []struct {
+				name  string
+				block string
+			}{
+				{name: "light", block: light},
+				{name: "dark class route", block: darkClass},
+			} {
+				for _, family := range []string{"info", "success", "warning", "error"} {
+					prefix := "--ui-toast-icon-" + family + ":"
+					definitions := regexp.MustCompile(regexp.QuoteMeta(prefix)+`[^;]*;`).FindAllString(scheme.block, -1)
+					if n := len(definitions); n != 1 {
+						t.Errorf("theme %s must define %s exactly once in the %s, got %d", theme, prefix, scheme.name, n)
+						continue
+					}
+					definition := definitions[0]
+					if !strings.Contains(definition, "var(--ui-color-") {
+						t.Errorf("theme %s %s definition %q must derive from a --ui-color-* token", theme, scheme.name, definition)
+					}
+					if hexLiteral.MatchString(definition) {
+						t.Errorf("theme %s %s definition %q must not carry a hex literal", theme, scheme.name, definition)
+					}
+				}
+			}
+		})
 	}
 }
 

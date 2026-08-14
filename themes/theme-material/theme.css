@@ -51,10 +51,18 @@
   --ui-toast-fg: #f3edf7;
   --ui-toast-radius: 4px;
   --ui-toast-action: #d0bcff;
-  --ui-toast-icon-info: #d0bcff;
-  --ui-toast-icon-success: #81c995;
-  --ui-toast-icon-warning: #fdd663;
-  --ui-toast-icon-error: #f2b8b5;
+  /* Toast icon colors — theme-owned semantic tokens. The toast uses an
+     inverted surface, so icons are light-on-dark here and dark-on-light in
+     the dark class route: deliberate per-scheme contrast values, not core
+     status tokens (which would render at 1.14-1.60:1 on the surface). */
+  --ui-color-toast-icon-info: #d0bcff;
+  --ui-color-toast-icon-success: #81c995;
+  --ui-color-toast-icon-warning: #fdd663;
+  --ui-color-toast-icon-error: #f2b8b5;
+  --ui-toast-icon-info: var(--ui-color-toast-icon-info);
+  --ui-toast-icon-success: var(--ui-color-toast-icon-success);
+  --ui-toast-icon-warning: var(--ui-color-toast-icon-warning);
+  --ui-toast-icon-error: var(--ui-color-toast-icon-error);
 
   /* Typescale — Phase B decomposition (R1): the theme overrides the five
      decomposed per-step tokens; the --ui-type-<step> aliases live in the core
@@ -322,10 +330,14 @@
   --ui-toast-container: #ece6f0;
   --ui-toast-fg: #1d1b20;
   --ui-toast-action: #6750a4;
-  --ui-toast-icon-info: #6750a4;
-  --ui-toast-icon-success: #2e7d32;
-  --ui-toast-icon-warning: #7a5700;
-  --ui-toast-icon-error: #b3261e;
+  --ui-color-toast-icon-info: #6750a4;
+  --ui-color-toast-icon-success: #2e7d32;
+  --ui-color-toast-icon-warning: #7a5700;
+  --ui-color-toast-icon-error: #b3261e;
+  --ui-toast-icon-info: var(--ui-color-toast-icon-info);
+  --ui-toast-icon-success: var(--ui-color-toast-icon-success);
+  --ui-toast-icon-warning: var(--ui-color-toast-icon-warning);
+  --ui-toast-icon-error: var(--ui-color-toast-icon-error);
 
   --ui-fab-primary-container: #4f378b;
   --ui-fab-primary-fg: #eaddff;
