@@ -5,7 +5,7 @@
 <ul class="ui-list docs-nav-list">
   {{range $g.Links}}
   <li class="ui-list-item">
-    <a class="ui-list-item-link{{if .Current}} is-current{{end}}" href="{{.Path}}"{{if .Current}} aria-current="page"{{end}}>{{.Label}}</a>
+    <a class="ui-list-item-link{{if .Current}} is-current{{end}}" href="{{.Href}}"{{if .Current}} aria-current="page"{{end}}>{{.Label}}</a>
   </li>
   {{end}}
 </ul>

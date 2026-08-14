@@ -183,6 +183,32 @@ func defaultBreadcrumb(label string) *breadcrumbView {
 	}}
 }
 
+// breadcrumbWithTheme returns a copy of bc whose non-current link hrefs carry
+// ?theme=<slug> when the slug is allowlisted. Current crumbs stay unlinked.
+// Home "/" is left bare — it is outside the docs shell and has no theme chrome.
+func breadcrumbWithTheme(bc *breadcrumbView, themeSlug string) *breadcrumbView {
+	if bc == nil || themeSlug == "" {
+		return bc
+	}
+	if _, ok := themeBySlugOrClass(themeSlug); !ok {
+		return bc
+	}
+	out := &breadcrumbView{Items: make([]breadcrumbItem, len(bc.Items))}
+	copy(out.Items, bc.Items)
+	for i := range out.Items {
+		it := &out.Items[i]
+		if it.Current || it.Href == "" || it.Href == "/" {
+			continue
+		}
+		// Only rewrite plain path hrefs (no existing query).
+		if strings.Contains(it.Href, "?") {
+			continue
+		}
+		it.Href = docsNavHref(it.Href, themeSlug)
+	}
+	return out
+}
+
 // inlineAlertView is the server-driven view model for the section/form-level
 // INLINE ALERT slot (Phase D pattern 6). A nil InlineAlert on pageView renders
 // no alert. Tone is a closed vocabulary (info|success|warning|error) and the
@@ -224,7 +250,7 @@ type footerSection struct {
 // and the legal line. Injected at render choke points; a consumer may replace
 // it per page by setting pageView.Footer explicitly.
 func defaultFooter() *footerView {
-	nav := docsNavFor("")
+	nav := docsNavFor("", "")
 	sections := make([]footerSection, 0, len(nav.Groups))
 	for _, g := range nav.Groups {
 		links := make([]navLink, 0, len(g.Links)+1)
@@ -876,18 +902,25 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
 	// Document-root theme selection (Phase H): a valid ?theme= query overrides
 	// the handler default; otherwise the handler value (or the default) wins.
+	themeSlug := ""
 	if q := themeFromRequest(r); q != "" {
 		data.ThemeClass = q
+		themeSlug = themeSlugFromClass(q)
 	} else {
 		data.ThemeClass = themeClass(data.ThemeClass)
 	}
 	// Docs shell chrome: grouped sidebar + topbar on /docs and /components/*.
 	// Theme switcher lives in the topbar on shell routes (not duplicated in a
 	// legacy header). Home and recipes keep DocsNav nil.
+	// Sidebar + breadcrumb hrefs carry ?theme= when the request selected one so
+	// IA navigation does not silently reset the visual direction to Material.
 	if usesDocsShell(routePath) {
-		nav := docsNavFor(routePath)
+		nav := docsNavFor(routePath, themeSlug)
 		data.DocsNav = &nav
 		data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass)
+		if themeSlug != "" && data.Breadcrumb != nil {
+			data.Breadcrumb = breadcrumbWithTheme(data.Breadcrumb, themeSlug)
+		}
 	}
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
