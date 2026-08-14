@@ -2,7 +2,6 @@ package app
 
 import (
 	"net/http"
-	"net/url"
 	"strings"
 )
 
@@ -43,26 +42,6 @@ func usesDocsShell(path string) bool {
 		strings.HasPrefix(path, "/components/")
 }
 
-// docsNavHref builds a sidebar href. When themeSlug is a catalog slug, the
-// link carries only ?theme=<slug> so chrome navigation preserves visual
-// direction without re-emitting unrelated query state.
-func docsNavHref(path, themeSlug string) string {
-	if themeSlug == "" {
-		return path
-	}
-	if _, ok := themeBySlugOrClass(themeSlug); !ok {
-		return path
-	}
-	// Prefer the canonical short slug from the catalog (not theme-*).
-	slug := themeSlug
-	if t, ok := themeBySlugOrClass(themeSlug); ok {
-		slug = t.Slug
-	}
-	q := url.Values{}
-	q.Set("theme", slug)
-	return path + "?" + q.Encode()
-}
-
 // themeSlugFromClass maps a resolved theme class (theme-basecoat) to the
 // public ?theme= slug (basecoat). Empty when the class is unknown.
 func themeSlugFromClass(class string) string {
@@ -77,13 +56,13 @@ func themeSlugFromClass(class string) string {
 // docsNavFor builds the Scalar-style sidebar IA for activePath.
 // Exact path match sets Current; empty activePath marks nothing current
 // (used when flattening the same model into the site footer).
-// themeSlug, when non-empty and allowlisted, is appended as ?theme= on every
-// sidebar Href so in-shell navigation keeps the selected direction.
-func docsNavFor(activePath, themeSlug string) docsNavView {
+// themeSlug/scheme, when allowlisted, are appended on every sidebar Href so
+// in-shell navigation keeps direction and light/dark selection.
+func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 	link := func(path, label string) docsNavLink {
 		return docsNavLink{
 			Path:    path,
-			Href:    docsNavHref(path, themeSlug),
+			Href:    chromeHref(path, themeSlug, scheme),
 			Label:   label,
 			Current: activePath != "" && path == activePath,
 		}

@@ -35,22 +35,26 @@ var availableThemes = []themeDirection{
 	{Class: "theme-basecoat", Slug: "basecoat", Label: "Basecoat"},
 }
 
-// themeOptionView is one link in the document-root theme switcher.
+// themeOptionView is one link in a document-root chrome switcher (theme or scheme).
 type themeOptionView struct {
 	Label   string
 	Href    string
 	Current bool
 }
 
-// themeSwitcherView is the server-driven chrome for swapping visual direction
-// with plain links (0 JS): same path, ?theme=<slug>.
+// themeSwitcherView is server-driven chrome for swapping visual direction or
+// color scheme with plain links (0 JS).
 type themeSwitcherView struct {
+	Label   string // accessible product label: "Theme" or "Appearance"
 	Options []themeOptionView
 }
 
 // themeContextKey carries the theme selected via the ?theme= query parameter
 // through the request context (Phase H: selection from the document root, no JS).
 type themeContextKey struct{}
+
+// schemeContextKey carries the color scheme selected via ?scheme=light|dark.
+type schemeContextKey struct{}
 
 // themeFromRequest returns the theme selected by ?theme= if present and valid,
 // otherwise the empty string (so callers fall back to themeClass("") → default).
@@ -59,6 +63,27 @@ func themeFromRequest(r *http.Request) string {
 		return v
 	}
 	return ""
+}
+
+// schemeFromRequest returns "light" or "dark" when ?scheme= is allowlisted,
+// otherwise empty (OS prefers-color-scheme media route applies).
+func schemeFromRequest(r *http.Request) string {
+	if v, ok := r.Context().Value(schemeContextKey{}).(string); ok {
+		return v
+	}
+	return ""
+}
+
+// normalizeScheme returns "light", "dark", or "" for unknown/empty values.
+func normalizeScheme(raw string) string {
+	switch strings.ToLower(strings.TrimSpace(raw)) {
+	case "light":
+		return "light"
+	case "dark":
+		return "dark"
+	default:
+		return ""
+	}
 }
 
 // themeBySlugOrClass resolves a ?theme= value to a catalog entry.
@@ -75,20 +100,22 @@ func themeBySlugOrClass(raw string) (themeDirection, bool) {
 	return themeDirection{}, false
 }
 
-// themeQueryMiddleware validates the optional ?theme= query parameter against
-// the theme catalog and stores the resolved class in the request context.
-// Unknown or absent values leave the context empty so every render keeps the
-// default theme. The query accepts either the full class ("theme-basecoat") or
-// the short theme name ("basecoat").
+// themeQueryMiddleware validates optional ?theme= and ?scheme= query params
+// and stores allowlisted values in the request context. Unknown values are ignored.
 func themeQueryMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
+		ctx := r.Context()
 		if raw := r.URL.Query().Get("theme"); raw != "" {
 			if dir, ok := themeBySlugOrClass(raw); ok {
-				ctx := context.WithValue(r.Context(), themeContextKey{}, dir.Class)
-				r = r.WithContext(ctx)
+				ctx = context.WithValue(ctx, themeContextKey{}, dir.Class)
 			}
 		}
-		next.ServeHTTP(w, r)
+		if raw := r.URL.Query().Get("scheme"); raw != "" {
+			if s := normalizeScheme(raw); s != "" {
+				ctx = context.WithValue(ctx, schemeContextKey{}, s)
+			}
+		}
+		next.ServeHTTP(w, r.WithContext(ctx))
 	})
 }
 
@@ -111,33 +138,100 @@ func themeClass(theme string) string {
 	return defaultThemeClass
 }
 
+// requestPath returns the URL path for chrome links, defaulting to "/".
+func requestPath(r *http.Request) string {
+	if r != nil && r.URL != nil && r.URL.Path != "" {
+		return r.URL.Path
+	}
+	return "/"
+}
+
+// chromeQuery builds the closed-vocabulary query string for docs chrome links.
+// Only allowlisted theme + scheme keys are emitted (never arbitrary request query).
+func chromeQuery(themeSlug, scheme string) string {
+	q := url.Values{}
+	if themeSlug != "" {
+		if t, ok := themeBySlugOrClass(themeSlug); ok {
+			q.Set("theme", t.Slug)
+		}
+	}
+	if s := normalizeScheme(scheme); s != "" {
+		q.Set("scheme", s)
+	}
+	enc := q.Encode()
+	if enc == "" {
+		return ""
+	}
+	return "?" + enc
+}
+
+// chromeHref is path + allowlisted theme/scheme query for shell navigation.
+func chromeHref(path, themeSlug, scheme string) string {
+	return path + chromeQuery(themeSlug, scheme)
+}
+
 // themeSwitcherFor builds the direction switcher for the current request.
 // Labels are product directions (Material, Basecoat, …), never internal class
-// names. Each option is a real GET link to the same path with ONLY ?theme=<slug>
-// — other query params are dropped on purpose so the switcher cannot re-emit
-// unsanitized filter/sort state into the chrome.
-func themeSwitcherFor(r *http.Request, currentClass string) *themeSwitcherView {
+// names. Each option is a real GET link to the same path with allowlisted
+// ?theme= and the current ?scheme= (when set). Other query params are dropped.
+func themeSwitcherFor(r *http.Request, currentClass, themeSlug, scheme string) *themeSwitcherView {
 	current := themeClass(currentClass)
 	if r != nil {
 		if q := themeFromRequest(r); q != "" {
 			current = q
 		}
 	}
-	pathStr := "/"
-	if r != nil && r.URL != nil && r.URL.Path != "" {
-		pathStr = r.URL.Path
-	}
+	pathStr := requestPath(r)
 	opts := make([]themeOptionView, 0, len(availableThemes))
 	for _, t := range availableThemes {
-		q := url.Values{}
-		q.Set("theme", t.Slug)
 		opts = append(opts, themeOptionView{
 			Label:   t.Label,
-			Href:    pathStr + "?" + q.Encode(),
+			Href:    chromeHref(pathStr, t.Slug, scheme),
 			Current: t.Class == current,
 		})
 	}
-	return &themeSwitcherView{Options: opts}
+	return &themeSwitcherView{Label: "Theme", Options: opts}
+}
+
+// schemeSwitcherFor builds the Light/Dark appearance control (0 JS).
+// Links keep the current theme slug and set ?scheme=light|dark. When the
+// request has no scheme yet, Light is treated as current (matches default
+// light tokens before OS dark media applies an override).
+func schemeSwitcherFor(r *http.Request, themeSlug, scheme string) *themeSwitcherView {
+	pathStr := requestPath(r)
+	current := normalizeScheme(scheme)
+	if current == "" {
+		current = "light"
+	}
+	opts := make([]themeOptionView, 0, 2)
+	for _, s := range []struct{ slug, label string }{
+		{"light", "Light"},
+		{"dark", "Dark"},
+	} {
+		opts = append(opts, themeOptionView{
+			Label:   s.label,
+			Href:    chromeHref(pathStr, themeSlug, s.slug),
+			Current: current == s.slug,
+		})
+	}
+	return &themeSwitcherView{Label: "Appearance", Options: opts}
+}
+
+// applyDocumentRootScheme mutates ThemeClass / DataTheme for explicit scheme.
+// dark → append theme-dark (class route). light → data-theme="light" so the
+// prefers-color-scheme media block's :not([data-theme="light"]) guard skips.
+func applyDocumentRootScheme(data *pageView, scheme string) {
+	switch normalizeScheme(scheme) {
+	case "dark":
+		if !strings.Contains(data.ThemeClass, "theme-dark") {
+			data.ThemeClass = strings.TrimSpace(data.ThemeClass + " theme-dark")
+		}
+		data.DataTheme = "dark"
+	case "light":
+		data.DataTheme = "light"
+	default:
+		data.DataTheme = ""
+	}
 }
 
 // bannerView is the server-driven view model for the page-level BANNER slot
@@ -183,14 +277,14 @@ func defaultBreadcrumb(label string) *breadcrumbView {
 	}}
 }
 
-// breadcrumbWithTheme returns a copy of bc whose non-current link hrefs carry
-// ?theme=<slug> when the slug is allowlisted. Current crumbs stay unlinked.
-// Home "/" is left bare — it is outside the docs shell and has no theme chrome.
-func breadcrumbWithTheme(bc *breadcrumbView, themeSlug string) *breadcrumbView {
-	if bc == nil || themeSlug == "" {
+// breadcrumbWithChrome returns a copy of bc whose non-current link hrefs carry
+// allowlisted ?theme= / ?scheme= chrome query. Current crumbs stay unlinked.
+// Home "/" is left bare — outside the docs shell.
+func breadcrumbWithChrome(bc *breadcrumbView, themeSlug, scheme string) *breadcrumbView {
+	if bc == nil {
 		return bc
 	}
-	if _, ok := themeBySlugOrClass(themeSlug); !ok {
+	if themeSlug == "" && normalizeScheme(scheme) == "" {
 		return bc
 	}
 	out := &breadcrumbView{Items: make([]breadcrumbItem, len(bc.Items))}
@@ -204,7 +298,7 @@ func breadcrumbWithTheme(bc *breadcrumbView, themeSlug string) *breadcrumbView {
 		if strings.Contains(it.Href, "?") {
 			continue
 		}
-		it.Href = docsNavHref(it.Href, themeSlug)
+		it.Href = chromeHref(it.Href, themeSlug, scheme)
 	}
 	return out
 }
@@ -250,7 +344,7 @@ type footerSection struct {
 // and the legal line. Injected at render choke points; a consumer may replace
 // it per page by setting pageView.Footer explicitly.
 func defaultFooter() *footerView {
-	nav := docsNavFor("", "")
+	nav := docsNavFor("", "", "")
 	sections := make([]footerSection, 0, len(nav.Groups))
 	for _, g := range nav.Groups {
 		links := make([]navLink, 0, len(g.Links)+1)
@@ -554,12 +648,17 @@ type pageView struct {
 	Title      string
 	Content    template.HTML
 	ThemeClass string
-	Nav        []navLink
+	// DataTheme is the optional data-theme attribute on <html> (light|dark).
+	// Empty leaves OS prefers-color-scheme in control via theme CSS media.
+	DataTheme string
+	Nav       []navLink
 	// DocsNav enables the two-pane docs shell when non-nil (docs + components).
 	DocsNav *docsNavView
 	// ThemeSwitcher is the 0-JS ?theme= chrome. On shell routes it lives in the
 	// topbar; on legacy header routes it may sit in the site-header.
-	ThemeSwitcher        *themeSwitcherView
+	ThemeSwitcher *themeSwitcherView
+	// SchemeSwitcher is the 0-JS Light/Dark control (docs topbar, right side).
+	SchemeSwitcher       *themeSwitcherView
 	Banner               *bannerView
 	Breadcrumb           *breadcrumbView
 	Footer               *footerView
@@ -909,17 +1008,19 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 	} else {
 		data.ThemeClass = themeClass(data.ThemeClass)
 	}
+	scheme := schemeFromRequest(r)
+	applyDocumentRootScheme(&data, scheme)
 	// Docs shell chrome: grouped sidebar + topbar on /docs and /components/*.
-	// Theme switcher lives in the topbar on shell routes (not duplicated in a
-	// legacy header). Home and recipes keep DocsNav nil.
-	// Sidebar + breadcrumb hrefs carry ?theme= when the request selected one so
-	// IA navigation does not silently reset the visual direction to Material.
+	// Theme + appearance switchers live in the topbar on shell routes.
+	// Sidebar + breadcrumb hrefs carry allowlisted theme/scheme query so IA
+	// navigation does not silently reset direction or light/dark.
 	if usesDocsShell(routePath) {
-		nav := docsNavFor(routePath, themeSlug)
+		nav := docsNavFor(routePath, themeSlug, scheme)
 		data.DocsNav = &nav
-		data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass)
-		if themeSlug != "" && data.Breadcrumb != nil {
-			data.Breadcrumb = breadcrumbWithTheme(data.Breadcrumb, themeSlug)
+		data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass, themeSlug, scheme)
+		data.SchemeSwitcher = schemeSwitcherFor(r, themeSlug, scheme)
+		if data.Breadcrumb != nil {
+			data.Breadcrumb = breadcrumbWithChrome(data.Breadcrumb, themeSlug, scheme)
 		}
 	}
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {

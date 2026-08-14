@@ -1,0 +1,12 @@
+{{/* Color scheme switcher (docs chrome). Light/Dark via ?scheme=; 0 JS.
+     Keeps the current ?theme= slug on each option href. */}}
+{{define "color-scheme-switcher"}}
+<nav class="ui-theme-switcher ui-scheme-switcher" aria-label="{{or .Label "Appearance"}}">
+  <span class="ui-theme-switcher-label" id="scheme-switcher-label">{{or .Label "Appearance"}}</span>
+  <span class="ui-theme-switcher-options" role="list" aria-labelledby="scheme-switcher-label">
+    {{range .Options}}
+    <a role="listitem" class="ui-theme-switcher-option{{if .Current}} is-current{{end}}" href="{{.Href}}"{{if .Current}} aria-current="true"{{end}}>{{.Label}}</a>
+    {{end}}
+  </span>
+</nav>
+{{end}}
