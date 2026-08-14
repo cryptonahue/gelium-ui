@@ -1,0 +1,241 @@
+package app
+
+import (
+	"bytes"
+	"html/template"
+	"net/http"
+)
+
+// landingView is the marketing home composition. Every section dogfoods an
+// existing Gelium public/content pattern or component — no parallel landing CSS
+// system beyond a thin page frame.
+type landingView struct {
+	Hero            *heroView
+	FeaturesHeading sectionHeadingView
+	Features        []featureCardView
+	Split           *splitView
+	Recipes         *landingRecipesView
+	CTABand         *landingCTABandView
+}
+
+// heroView matches web/templates/hero.html.
+type heroView struct {
+	Eyebrow  string
+	Title    string
+	Subtitle string
+	CTAs     []buttonView
+	Media    template.HTML
+}
+
+// featureCardView matches web/templates/feature-card.html.
+type featureCardView struct {
+	Title string
+	Body  string
+	CTA   *buttonView
+	Media template.HTML
+}
+
+// splitView matches web/templates/split.html.
+type splitView struct {
+	Eyebrow string
+	Title   string
+	Body    string
+	CTA     *buttonView
+	Media   template.HTML
+}
+
+// sectionHeadingView matches web/templates/section-heading.html.
+type sectionHeadingView struct {
+	Eyebrow  string
+	Title    string
+	Centered bool
+}
+
+// landingRecipesView is a section of outbound recipe cards.
+type landingRecipesView struct {
+	Heading sectionHeadingView
+	Cards   []featureCardView
+}
+
+// landingCTABandView is the closing call-to-action band.
+type landingCTABandView struct {
+	Heading sectionHeadingView
+	CTA     buttonView
+}
+
+// marketingLanding builds the home page composition from Gelium primitives.
+func marketingLanding() landingView {
+	return landingView{
+		Hero: &heroView{
+			Eyebrow:  "Gelium UI",
+			Title:    "Server-rendered components. Zero required JS.",
+			Subtitle: "Open-code HTML and tokens for Go apps. Native semantics first, HTMX when you want it, themes that swap without a rebuild.",
+			CTAs: []buttonView{
+				{Label: "Get started", Variant: "primary", Href: "/docs"},
+				{Label: "Browse components", Variant: "secondary", Href: "/components/button"},
+			},
+		},
+		FeaturesHeading: sectionHeadingView{
+			Eyebrow:  "Why Gelium",
+			Title:    "Built for server-rendered apps",
+			Centered: true,
+		},
+		Features: []featureCardView{
+			{
+				Title: "Native HTML first",
+				Body:  "Real buttons, dialogs, selects, and tables. ARIA only when the platform has no equivalent.",
+				CTA:   &buttonView{Label: "Read principles", Variant: "outline", Href: "/docs"},
+			},
+			{
+				Title: "Tokens, not forks",
+				Body:  "Themes map aesthetics onto --ui-* variables. Markup stays stable when you switch Material or Basecoat.",
+				CTA:   &buttonView{Label: "Themes", Variant: "outline", Href: "/docs/themes"},
+			},
+			{
+				Title: "Server contracts",
+				Body:  "GET with stable query params, POST + 303, 422 validation, and loom:toast for transient feedback — no parallel APIs.",
+				CTA:   &buttonView{Label: "See a recipe", Variant: "outline", Href: "/recipes/admin-resource"},
+			},
+		},
+		Split: &splitView{
+			Eyebrow: "How it fits",
+			Title:   "Embed the handler. Copy the open code.",
+			Body:    "Gelium UI is an embeddable docs + component system, not an SPA runtime. Wire app.New() in Go, keep progressive enhancement optional, and dogfood every page against the real partials.",
+			CTA:     &buttonView{Label: "Open the docs shell", Variant: "primary", Href: "/docs"},
+			Media: template.HTML(
+				`<pre class="ui-landing-code" tabindex="0"><code>http.ListenAndServe(":8787", app.New())
+
+// Contracts (stable)
+// GET  + query   → list state in the URL
+// POST + 303     → mutations
+// 422  + header  → field validation
+// HX-Trigger     → transient toast only</code></pre>`,
+			),
+		},
+		Recipes: &landingRecipesView{
+			Heading: sectionHeadingView{
+				Eyebrow:  "Screen recipes",
+				Title:    "Full flows composed from the catalog",
+				Centered: true,
+			},
+			Cards: []featureCardView{
+				{
+					Title: "Admin Resource",
+					Body:  "Table, filters, create/edit forms, and delete confirm — server-driven end to end.",
+					CTA:   &buttonView{Label: "Open recipe", Variant: "secondary", Href: "/recipes/admin-resource"},
+				},
+				{
+					Title: "Ops Queue",
+					Body:  "FIFO work queue with advance/dequeue actions and refresh without a SPA.",
+					CTA:   &buttonView{Label: "Open recipe", Variant: "secondary", Href: "/recipes/ops-queue"},
+				},
+				{
+					Title: "Public Feed",
+					Body:  "Social-style feed composition with reactions and progressive enhancement.",
+					CTA:   &buttonView{Label: "Open recipe", Variant: "secondary", Href: "/recipes/public-feed"},
+				},
+			},
+		},
+		CTABand: &landingCTABandView{
+			Heading: sectionHeadingView{
+				Eyebrow:  "Ready when you are",
+				Title:    "Ship UI that works without JavaScript",
+				Centered: true,
+			},
+			CTA: buttonView{Label: "Read the docs", Variant: "primary", Href: "/docs"},
+		},
+	}
+}
+
+// homeLandingNav is the compact primary nav for the marketing site chrome.
+func homeLandingNav() []navLink {
+	return []navLink{
+		{Path: "/docs", Label: "Docs"},
+		{Path: "/components/button", Label: "Components"},
+		{Path: "/recipes/admin-resource", Label: "Recipes"},
+		{Path: "/demo/whatsapp", Label: "Demo"},
+	}
+}
+
+func (s *server) home(w http.ResponseWriter, r *http.Request) {
+	landing := marketingLanding()
+	data := pageView{
+		Title:   "Themeable open-code UI components for server-rendered apps",
+		Landing: &landing,
+		Nav:     homeLandingNav(),
+	}
+	s.renderLanding(w, r, data)
+}
+
+// renderLanding renders the marketing home (or any pageView with Landing set)
+// through the shared layout without Markdown content.
+func (s *server) renderLanding(w http.ResponseWriter, r *http.Request, data pageView) {
+	routePath := "/"
+	data.Meta = resolveMeta(data, routePath)
+	if data.Footer == nil {
+		data.Footer = defaultFooter()
+	}
+
+	themeSlug := ""
+	if q := themeFromRequest(r); q != "" {
+		data.ThemeClass = q
+		themeSlug = themeSlugFromClass(q)
+	} else {
+		data.ThemeClass = themeClass(data.ThemeClass)
+	}
+	scheme := schemeFromRequest(r)
+	applyDocumentRootScheme(&data, scheme)
+
+	// Site chrome on the landing: same 0-JS theme + appearance controls as docs.
+	data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass, themeSlug, scheme)
+	data.SchemeSwitcher = schemeSwitcherFor(r, themeSlug, scheme)
+
+	// Rewrite compact nav hrefs so theme/scheme survive header clicks.
+	if themeSlug != "" || normalizeScheme(scheme) != "" {
+		for i := range data.Nav {
+			data.Nav[i].Path = chromeHref(data.Nav[i].Path, themeSlug, scheme)
+		}
+		// Hero/feature CTAs are absolute docs paths — preserve chrome query too.
+		if data.Landing != nil {
+			applyLandingChrome(data.Landing, themeSlug, scheme)
+		}
+	}
+
+	var page bytes.Buffer
+	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
+		http.Error(w, "page unavailable", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(page.Bytes())
+}
+
+// applyLandingChrome appends allowlisted theme/scheme query onto landing CTAs.
+func applyLandingChrome(l *landingView, themeSlug, scheme string) {
+	if l.Hero != nil {
+		for i := range l.Hero.CTAs {
+			if l.Hero.CTAs[i].Href != "" {
+				l.Hero.CTAs[i].Href = chromeHref(l.Hero.CTAs[i].Href, themeSlug, scheme)
+			}
+		}
+	}
+	for i := range l.Features {
+		if l.Features[i].CTA != nil && l.Features[i].CTA.Href != "" {
+			l.Features[i].CTA.Href = chromeHref(l.Features[i].CTA.Href, themeSlug, scheme)
+		}
+	}
+	if l.Split != nil && l.Split.CTA != nil && l.Split.CTA.Href != "" {
+		l.Split.CTA.Href = chromeHref(l.Split.CTA.Href, themeSlug, scheme)
+	}
+	if l.Recipes != nil {
+		for i := range l.Recipes.Cards {
+			if l.Recipes.Cards[i].CTA != nil && l.Recipes.Cards[i].CTA.Href != "" {
+				l.Recipes.Cards[i].CTA.Href = chromeHref(l.Recipes.Cards[i].CTA.Href, themeSlug, scheme)
+			}
+		}
+	}
+	if l.CTABand != nil && l.CTABand.CTA.Href != "" {
+		l.CTABand.CTA.Href = chromeHref(l.CTABand.CTA.Href, themeSlug, scheme)
+	}
+}
