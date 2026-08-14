@@ -1,0 +1,31 @@
+{
+  "protocol": "gelium-ux-composition",
+  "schema": "gelium://ux-composition/flow/v0.1",
+  "version": "0.1",
+  "type": "flow",
+  "slug": "admin-resource",
+  "name": "Admin Resource — Manage Resources",
+  "intent": "Manage a set of resources (projects): find, compare, select and act.",
+  "user": "Admin/operator managing a set of resources (projects).",
+  "primary_task": "Browse, create, edit and delete resources with server-side validation.",
+  "secondary_tasks": [
+    "Filter, sort and paginate the listing",
+    "Bulk selection",
+    "Remote refresh"
+  ],
+  "entry_screen": "recipes/admin-resource",
+  "screens": ["recipes/admin-resource"],
+  "navigation": [],
+  "success_state": "The listing re-rendered after a successful mutation (POST + 303) showing the persistent success banner.",
+  "failure_recovery": "422 re-renders the form preserving values with inline alert + validation summary; missing resource renders error-state 404 with retry (R-ERROR-01/02).",
+  "no_js_flow": "Complete: list state lives in the URL; create/edit/delete are POST + 303; delete is confirmed in a server-rendered <dialog open>; refresh reloads with an inline toast.",
+  "htmx_enhancement": "hx-get swaps #resource-panel on sort/filter/page; refresh fragment + HX-Trigger loom:toast. Mutations stay POST + 303 (no hx-post).",
+  "decision_rules": [
+    "R-DATA-01", "R-NAV-02", "R-NOJS-01", "R-NOJS-02", "R-NOJS-03",
+    "R-ERROR-01", "R-ERROR-02", "R-DESTRUCT-01", "R-SEO-01"
+  ],
+  "references": [
+    "docs/gelium-ui-screen-recipes.md",
+    "docs/gelium/schemas/contracts/admin-resource.json"
+  ]
+}

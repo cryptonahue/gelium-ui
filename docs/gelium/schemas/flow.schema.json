@@ -1,0 +1,122 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gelium://ux-composition/flow/v0.1",
+  "title": "Gelium Flow Contract",
+  "description": "Machine-readable form of a flow: the ordered, URL-navigable sequence of screens that fulfils an intent for a user (ux-composition-model.md layer 4). Opaque identifier, not a resolvable URL. Worked example: docs/gelium/schemas/contracts/inbox-flow.json.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "schema",
+    "version",
+    "type",
+    "slug",
+    "name",
+    "intent",
+    "user",
+    "primary_task",
+    "secondary_tasks",
+    "entry_screen",
+    "screens",
+    "success_state"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "gelium-ux-composition"
+    },
+    "schema": {
+      "const": "gelium://ux-composition/flow/v0.1"
+    },
+    "version": {
+      "const": "0.1"
+    },
+    "type": {
+      "const": "flow"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9-]+$",
+      "description": "Stable flow identifier. Screens reference it via flow_ref (e.g. 'inbox')."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable flow name."
+    },
+    "intent": {
+      "type": "string",
+      "description": "The product-level goal the flow realises (Intent layer)."
+    },
+    "user": {
+      "type": "string",
+      "description": "The actor pursuing the intent (User layer)."
+    },
+    "primary_task": {
+      "type": "string",
+      "description": "The task the flow fulfils (Task layer)."
+    },
+    "secondary_tasks": {
+      "type": "array",
+      "items": { "type": "string" }
+    },
+    "entry_screen": {
+      "type": "string",
+      "description": "Slug of the screen where the flow starts."
+    },
+    "screens": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Slugs of the screen contracts that compose the flow. Each must resolve to a screen-recipe instance."
+    },
+    "navigation": {
+      "type": "array",
+      "items": {
+        "type": "object",
+        "additionalProperties": false,
+        "required": ["from", "to", "contract"],
+        "properties": {
+          "from": { "type": "string" },
+          "to": { "type": "string" },
+          "contract": {
+            "enum": ["get_link", "get_form", "post_303", "422"],
+            "description": "Navigation contract between screens (canonical set only, P5)."
+          },
+          "label": {
+            "type": "string",
+            "description": "Control label on the source screen (action verb, R-CONTENT-01)."
+          }
+        }
+      },
+      "description": "Ordered edges between screens with their canonical navigation contract."
+    },
+    "success_state": {
+      "type": "string",
+      "description": "The terminal navigable state that proves the intent is fulfilled."
+    },
+    "failure_recovery": {
+      "type": "string",
+      "description": "How a failure within the flow is surfaced and recovered (R-ERROR-01..04)."
+    },
+    "no_js_flow": {
+      "type": "string",
+      "description": "The whole flow must be walkable with JS disabled (R-NOJS-01)."
+    },
+    "htmx_enhancement": {
+      "type": "string",
+      "description": "HTMX enhancement across the flow; never changes mutation contracts (R-NOJS-03)."
+    },
+    "decision_rules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^R-[A-Z0-9]+-\\d+$"
+      },
+      "description": "Flow-level decision rules exercised (ux-decision-rules.md)."
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional evidence references (source files/docs)."
+    }
+  }
+}

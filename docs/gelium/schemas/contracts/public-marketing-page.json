@@ -1,0 +1,126 @@
+{
+  "protocol": "gelium-ux-composition",
+  "schema": "gelium://ux-composition/screen-recipe/v0.1",
+  "version": "0.1",
+  "type": "screen-recipe",
+  "slug": "marketing/home",
+  "name": "Public Marketing Page",
+  "screen_type": "public_marketing_page",
+  "intent": "Convert visitors into users.",
+  "flow_ref": "marketing-home",
+  "user": "Prospective customer/visitor on a public marketing surface.",
+  "primary_task": "Understand the offering and take the primary conversion action (CTA).",
+  "secondary_tasks": [
+    "Scan value propositions",
+    "Explore product sections (features, recipes)",
+    "Take trust signals into account",
+    "Subscribe to the newsletter",
+    "Switch language",
+    "Read the docs"
+  ],
+  "surface": "page",
+  "ux_pattern": [
+    "F2 Hero/Billboard",
+    "F13 Split",
+    "F7 Feature Card",
+    "F6 CTA Link",
+    "F10 Newsletter",
+    "F8 Footer",
+    "F12 Section Heading",
+    "F1 Article",
+    "F3 Breadcrumb",
+    "F14 Video",
+    "F9 Language Switcher"
+  ],
+  "visual_vocabulary": [
+    "Hero (single h1 + subtitle + CTA Button link + optional media scrim)",
+    "Split (media + body)",
+    "Feature Card (Card + media + CTA Link)",
+    "Section Heading (always h2)",
+    "Footer (details/summary sections)",
+    "Newsletter (inline aside, POST + 422)",
+    "CTA Link (Button link)",
+    "Breadcrumb (aria-current)",
+    "Video (native controls + captions)",
+    "Language Switcher (GET form, visible submit)"
+  ],
+  "components": [
+    "hero",
+    "split",
+    "feature-card",
+    "card",
+    "section-heading",
+    "footer",
+    "newsletter",
+    "button",
+    "breadcrumb",
+    "video",
+    "language-switcher"
+  ],
+  "states": ["rest", "error"],
+  "accessibility": [
+    "Exactly one h1 in the Hero (R-A11Y-03)",
+    "All CTAs are real links/buttons",
+    "Decorative media aria-hidden",
+    "Newsletter form native label + aria-invalid on 422",
+    "Video native controls + captions track",
+    "Footer sections <details>/<summary>",
+    "Forced-colors and reduced-motion by primitives"
+  ],
+  "content_rules": [
+    "Primary CTA is an action verb (Get started)",
+    "Tone neutral professional; plain language, short titles",
+    "Factual marketing copy; no unverified universal claims",
+    "English default, localizable by contract"
+  ],
+  "seo_requirements": {
+    "robots": "index, follow",
+    "lang": "en",
+    "title_per_route": true,
+    "description_per_route": true,
+    "canonical_clean": true,
+    "single_h1": true,
+    "json_ld": true
+  },
+  "geo_requirements": {
+    "entity": "Gelium UI",
+    "factual": true,
+    "stable_deep_links": true,
+    "visible_provenance": true,
+    "json_ld_types": ["BreadcrumbList", "Organization"]
+  },
+  "server_contract": {
+    "get_params": {
+      "lang": "locale code; GET ?lang= resolves 303 to the localized URL (Language Switcher)"
+    },
+    "mutation_contract": "POST_303",
+    "validation_contract": "422_X_LOOM_VALIDATION",
+    "post_only_paths": [],
+    "notes": "Newsletter: POST + 422 X-Loom-Validation on invalid email (inline alert, value preserved); success re-renders a persistent role=status (example) or POST + 303 -> GET success (production). Language switcher is GET navigation, not a mutation."
+  },
+  "no_js_flow": "Complete: every CTA is a real link; the newsletter is a native POST form with 422 inline feedback; the language switcher is a GET form with a visible submit (zero auto-submit); the video uses native controls; footer sections use native details/summary.",
+  "htmx_enhancement": "Optional: the newsletter aside may hx-swap on 200/422. No mutation contract change (R-NOJS-03).",
+  "responsive_behavior": "Fluid grid (auto-fit/minmax) for feature cards; Hero and Split stack on narrow; footer grid -> stack; overlays n/a; no breakpoint-worship.",
+  "theme_requirements": "Public patterns use tokens --ui-* only; zero color literals; forced-colors/reduced-motion by primitives; theme switcher stays 0-JS (?theme=).",
+  "alternatives_rejected": [
+    "JS carousel for features: a fluid grid suffices (R-RESP-01)",
+    "SPA/client-side rendering: server-rendered marketing home (R-NOJS-01)",
+    "Modal newsletter capture: inline aside + POST + 422 (R-OVERLAY-01)",
+    "Hero as 'Callout': naming collision resolved, Hero is promotional, Callout is the Phase D tip box",
+    "Auto-submit language switcher: visible submit required"
+  ],
+  "rationale": "Dogfoods the Phase F public patterns as the indexable single-screen flow of the protocol, validating R-SEO-01 and R-GEO-01 (clean canonical, JSON-LD) on the only indexable surface. Matches the implemented marketing home (internal/app/landing.go).",
+  "decision_rules": [
+    "R-DATA-04", "R-OVERLAY-01", "R-FEEDBACK-01", "R-FEEDBACK-02", "R-FEEDBACK-03",
+    "R-ACTION-01", "R-STATE-01", "R-STATE-04", "R-A11Y-01", "R-A11Y-02",
+    "R-A11Y-03", "R-A11Y-04", "R-A11Y-05", "R-A11Y-06", "R-A11Y-07",
+    "R-NOJS-01", "R-NOJS-02", "R-NOJS-03", "R-ERROR-01", "R-ERROR-02",
+    "R-SEO-01", "R-GEO-01", "R-CONTENT-01", "R-CONTENT-02", "R-CONTENT-04",
+    "R-CONTENT-05"
+  ],
+  "references": [
+    "internal/app/landing.go",
+    "internal/app/server.go",
+    "docs/gelium-ui-public-content-patterns.md"
+  ]
+}

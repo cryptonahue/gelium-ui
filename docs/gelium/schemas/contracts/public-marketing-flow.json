@@ -1,0 +1,31 @@
+{
+  "protocol": "gelium-ux-composition",
+  "schema": "gelium://ux-composition/flow/v0.1",
+  "version": "0.1",
+  "type": "flow",
+  "slug": "marketing-home",
+  "name": "Public Marketing Home",
+  "intent": "Convert visitors into users.",
+  "user": "Prospective customer/visitor on a public marketing surface.",
+  "primary_task": "Understand the offering and take the primary conversion CTA.",
+  "secondary_tasks": [
+    "Explore product sections",
+    "Subscribe to the newsletter",
+    "Switch language"
+  ],
+  "entry_screen": "marketing/home",
+  "screens": ["marketing/home"],
+  "navigation": [],
+  "success_state": "The visitor reaches the primary destination (docs, components, or newsletter success) from a real link.",
+  "failure_recovery": "Newsletter 422 inline alert preserves the email; 404/500 render error-state with retry (R-ERROR-01/02).",
+  "no_js_flow": "Complete: all CTAs are real links; the newsletter is a native POST form with 422 inline feedback; the language switcher is a GET form with a visible submit; the video uses native controls.",
+  "htmx_enhancement": "Optional newsletter aside swap; no mutation contract change (R-NOJS-03).",
+  "decision_rules": [
+    "R-ACTION-01", "R-SEO-01", "R-GEO-01", "R-NOJS-01", "R-NOJS-02",
+    "R-ERROR-01", "R-ERROR-02"
+  ],
+  "references": [
+    "internal/app/landing.go",
+    "docs/gelium/schemas/contracts/public-marketing-page.json"
+  ]
+}

@@ -1,0 +1,134 @@
+{
+  "protocol": "gelium-ux-composition",
+  "schema": "gelium://ux-composition/screen-recipe/v0.1",
+  "version": "0.1",
+  "type": "screen-recipe",
+  "slug": "recipes/admin-resource",
+  "name": "Admin Resource",
+  "screen_type": "admin_resource",
+  "intent": "Manage a set of resources (projects): find, compare, select and act.",
+  "flow_ref": "admin-resource",
+  "user": "Admin/operator managing a set of resources (projects).",
+  "primary_task": "Find, select and act on resources; create new resources with validation.",
+  "secondary_tasks": [
+    "Filter or search by name, status or owner",
+    "Sort by column",
+    "Paginate",
+    "Create a resource",
+    "Edit a resource",
+    "Delete an individual resource with confirmation",
+    "Remote refresh of the list"
+  ],
+  "surface": "page",
+  "ux_pattern": [
+    "E3 Resource list",
+    "E4 Search",
+    "E5 Filters",
+    "E6 Pagination",
+    "E10 Destructive action",
+    "E11 Bulk action",
+    "E18 Confirmation",
+    "E9 Error recovery",
+    "E15 Notifications"
+  ],
+  "visual_vocabulary": [
+    "Data table (collection, R-DATA-01)",
+    "Empty state (2 variants: no results / no records yet)",
+    "Inline alert + Validation summary (422)",
+    "Banner (persistent success post-303)",
+    "Toast (transient refresh)",
+    "Progress + Skeleton (refresh)",
+    "Dialog page variant (delete confirm)"
+  ],
+  "components": [
+    "data-table",
+    "text-field",
+    "select",
+    "button",
+    "icon-button",
+    "dialog",
+    "banner",
+    "inline-alert",
+    "validation-summary",
+    "empty-state",
+    "toast",
+    "progress",
+    "error-state",
+    "pagination"
+  ],
+  "states": ["rest", "empty", "loading", "error", "selected", "success"],
+  "accessibility": [
+    "aria-sort on the active column",
+    "aria-current=page on pagination",
+    "Native row checkboxes with aria-label",
+    "<dialog open> server-rendered confirm with aria-labelledby / aria-describedby",
+    "aria-invalid + aria-describedby per field on 422",
+    "Validation-summary anchor links to #field-error",
+    "Roles status/alert derived from tones",
+    "Never color-only (forced-colors)"
+  ],
+  "content_rules": [
+    "Buttons are action verbs (New project, Delete Alpha release)",
+    "Confirmation states what happens + irreversibility (cannot be undone)",
+    "Errors say what + how to resolve (Name is required.)",
+    "Empty = message + real CTA",
+    "English default, localizable by contract"
+  ],
+  "seo_requirements": {
+    "robots": "noindex, nofollow",
+    "lang": "en",
+    "title_per_route": true,
+    "description_per_route": true,
+    "canonical_clean": true,
+    "single_h1": true,
+    "json_ld": false
+  },
+  "geo_requirements": {
+    "entity": "Gelium UI",
+    "factual": true,
+    "stable_deep_links": true,
+    "visible_provenance": false,
+    "json_ld_types": []
+  },
+  "server_contract": {
+    "get_params": {
+      "q": "free text (search)",
+      "sort": "closed vocabulary (dataTableSortKeys)",
+      "dir": "asc|desc",
+      "page": "integer >= 1 (clamped)",
+      "selection": "csv of ids"
+    },
+    "mutation_contract": "POST_303",
+    "validation_contract": "422_X_LOOM_VALIDATION",
+    "transient_feedback": "LOOM_TOAST",
+    "post_only_paths": ["/recipes/admin-resource/refresh"],
+    "fragment_swap": "#resource-panel",
+    "notes": "HX-Request bifurcates the #resource-panel fragment vs the full page. Mutations never use hx-post (R-NOJS-03)."
+  },
+  "no_js_flow": "Complete: filter/sort/page/selection are real GET links (URL is state); create/edit/delete are native POST + 303; 422 re-renders the full page preserving values; delete confirm is a server-rendered <dialog open> with a real POST form; refresh reloads with an inline toast.",
+  "htmx_enhancement": "hx-get swaps #resource-panel on sort/filter/page; refresh returns the fragment + HX-Trigger loom:toast. Mutations remain POST + 303 (no hx-post).",
+  "responsive_behavior": "Fluid max-width column, no breakpoints; server-side pagination instead of horizontal table scroll; form grid with min()/clamp(); row actions stay inline links on narrow.",
+  "theme_requirements": "Tokens --ui-* only; zero color literals (guard TestNoColorLiteralsInComponents); light/dark/forced-colors/reduced-motion by primitives; no new density or breakpoint tokens.",
+  "alternatives_rejected": [
+    "Board: a filtered set, not a multi-lane workflow (R-DATA-03)",
+    "List for >8-10 rows: columnar comparison needs Data table (R-DATA-01)",
+    "Dialog for the full listing: page = URL/back (R-OVERLAY-01)",
+    "Toast for validation errors: 422 contract, persistent never transient (R-FEEDBACK-02)",
+    "Drag & drop: server-first, POST + 303 (R-NOJS-02)"
+  ],
+  "rationale": "Exercises the largest set of canonical contracts (GET params, selection, POST+303 destructive, Dialog confirm, 422, empty, toast, banner/inline persistent) over the most mature primitive (Data table); validates the recipe framework reused by Ops Queue and Public Feed.",
+  "decision_rules": [
+    "R-DATA-01", "R-OVERLAY-01", "R-OVERLAY-03", "R-FEEDBACK-01", "R-FEEDBACK-02",
+    "R-FEEDBACK-03", "R-ACTION-01", "R-STATE-01", "R-STATE-02", "R-STATE-03",
+    "R-STATE-04", "R-NAV-02", "R-RESP-01", "R-A11Y-01", "R-A11Y-02",
+    "R-A11Y-03", "R-A11Y-04", "R-A11Y-05", "R-A11Y-06", "R-A11Y-07",
+    "R-NOJS-01", "R-NOJS-02", "R-NOJS-03", "R-ERROR-01", "R-ERROR-02",
+    "R-ERROR-03", "R-ERROR-04", "R-DESTRUCT-01", "R-SEO-01", "R-GEO-01",
+    "R-CONTENT-01", "R-CONTENT-02", "R-CONTENT-03", "R-CONTENT-04", "R-CONTENT-05"
+  ],
+  "references": [
+    "docs/gelium-ui-screen-recipes.md",
+    "internal/app/recipe_admin_resource.go",
+    "internal/app/server.go"
+  ]
+}

@@ -1,0 +1,119 @@
+{
+  "protocol": "gelium-ux-composition",
+  "schema": "gelium://ux-composition/screen-recipe/v0.1",
+  "version": "0.1",
+  "type": "screen-recipe",
+  "slug": "inbox/conversation",
+  "name": "Inbox — Conversation",
+  "screen_type": "inbox_conversation",
+  "intent": "Resolve inbound conversations.",
+  "flow_ref": "inbox",
+  "user": "Support agent/operator resolving inbound conversations.",
+  "primary_task": "Read the conversation context and reply (or triage) with a POST + 303.",
+  "secondary_tasks": [
+    "Open a conversation from the inbox list",
+    "See requester identity and context",
+    "Reply to the thread",
+    "Close/triage the conversation",
+    "Remote refresh of the thread"
+  ],
+  "surface": "page",
+  "ux_pattern": [
+    "Feed (thread, chronological message order)",
+    "E9 Error recovery",
+    "E15 Notifications",
+    "Form (native reply form)"
+  ],
+  "visual_vocabulary": [
+    "List two-line (message items in a thread)",
+    "Avatar (requester, decorative)",
+    "Badge (status tone with visible label)",
+    "Text field (reply)",
+    "Button (primary reply)",
+    "Toast (transient refresh)",
+    "Banner (persistent success post-reply)",
+    "Empty state (empty thread)",
+    "Error state (404)"
+  ],
+  "components": [
+    "list",
+    "avatar",
+    "badge",
+    "text-field",
+    "button",
+    "toast",
+    "banner",
+    "empty-state",
+    "error-state"
+  ],
+  "states": ["rest", "empty", "loading", "error", "success"],
+  "accessibility": [
+    "Avatar aria-hidden (requester name in visible text)",
+    "Item status = badge label + tone, never color-only",
+    "Reply is a native <form> with <label for>",
+    "One primary action: Send reply (R-ACTION-01)",
+    "error-state 404 with retry",
+    "aria-live toast region for transient feedback",
+    "Forced-colors coverage by primitives"
+  ],
+  "content_rules": [
+    "Reply button is an action verb (Send)",
+    "Thread copy terse and factual",
+    "Empty = message + real CTA (Back to inbox)",
+    "Errors say what + how to resolve",
+    "English default, localizable by contract"
+  ],
+  "seo_requirements": {
+    "robots": "noindex, nofollow",
+    "lang": "en",
+    "title_per_route": true,
+    "description_per_route": true,
+    "canonical_clean": true,
+    "single_h1": true,
+    "json_ld": false
+  },
+  "geo_requirements": {
+    "entity": "Gelium UI",
+    "factual": true,
+    "stable_deep_links": true,
+    "visible_provenance": false,
+    "json_ld_types": []
+  },
+  "server_contract": {
+    "get_params": {
+      "page": "integer >= 1 (thread pagination, clamped)"
+    },
+    "mutation_contract": "POST_303",
+    "validation_contract": "422_X_LOOM_VALIDATION",
+    "transient_feedback": "LOOM_TOAST",
+    "post_only_paths": ["/inbox/{conversation_id}/refresh"],
+    "fragment_swap": "#thread-panel",
+    "notes": "GET /inbox/{conversation_id} renders the conversation page; POST /inbox/{conversation_id}/reply -> 303 with persistent banner success or 422 preserving the reply draft."
+  },
+  "no_js_flow": "Complete: the inbox list is reached by real GET links; reply is a native form POST + 303 with persistent success; 422 re-renders preserving the reply draft; refresh reloads with an inline toast; 404 renders error-state with retry.",
+  "htmx_enhancement": "hx-get swaps #thread-panel on refresh (fragment + HX-Trigger loom:toast). Reply remains POST + 303 (no hx-post).",
+  "responsive_behavior": "Single column, fluid max-width, no breakpoints; thread items full width; reply form wraps on narrow (flex-wrap); server-side pagination for long threads.",
+  "theme_requirements": "Tokens --ui-* only; zero color literals; light/dark/forced-colors/reduced-motion by primitives.",
+  "alternatives_rejected": [
+    "Toast for validation: 422 contract, persistent never transient (R-FEEDBACK-02)",
+    "Dialog for the full conversation: page = URL/back (R-OVERLAY-01)",
+    "WebSocket/live updates: no new contract; refresh is POST-only + loom:toast (P5)",
+    "Client-side optimistic UI: server-first, POST + 303 (R-NOJS-02)",
+    "Board for triage: FIFO conversation flow, not multi-lane (R-DATA-03)"
+  ],
+  "rationale": "Proves the Feed/thread composition (the existing WhatsApp chat pattern) under the protocol: reply as POST + 303, validation as 422, transient refresh via loom:toast, persistent success via banner. A new screen type that reuses only registry components.",
+  "decision_rules": [
+    "R-DATA-05", "R-OVERLAY-01", "R-FEEDBACK-01", "R-FEEDBACK-02", "R-FEEDBACK-03",
+    "R-ACTION-01", "R-STATE-01", "R-STATE-02", "R-STATE-03", "R-STATE-04",
+    "R-NAV-02", "R-RESP-01", "R-A11Y-01", "R-A11Y-02", "R-A11Y-03",
+    "R-A11Y-04", "R-A11Y-06", "R-A11Y-07", "R-NOJS-01", "R-NOJS-02",
+    "R-NOJS-03", "R-ERROR-01", "R-ERROR-02", "R-ERROR-03", "R-ERROR-04",
+    "R-SEO-01", "R-GEO-01", "R-CONTENT-01", "R-CONTENT-02", "R-CONTENT-03",
+    "R-CONTENT-04", "R-CONTENT-05"
+  ],
+  "references": [
+    "docs/gelium-ui-vocabulary.md",
+    "internal/app/demo_whatsapp.go",
+    "docs/gelium/schemas/contracts/inbox-flow.json"
+  ]
+}

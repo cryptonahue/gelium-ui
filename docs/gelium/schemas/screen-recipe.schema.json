@@ -1,0 +1,269 @@
+{
+  "$schema": "https://json-schema.org/draft/2020-12/schema",
+  "$id": "gelium://ux-composition/screen-recipe/v0.1",
+  "title": "Gelium Screen Recipe Contract",
+  "description": "Machine-readable form of the 19-field Gelium screen recipe template (docs/gelium-ui-screen-composition.md §3) plus protocol fields (intent, flow_ref, decision rules). Opaque identifier, not a resolvable URL. Worked examples live in docs/gelium/schemas/contracts/.",
+  "type": "object",
+  "additionalProperties": false,
+  "required": [
+    "protocol",
+    "schema",
+    "version",
+    "type",
+    "slug",
+    "name",
+    "screen_type",
+    "intent",
+    "flow_ref",
+    "user",
+    "primary_task",
+    "secondary_tasks",
+    "surface",
+    "ux_pattern",
+    "visual_vocabulary",
+    "components",
+    "states",
+    "accessibility",
+    "content_rules",
+    "seo_requirements",
+    "geo_requirements",
+    "server_contract",
+    "no_js_flow",
+    "htmx_enhancement",
+    "responsive_behavior",
+    "theme_requirements",
+    "alternatives_rejected",
+    "rationale",
+    "decision_rules"
+  ],
+  "properties": {
+    "protocol": {
+      "const": "gelium-ux-composition",
+      "description": "Protocol this instance belongs to."
+    },
+    "schema": {
+      "const": "gelium://ux-composition/screen-recipe/v0.1",
+      "description": "Exact schema ID this instance conforms to."
+    },
+    "version": {
+      "const": "0.1",
+      "description": "Protocol version."
+    },
+    "type": {
+      "const": "screen-recipe"
+    },
+    "slug": {
+      "type": "string",
+      "pattern": "^[a-z0-9/-]+$",
+      "description": "Stable route slug (e.g. 'recipes/admin-resource', 'inbox/conversation')."
+    },
+    "name": {
+      "type": "string",
+      "description": "Human-readable screen name."
+    },
+    "screen_type": {
+      "enum": [
+        "admin_resource",
+        "ops_queue",
+        "public_feed",
+        "inbox_conversation",
+        "public_marketing_page",
+        "resource_detail",
+        "resource_editor",
+        "dashboard",
+        "settings",
+        "booking",
+        "search_results",
+        "authentication"
+      ],
+      "description": "Closed vocabulary of screen types (recipe families of the system)."
+    },
+    "intent": {
+      "type": "string",
+      "description": "The product-level goal this screen participates in (Intent layer, ux-composition-model.md)."
+    },
+    "flow_ref": {
+      "type": "string",
+      "description": "Reference to the flow contract this screen belongs to (matches the fragment of a flow.schema.json instance, e.g. 'inbox')."
+    },
+    "user": {
+      "type": "string",
+      "description": "The actor pursuing the primary task, described by task — not the system role (19-field USER)."
+    },
+    "primary_task": {
+      "type": "string",
+      "description": "What the user does on this surface (19-field PRIMARY_TASK)."
+    },
+    "secondary_tasks": {
+      "type": "array",
+      "minItems": 0,
+      "items": { "type": "string" },
+      "description": "Secondary tasks (19-field SECONDARY_TASKS)."
+    },
+    "surface": {
+      "enum": ["app_shell", "page", "section", "panel", "card", "overlay"],
+      "description": "Immersion context (screen grammar, composition-rules.md §2)."
+    },
+    "ux_pattern": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Pattern registry references, e.g. 'E3 Resource list', 'F2 Hero/Billboard' (pattern-registry.md D1-D8, E1-E19, F1-F14)."
+    },
+    "visual_vocabulary": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Components and their visual role (19-field VISUAL_VOCABULARY)."
+    },
+    "components": {
+      "type": "array",
+      "minItems": 1,
+      "items": { "type": "string" },
+      "description": "Exact registry component names — zero new primitives (component-registry.md §2)."
+    },
+    "states": {
+      "type": "array",
+      "items": {
+        "enum": ["rest", "hover", "focus", "pressed", "selected", "disabled", "empty", "loading", "error", "success"]
+      },
+      "description": "Closed state vocabulary (state matrix, composition-rules.md §8). Every data surface declares empty, loading and error (R-STATE-01)."
+    },
+    "accessibility": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Accessibility obligations of the screen (accessibility-contract.md)."
+    },
+    "content_rules": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Content obligations satisfied by the screen (content-rules.md)."
+    },
+    "seo_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["robots", "lang", "title_per_route", "description_per_route", "canonical_clean", "single_h1"],
+      "properties": {
+        "robots": {
+          "enum": ["index, follow", "noindex, nofollow"]
+        },
+        "lang": {
+          "type": "string",
+          "pattern": "^[a-z]{2}(-[A-Z]{2})?$"
+        },
+        "title_per_route": { "type": "boolean" },
+        "description_per_route": { "type": "boolean" },
+        "canonical_clean": {
+          "type": "boolean",
+          "description": "Canonical without query params (siteBaseURL + routePath)."
+        },
+        "single_h1": { "type": "boolean" },
+        "json_ld": {
+          "type": "boolean",
+          "description": "Whether the surface emits structured data (JSON-LD)."
+        }
+      }
+    },
+    "geo_requirements": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["entity", "factual", "stable_deep_links", "visible_provenance"],
+      "properties": {
+        "entity": {
+          "const": "Gelium UI",
+          "description": "The unique brand entity of the system (geo-contract.md)."
+        },
+        "factual": {
+          "type": "boolean",
+          "description": "Content is factual/citable; no unverified universal claims."
+        },
+        "stable_deep_links": { "type": "boolean" },
+        "visible_provenance": { "type": "boolean" },
+        "json_ld_types": {
+          "type": "array",
+          "items": { "enum": ["BreadcrumbList", "Organization", "TechArticle"] },
+          "description": "Structured-data types emitted by the surface."
+        }
+      }
+    },
+    "server_contract": {
+      "type": "object",
+      "additionalProperties": false,
+      "required": ["get_params"],
+      "properties": {
+        "get_params": {
+          "type": "object",
+          "additionalProperties": { "type": "string" },
+          "description": "Stable GET params and their closed vocabularies, e.g. {\"q\":\"free text\",\"sort\":\"closed vocabulary\"}. Empty object when none."
+        },
+        "mutation_contract": {
+          "enum": ["POST_303"],
+          "description": "Mutations are POST + 303 SeeOther (R-NOJS-02)."
+        },
+        "validation_contract": {
+          "enum": ["422_X_LOOM_VALIDATION"],
+          "description": "Validation is HTTP 422 + X-Loom-Validation: true (P5)."
+        },
+        "transient_feedback": {
+          "enum": ["LOOM_TOAST"],
+          "description": "Transient feedback via HX-Trigger loom:toast only (R-FEEDBACK-03)."
+        },
+        "post_only_paths": {
+          "type": "array",
+          "items": {
+            "type": "string",
+            "pattern": "^/"
+          },
+          "description": "POST-only routes registered in postOnlyPaths(); GET on them returns 405 (R-NOJS-02)."
+        },
+        "fragment_swap": {
+          "type": "string",
+          "pattern": "^#[a-z0-9-]+$",
+          "description": "HTMX fragment swapped on reading requests (hx-get)."
+        },
+        "notes": {
+          "type": "string",
+          "description": "Contract caveats (e.g. example vs production variant)."
+        }
+      }
+    },
+    "no_js_flow": {
+      "type": "string",
+      "description": "Complete non-JS branch: GET links, native forms, POST + 303, server-rendered overlays (R-NOJS-01)."
+    },
+    "htmx_enhancement": {
+      "type": "string",
+      "description": "Progressive enhancement only; never changes the mutation contract (R-NOJS-03)."
+    },
+    "responsive_behavior": {
+      "type": "string",
+      "description": "Fluid-first layout behavior (R-RESP-01/02)."
+    },
+    "theme_requirements": {
+      "type": "string",
+      "description": "Tokens --ui-* only, zero literals, forced-colors/reduced-motion by primitives (P10)."
+    },
+    "alternatives_rejected": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Patterns/anti-rules considered and rejected, with reason (composition-rules.md §4/§5)."
+    },
+    "rationale": {
+      "type": "string",
+      "description": "Answers the six rationale questions of composition-rules.md §11."
+    },
+    "decision_rules": {
+      "type": "array",
+      "items": {
+        "type": "string",
+        "pattern": "^R-[A-Z0-9]+-\\d+$"
+      },
+      "description": "IDs of the decision rules (ux-decision-rules.md) this screen exercises. Every ID must exist in the rule catalog."
+    },
+    "references": {
+      "type": "array",
+      "items": { "type": "string" },
+      "description": "Optional evidence references (source files/docs)."
+    }
+  }
+}

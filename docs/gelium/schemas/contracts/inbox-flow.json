@@ -1,0 +1,31 @@
+{
+  "protocol": "gelium-ux-composition",
+  "schema": "gelium://ux-composition/flow/v0.1",
+  "version": "0.1",
+  "type": "flow",
+  "slug": "inbox",
+  "name": "Inbox — Resolve Conversation",
+  "intent": "Resolve inbound conversations.",
+  "user": "Support agent/operator resolving inbound conversations.",
+  "primary_task": "Open an inbound conversation, read its context, and reply or triage.",
+  "secondary_tasks": [
+    "Filter the inbox list",
+    "Refresh the thread",
+    "Close/triage a conversation"
+  ],
+  "entry_screen": "inbox/conversation",
+  "screens": ["inbox/conversation"],
+  "navigation": [],
+  "success_state": "The conversation re-rendered after a successful reply (POST + 303) with a persistent success banner.",
+  "failure_recovery": "422 preserves the reply draft with inline alert + validation summary; unknown conversation renders error-state 404 with retry (R-ERROR-01/02).",
+  "no_js_flow": "Complete: reply is a native POST form + 303; refresh reloads with an inline toast; the inbox list (planned screen) is reached by real links.",
+  "htmx_enhancement": "hx-get swaps #thread-panel on refresh (fragment + HX-Trigger loom:toast). Reply stays POST + 303 (no hx-post).",
+  "decision_rules": [
+    "R-DATA-05", "R-FEEDBACK-01", "R-FEEDBACK-02", "R-FEEDBACK-03",
+    "R-NOJS-01", "R-NOJS-02", "R-NOJS-03", "R-ERROR-01", "R-ERROR-02"
+  ],
+  "references": [
+    "docs/gelium/schemas/contracts/inbox-conversation.json",
+    "internal/app/demo_whatsapp.go"
+  ]
+}
