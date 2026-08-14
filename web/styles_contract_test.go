@@ -1487,3 +1487,195 @@ func TestForcedColorsPresence(t *testing.T) {
 		t.Fatal("forced-colors scan must cover at least one media block")
 	}
 }
+
+// TestReducedMotionAudit is the Phase B R5 contract (D5): every component
+// transition/animation must be neutralized (transition:none / animation:none)
+// under prefers-reduced-motion, either in the consolidated app.css block or in
+// a component-local block (allowed when component-specific). The audit
+// enumerates every declaration from the sources, so an uncovered animation
+// fails loudly instead of drifting.
+func TestReducedMotionAudit(t *testing.T) {
+	// Neutralization selector sets: app.css consolidated block + every
+	// component's local block.
+	appCSS, err := sourceStyles.ReadFile("styles/app.css")
+	if err != nil {
+		t.Fatalf("read app.css: %v", err)
+	}
+	neutralized := reducedMotionSelectors(t, string(appCSS))
+
+	entries, err := sourceStyles.ReadDir("styles")
+	if err != nil {
+		t.Fatalf("list styles dir: %v", err)
+	}
+
+	// selector -> owning file for every class-driven transition/animation.
+	type motionDecl struct {
+		file string
+		sel  string
+		prop string
+		val  string
+	}
+	var decls []motionDecl
+	checked := 0
+
+	for _, entry := range entries {
+		name := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(name, ".css") || name == "tokens.css" || name == "app.css" {
+			continue
+		}
+		content, err := sourceStyles.ReadFile("styles/" + name)
+		if err != nil {
+			t.Fatalf("read %s: %v", name, err)
+		}
+		css := string(content)
+
+		// Merge the component's own local reduced-motion neutralizations
+		// into the global set before auditing its declarations.
+		for s := range reducedMotionSelectors(t, css) {
+			neutralized[s] = true
+		}
+
+		// Strip reduced-motion blocks so the enumeration only sees the
+		// declarations that need coverage (not their neutralizations).
+		cssNoRM := reducedMotionBlocksRe.ReplaceAllString(css, "")
+
+		for _, rule := range cssRules(t, cssNoRM) {
+			for _, dm := range motionDeclRe.FindAllStringSubmatch(rule.body, -1) {
+				prop, val := dm[1], strings.TrimSpace(dm[2])
+				if val == "none" {
+					continue
+				}
+				for _, s := range strings.Split(rule.selector, ",") {
+					s = strings.TrimSpace(s)
+					if s == "" || strings.HasPrefix(s, "@") {
+						continue
+					}
+					checked++
+					decls = append(decls, motionDecl{file: name, sel: s, prop: prop, val: val})
+				}
+			}
+		}
+	}
+	if checked == 0 {
+		t.Fatal("reduced-motion audit must enumerate at least one transition/animation declaration")
+	}
+
+	// Every declaration's selector must be covered by a neutralization: the
+	// neutralized selector's class set is a subset of the moving selector's
+	// class set (the rule that kills the motion targets the same or a wider
+	// element). Element-only selectors are matched exactly.
+	for _, d := range decls {
+		movingClasses := cssClasses(d.sel)
+		covered := false
+		for n := range neutralized {
+			if n == d.sel {
+				covered = true
+				break
+			}
+			nClasses := cssClasses(n)
+			if len(movingClasses) > 0 && len(nClasses) > 0 && classSetSubset(nClasses, movingClasses) {
+				covered = true
+				break
+			}
+		}
+		if !covered {
+			t.Errorf("%s: %s on %q (%s) is not neutralized under prefers-reduced-motion — add transition:none/animation:none in app.css or a component-local block",
+				d.file, d.prop, d.sel, d.val)
+		}
+	}
+}
+
+// motionDeclRe matches a transition/animation declaration inside a rule body.
+var motionDeclRe = regexp.MustCompile(`(transition|animation)\s*:\s*([^;]+);`)
+
+// reducedMotionBlocksRe matches a full @media (prefers-reduced-motion) block.
+// reducedMotionBlocksRe matches the opening of a prefers-reduced-motion
+// media block; reducedMotionBlocks extracts the full balanced body.
+var reducedMotionBlocksRe = regexp.MustCompile(`(?s)@media\s*\(\s*prefers-reduced-motion\s*:\s*reduce\s*\)\s*\{`)
+
+// reducedMotionBlocks returns every complete @media (prefers-reduced-motion:
+// reduce) { ... } block in css, balanced by brace depth.
+func reducedMotionBlocks(css string) []string {
+	var blocks []string
+	for _, m := range reducedMotionBlocksRe.FindAllStringIndex(css, -1) {
+		depth := 0
+		for i := m[1] - 1; i < len(css); i++ {
+			switch css[i] {
+			case '{':
+				depth++
+			case '}':
+				depth--
+				if depth == 0 {
+					blocks = append(blocks, css[m[0]:i+1])
+					break
+				}
+			}
+		}
+	}
+	return blocks
+}
+
+// cssRule is one parsed rule (selector + body).
+type cssRule struct {
+	selector string
+	body     string
+}
+
+// cssRules parses top-level and nested rules, skipping comments and keyframes.
+func cssRules(t *testing.T, css string) []cssRule {
+	t.Helper()
+	var rules []cssRule
+	// Strip comments so selectors never include /* ... */ text.
+	css = regexp.MustCompile(`(?s)/\*.*?\*/`).ReplaceAllString(css, "")
+	// Iterate over every selector { body } pair; bodies without nested braces.
+	for _, m := range regexp.MustCompile(`([^{}@][^{}]*)\{([^{}]*)\}`).FindAllStringSubmatch(css, -1) {
+		sel := strings.TrimSpace(m[1])
+		body := m[2]
+		if sel == "" || strings.HasPrefix(sel, "@") {
+			continue
+		}
+		rules = append(rules, cssRule{selector: sel, body: body})
+	}
+	return rules
+}
+
+// cssClasses returns the set of class names a selector references.
+func cssClasses(selector string) map[string]bool {
+	out := map[string]bool{}
+	for _, m := range regexp.MustCompile(`\.([a-zA-Z0-9_-]+)`).FindAllStringSubmatch(selector, -1) {
+		out[m[1]] = true
+	}
+	return out
+}
+
+// classSetSubset reports whether every class in sub is present in super.
+func classSetSubset(sub, super map[string]bool) bool {
+	for c := range sub {
+		if !super[c] {
+			return false
+		}
+	}
+	return true
+}
+
+// reducedMotionSelectors returns every selector neutralized by
+// transition:none / animation:none inside the prefers-reduced-motion blocks of
+// one CSS blob.
+func reducedMotionSelectors(t *testing.T, css string) map[string]bool {
+	t.Helper()
+	out := map[string]bool{}
+	for _, m := range reducedMotionBlocks(css) {
+		for _, rule := range cssRules(t, m) {
+			if !strings.Contains(rule.body, "transition: none") && !strings.Contains(rule.body, "animation: none") {
+				continue
+			}
+			for _, s := range strings.Split(rule.selector, ",") {
+				s = strings.TrimSpace(s)
+				if s != "" {
+					out[s] = true
+				}
+			}
+		}
+	}
+	return out
+}
