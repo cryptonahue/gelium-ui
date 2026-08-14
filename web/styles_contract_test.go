@@ -1363,3 +1363,127 @@ func hasVarConsumer(token string, sources []styleSource) bool {
 	}
 	return false
 }
+
+// TestNoFocusLiterals is the Phase B R4 contract (D4, single focus strategy):
+// every component :focus-visible outline must derive from the shared focus
+// tokens (--ui-focus-thickness / --ui-focus-offset / --ui-color-focus-ring),
+// never from hardcoded widths, colors, or offsets. The global rule lives in
+// focus-ring.css; component-specific :focus-visible rules may exist but must
+// reference the tokens only.
+func TestNoFocusLiterals(t *testing.T) {
+	excluded := map[string]bool{
+		"focus-ring.css": true, // owns the token-driven global rule
+		"tokens.css":     true, // owns the token values
+		"app.css":        true, // entry; its forced-colors tail maps focus to Highlight
+	}
+	entries, err := sourceStyles.ReadDir("styles")
+	if err != nil {
+		t.Fatalf("list styles dir: %v", err)
+	}
+
+	checked := 0
+	for _, entry := range entries {
+		name := entry.Name()
+		if entry.IsDir() || !strings.HasSuffix(name, ".css") || excluded[name] {
+			continue
+		}
+		content, err := sourceStyles.ReadFile("styles/" + name)
+		if err != nil {
+			t.Fatalf("read %s: %v", name, err)
+		}
+		css := string(content)
+		// Only look inside :focus-visible rule bodies.
+		re := regexp.MustCompile(`(?s):focus-visible[^{]*\{([^}]*)\}`)
+		for _, m := range re.FindAllStringSubmatch(css, -1) {
+			body := m[1]
+			for _, line := range strings.Split(body, "\n") {
+				line = strings.TrimSpace(line)
+				if !strings.Contains(line, "outline") {
+					continue
+				}
+				// Allowed: token-driven outline/outline-offset/outline-color
+				// declarations, and outline: none/0 suppression (the text
+				// field paints its own border focus). Forced-colors
+				// Highlight is a system color, allowed by spec (D4).
+				if strings.Contains(line, "var(--ui-focus-") ||
+					strings.Contains(line, "var(--ui-color-focus-ring)") ||
+					strings.Contains(line, "outline-color: Highlight") ||
+					strings.Contains(line, "outline: none") ||
+					strings.Contains(line, "outline: 0") {
+					continue
+				}
+				t.Errorf("%s: focus-visible outline %q must derive from --ui-focus-*/--ui-color-focus-ring (no literals)", name, line)
+			}
+		}
+		checked++
+	}
+	if checked == 0 {
+		t.Fatal("focus literal scan must cover at least one component file")
+	}
+}
+
+// TestForcedColorsPresence is the Phase B R4 contract (D4/D5): under
+// forced-colors, focus outlines must map to Highlight, and component borders
+// must use system colors instead of theme tokens. The consolidated strategy
+// lives in app.css; component-local forced-colors blocks may exist when
+// component-specific — both are scanned here, plus the compiled bundle the
+// browser actually receives.
+func TestForcedColorsPresence(t *testing.T) {
+	// 1. Source contract: the global focus ring maps to Highlight in the
+	// app.css forced-colors tail (the consolidated strategy home, D5).
+	appCSS, err := sourceStyles.ReadFile("styles/app.css")
+	if err != nil {
+		t.Fatalf("read app.css: %v", err)
+	}
+	if !strings.Contains(string(appCSS), `:focus-visible, .ui-focus-ring:focus-visible { outline-color: Highlight; }`) {
+		t.Error("app.css forced-colors tail must map the global focus ring (:focus-visible, .ui-focus-ring) to Highlight")
+	}
+
+	// 2. Compiled bundle: the served asset carries the forced-colors block
+	// with the Highlight focus mapping (minifier lowercases system colors, so
+	// match case-insensitively).
+	compiled := compiledAppCSS(t)
+	if !strings.Contains(compiled, "@media (forced-colors:") {
+		t.Error("compiled app.css must carry the forced-colors media block")
+	}
+	if !regexp.MustCompile(`(?i):focus-visible[^{]*\{[^}]*outline-color:\s*highlight`).MatchString(compiled) {
+		t.Error("compiled app.css must map a focus-visible rule to Highlight under forced colors")
+	}
+
+	// 3. Border hygiene: every border/border-color declaration inside every
+	// forced-colors block (app.css tail or component-local) must use a system
+	// color, never a theme token or literal color. Structural scan across all
+	// sources.
+	systemColor := regexp.MustCompile(`(?i)(CanvasText|Canvas|ButtonText|ButtonFace|GrayText|Highlight|HighlightText|LinkText|Mark|Field|FieldText|Window|WindowText)`)
+	fcBlock := regexp.MustCompile(`(?s)@media \(forced-colors: active\)\s*\{([^{}]*(?:\{[^{}]*\}[^{}]*)*)\}`)
+	checked := 0
+	for _, src := range allStyleSources(t) {
+		for _, m := range fcBlock.FindAllStringSubmatch(src.css, -1) {
+			block := m[1]
+			ruleRe := regexp.MustCompile(`(?s)([^{}]+)\{([^{}]*)\}`)
+			for _, rule := range ruleRe.FindAllStringSubmatch(block, -1) {
+				selector, body := rule[1], rule[2]
+				for _, decl := range strings.Split(body, ";") {
+					decl = strings.TrimSpace(decl)
+					lower := strings.ToLower(decl)
+					if !strings.HasPrefix(lower, "border") && !strings.HasPrefix(lower, "outline") {
+						continue
+					}
+					// Suppressions and transparent/gradient shorthands are
+					// allowed; anything else must carry a system color.
+					if strings.Contains(lower, ":none") || strings.Contains(lower, ":0") ||
+						strings.Contains(lower, "transparent") || strings.Contains(lower, "forced-color-adjust") {
+						continue
+					}
+					if strings.Contains(decl, ":") && !systemColor.MatchString(decl) {
+						t.Errorf("%s forced-colors rule %q declares %q without a system color (borders use system colors under forced colors)", src.name, strings.TrimSpace(selector), decl)
+					}
+				}
+			}
+			checked++
+		}
+	}
+	if checked == 0 {
+		t.Fatal("forced-colors scan must cover at least one media block")
+	}
+}
