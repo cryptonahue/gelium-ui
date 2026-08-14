@@ -45,7 +45,8 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 					`>0.4.0<`,
 					`Gelium UI`,
 					`disabled`,
-					`aria-label="Visual direction"`,
+					`aria-label="Theme"`,
+					`aria-label="Appearance"`,
 				} {
 					if !strings.Contains(body, contract) {
 						t.Errorf("%s missing shell contract %q", tt.path, contract)
@@ -147,6 +148,82 @@ func TestDocsShellActiveAndIAGroups(t *testing.T) {
 			t.Errorf("sidebar missing recipe href %q", path)
 		}
 	}
+}
+
+// TestDocsShellColorSchemeSwitcher proves Light/Dark chrome on the docs topbar
+// (right side), document-root scheme application, and query preservation.
+func TestDocsShellColorSchemeSwitcher(t *testing.T) {
+	t.Run("dark scheme class and data-theme", func(t *testing.T) {
+		body := getOKBody(t, "/components/button?scheme=dark")
+		if !(strings.Contains(body, `theme-material`) && strings.Contains(body, `theme-dark`)) {
+			t.Fatalf("dark scheme must set theme-material + theme-dark on document root; snippet=%q", htmlClassSnippet(body))
+		}
+		if !strings.Contains(body, `data-theme="dark"`) {
+			t.Error(`expected data-theme="dark"`)
+		}
+		if !strings.Contains(body, `aria-label="Appearance"`) {
+			t.Error("docs topbar must expose Appearance (scheme) switcher")
+		}
+		if !strings.Contains(body, `>Dark<`) || !strings.Contains(body, `>Light<`) {
+			t.Error("scheme switcher must offer Light and Dark labels")
+		}
+		// Dark option is current.
+		if !strings.Contains(body, `href="/components/button?scheme=dark"`) &&
+			!strings.Contains(body, `scheme=dark`) {
+			t.Error("scheme switcher must link with scheme=dark")
+		}
+	})
+
+	t.Run("light forces data-theme light", func(t *testing.T) {
+		body := getOKBody(t, "/docs?scheme=light")
+		if !strings.Contains(body, `data-theme="light"`) {
+			t.Error(`?scheme=light must set data-theme="light" so OS dark media is suppressed`)
+		}
+		if strings.Contains(body, `theme-dark`) {
+			t.Error("light scheme must not add theme-dark class")
+		}
+	})
+
+	t.Run("theme and scheme preserved together", func(t *testing.T) {
+		body := getOKBody(t, "/components/button?theme=basecoat&scheme=dark")
+		if !strings.Contains(body, `theme-basecoat`) || !strings.Contains(body, `theme-dark`) {
+			t.Fatalf("expected basecoat+dark root classes; got %q", htmlClassSnippet(body))
+		}
+		// Sidebar list links keep both query keys (order may vary).
+		if !strings.Contains(body, `href="/components/icon-button?`) {
+			t.Fatal("missing sidebar peer href")
+		}
+		// Find one themed peer and require both keys.
+		idx := strings.Index(body, `href="/components/icon-button?`)
+		end := strings.Index(body[idx+6:], `"`)
+		href := body[idx : idx+6+end+1]
+		if !strings.Contains(href, `theme=basecoat`) || !strings.Contains(href, `scheme=dark`) {
+			t.Errorf("sidebar peer must preserve theme+scheme; got %s", href)
+		}
+		// Appearance Dark stays current while Theme Basecoat stays current.
+		if !strings.Contains(body, `aria-label="Appearance"`) {
+			t.Error("missing Appearance switcher")
+		}
+	})
+
+	t.Run("home has no scheme switcher", func(t *testing.T) {
+		body := getOKBody(t, "/")
+		if strings.Contains(body, `aria-label="Appearance"`) {
+			t.Error("home legacy layout must not render Appearance switcher")
+		}
+	})
+}
+
+func htmlClassSnippet(body string) string {
+	i := strings.Index(body, "<html")
+	if i < 0 {
+		return ""
+	}
+	j := strings.Index(body[i:], ">")
+	if j < 0 {
+		return body[i:min(i+120, len(body))]
+	}
+	return body[i : i+j+1]
 }
 
 // TestDocsShellSidebarPreservesTheme proves in-shell sidebar navigation keeps
@@ -394,7 +471,7 @@ func TestUsesDocsShell(t *testing.T) {
 
 func TestDocsNavFor(t *testing.T) {
 	t.Run("topbar slots and five IA blocks", func(t *testing.T) {
-		nav := docsNavFor("/docs", "")
+		nav := docsNavFor("/docs", "", "")
 		if nav.Version != "0.4.0" {
 			t.Errorf("Version = %q, want %q", nav.Version, "0.4.0")
 		}
@@ -426,7 +503,7 @@ func TestDocsNavFor(t *testing.T) {
 	})
 
 	t.Run("current on docs hub", func(t *testing.T) {
-		nav := docsNavFor("/docs", "")
+		nav := docsNavFor("/docs", "", "")
 		current := currentDocsNavLinks(nav)
 		if len(current) != 1 {
 			t.Fatalf("current links = %v, want exactly one", current)
@@ -437,7 +514,7 @@ func TestDocsNavFor(t *testing.T) {
 	})
 
 	t.Run("current on component button", func(t *testing.T) {
-		nav := docsNavFor("/components/button", "")
+		nav := docsNavFor("/components/button", "", "")
 		current := currentDocsNavLinks(nav)
 		if len(current) != 1 {
 			t.Fatalf("current links = %v, want exactly one", current)
@@ -462,7 +539,7 @@ func TestDocsNavFor(t *testing.T) {
 	})
 
 	t.Run("recipes are real outbound paths", func(t *testing.T) {
-		nav := docsNavFor("/docs", "")
+		nav := docsNavFor("/docs", "", "")
 		var recipes *docsNavGroup
 		for i := range nav.Groups {
 			if nav.Groups[i].Title == "Recipes" {
@@ -494,7 +571,7 @@ func TestDocsNavFor(t *testing.T) {
 	})
 
 	t.Run("patterns and themes stub paths", func(t *testing.T) {
-		nav := docsNavFor("/docs/patterns", "")
+		nav := docsNavFor("/docs/patterns", "", "")
 		if !hasDocsNavLink(nav, "/docs/patterns", true) {
 			t.Error("Patterns group must mark /docs/patterns current")
 		}
@@ -518,7 +595,7 @@ func TestDefaultFooter(t *testing.T) {
 
 	// Footer sections must be derived from the same docsNavFor model (flat export),
 	// not a second hand-maintained component list.
-	nav := docsNavFor("", "")
+	nav := docsNavFor("", "", "")
 	navTitles := docsNavGroupTitles(nav)
 	if len(footer.Sections) == 0 {
 		t.Fatal("defaultFooter must expose sections from docs nav")

@@ -5,7 +5,11 @@
     <label class="docs-topbar-search-label" for="docs-search">Search</label>
     <input id="docs-search" class="docs-topbar-search-input" type="search" name="q" placeholder="Search docs (coming soon)" disabled aria-disabled="true">
   </div>
-  <span class="docs-topbar-version" title="Library version">{{.DocsNav.Version}}</span>
-  {{if .ThemeSwitcher}}{{template "theme-switcher" .ThemeSwitcher}}{{end}}
+  <div class="docs-topbar-end">
+    <span class="docs-topbar-version" title="Library version">{{.DocsNav.Version}}</span>
+    {{if .ThemeSwitcher}}{{template "theme-switcher" .ThemeSwitcher}}{{end}}
+    {{if .SchemeSwitcher}}{{template "color-scheme-switcher" .SchemeSwitcher}}{{end}}
+  </div>
 </header>
 {{end}}
+
