@@ -908,3 +908,137 @@ func repositoryFile(t *testing.T, path ...string) string {
 	}
 	return string(content)
 }
+
+// componentCSSFiles lists the component CSS files under web/styles (the embed
+// FS) excluding the core tokens, which are exempt from the state-layer
+// contract because they own the raw color values (scrim, borders, etc).
+func componentCSSFiles(t *testing.T) map[string]string {
+	t.Helper()
+	entries, err := sourceStyles.ReadDir("styles")
+	if err != nil {
+		t.Fatalf("list styles dir: %v", err)
+	}
+	files := map[string]string{}
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".css") || name == "tokens.css" {
+			continue
+		}
+		css, err := sourceStyles.ReadFile("styles/" + name)
+		if err != nil {
+			t.Fatalf("read %s: %v", name, err)
+		}
+		files[name] = string(css)
+	}
+	if len(files) == 0 {
+		t.Fatal("web/styles must contain at least one component CSS file")
+	}
+	return files
+}
+
+// TestNoRgbStateLayersInComponentCSS is the state-layer contract guard: fixed
+// rgb()/rgba() colors SHALL NOT exist in component CSS. tokens.css is exempt
+// (it owns the raw contract values, including the scrim). Any rgb() appearing
+// in a component file is a state layer or decoration that bypassed the token
+// system — the contract (state-layers) forbids it.
+func TestNoRgbStateLayersInComponentCSS(t *testing.T) {
+	for name, css := range componentCSSFiles(t) {
+		for i, line := range strings.Split(css, "\n") {
+			if strings.Contains(line, "rgb(") || strings.Contains(line, "rgba(") {
+				t.Errorf("%s:%d must not contain rgb()/rgba() (state layers and decorations use --ui-color-* tokens): %s", name, i+1, strings.TrimSpace(line))
+			}
+		}
+	}
+}
+
+// TestNoCurrentColorStateLayers is the theme-aware state-layer contract guard:
+// hover/focus/pressed/selected/disabled layers SHALL be color-mix() over an
+// explicit fg token, never currentColor. A state layer is recognized by the
+// color-mix() overlay pattern; decorative currentColor (fill:, stroke:,
+// border: on glyphs and checkmarks) is intentionally out of scope and stays.
+func TestNoCurrentColorStateLayers(t *testing.T) {
+	for name, css := range componentCSSFiles(t) {
+		for i, line := range strings.Split(css, "\n") {
+			if strings.Contains(line, "color-mix(") && strings.Contains(line, "currentColor") {
+				t.Errorf("%s:%d state layer must use color-mix(in oklab, var(--ui-color-*-fg), transparent <opacity>) instead of currentColor: %s", name, i+1, strings.TrimSpace(line))
+			}
+		}
+	}
+}
+
+// TestNoPhantomOutlineToken locks the outline role resolution: the role is
+// served by --ui-color-border-strong (D3), and --ui-color-outline SHALL NOT
+// exist as a definition or var() use anywhere under web/ + themes/ — only
+// comments/docs may mention the name. The companion assertion proves the real
+// owner is consumed, so a zero-match grep cannot pass vacuously.
+func TestNoPhantomOutlineToken(t *testing.T) {
+	scanned := 0
+	for name, css := range componentCSSFiles(t) {
+		scanned++
+		for i, line := range strings.Split(css, "\n") {
+			if !strings.Contains(line, "--ui-color-outline") {
+				continue
+			}
+			trimmed := strings.TrimSpace(line)
+			if strings.HasPrefix(trimmed, "/*") || strings.HasPrefix(trimmed, "*") || strings.HasPrefix(trimmed, "//") {
+				continue // comment mention is allowed
+			}
+			if strings.Contains(line, "--ui-color-outline:") || strings.Contains(line, "var(--ui-color-outline)") {
+				t.Errorf("%s:%d defines or consumes the phantom --ui-color-outline token (outline role is --ui-color-border-strong): %s", name, i+1, trimmed)
+			}
+		}
+	}
+	themes := availableThemes(t)
+	for _, theme := range themes {
+		scanned++
+		css := themeCSS(t, theme)
+		for i, line := range strings.Split(css, "\n") {
+			if strings.Contains(line, "--ui-color-outline:") || strings.Contains(line, "var(--ui-color-outline)") {
+				t.Errorf("themes/%s/theme.css:%d defines or consumes the phantom --ui-color-outline token (outline role is --ui-color-border-strong)", theme, i+1)
+			}
+		}
+	}
+	if scanned == 0 {
+		t.Fatal("outline scan must cover at least one CSS file")
+	}
+	// Companion: the real owner of the outline role must be consumed by at
+	// least one component, so the role is served and the doc mapping
+	// outline=border-strong is not a dead reference.
+	consumers := 0
+	for _, css := range componentCSSFiles(t) {
+		consumers += strings.Count(css, "var(--ui-color-border-strong)")
+	}
+	if consumers == 0 {
+		t.Error("--ui-color-border-strong (the outline role owner) must have at least one var() consumer in component CSS")
+	}
+}
+
+// TestDarkTokensDefinedOnceSingleMechanism is the dark-mode-routine contract
+// guard: every theme defines dark values through exactly one mechanism (the
+// explicit .theme-{name}.theme-dark class route) and no theme CSS may carry an
+// @media (prefers-color-scheme: dark) block. Each dark token must be defined
+// exactly once — the class+media duplication that previously existed would
+// surface as a second definition.
+func TestDarkTokensDefinedOnceSingleMechanism(t *testing.T) {
+	tokenRe := regexp.MustCompile(`(--ui-[a-z0-9-]+)\s*:`)
+	for _, theme := range availableThemes(t) {
+		t.Run(theme, func(t *testing.T) {
+			_, darkClass, darkMedia := splitThemeSchemes(t, theme)
+			if darkMedia != "" {
+				t.Errorf("%s must not define a dark @media (prefers-color-scheme: dark) block (single dark mechanism is the class route)", theme)
+			}
+			names := map[string]bool{}
+			for _, m := range tokenRe.FindAllStringSubmatch(darkClass, -1) {
+				names[m[1]] = true
+			}
+			if len(names) == 0 {
+				t.Fatalf("%s dark class route must define at least one dark token", theme)
+			}
+			for name := range names {
+				if n := strings.Count(darkClass, name+":"); n != 1 {
+					t.Errorf("%s dark class route must define %s exactly once, got %d definitions", theme, name, n)
+				}
+			}
+		})
+	}
+}

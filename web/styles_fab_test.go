@@ -46,9 +46,12 @@ func TestFabPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 		`outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);`,
 		`.ui-fab:disabled, .ui-fab[aria-disabled="true"]`,
 		`opacity: var(--ui-state-disabled-opacity);`,
-		`currentColor`,
+		`color-mix(in oklab, var(--ui-fab-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)`,
+		`color-mix(in oklab, var(--ui-fab-surface-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)`,
+		`color-mix(in oklab, var(--ui-fab-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)`,
 		`var(--ui-state-hover-opacity)`,
 		`var(--ui-state-pressed-opacity)`,
+		`var(--ui-state-focus-opacity)`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("source FAB CSS is missing contract %q", contract)
