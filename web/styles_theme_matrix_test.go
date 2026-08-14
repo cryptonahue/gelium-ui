@@ -9,8 +9,8 @@ import (
 // The formal theme matrix (Phase C) verifies the theme-agnostic contract:
 //
 //	theme × component × scheme        — every discovered theme defines each
-//	                                    component's token family in light,
-//	                                    explicit dark class, and dark media.
+//	                                    component's token family in light and
+//	                                    in the single explicit dark class route.
 //	component × state                 — every component CSS covers its
 //	                                    documented states with tokens, never
 //	                                    literals.
@@ -20,20 +20,22 @@ import (
 // matrix without editing tests — the matrix never assumes a theme that does
 // not exist, and it never asserts a concrete value, only token presence.
 //
-// Dark coverage has two documented modes, mirroring the theme contract:
+// Dark coverage has one documented mode, mirroring the theme contract:
 //
-//   - direct:   the family is re-declared in the dark class and dark media
-//               routes (at least one token of the family per route). This is
-//               the Material behaviour for field, dialog, toast, card, switch,
-//               slider, progress, fab, select and the semantic color family.
+//   - direct:   the family is re-declared in the dark class route (at least
+//               one token of the family). This is the Material behaviour for
+//               field, dialog, toast, card, switch, slider, progress, fab,
+//               select and the semantic color family.
 //   - derived:  the family lives in light and references --ui-color-* semantic
 //               tokens; dark legibility comes from those semantic tokens being
-//               redefined in both dark routes. This is the Material behaviour
-//               for badge, checkbox, radio and divider.
+//               redefined in the dark class route. This is the Material
+//               behaviour for badge, checkbox, radio and divider.
 //
 // A new theme satisfies the matrix by (1) defining every family below in light
 // and (2) covering dark either directly or through redefined semantic colors —
-// the checklist in docs/gelium-ui-theme-verification.md.
+// the checklist in docs/gelium-ui-theme-verification.md. The dark media route
+// (@media prefers-color-scheme) is no longer part of the contract: dark is
+// served by the single explicit class route (Phase A).
 
 // stateExpectation documents one state a component CSS must cover with tokens.
 type stateExpectation struct {
@@ -183,26 +185,28 @@ var themeMatrixComponents = []themeMatrixComponent{
 }
 
 // splitThemeSchemes splits one theme's CSS into its light block, its explicit
-// dark-class block, and its dark media block. Presence-only: the blocks are
-// never parsed for values.
+// dark-class block, and (while the legacy media route still exists) its dark
+// media block. The contract is the single dark mechanism: only the class route
+// may carry dark values, so darkMedia is expected to be empty; the helper
+// tolerates a leftover media block so themes can be inspected mid-migration,
+// and the no-media assertion lives in the theme-specific contract tests.
+// Presence-only: the blocks are never parsed for values.
 func splitThemeSchemes(t *testing.T, theme string) (light, darkClass, darkMedia string) {
 	t.Helper()
 	css := themeCSS(t, theme)
 
 	darkClassStart := strings.Index(css, ".theme-dark")
-	mediaStart := strings.Index(css, "@media (prefers-color-scheme: dark)")
 	if darkClassStart < 0 {
 		t.Errorf("theme %q must declare an explicit dark class route (.theme-dark / .dark / [data-theme=\"dark\"])", theme)
 		return "", "", ""
 	}
-	if mediaStart < 0 {
-		t.Errorf("theme %q must declare a dark media route (@media (prefers-color-scheme: dark))", theme)
-		return "", "", ""
-	}
 
 	light = css[:darkClassStart]
-	darkClass = css[darkClassStart:mediaStart]
-	darkMedia = css[mediaStart:]
+	darkClass = css[darkClassStart:]
+	if mediaStart := strings.Index(css, "@media (prefers-color-scheme: dark)"); mediaStart >= 0 {
+		darkClass = css[darkClassStart:mediaStart]
+		darkMedia = css[mediaStart:]
+	}
 	return light, darkClass, darkMedia
 }
 
@@ -227,7 +231,7 @@ func TestThemeMatrixCoversEveryAvailableTheme(t *testing.T) {
 		theme := theme
 		t.Run(theme, func(t *testing.T) {
 			t.Parallel()
-			light, darkClass, darkMedia := splitThemeSchemes(t, theme)
+			light, darkClass, _ := splitThemeSchemes(t, theme)
 
 			for _, comp := range themeMatrixComponents {
 				comp := comp
@@ -238,26 +242,21 @@ func TestThemeMatrixCoversEveryAvailableTheme(t *testing.T) {
 					}
 					if len(comp.derivedColors) == 0 {
 						// direct dark coverage: the family is re-declared in
-						// both dark routes.
+						// the single dark class route.
 						if !hasFamilyDefinition(darkClass, comp.family) {
-							t.Errorf("%s: explicit dark class route must redefine a %s token", comp.component, comp.family)
-						}
-						if !hasFamilyDefinition(darkMedia, comp.family) {
-							t.Errorf("%s: dark media route must redefine a %s token", comp.component, comp.family)
+							t.Errorf("%s: dark class route must redefine a %s token", comp.component, comp.family)
 						}
 						return
 					}
 					// derived dark coverage: the family lives in light and
-					// references semantic colors that both dark routes redefine.
+					// references semantic colors that the dark class route
+					// redefines.
 					for _, color := range comp.derivedColors {
 						if !strings.Contains(light, "var("+color+")") {
 							t.Errorf("%s: light scheme must derive %s from %s", comp.component, comp.family, color)
 						}
 						if !strings.Contains(darkClass, color+":") {
-							t.Errorf("%s: explicit dark class route must redefine %s (derived legibility)", comp.component, color)
-						}
-						if !strings.Contains(darkMedia, color+":") {
-							t.Errorf("%s: dark media route must redefine %s (derived legibility)", comp.component, color)
+							t.Errorf("%s: dark class route must redefine %s (derived legibility)", comp.component, color)
 						}
 					}
 				})

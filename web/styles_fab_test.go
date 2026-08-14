@@ -46,9 +46,12 @@ func TestFabPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 		`outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);`,
 		`.ui-fab:disabled, .ui-fab[aria-disabled="true"]`,
 		`opacity: var(--ui-state-disabled-opacity);`,
-		`currentColor`,
+		`color-mix(in oklab, var(--ui-fab-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)`,
+		`color-mix(in oklab, var(--ui-fab-surface-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)`,
+		`color-mix(in oklab, var(--ui-fab-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)`,
 		`var(--ui-state-hover-opacity)`,
 		`var(--ui-state-pressed-opacity)`,
+		`var(--ui-state-focus-opacity)`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("source FAB CSS is missing contract %q", contract)
@@ -81,17 +84,16 @@ func TestFabThemeDefinesPublicUITokens(t *testing.T) {
 	}
 
 	// The dark scheme must remap the container pair so the FAB stays legible.
-	// Both the explicit dark override and the media query repeat the pairs, so
-	// each container token is defined in exactly three schemes (light, explicit
-	// dark, media dark). The contract is the token family across every scheme,
-	// never a concrete hex value.
+	// The single dark class route repeats the pairs, so each container token is
+	// defined exactly twice (light + dark class). The contract is the token
+	// family across every scheme, never a concrete hex value.
 	for _, token := range []string{
 		"--ui-fab-primary-container:",
 		"--ui-fab-surface-container:",
 		"--ui-fab-secondary-container:",
 	} {
-		if got := strings.Count(theme, token); got != 3 {
-			t.Errorf("theme must define %s in light, explicit dark, and media dark schemes, got %d", token, got)
+		if got := strings.Count(theme, token); got != 2 {
+			t.Errorf("theme must define %s once in light and once in the single dark class route, got %d", token, got)
 		}
 	}
 }

@@ -87,7 +87,7 @@ func TestBadgeToneVariantsReuseSemanticTokens(t *testing.T) {
 
 // TestBadgeInfoToneTokenDefinedInCoreAndTheme proves the --ui-color-info-fg
 // on-color the info tone needs is closed across the core (neutral default) and
-// the Material theme (light + both dark routes).
+// the Material theme (light + the single dark class route).
 func TestBadgeInfoToneTokenDefinedInCoreAndTheme(t *testing.T) {
 	core, err := sourceStyles.ReadFile("styles/tokens.css")
 	if err != nil {
@@ -98,7 +98,7 @@ func TestBadgeInfoToneTokenDefinedInCoreAndTheme(t *testing.T) {
 	}
 
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, defaultThemeName), " ")
-	if n := strings.Count(theme, "--ui-color-info-fg:"); n < 3 {
-		t.Errorf("theme-material must define --ui-color-info-fg in light + both dark routes, got %d definitions", n)
+	if n := strings.Count(theme, "--ui-color-info-fg:"); n != 2 {
+		t.Errorf("theme-material must define --ui-color-info-fg once in light and once in the single dark class route, got %d definitions", n)
 	}
 }

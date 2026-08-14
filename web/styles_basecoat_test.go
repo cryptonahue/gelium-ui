@@ -158,16 +158,22 @@ func TestBasecoatThemeDefinesMatrixFamiliesInLightScheme(t *testing.T) {
 	}
 }
 
-// TestBasecoatThemeCoversDarkInBothRoutes proves the direct-dark families are
-// re-declared in the explicit dark class AND the dark media route, and that
-// the semantic colors the derived families reference are redefined in both
-// dark routes — the same contract the matrix asserts for Material.
-func TestBasecoatThemeCoversDarkInBothRoutes(t *testing.T) {
-	_, darkClass, darkMedia := splitThemeSchemes(t, "theme-basecoat")
+// TestBasecoatThemeCoversDarkInClassRoute proves the direct-dark families are
+// re-declared in the single explicit dark class route, and that the semantic
+// colors the derived families reference are redefined there — the same
+// contract the matrix asserts for Material. Dark has exactly one mechanism
+// (the class route): no @media (prefers-color-scheme: dark) block may exist.
+func TestBasecoatThemeCoversDarkInClassRoute(t *testing.T) {
+	_, darkClass, _ := splitThemeSchemes(t, "theme-basecoat")
 
-	// Direct dark coverage: at least one token of each family per dark route.
-	// checkbox/radio/divider are derived families (they live in light and
-	// reference semantic colors) and are covered by the color loop below.
+	if strings.Contains(themeCSS(t, "theme-basecoat"), "@media (prefers-color-scheme: dark)") {
+		t.Error("theme-basecoat must not define a dark media route (single dark mechanism is the class route)")
+	}
+
+	// Direct dark coverage: at least one token of each family in the dark
+	// class route. checkbox/radio/divider are derived families (they live in
+	// light and reference semantic colors) and are covered by the color loop
+	// below.
 	for _, family := range []string{
 		"--ui-field-",
 		"--ui-dialog-",
@@ -181,15 +187,12 @@ func TestBasecoatThemeCoversDarkInBothRoutes(t *testing.T) {
 		"--ui-color-",
 	} {
 		if !hasFamilyDefinition(darkClass, family) {
-			t.Errorf("theme-basecoat explicit dark class must redefine a %s token", family)
-		}
-		if !hasFamilyDefinition(darkMedia, family) {
-			t.Errorf("theme-basecoat dark media route must redefine a %s token", family)
+			t.Errorf("theme-basecoat dark class route must redefine a %s token", family)
 		}
 	}
 
 	// Derived dark coverage: the semantic colors badge/checkbox/radio/divider
-	// reference in light must be redefined in both dark routes.
+	// reference in light must be redefined in the dark class route.
 	for _, color := range []string{
 		"--ui-color-danger:",
 		"--ui-color-danger-fg:",
@@ -200,10 +203,7 @@ func TestBasecoatThemeCoversDarkInBothRoutes(t *testing.T) {
 		"--ui-color-border:",
 	} {
 		if !strings.Contains(darkClass, color) {
-			t.Errorf("theme-basecoat explicit dark class must redefine %s (derived legibility)", color)
-		}
-		if !strings.Contains(darkMedia, color) {
-			t.Errorf("theme-basecoat dark media route must redefine %s (derived legibility)", color)
+			t.Errorf("theme-basecoat dark class route must redefine %s (derived legibility)", color)
 		}
 	}
 }
@@ -228,13 +228,12 @@ func TestBasecoatThemeIsDiscoveredAlongsideMaterial(t *testing.T) {
 // TestCompiledBundleCarriesBasecoatRootSelectors proves the served bundle — the
 // artifact `npm run build` produces from app.css — carries the .theme-basecoat
 // root selector and its dark class route, so class-driven selection actually
-// resolves at runtime.
+// resolves at runtime. Dark is the single class route (no media dark block).
 func TestCompiledBundleCarriesBasecoatRootSelectors(t *testing.T) {
 	compiled := compactCSS(t, compiledAppCSS(t))
 	for _, contract := range []string{
 		".theme-basecoat{",
 		".theme-basecoat.theme-dark,",
-		"@media(prefers-color-scheme:dark)",
 	} {
 		if !strings.Contains(compiled, contract) {
 			t.Errorf("compiled bundle is missing Basecoat contract %q", contract)

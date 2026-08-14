@@ -162,8 +162,8 @@ func entryMediaBlock(t *testing.T, css, media string) string {
 
 // TestSurfaceContainerTokenClosedAcrossCoreAndEveryScheme proves the
 // --ui-color-surface-container gap is closed: the core owns a neutral default
-// and the Material theme defines the token in light, explicit dark, and media
-// dark schemes. Presence only — never a concrete hex value.
+// and the Material theme defines the token in light and in the single explicit
+// dark class route. Presence only — never a concrete hex value.
 func TestSurfaceContainerTokenClosedAcrossCoreAndEveryScheme(t *testing.T) {
 	core, err := sourceStyles.ReadFile("styles/tokens.css")
 	if err != nil {
@@ -174,8 +174,17 @@ func TestSurfaceContainerTokenClosedAcrossCoreAndEveryScheme(t *testing.T) {
 	}
 
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
-	if got := strings.Count(theme, "--ui-color-surface-container:"); got != 3 {
-		t.Errorf("theme-material must define --ui-color-surface-container in light, explicit dark, and media dark schemes, got %d", got)
+	// Single dark mechanism: the token is defined once in light and once in the
+	// explicit dark class route — never in a dark media block (3 definitions
+	// would mean the duplicated class+media routine has leaked back).
+	if got := strings.Count(theme, "--ui-color-surface-container:"); got != 2 {
+		t.Errorf("theme-material must define --ui-color-surface-container once in light and once in the single dark class route, got %d", got)
+	}
+	if !strings.Contains(theme, ".theme-material.theme-dark,") {
+		t.Error("theme-material must declare the explicit dark class route (.theme-material.theme-dark)")
+	}
+	if strings.Contains(theme, "@media (prefers-color-scheme: dark)") {
+		t.Error("theme-material must not define a dark media route (single dark mechanism is the class route)")
 	}
 }
 
@@ -644,28 +653,29 @@ func TestSemanticColorTokensDefinedInCore(t *testing.T) {
 }
 
 // TestSemanticColorTokensOverriddenByMaterialTheme proves the Material theme
-// overrides every semantic status token in light, explicit dark, and media dark
-// schemes. Each token must appear once per scheme, so a closed override matrix
-// appears at least three times in theme.css. Presence only.
+// overrides every semantic status token in light and in the single explicit
+// dark class route. Each token must appear exactly twice (light + dark class),
+// so a closed override matrix never needs the duplicated media dark route.
+// Presence only.
 func TestSemanticColorTokensOverriddenByMaterialTheme(t *testing.T) {
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, defaultThemeName), " ")
 	for _, token := range semanticColorCoreTokens {
-		if n := strings.Count(theme, token+":"); n < 3 {
-			t.Errorf("theme-material must override %s in light + both dark routes, got %d definitions", token, n)
+		if n := strings.Count(theme, token+":"); n != 2 {
+			t.Errorf("theme-material must override %s once in light and once in the single dark class route, got %d definitions", token, n)
 		}
 	}
 	// The dialog-scrim component token must remain as a compatibility alias of
-	// the core scrim, in every scheme, so dialog.css and navigation-drawer.css
-	// keep resolving it.
-	if n := strings.Count(theme, "--ui-dialog-scrim: var(--ui-color-scrim)"); n < 3 {
-		t.Errorf("theme-material must alias --ui-dialog-scrim to --ui-color-scrim in all schemes, got %d definitions", n)
+	// the core scrim, in light and the dark class route, so dialog.css and
+	// navigation-drawer.css keep resolving it.
+	if n := strings.Count(theme, "--ui-dialog-scrim: var(--ui-color-scrim)"); n != 2 {
+		t.Errorf("theme-material must alias --ui-dialog-scrim to --ui-color-scrim in light and the dark class route, got %d definitions", n)
 	}
 }
 
 // TestToastIconTokensDeriveFromCore proves the four --ui-toast-icon-* tokens the
-// theme owns no longer carry color literals: they re-point to the core semantic
-// colors in every scheme (light, explicit dark, media dark), so icon hues stay
-// locked to the status palette.
+// theme owns no longer carry color literals that drift: they re-point to the
+// core semantic colors in light, and the inverted-surface dark values live in
+// the single dark class route (never duplicated in a media block).
 func TestToastIconTokensDeriveFromCore(t *testing.T) {
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, defaultThemeName), " ")
 	// The toast uses an inverted surface: light = dark container (#322f35),
@@ -687,16 +697,17 @@ func TestToastIconTokensDeriveFromCore(t *testing.T) {
 			t.Errorf("theme-material must define toast icon value %q with accessible contrast on the inverted surface", want)
 		}
 	}
-	// Light scheme defines the four light-on-dark values; dark schemes
-	// (class and media) define the dark-on-light values, twice each.
+	// Light scheme defines the four light-on-dark values once; the dark class
+	// route defines the dark-on-light values once each (single mechanism — no
+	// class+media duplication).
 	for _, derive := range []string{
 		"--ui-toast-icon-info: #d0bcff",
 		"--ui-toast-icon-success: #81c995",
 		"--ui-toast-icon-warning: #fdd663",
 		"--ui-toast-icon-error: #f2b8b5",
 	} {
-		if n := strings.Count(theme, derive); n < 1 {
-			t.Errorf("theme-material must define light-scheme toast icon %q at least once, got %d", derive, n)
+		if n := strings.Count(theme, derive); n != 1 {
+			t.Errorf("theme-material must define light-scheme toast icon %q exactly once, got %d", derive, n)
 		}
 	}
 	for _, derive := range []string{
@@ -705,8 +716,8 @@ func TestToastIconTokensDeriveFromCore(t *testing.T) {
 		"--ui-toast-icon-warning: #7a5700",
 		"--ui-toast-icon-error: #b3261e",
 	} {
-		if n := strings.Count(theme, derive); n < 2 {
-			t.Errorf("theme-material must define dark-scheme toast icon %q in class and media, got %d", derive, n)
+		if n := strings.Count(theme, derive); n != 1 {
+			t.Errorf("theme-material must define dark-scheme toast icon %q exactly once in the dark class route, got %d", derive, n)
 		}
 	}
 }
@@ -896,4 +907,138 @@ func repositoryFile(t *testing.T, path ...string) string {
 		t.Fatalf("read repository file: %v", err)
 	}
 	return string(content)
+}
+
+// componentCSSFiles lists the component CSS files under web/styles (the embed
+// FS) excluding the core tokens, which are exempt from the state-layer
+// contract because they own the raw color values (scrim, borders, etc).
+func componentCSSFiles(t *testing.T) map[string]string {
+	t.Helper()
+	entries, err := sourceStyles.ReadDir("styles")
+	if err != nil {
+		t.Fatalf("list styles dir: %v", err)
+	}
+	files := map[string]string{}
+	for _, entry := range entries {
+		name := entry.Name()
+		if !strings.HasSuffix(name, ".css") || name == "tokens.css" {
+			continue
+		}
+		css, err := sourceStyles.ReadFile("styles/" + name)
+		if err != nil {
+			t.Fatalf("read %s: %v", name, err)
+		}
+		files[name] = string(css)
+	}
+	if len(files) == 0 {
+		t.Fatal("web/styles must contain at least one component CSS file")
+	}
+	return files
+}
+
+// TestNoRgbStateLayersInComponentCSS is the state-layer contract guard: fixed
+// rgb()/rgba() colors SHALL NOT exist in component CSS. tokens.css is exempt
+// (it owns the raw contract values, including the scrim). Any rgb() appearing
+// in a component file is a state layer or decoration that bypassed the token
+// system — the contract (state-layers) forbids it.
+func TestNoRgbStateLayersInComponentCSS(t *testing.T) {
+	for name, css := range componentCSSFiles(t) {
+		for i, line := range strings.Split(css, "\n") {
+			if strings.Contains(line, "rgb(") || strings.Contains(line, "rgba(") {
+				t.Errorf("%s:%d must not contain rgb()/rgba() (state layers and decorations use --ui-color-* tokens): %s", name, i+1, strings.TrimSpace(line))
+			}
+		}
+	}
+}
+
+// TestNoCurrentColorStateLayers is the theme-aware state-layer contract guard:
+// hover/focus/pressed/selected/disabled layers SHALL be color-mix() over an
+// explicit fg token, never currentColor. A state layer is recognized by the
+// color-mix() overlay pattern; decorative currentColor (fill:, stroke:,
+// border: on glyphs and checkmarks) is intentionally out of scope and stays.
+func TestNoCurrentColorStateLayers(t *testing.T) {
+	for name, css := range componentCSSFiles(t) {
+		for i, line := range strings.Split(css, "\n") {
+			if strings.Contains(line, "color-mix(") && strings.Contains(line, "currentColor") {
+				t.Errorf("%s:%d state layer must use color-mix(in oklab, var(--ui-color-*-fg), transparent <opacity>) instead of currentColor: %s", name, i+1, strings.TrimSpace(line))
+			}
+		}
+	}
+}
+
+// TestNoPhantomOutlineToken locks the outline role resolution: the role is
+// served by --ui-color-border-strong (D3), and --ui-color-outline SHALL NOT
+// exist as a definition or var() use anywhere under web/ + themes/ — only
+// comments/docs may mention the name. The companion assertion proves the real
+// owner is consumed, so a zero-match grep cannot pass vacuously.
+func TestNoPhantomOutlineToken(t *testing.T) {
+	scanned := 0
+	for name, css := range componentCSSFiles(t) {
+		scanned++
+		for i, line := range strings.Split(css, "\n") {
+			if !strings.Contains(line, "--ui-color-outline") {
+				continue
+			}
+			trimmed := strings.TrimSpace(line)
+			if strings.HasPrefix(trimmed, "/*") || strings.HasPrefix(trimmed, "*") || strings.HasPrefix(trimmed, "//") {
+				continue // comment mention is allowed
+			}
+			if strings.Contains(line, "--ui-color-outline:") || strings.Contains(line, "var(--ui-color-outline)") {
+				t.Errorf("%s:%d defines or consumes the phantom --ui-color-outline token (outline role is --ui-color-border-strong): %s", name, i+1, trimmed)
+			}
+		}
+	}
+	themes := availableThemes(t)
+	for _, theme := range themes {
+		scanned++
+		css := themeCSS(t, theme)
+		for i, line := range strings.Split(css, "\n") {
+			if strings.Contains(line, "--ui-color-outline:") || strings.Contains(line, "var(--ui-color-outline)") {
+				t.Errorf("themes/%s/theme.css:%d defines or consumes the phantom --ui-color-outline token (outline role is --ui-color-border-strong)", theme, i+1)
+			}
+		}
+	}
+	if scanned == 0 {
+		t.Fatal("outline scan must cover at least one CSS file")
+	}
+	// Companion: the real owner of the outline role must be consumed by at
+	// least one component, so the role is served and the doc mapping
+	// outline=border-strong is not a dead reference.
+	consumers := 0
+	for _, css := range componentCSSFiles(t) {
+		consumers += strings.Count(css, "var(--ui-color-border-strong)")
+	}
+	if consumers == 0 {
+		t.Error("--ui-color-border-strong (the outline role owner) must have at least one var() consumer in component CSS")
+	}
+}
+
+// TestDarkTokensDefinedOnceSingleMechanism is the dark-mode-routine contract
+// guard: every theme defines dark values through exactly one mechanism (the
+// explicit .theme-{name}.theme-dark class route) and no theme CSS may carry an
+// @media (prefers-color-scheme: dark) block. Each dark token must be defined
+// exactly once — the class+media duplication that previously existed would
+// surface as a second definition.
+func TestDarkTokensDefinedOnceSingleMechanism(t *testing.T) {
+	tokenRe := regexp.MustCompile(`(--ui-[a-z0-9-]+)\s*:`)
+	for _, theme := range availableThemes(t) {
+		t.Run(theme, func(t *testing.T) {
+			_, darkClass, darkMedia := splitThemeSchemes(t, theme)
+			if darkMedia != "" {
+				t.Errorf("%s must not define a dark @media (prefers-color-scheme: dark) block (single dark mechanism is the class route)", theme)
+			}
+			names := map[string]bool{}
+			for _, m := range tokenRe.FindAllStringSubmatch(darkClass, -1) {
+				names[m[1]] = true
+			}
+			if len(names) == 0 {
+				t.Fatalf("%s dark class route must define at least one dark token", theme)
+			}
+			for name := range names {
+				if n := strings.Count(darkClass, name+":"); n != 1 {
+					t.Errorf("%s dark class route must define %s exactly once, got %d definitions", theme, name, n)
+				}
+			}
+		})
+	}
 }

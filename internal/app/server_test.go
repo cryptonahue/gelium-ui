@@ -150,11 +150,14 @@ func TestMaterialDarkThemeKeepsFilledFieldDistinctFromSurface(t *testing.T) {
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/static/app.css", nil))
 	css := res.Body.String()
 
-	if got := strings.Count(css, "--ui-color-surface:#211f26"); got != 2 {
-		t.Fatalf("compiled dark theme surface declarations = %d, want 2", got)
+	// Single dark mechanism: each dark value is declared exactly once in the
+	// compiled bundle (the explicit .theme-material.theme-dark class route),
+	// never duplicated by a dark media block.
+	if got := strings.Count(css, "--ui-color-surface:#211f26"); got != 1 {
+		t.Fatalf("compiled dark theme surface declarations = %d, want 1 (single class route)", got)
 	}
-	if got := strings.Count(css, "--ui-field-container:#36343b"); got != 2 {
-		t.Errorf("compiled dark theme filled container declarations = %d, want 2", got)
+	if got := strings.Count(css, "--ui-field-container:#36343b"); got != 1 {
+		t.Errorf("compiled dark theme filled container declarations = %d, want 1 (single class route)", got)
 	}
 	if strings.Contains(css, "--ui-field-container:#211f26") {
 		t.Error("dark filled field container must differ from the #211f26 surface")

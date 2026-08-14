@@ -16,8 +16,12 @@
     cursor: pointer;
     transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard);
   }
-  .ui-button:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent); }
-  .ui-button:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
+  .ui-button:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent); }
+  .ui-button:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
+  .ui-button-secondary:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent); }
+  .ui-button-secondary:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
+  .ui-button-outline:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent); }
+  .ui-button-outline:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary) calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
   .ui-button:focus-visible {
     outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
     outline-offset: var(--ui-focus-offset);

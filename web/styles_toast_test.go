@@ -30,19 +30,19 @@ func TestMaterialThemeDefinesToastTokensInEveryColorScheme(t *testing.T) {
 	count := func(token string) int {
 		return len(regexp.MustCompile(`(?i)`+regexp.QuoteMeta(token)).FindAllStringIndex(theme, -1))
 	}
-	if got := count(`--ui-toast-container:`); got != 3 {
-		t.Errorf("toast container theme declarations = %d, want 3 (light, explicit dark, media dark)", got)
+	if got := count(`--ui-toast-container:`); got != 2 {
+		t.Errorf("toast container theme declarations = %d, want 2 (light + single dark class route)", got)
 	}
 	// The contract is the token family, never a concrete hex value. Color
-	// tokens must be defined once per scheme (light, explicit dark, media
-	// dark); shape tokens are scheme-independent and just need to exist.
+	// tokens must be defined once per scheme (light + single dark class
+	// route); shape tokens are scheme-independent and just need to exist.
 	for _, token := range []string{
 		`--ui-toast-container:`,
 		`--ui-toast-fg:`,
 		`--ui-toast-action:`,
 	} {
-		if got := count(token); got != 3 {
-			t.Errorf("toast token %s must be defined in light, explicit dark, and media dark schemes, got %d", token, got)
+		if got := count(token); got != 2 {
+			t.Errorf("toast token %s must be defined once in light and once in the single dark class route, got %d", token, got)
 		}
 	}
 	for _, token := range []string{
