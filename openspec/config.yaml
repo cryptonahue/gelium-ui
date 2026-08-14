@@ -1,11 +1,11 @@
 schema: spec-driven
 
-# Gelium UI (repo/module: loom-ui / loomui)
+# Gelium UI (repo path: loom-ui; module: geliumui)
 # Persistence: hybrid (Engram + openspec files)
 # Session: interactive | chained PR: auto-forecast | review budget: 800 lines
 
 context: |
-  Product: Gelium UI (path loom-ui, module loomui). Embeddable server-rendered UI system, not SPA.
+  Product: Gelium UI (path loom-ui, module geliumui). Embeddable server-rendered UI system, not SPA.
   Stack: Go 1.24, html/template+embed, goldmark, Tailwind CSS 4, HTMX 2 (local), multi-theme (--ui-* tokens).
   Entry: cmd/gelium docs binary :8787; library API internal/app.New() http.Handler.
   Layout: internal/app (handlers/routes/tests), web/{templates,styles,content,static}, themes/{theme-material,theme-basecoat}, docs/ contracts.
