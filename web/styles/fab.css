@@ -80,17 +80,40 @@
   .ui-fab-secondary { background: var(--ui-fab-secondary-container); color: var(--ui-fab-secondary-fg); }
 
   /* State layers use the on-container color so hover/focus/pressed read on the
-     filled container and are never color-only. */
+     filled container and are never color-only. Each variant layers its own
+     defining fg token; primary is the canonical default. */
   .ui-fab:hover:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent);
+    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent);
   }
   .ui-fab:active:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-primary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
   }
   .ui-fab:focus-visible:not(:disabled):not([aria-disabled="true"]) {
     outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
     outline-offset: var(--ui-focus-offset);
-    box-shadow: var(--ui-shadow-3), inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-focus-opacity) * 100%), transparent);
+    box-shadow: var(--ui-shadow-3), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-primary-fg) calc(var(--ui-state-focus-opacity) * 100%), transparent);
+  }
+  .ui-fab-surface:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-surface-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent);
+  }
+  .ui-fab-surface:active:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-surface-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+  }
+  .ui-fab-surface:focus-visible:not(:disabled):not([aria-disabled="true"]) {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+    box-shadow: var(--ui-shadow-3), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-surface-fg) calc(var(--ui-state-focus-opacity) * 100%), transparent);
+  }
+  .ui-fab-secondary:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent);
+  }
+  .ui-fab-secondary:active:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: var(--ui-shadow-4), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-secondary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+  }
+  .ui-fab-secondary:focus-visible:not(:disabled):not([aria-disabled="true"]) {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+    box-shadow: var(--ui-shadow-3), inset 0 0 0 999px color-mix(in oklab, var(--ui-fab-secondary-fg) calc(var(--ui-state-focus-opacity) * 100%), transparent);
   }
   .ui-fab:disabled, .ui-fab[aria-disabled="true"] {
     opacity: var(--ui-state-disabled-opacity);

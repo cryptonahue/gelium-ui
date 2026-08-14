@@ -33,10 +33,16 @@
     transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard), border-color var(--ui-motion-short) var(--ui-easing-standard);
   }
   .ui-chip:hover:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent);
+    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-hover-opacity) * 100%), transparent);
   }
   .ui-chip:active:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+  }
+  .ui-chip-input:hover:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent);
+  }
+  .ui-chip-input:active:not(:disabled):not([aria-disabled="true"]) {
+    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
   }
   .ui-chip:focus-visible {
     outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
@@ -108,7 +114,7 @@
     color: var(--ui-color-secondary-fg);
   }
   .ui-chip-filter:hover:not(:has(input:disabled)) input:checked {
-    box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent);
+    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent);
   }
   .ui-chip-filter input:disabled {
     cursor: not-allowed;
@@ -142,8 +148,8 @@
     transition: background-color var(--ui-motion-short) var(--ui-easing-standard);
   }
   .ui-chip-remove .ui-icon { width: var(--ui-chip-remove-icon-size); height: var(--ui-chip-remove-icon-size); }
-  .ui-chip-remove:hover { box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-hover-opacity) * 100%), transparent); }
-  .ui-chip-remove:active { box-shadow: inset 0 0 0 999px color-mix(in srgb, currentColor calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
+  .ui-chip-remove:hover { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-hover-opacity) * 100%), transparent); }
+  .ui-chip-remove:active { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
   .ui-chip-remove:focus-visible {
     outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
     outline-offset: var(--ui-focus-offset);
