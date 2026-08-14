@@ -202,7 +202,7 @@ func TestTextFieldValidationWithoutHXRejectsWhitespaceInCompleteDocumentationPag
 	for _, contract := range []string{
 		`<!doctype html>`,
 		`<title>Text field · Gelium UI</title>`,
-		`<nav aria-label="Primary">`,
+		`<nav aria-label="Docs">`,
 		`<article class="prose"><h1>Text field</h1>`,
 		`aria-label="Text field examples"`,
 		`aria-label="Text field validation example"`,
@@ -267,7 +267,7 @@ func TestTextFieldValidationWithoutHXAcceptsValueInCompleteDocumentationPage(t *
 	for _, contract := range []string{
 		`<!doctype html>`,
 		`<title>Text field · Gelium UI</title>`,
-		`<nav aria-label="Primary">`,
+		`<nav aria-label="Docs">`,
 		`<article class="prose"><h1>Text field</h1>`,
 		`aria-label="Text field examples"`,
 		`aria-label="Text field validation example"`,

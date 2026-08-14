@@ -185,3 +185,48 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [Public/Social Feed](/recipes/public-feed) — a reverse-chronological activity feed with views, reactions and loading states.\n"
 	s.renderMarkdown(w, r, pageView{Title: "Documentation"}, md, "/docs")
 }
+
+// docsPatterns is GET /docs/patterns — thin stub so the sidebar IA has a real
+// href while pattern registry content grows later.
+func (s *server) docsPatterns(w http.ResponseWriter, r *http.Request) {
+	md := `# Patterns
+
+Composition patterns for Gelium UI (Phase F–G). This page is a stub destination for the docs shell IA.
+
+## Screen recipes
+
+Full screens composed from library primitives live under Recipes:
+
+- [Admin Resource](/recipes/admin-resource)
+- [Ops Queue](/recipes/ops-queue)
+- [Public/Social Feed](/recipes/public-feed)
+
+## Component patterns
+
+See the [Documentation](/docs) index for foundation, actions, input, feedback, navigation, and data primitives.
+`
+	s.renderMarkdown(w, r, pageView{Title: "Patterns"}, md, "/docs/patterns")
+}
+
+// docsThemes is GET /docs/themes — thin stub explaining visual directions and
+// the 0-JS ?theme= switcher hosted in the docs topbar.
+func (s *server) docsThemes(w http.ResponseWriter, r *http.Request) {
+	md := `# Themes
+
+Gelium UI ships multiple visual directions on one markup surface. Selection is document-root and zero-JS: append ` + "`?theme=<slug>`" + ` to any docs or component URL, or use the Theme control in the docs topbar.
+
+## Directions
+
+| Direction | Query |
+|-----------|-------|
+| Material (default) | ` + "`?theme=material`" + ` |
+| Basecoat | ` + "`?theme=basecoat`" + ` |
+
+Only allowlisted slugs apply. Unknown values keep the default direction.
+
+## What stays the same
+
+Theme switching must not change URLs, landmarks, or SEO metadata — only the root class and cascade tokens.
+`
+	s.renderMarkdown(w, r, pageView{Title: "Themes"}, md, "/docs/themes")
+}

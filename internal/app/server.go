@@ -8,6 +8,7 @@ import (
 	"html/template"
 	"io/fs"
 	"net/http"
+	"net/url"
 	"path"
 	"strings"
 
@@ -19,6 +20,33 @@ import (
 // defaultThemeClass is the theme applied when none is requested. The value must
 // match a class owned by a theme that ships on disk (themes/*/theme.css).
 const defaultThemeClass = "theme-material"
+
+// themeDirection is one product-facing visual direction in the catalog.
+type themeDirection struct {
+	Class string
+	Slug  string
+	Label string
+}
+
+// availableThemes is the product catalog of visual directions. Order is the
+// switcher order. Adding a preset is one new row + theme file + app.css import.
+var availableThemes = []themeDirection{
+	{Class: "theme-material", Slug: "material", Label: "Material"},
+	{Class: "theme-basecoat", Slug: "basecoat", Label: "Basecoat"},
+}
+
+// themeOptionView is one link in the document-root theme switcher.
+type themeOptionView struct {
+	Label   string
+	Href    string
+	Current bool
+}
+
+// themeSwitcherView is the server-driven chrome for swapping visual direction
+// with plain links (0 JS): same path, ?theme=<slug>.
+type themeSwitcherView struct {
+	Options []themeOptionView
+}
 
 // themeContextKey carries the theme selected via the ?theme= query parameter
 // through the request context (Phase H: selection from the document root, no JS).
@@ -33,22 +61,30 @@ func themeFromRequest(r *http.Request) string {
 	return ""
 }
 
+// themeBySlugOrClass resolves a ?theme= value to a catalog entry.
+func themeBySlugOrClass(raw string) (themeDirection, bool) {
+	name := raw
+	if !strings.HasPrefix(name, "theme-") {
+		name = "theme-" + name
+	}
+	for _, t := range availableThemes {
+		if t.Class == name || t.Slug == raw {
+			return t, true
+		}
+	}
+	return themeDirection{}, false
+}
+
 // themeQueryMiddleware validates the optional ?theme= query parameter against
-// the themeClass allowlist and stores the resolved class in the request
-// context. Unknown or absent values leave the context empty so every render
-// keeps the default theme. This is the document-root selection mechanism:
-// http://host/any-route?theme=basecoat renders with the Basecoat direction.
-// The query accepts either the full class ("theme-basecoat") or the short
-// theme name ("basecoat"), both normalized through themeClass.
+// the theme catalog and stores the resolved class in the request context.
+// Unknown or absent values leave the context empty so every render keeps the
+// default theme. The query accepts either the full class ("theme-basecoat") or
+// the short theme name ("basecoat").
 func themeQueryMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
 		if raw := r.URL.Query().Get("theme"); raw != "" {
-			name := raw
-			if !strings.HasPrefix(name, "theme-") {
-				name = "theme-" + name
-			}
-			if resolved := themeClass(name); resolved != defaultThemeClass {
-				ctx := context.WithValue(r.Context(), themeContextKey{}, resolved)
+			if dir, ok := themeBySlugOrClass(raw); ok {
+				ctx := context.WithValue(r.Context(), themeContextKey{}, dir.Class)
 				r = r.WithContext(ctx)
 			}
 		}
@@ -67,12 +103,41 @@ func themeQueryMiddleware(next http.Handler) http.Handler {
 // created themes/theme-basecoat and its app.css import. Adding a string before
 // the theme exists would let a page select a theme that is not in the bundle.
 func themeClass(theme string) string {
-	for _, allowed := range []string{defaultThemeClass, "theme-basecoat"} {
-		if theme == allowed {
+	for _, t := range availableThemes {
+		if theme == t.Class {
 			return theme
 		}
 	}
 	return defaultThemeClass
+}
+
+// themeSwitcherFor builds the direction switcher for the current request.
+// Labels are product directions (Material, Basecoat, …), never internal class
+// names. Each option is a real GET link to the same path with ONLY ?theme=<slug>
+// — other query params are dropped on purpose so the switcher cannot re-emit
+// unsanitized filter/sort state into the chrome.
+func themeSwitcherFor(r *http.Request, currentClass string) *themeSwitcherView {
+	current := themeClass(currentClass)
+	if r != nil {
+		if q := themeFromRequest(r); q != "" {
+			current = q
+		}
+	}
+	pathStr := "/"
+	if r != nil && r.URL != nil && r.URL.Path != "" {
+		pathStr = r.URL.Path
+	}
+	opts := make([]themeOptionView, 0, len(availableThemes))
+	for _, t := range availableThemes {
+		q := url.Values{}
+		q.Set("theme", t.Slug)
+		opts = append(opts, themeOptionView{
+			Label:   t.Label,
+			Href:    pathStr + "?" + q.Encode(),
+			Current: t.Class == current,
+		})
+	}
+	return &themeSwitcherView{Options: opts}
 }
 
 // bannerView is the server-driven view model for the page-level BANNER slot
@@ -459,11 +524,16 @@ func resolveMeta(data pageView, routePath string) metaView {
 }
 
 type pageView struct {
-	Meta                 metaView
-	Title                string
-	Content              template.HTML
-	ThemeClass           string
-	Nav                  []navLink
+	Meta       metaView
+	Title      string
+	Content    template.HTML
+	ThemeClass string
+	Nav        []navLink
+	// DocsNav enables the two-pane docs shell when non-nil (docs + components).
+	DocsNav *docsNavView
+	// ThemeSwitcher is the 0-JS ?theme= chrome. On shell routes it lives in the
+	// topbar; on legacy header routes it may sit in the site-header.
+	ThemeSwitcher        *themeSwitcherView
 	Banner               *bannerView
 	Breadcrumb           *breadcrumbView
 	Footer               *footerView
@@ -526,6 +596,8 @@ func New() http.Handler {
 	mux.HandleFunc("GET /robots.txt", s.robots)
 	mux.HandleFunc("GET /{$}", s.home)
 	mux.HandleFunc("GET /docs", s.docsIndex)
+	mux.HandleFunc("GET /docs/patterns", s.docsPatterns)
+	mux.HandleFunc("GET /docs/themes", s.docsThemes)
 	for _, r := range componentRoutes() {
 		r := r
 		mux.HandleFunc("GET "+r.Path, func(w http.ResponseWriter, req *http.Request) {
@@ -627,7 +699,7 @@ type urlset struct {
 // sitemap can never drift from the library (contract §5). Demo, example and
 // recipe surfaces are excluded (noindex or form flows).
 func sitemapPaths() []string {
-	paths := []string{"/", "/docs"}
+	paths := []string{"/", "/docs", "/docs/patterns", "/docs/themes"}
 	for _, r := range componentRoutes() {
 		paths = append(paths, r.Path)
 	}
@@ -808,6 +880,14 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 		data.ThemeClass = q
 	} else {
 		data.ThemeClass = themeClass(data.ThemeClass)
+	}
+	// Docs shell chrome: grouped sidebar + topbar on /docs and /components/*.
+	// Theme switcher lives in the topbar on shell routes (not duplicated in a
+	// legacy header). Home and recipes keep DocsNav nil.
+	if usesDocsShell(routePath) {
+		nav := docsNavFor(routePath)
+		data.DocsNav = &nav
+		data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass)
 	}
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)

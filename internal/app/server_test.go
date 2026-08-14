@@ -761,6 +761,8 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 		`<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">`,
 		`<loc>https://gelium-ui.example/</loc>`,
 		`<loc>https://gelium-ui.example/docs</loc>`,
+		`<loc>https://gelium-ui.example/docs/patterns</loc>`,
+		`<loc>https://gelium-ui.example/docs/themes</loc>`,
 		`<loc>https://gelium-ui.example/components/button</loc>`,
 		`<loc>https://gelium-ui.example/components/data-table</loc>`,
 	} {
@@ -768,8 +770,9 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 			t.Errorf("sitemap is missing %q", contract)
 		}
 	}
-	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+2 {
-		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + all components)", got, len(componentRoutes())+2)
+	// home + /docs + patterns + themes + all components
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+4 {
+		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + stubs + all components)", got, len(componentRoutes())+4)
 	}
 	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
 		if strings.Contains(body, excluded) {
@@ -880,7 +883,9 @@ func TestLayoutRendersSkipLinkToMain(t *testing.T) {
 	body := res.Body.String()
 	for _, contract := range []string{
 		`<a class="ui-skip-link" href="#main-content">Skip to main content</a>`,
-		`<main id="main-content" class="docs-shell">`,
+		// Home keeps the legacy centered column (docs-content); shell routes
+		// use the two-pane frame without this utility class on main.
+		`<main id="main-content" class="docs-shell docs-content">`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("home is missing %q", contract)

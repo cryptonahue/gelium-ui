@@ -40,7 +40,9 @@ func TestDocsIndexInNav(t *testing.T) {
 	if res.Code != http.StatusOK {
 		t.Fatalf("button docs status = %d, want %d", res.Code, http.StatusOK)
 	}
-	if !strings.Contains(res.Body.String(), `href="/docs">Docs`) {
-		t.Error("nav must include a Docs link")
+	// Docs shell sidebar uses the Getting started → Documentation destination.
+	body := res.Body.String()
+	if !strings.Contains(body, `href="/docs"`) || !strings.Contains(body, `Documentation`) {
+		t.Error("docs shell nav must include a Documentation link to /docs")
 	}
 }

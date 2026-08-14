@@ -1,8 +1,174 @@
 package app
 
 import (
+	"net/http"
+	"net/http/httptest"
+	"strings"
 	"testing"
 )
+
+// TestDocsShellFrameOnDocsAndComponents proves the two-pane docs chrome
+// (topbar, dual sidebar/nav, main) on shell routes while home stays on the
+// legacy site-header layout (tasks 2.1).
+func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
+	tests := []struct {
+		name       string
+		path       string
+		wantShell  bool
+		wantStatus int
+	}{
+		{name: "docs hub", path: "/docs", wantShell: true, wantStatus: http.StatusOK},
+		{name: "component button", path: "/components/button", wantShell: true, wantStatus: http.StatusOK},
+		{name: "home", path: "/", wantShell: false, wantStatus: http.StatusOK},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			res := httptest.NewRecorder()
+			New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, tt.path, nil))
+			if res.Code != tt.wantStatus {
+				t.Fatalf("status = %d, want %d", res.Code, tt.wantStatus)
+			}
+			body := res.Body.String()
+			if tt.wantShell {
+				for _, contract := range []string{
+					`class="docs-topbar"`,
+					`class="docs-nav-mobile"`,
+					`<summary`,
+					`class="docs-sidebar-desktop"`,
+					`aria-label="Docs"`,
+					`<main id="main-content"`,
+					`href="#main-content"`,
+					`ui-list`,
+					`ui-list-item-link`,
+					`ui-divider`,
+					`>0.4.0<`,
+					`Gelium UI`,
+					`disabled`,
+					`aria-label="Visual direction"`,
+				} {
+					if !strings.Contains(body, contract) {
+						t.Errorf("%s missing shell contract %q", tt.path, contract)
+					}
+				}
+				// Shell must not keep the legacy primary header nav chrome.
+				if strings.Contains(body, `class="site-header"`) {
+					t.Errorf("%s must not render legacy site-header when docs shell is on", tt.path)
+				}
+			} else {
+				for _, forbidden := range []string{
+					`class="docs-topbar"`,
+					`class="docs-nav-mobile"`,
+					`class="docs-sidebar-desktop"`,
+				} {
+					if strings.Contains(body, forbidden) {
+						t.Errorf("home must not render docs shell chrome %q", forbidden)
+					}
+				}
+				if !strings.Contains(body, `class="site-header"`) {
+					t.Error("home must keep legacy site-header")
+				}
+			}
+		})
+	}
+}
+
+// TestDocsStubRoutesAndShellChrome proves Patterns/Themes stubs return 200 with
+// shell chrome, honest disabled search, landmarks, and dual mobile markup (2.2).
+func TestDocsStubRoutesAndShellChrome(t *testing.T) {
+	for _, path := range []string{"/docs/patterns", "/docs/themes"} {
+		t.Run(path, func(t *testing.T) {
+			res := httptest.NewRecorder()
+			New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, path, nil))
+			if res.Code != http.StatusOK {
+				t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+			}
+			body := res.Body.String()
+			for _, contract := range []string{
+				`class="docs-topbar"`,
+				`class="docs-nav-mobile"`,
+				`class="docs-sidebar-desktop"`,
+				`<nav aria-label="Docs"`,
+				`<main id="main-content"`,
+				`href="#main-content"`,
+				`type="search"`,
+				`disabled`,
+			} {
+				if !strings.Contains(body, contract) {
+					t.Errorf("%s missing contract %q", path, contract)
+				}
+			}
+			// Search must not be a live submitting corpus form.
+			if strings.Contains(body, `action=`) && strings.Contains(body, `type="search"`) {
+				// Only fail if the search control sits inside a form with action.
+				if strings.Contains(body, `<form`) && strings.Contains(body, `type="search"`) {
+					t.Errorf("%s must not wrap search in a live form submit", path)
+				}
+			}
+		})
+	}
+}
+
+// TestDocsShellActiveAndIAGroups proves sidebar IA groups and aria-current on
+// the active destination for shell pages (R2/R3 smoke for PR2).
+func TestDocsShellActiveAndIAGroups(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, group := range []string{
+		"Getting started",
+		"Foundation",
+		"Actions",
+		"Patterns",
+		"Recipes",
+		"Themes",
+	} {
+		if !strings.Contains(body, group) {
+			t.Errorf("sidebar missing IA group %q", group)
+		}
+	}
+	// Button current: at least one aria-current="page" on the Button link.
+	if !strings.Contains(body, `aria-current="page"`) {
+		t.Error("active route must set aria-current=page on the current nav item")
+	}
+	if !strings.Contains(body, `href="/components/button"`) {
+		t.Error("sidebar must link to /components/button")
+	}
+	// Recipes stay outbound real paths.
+	for _, path := range []string{
+		"/recipes/admin-resource",
+		"/recipes/ops-queue",
+		"/recipes/public-feed",
+	} {
+		if !strings.Contains(body, `href="`+path+`"`) {
+			t.Errorf("sidebar missing recipe href %q", path)
+		}
+	}
+}
+
+// TestHomeUnchangedByDocsShell is the negative home contract for PR2 focused runs.
+func TestHomeUnchangedByDocsShell(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, forbidden := range []string{
+		`class="docs-topbar"`,
+		`class="docs-nav-mobile"`,
+		`class="docs-sidebar-desktop"`,
+	} {
+		if strings.Contains(body, forbidden) {
+			t.Errorf("home must not contain %q", forbidden)
+		}
+	}
+	if !strings.Contains(body, `class="site-header"`) {
+		t.Error("home must keep site-header")
+	}
+}
 
 func TestUsesDocsShell(t *testing.T) {
 	tests := []struct {

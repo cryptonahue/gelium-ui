@@ -20,13 +20,31 @@
 </head>
 <body>
   <a class="ui-skip-link" href="#main-content">Skip to main content</a>
+  {{if .DocsNav}}
+  <div class="docs-shell">
+    {{template "docs-topbar" .}}
+    <details class="docs-nav-mobile">
+      <summary>Menu</summary>
+      <nav aria-label="Docs">{{template "docs-sidebar" .DocsNav}}</nav>
+    </details>
+    <div class="docs-shell-body">
+      <aside class="docs-sidebar-desktop">
+        <nav aria-label="Docs">{{template "docs-sidebar" .DocsNav}}</nav>
+      </aside>
+      <div class="docs-shell-main">
+        {{if .Breadcrumb}}{{template "breadcrumb" .Breadcrumb}}{{end}}
+        {{if .Banner}}{{template "banner" .Banner}}{{end}}
+        <main id="main-content" class="docs-shell-content">
+  {{else}}
   <header class="site-header">
     <a class="brand" href="/">Gelium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
+    {{if .ThemeSwitcher}}{{template "theme-switcher" .ThemeSwitcher}}{{end}}
   </header>
   {{if .Breadcrumb}}{{template "breadcrumb" .Breadcrumb}}{{end}}
   {{if .Banner}}{{template "banner" .Banner}}{{end}}
-  <main id="main-content" class="docs-shell">
+  <main id="main-content" class="docs-shell docs-content">
+  {{end}}
     {{if .Error}}{{template "error-state" .Error}}{{else}}<article class="prose">{{.Content}}</article>
     {{if .CTA}}<div class="hero-action">{{template "button" .CTA}}</div>{{end}}
     {{if .Buttons}}<section class="component-preview" aria-label="Button examples">{{range .Buttons}}{{template "button" .}}{{end}}</section>{{end}}
@@ -70,6 +88,11 @@
     {{if .Newsletter}}<section class="component-preview newsletter-preview" aria-label="Newsletter example">{{template "newsletter" .Newsletter}}</section>{{end}}
     {{end}}
   </main>
+  {{if .DocsNav}}
+      </div>
+    </div>
+  </div>
+  {{end}}
   {{if .Footer}}{{template "footer" .Footer}}{{end}}
   {{template "toast-region"}}
 </body>
