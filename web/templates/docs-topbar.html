@@ -1,0 +1,11 @@
+{{define "docs-topbar"}}
+<header class="docs-topbar">
+  <a class="docs-topbar-brand brand" href="/">Gelium UI</a>
+  <div class="docs-topbar-search">
+    <label class="docs-topbar-search-label" for="docs-search">Search</label>
+    <input id="docs-search" class="docs-topbar-search-input" type="search" name="q" placeholder="Search docs (coming soon)" disabled aria-disabled="true">
+  </div>
+  <span class="docs-topbar-version" title="Library version">{{.DocsNav.Version}}</span>
+  {{if .ThemeSwitcher}}{{template "theme-switcher" .ThemeSwitcher}}{{end}}
+</header>
+{{end}}

@@ -1,0 +1,69 @@
+schema: spec-driven
+
+# Gelium UI (repo/module: loom-ui / loomui)
+# Persistence: hybrid (Engram + openspec files)
+# Session: interactive | chained PR: auto-forecast | review budget: 800 lines
+
+context: |
+  Product: Gelium UI (path loom-ui, module loomui). Embeddable server-rendered UI system, not SPA.
+  Stack: Go 1.24, html/template+embed, goldmark, Tailwind CSS 4, HTMX 2 (local), multi-theme (--ui-* tokens).
+  Entry: cmd/gelium docs binary :8787; library API internal/app.New() http.Handler.
+  Layout: internal/app (handlers/routes/tests), web/{templates,styles,content,static}, themes/{theme-material,theme-basecoat}, docs/ contracts.
+  Contracts: GET+query state; POST+303 mutations; 422+X-Loom-Validation; HX-Trigger loom:toast. Brand Gelium; wire prefixes keep loom:*.
+  Style: native HTML first, 0 required component JS, open-code copy, theme=tokens only, dogfood docs.
+  Tests: go test ./... (httptest + CSS/token contract tests); go vet ./...; npm run build for CSS/htmx.
+
+strict_tdd: true
+
+testing:
+  strict_tdd: true
+  detected: "2026-08-13"
+  runner:
+    command: go test ./...
+    framework: go test
+  layers:
+    unit: { available: true, tool: "go test (internal/app, web package contract tests)" }
+    integration: { available: true, tool: "net/http/httptest handler/route/contract tests" }
+    e2e: { available: false, tool: null }
+  coverage:
+    available: true
+    command: go test ./... -cover
+  quality:
+    linter: { available: true, command: go vet ./... }
+    type_checker: { available: true, command: "go build ./... (Go compiler)" }
+    formatter: { available: true, command: gofmt -w . }
+
+rules:
+  proposal:
+    - Include rollback plan for risky changes (theme allowlist, wire contracts, embed surface).
+    - Preserve product brand Gelium UI; do not rename loom:* / X-Loom-* wire prefixes without an explicit breaking-change proposal.
+    - Scope against docs/ registries and gelium-ui-system-roadmap.md residuals.
+  specs:
+    - Use Given/When/Then for scenarios.
+    - Use RFC 2119 keywords (MUST, SHALL, SHOULD, MAY).
+    - Spec server contracts and a11y/SEO obligations, not Tailwind class cosmetics.
+  design:
+    - Document theme mechanism (availableThemes + app.css @import + themes/*/theme.css) when touching visuals.
+    - Prefer sequence notes for POST+303 and 422 validation flows.
+    - Keep markup theme-agnostic; themes map aesthetics onto --ui-* only.
+  tasks:
+    - Group by phase; hierarchical numbering; one-session completable tasks.
+    - Pair each behavior change with go test ./... coverage (handler and/or styles_*_test).
+    - Update docs/ registries when adding components, patterns, or themes.
+  apply:
+    guidelines:
+      - Follow existing internal/app + web/templates + web/styles patterns.
+      - Native HTML first; no required component JS; overlays need server-rendered fallback.
+      - Commit built web/static assets when CSS/htmx build output changes.
+      - Run npm run build before verifying style-affecting changes.
+    tdd: true
+    test_command: go test ./...
+  verify:
+    test_command: go test ./...
+    build_command: go build -o /tmp/gelium ./cmd/gelium
+    coverage_threshold: 0
+    extra_commands:
+      - go vet ./...
+      - npm run build
+  archive:
+    - Warn before merging destructive deltas (removed routes, wire contract renames, theme drops).

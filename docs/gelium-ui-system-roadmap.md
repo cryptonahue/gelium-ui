@@ -381,7 +381,26 @@ Phase A (contract/architecture)
 
 Handoffs: `docs/handoffs/{core,vocabulary,composition,theme-architecture,basecoat,ux-accessibility,seo-geo,mozilla-protocol}-audit.md`.
 
-## Matriz de gaps (reclasificada)
+## Matriz de gaps (inventario de planificación A–J)
+
+> **Histórica + residual.** La mayoría de filas de A–J ya se implementaron en código. No reescribas esta tabla fila a fila como board vivo: usá la sección **Estado actual** y los registries. Abajo solo quedan los **residuals abiertos** que todavía valen trabajo.
+
+| Residual abierto | Tipo | Evidencia / notas |
+|---|---|---|
+| Dark-mode routine única (posible drift clase vs media) | polish | Ambos themes aún declaran bloque `.theme-*.theme-dark` **y** `@media (prefers-color-scheme: dark)` |
+| Familias scoped fuera del theme (List/Menu/Data table/Nav*/Segmented/Tooltip) | architecture | Un theme nuevo debe declarar esos tokens globalmente si quiere pintarlas |
+| SEO origin + `og.png` placeholder | product | `siteBaseURL = https://gelium-ui.example`; no hay `web/static/og.png` real |
+| Nav discoverability | DX | **Cerrado (docs-shell):** `docsNavFor` + two-pane shell sidebar/topbar on `/docs` + `/components/*` expose Getting started, `docsSections` component groups, Patterns (`/docs/patterns`), Recipes (outbound `/recipes/*`), Themes (`/docs/themes`); theme switcher stays 0-JS `?theme=`. Demos remain secondary (`/demo/*`, noindex) — not a chrome gap. |
+| Docs pages para Avatar, Pagination, state/public patterns | dogfood | Partials+CSS+tests sí; `/components/*` no (policy o páginas) |
+| Branding operativo residual | docs | Wire `loom:*` / `X-Loom-*` **congelado**; LICENSE/prompts/COMPONENT-ROADMAP aún dicen Loom en superficies humanas |
+| Recetas restantes (Detail/Editor/Dashboard/Settings/Booking/Search/Auth) | recipe | Diferidas a propósito post-3 |
+| Registry JSON servido | tooling | Registries son Markdown; runtime JSON documentado como pendiente |
+| Version bump past 0.4.0 narrative | release | `package.json` + `?v=0.4.0` en layout |
+| a11y demo leftovers (G10 / `href="#"` scaffold) | polish | `docs/gelium-ui-accessibility-contract.md`; demo admin |
+
+**Criterio original (archivado)**: "Bloquea" = sin este ítem, Basecoat o una screen recipe no se podían completar. Ese gate **ya se cruzó** para las 3 recipes y Basecoat.
+
+### Inventario histórico A–J (referencia)
 
 | Gap | Tipo | Fase | Bloquea Basecoat | Bloquea recipe | Acción |
 |---|---|---|---|---|---|
@@ -484,15 +503,17 @@ Además verificar siempre:
 
 ---
 
-## Próximo slice de implementación (después de esta replanificación)
+## Próximo slice de implementación (post A–J)
 
-El mínimo conjunto, en orden serial:
+Phases **A–J están entregadas en el árbol** (plus docs-shell chrome). El trabajo nuevo ya no es “desbloquear Basecoat”; es pulido, productización y expansión opcional:
 
 ```text
-token ownership      (Phase A)
-state layers         (Phase A)
-theme identity       (Phase A)
-theme-agnostic tests (Phase C)
+1. Truth sync          README · este roadmap · theme registry · cmd/gelium
+2. DX / discoverability  ✅ docs-shell: nav Recipes+Themes+Patterns+grouped components (demos still secondary)
+3. SEO productization    BASE_URL configurable + og.png real (cuando haya dominio)
+4. Theme polish          dark routine única; ownership de familias scoped
+5. Release               bump de versión past 0.4.0 + push main (hoy ahead de origin)
+6. Optional expansion    más screen recipes · tercer theme · registry JSON runtime
 ```
 
-No comenzar Basecoat todavía.
+**No reabrir A–H** salvo regresión. Wire protocol `loom:toast` / `X-Loom-Validation` permanece congelado.

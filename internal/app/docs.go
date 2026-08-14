@@ -2,7 +2,91 @@ package app
 
 import (
 	"net/http"
+	"strings"
 )
+
+// docsNavLink is one destination in the docs shell sidebar / footer export.
+type docsNavLink struct {
+	Path    string
+	Label   string
+	Current bool // exact path match against the active request path
+}
+
+// docsNavGroup is a labeled block of docs nav links (IA section).
+type docsNavGroup struct {
+	Title string
+	Links []docsNavLink
+}
+
+// docsNavView is the shell chrome model: grouped IA plus honest topbar slots.
+// Version aligns with the static asset query (?v=0.4.0). SearchDisabled is
+// always true in this change — placeholder only, no live corpus search.
+type docsNavView struct {
+	Groups         []docsNavGroup
+	Version        string
+	SearchDisabled bool
+}
+
+// docsShellVersion is the static version badge shown in the docs topbar.
+const docsShellVersion = "0.4.0"
+
+// usesDocsShell reports whether path should render the two-pane docs chrome.
+// Home, recipes, and demos stay on the legacy site-header layout.
+func usesDocsShell(path string) bool {
+	return path == "/docs" ||
+		strings.HasPrefix(path, "/docs/") ||
+		strings.HasPrefix(path, "/components/")
+}
+
+// docsNavFor builds the Scalar-style sidebar IA for activePath.
+// Exact path match sets Current; empty activePath marks nothing current
+// (used when flattening the same model into the site footer).
+func docsNavFor(activePath string) docsNavView {
+	link := func(path, label string) docsNavLink {
+		return docsNavLink{
+			Path:    path,
+			Label:   label,
+			Current: activePath != "" && path == activePath,
+		}
+	}
+
+	groups := make([]docsNavGroup, 0, 4+len(docsSections))
+	groups = append(groups, docsNavGroup{
+		Title: "Getting started",
+		Links: []docsNavLink{link("/docs", "Documentation")},
+	})
+	for _, section := range docsSections {
+		links := make([]docsNavLink, 0, len(section.Links))
+		for _, l := range section.Links {
+			links = append(links, link(l.Path, l.Label))
+		}
+		groups = append(groups, docsNavGroup{Title: section.Title, Links: links})
+	}
+	groups = append(groups,
+		docsNavGroup{
+			Title: "Patterns",
+			Links: []docsNavLink{link("/docs/patterns", "Patterns")},
+		},
+		docsNavGroup{
+			Title: "Recipes",
+			Links: []docsNavLink{
+				link("/recipes/admin-resource", "Admin Resource"),
+				link("/recipes/ops-queue", "Ops Queue"),
+				link("/recipes/public-feed", "Public Feed"),
+			},
+		},
+		docsNavGroup{
+			Title: "Themes",
+			Links: []docsNavLink{link("/docs/themes", "Themes")},
+		},
+	)
+
+	return docsNavView{
+		Groups:         groups,
+		Version:        docsShellVersion,
+		SearchDisabled: true,
+	}
+}
 
 // docsSections groups the component library into logical categories for the
 // /docs index page. Each entry links to the dogfooded component page.
@@ -100,4 +184,49 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [Ops Queue](/recipes/ops-queue) — a work queue with avatar, tone badges and POST+303 transitions.\n"
 	md += "- [Public/Social Feed](/recipes/public-feed) — a reverse-chronological activity feed with views, reactions and loading states.\n"
 	s.renderMarkdown(w, r, pageView{Title: "Documentation"}, md, "/docs")
+}
+
+// docsPatterns is GET /docs/patterns — thin stub so the sidebar IA has a real
+// href while pattern registry content grows later.
+func (s *server) docsPatterns(w http.ResponseWriter, r *http.Request) {
+	md := `# Patterns
+
+Composition patterns for Gelium UI (Phase F–G). This page is a stub destination for the docs shell IA.
+
+## Screen recipes
+
+Full screens composed from library primitives live under Recipes:
+
+- [Admin Resource](/recipes/admin-resource)
+- [Ops Queue](/recipes/ops-queue)
+- [Public/Social Feed](/recipes/public-feed)
+
+## Component patterns
+
+See the [Documentation](/docs) index for foundation, actions, input, feedback, navigation, and data primitives.
+`
+	s.renderMarkdown(w, r, pageView{Title: "Patterns"}, md, "/docs/patterns")
+}
+
+// docsThemes is GET /docs/themes — thin stub explaining visual directions and
+// the 0-JS ?theme= switcher hosted in the docs topbar.
+func (s *server) docsThemes(w http.ResponseWriter, r *http.Request) {
+	md := `# Themes
+
+Gelium UI ships multiple visual directions on one markup surface. Selection is document-root and zero-JS: append ` + "`?theme=<slug>`" + ` to any docs or component URL, or use the Theme control in the docs topbar.
+
+## Directions
+
+| Direction | Query |
+|-----------|-------|
+| Material (default) | ` + "`?theme=material`" + ` |
+| Basecoat | ` + "`?theme=basecoat`" + ` |
+
+Only allowlisted slugs apply. Unknown values keep the default direction.
+
+## What stays the same
+
+Theme switching must not change URLs, landmarks, or SEO metadata — only the root class and cascade tokens.
+`
+	s.renderMarkdown(w, r, pageView{Title: "Themes"}, md, "/docs/themes")
 }

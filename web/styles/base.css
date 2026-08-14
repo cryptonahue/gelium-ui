@@ -26,6 +26,36 @@
   .site-header nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
   .site-header nav a { color: var(--ui-color-primary); font: var(--ui-type-label-lg); }
 
+  /* Theme direction switcher: product labels, plain ?theme= links, 0 JS. */
+  .ui-theme-switcher {
+    display: inline-flex;
+    align-items: center;
+    gap: .5rem;
+    margin-inline-start: auto;
+  }
+  .ui-theme-switcher-label {
+    font: var(--ui-type-label-md, var(--ui-type-label-lg));
+    color: var(--ui-color-fg-muted);
+  }
+  .ui-theme-switcher-options {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: .25rem;
+  }
+  .ui-theme-switcher-option {
+    padding: .25rem .625rem;
+    border-radius: var(--ui-radius-sm);
+    color: var(--ui-color-primary);
+    font: var(--ui-type-label-md, var(--ui-type-label-lg));
+    text-decoration: none;
+  }
+  .ui-theme-switcher-option.is-current,
+  .ui-theme-switcher-option[aria-current="true"] {
+    background: var(--ui-color-surface-container, var(--ui-color-surface));
+    color: var(--ui-color-fg);
+    font-weight: 600;
+  }
+
   /* Skip link (G7): the first focusable element on every layout page. It sits
      off the top edge until keyboard focus brings it into view, so keyboard and
      screen-reader users can bypass the header nav and jump straight to the
@@ -45,7 +75,10 @@
   }
   .ui-skip-link:focus { transform: translateY(0); }
 
-  .docs-shell { width: min(68rem, calc(100% - 2rem)); margin: 4rem auto; }
+  /* Home / non-shell: keep the centered content column utility. Shell routes
+     override .docs-shell into a full-width two-pane frame (see docs-shell.css). */
+  .docs-content,
+  main.docs-shell.docs-content { width: min(68rem, calc(100% - 2rem)); margin: 4rem auto; }
   .prose { max-width: 48rem; }
   .prose h1 { margin: 0 0 1rem; font: var(--ui-type-display-sm); }
   .prose h2 { margin-top: 2.5rem; font: var(--ui-type-headline-sm); }
