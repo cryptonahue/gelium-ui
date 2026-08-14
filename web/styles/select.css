@@ -26,6 +26,7 @@
     background: transparent;
     color: var(--ui-select-fg);
     font: var(--ui-type-body-lg);
+    letter-spacing: var(--ui-type-body-lg-letter-spacing);
     cursor: pointer;
     transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
   }

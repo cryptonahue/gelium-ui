@@ -56,21 +56,71 @@
   --ui-toast-icon-warning: #fdd663;
   --ui-toast-icon-error: #f2b8b5;
 
-  /* Typescale */
+  /* Typescale — Phase B decomposition (R1): the theme overrides the five
+     decomposed per-step tokens; the --ui-type-<step> aliases live in the core
+     and compose them, so alias output equals the pre-change shorthand. */
   --ui-font-sans: Inter, ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif;
   --ui-font-mono: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
-  --ui-type-display-sm: 400 2.25rem/2.75rem var(--ui-font-sans);
-  --ui-type-display-lg: 400 3.5rem/4rem var(--ui-font-sans);
-  --ui-type-headline-sm: 400 1.5rem/2rem var(--ui-font-sans);
-  --ui-type-title-lg: 500 1.375rem/1.75rem var(--ui-font-sans);
-  --ui-type-title-md: 500 1rem/1.5rem var(--ui-font-sans);
-  --ui-type-body-lg: 400 1rem/1.5rem var(--ui-font-sans);
-  --ui-type-body-md: 400 1rem/1.5rem var(--ui-font-sans);
-  --ui-type-body-sm: 400 .75rem/1rem var(--ui-font-sans);
-  --ui-type-label-lg: 600 .875rem/1.25rem var(--ui-font-sans);
-  --ui-type-label-sm: 500 .75rem/1rem var(--ui-font-sans);
-  --ui-type-dialog-headline: 400 1.5rem/2rem var(--ui-font-sans);
-  --ui-type-dialog-body: 400 .875rem/1.25rem var(--ui-font-sans);
+  --ui-type-display-sm-size: 2.25rem;
+  --ui-type-display-sm-weight: 400;
+  --ui-type-display-sm-line-height: 2.75rem;
+  --ui-type-display-sm-letter-spacing: normal;
+  --ui-type-display-sm-family: var(--ui-font-sans);
+  --ui-type-display-lg-size: 3.5rem;
+  --ui-type-display-lg-weight: 400;
+  --ui-type-display-lg-line-height: 4rem;
+  --ui-type-display-lg-letter-spacing: normal;
+  --ui-type-display-lg-family: var(--ui-font-sans);
+  --ui-type-headline-sm-size: 1.5rem;
+  --ui-type-headline-sm-weight: 400;
+  --ui-type-headline-sm-line-height: 2rem;
+  --ui-type-headline-sm-letter-spacing: normal;
+  --ui-type-headline-sm-family: var(--ui-font-sans);
+  --ui-type-title-lg-size: 1.375rem;
+  --ui-type-title-lg-weight: 500;
+  --ui-type-title-lg-line-height: 1.75rem;
+  --ui-type-title-lg-letter-spacing: normal;
+  --ui-type-title-lg-family: var(--ui-font-sans);
+  --ui-type-title-md-size: 1rem;
+  --ui-type-title-md-weight: 500;
+  --ui-type-title-md-line-height: 1.5rem;
+  --ui-type-title-md-letter-spacing: normal;
+  --ui-type-title-md-family: var(--ui-font-sans);
+  --ui-type-body-lg-size: 1rem;
+  --ui-type-body-lg-weight: 400;
+  --ui-type-body-lg-line-height: 1.5rem;
+  --ui-type-body-lg-letter-spacing: normal;
+  --ui-type-body-lg-family: var(--ui-font-sans);
+  --ui-type-body-md-size: 1rem;
+  --ui-type-body-md-weight: 400;
+  --ui-type-body-md-line-height: 1.5rem;
+  --ui-type-body-md-letter-spacing: normal;
+  --ui-type-body-md-family: var(--ui-font-sans);
+  --ui-type-body-sm-size: .75rem;
+  --ui-type-body-sm-weight: 400;
+  --ui-type-body-sm-line-height: 1rem;
+  --ui-type-body-sm-letter-spacing: normal;
+  --ui-type-body-sm-family: var(--ui-font-sans);
+  --ui-type-label-lg-size: .875rem;
+  --ui-type-label-lg-weight: 600;
+  --ui-type-label-lg-line-height: 1.25rem;
+  --ui-type-label-lg-letter-spacing: normal;
+  --ui-type-label-lg-family: var(--ui-font-sans);
+  --ui-type-label-sm-size: .75rem;
+  --ui-type-label-sm-weight: 500;
+  --ui-type-label-sm-line-height: 1rem;
+  --ui-type-label-sm-letter-spacing: normal;
+  --ui-type-label-sm-family: var(--ui-font-sans);
+  --ui-type-dialog-headline-size: 1.5rem;
+  --ui-type-dialog-headline-weight: 400;
+  --ui-type-dialog-headline-line-height: 2rem;
+  --ui-type-dialog-headline-letter-spacing: normal;
+  --ui-type-dialog-headline-family: var(--ui-font-sans);
+  --ui-type-dialog-body-size: .875rem;
+  --ui-type-dialog-body-weight: 400;
+  --ui-type-dialog-body-line-height: 1.25rem;
+  --ui-type-dialog-body-letter-spacing: normal;
+  --ui-type-dialog-body-family: var(--ui-font-sans);
 
   /* Size — Material overrides of the core control/item geometry. control and
      track repeat their core defaults (2.5rem / 4px): the values exist here so

@@ -2,6 +2,8 @@ package web
 
 import (
 	"embed"
+	"encoding/json"
+	"fmt"
 	"os"
 	"path/filepath"
 	"regexp"
@@ -189,20 +191,22 @@ func TestSurfaceContainerTokenClosedAcrossCoreAndEveryScheme(t *testing.T) {
 }
 
 // TestDisplayLgTokenClosedAcrossCoreAndTheme proves the --ui-type-display-lg
-// gap is closed: the core owns the neutral shorthand default and the Material
-// theme defines the Material value. Presence only — never a concrete value.
+// gap is closed under the Phase B decomposition (R1): the core owns the
+// shorthand alias (a font: composition of decomposed tokens) and the Material
+// theme defines the decomposed display-lg values. Presence only — never a
+// concrete value.
 func TestDisplayLgTokenClosedAcrossCoreAndTheme(t *testing.T) {
 	core, err := sourceStyles.ReadFile("styles/tokens.css")
 	if err != nil {
 		t.Fatalf("read core tokens: %v", err)
 	}
 	if !strings.Contains(string(core), "--ui-type-display-lg:") {
-		t.Error("core tokens.css must define --ui-type-display-lg (neutral default)")
+		t.Error("core tokens.css must define the --ui-type-display-lg alias (Phase B decomposition)")
 	}
 
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
-	if !strings.Contains(theme, "--ui-type-display-lg:") {
-		t.Error("theme-material must define --ui-type-display-lg")
+	if !strings.Contains(theme, "--ui-type-display-lg-size:") || !strings.Contains(theme, "--ui-type-display-lg-weight:") {
+		t.Error("theme-material must define the decomposed display-lg values (--ui-type-display-lg-size / -weight)")
 	}
 }
 
@@ -233,21 +237,22 @@ func TestFontSansOverriddenByMaterialTheme(t *testing.T) {
 }
 
 // TestTitleMdTokenClosedAcrossCoreAndTheme proves the --ui-type-title-md gap
-// is closed: the core owns the neutral shorthand default (consumed by the
-// WhatsApp demo admin subtitle) and the Material theme defines its override.
-// Presence only — never a concrete value.
+// is closed under the Phase B decomposition (R1): the core owns the shorthand
+// alias (a font: composition of decomposed tokens) and the Material theme
+// defines the decomposed title-md values. Presence only — never a concrete
+// value.
 func TestTitleMdTokenClosedAcrossCoreAndTheme(t *testing.T) {
 	core, err := sourceStyles.ReadFile("styles/tokens.css")
 	if err != nil {
 		t.Fatalf("read core tokens: %v", err)
 	}
 	if !strings.Contains(string(core), "--ui-type-title-md:") {
-		t.Error("core tokens.css must define --ui-type-title-md (neutral default)")
+		t.Error("core tokens.css must define the --ui-type-title-md alias (Phase B decomposition)")
 	}
 
 	theme := regexp.MustCompile(`\s+`).ReplaceAllString(themeCSS(t, "theme-material"), " ")
-	if !strings.Contains(theme, "--ui-type-title-md:") {
-		t.Error("theme-material must define --ui-type-title-md")
+	if !strings.Contains(theme, "--ui-type-title-md-size:") || !strings.Contains(theme, "--ui-type-title-md-weight:") {
+		t.Error("theme-material must define the decomposed title-md values (--ui-type-title-md-size / -weight)")
 	}
 }
 
@@ -1037,6 +1042,148 @@ func TestDarkTokensDefinedOnceSingleMechanism(t *testing.T) {
 			for name := range names {
 				if n := strings.Count(darkClass, name+":"); n != 1 {
 					t.Errorf("%s dark class route must define %s exactly once, got %d definitions", theme, name, n)
+				}
+			}
+		})
+	}
+}
+
+// typeScaleSteps are the 12 typescale steps the core decomposes (Phase B,
+// R1). Each step owns five decomposed tokens
+// (--ui-type-<step>-{size,weight,line-height,letter-spacing,family}) plus a
+// shorthand alias composing them. label-md is excluded here: it is a new
+// Phase B step (R2) with no pre-change baseline to snapshot.
+var typeScaleSteps = []string{
+	"display-lg", "display-sm", "headline-sm",
+	"title-lg", "title-md",
+	"body-lg", "body-md", "body-sm",
+	"label-lg", "label-sm",
+	"dialog-headline", "dialog-body",
+}
+
+// typeStepProps are the five decomposed property suffixes of the Phase B
+// decomposition contract (R1). letter-spacing is part of the per-step token
+// set even though the font: shorthand alias cannot express it — the token
+// exists so a consumer can opt into tracking per step.
+var typeStepProps = []string{"size", "weight", "line-height", "letter-spacing", "family"}
+
+// typeBaseline reads the golden fixture that captured the pre-change shorthand
+// values per theme (web/testdata/type_baseline.json). The fixture is the
+// snapshot contract: after decomposition, composing each alias from the
+// decomposed props must reproduce the baseline exactly.
+func typeBaseline(t *testing.T) map[string]map[string]string {
+	t.Helper()
+	raw := repositoryFile(t, "web", "testdata", "type_baseline.json")
+	var baseline map[string]map[string]string
+	if err := json.Unmarshal([]byte(raw), &baseline); err != nil {
+		t.Fatalf("parse type baseline fixture: %v", err)
+	}
+	return baseline
+}
+
+// decomposeThemeStep extracts the five decomposed --ui-type-<step>-* values a
+// theme declares in its light block. Every theme must own all five props per
+// step (the decomposition contract), so a missing prop fails the test.
+func decomposeThemeStep(t *testing.T, lightCSS, step string) map[string]string {
+	t.Helper()
+	props := map[string]string{}
+	for _, prop := range typeStepProps {
+		re := regexp.MustCompile(`--ui-type-` + regexp.QuoteMeta(step) + `-` + regexp.QuoteMeta(prop) + `\s*:\s*([^;]+);`)
+		m := re.FindStringSubmatch(lightCSS)
+		if m == nil {
+			// Report the missing prop so the failure names the gap, then
+			// return what we have — the caller's equivalence check will also
+			// fail loudly.
+			t.Errorf("theme must define the decomposed token --ui-type-%s-%s (Phase B decomposition)", step, prop)
+			continue
+		}
+		props[prop] = strings.TrimSpace(m[1])
+	}
+	return props
+}
+
+// composeTypeAlias reproduces the Phase B alias composition (design D1):
+// the shorthand is a single font: value built from the decomposed parts —
+// `weight size/line-height family`. letter-spacing cannot live in a font:
+// shorthand, so it is intentionally not part of the alias.
+func composeTypeAlias(props map[string]string) string {
+	return fmt.Sprintf("%s %s/%s %s",
+		props["weight"], props["size"], props["line-height"], props["family"])
+}
+
+// TestTypeAliasSnapshotEquivalence is the Phase B R1 snapshot contract: after
+// decomposing the 12 shorthand type tokens into per-step props in the core and
+// moving the values into the themes as decomposed overrides, composing each
+// alias from the decomposed parts must reproduce the golden baseline captured
+// pre-change — zero visual diff in light. Dark is asserted identical because
+// the type family is never redefined in the dark class route.
+func TestTypeAliasSnapshotEquivalence(t *testing.T) {
+	baseline := typeBaseline(t)
+
+	for _, theme := range availableThemes(t) {
+		theme := theme
+		t.Run(theme, func(t *testing.T) {
+			themeWant, ok := baseline[theme]
+			if !ok {
+				t.Fatalf("type baseline fixture has no entry for theme %q (regenerate web/testdata/type_baseline.json)", theme)
+			}
+			light, darkClass, _ := splitThemeSchemes(t, theme)
+
+			// Dark equivalence: the type family lives in light only, so
+			// resolving any alias under the dark class route yields the same
+			// composed value as light. Assert the dark block declares no
+			// --ui-type-* token at all.
+			if strings.Contains(darkClass, "--ui-type-") {
+				t.Errorf("%s dark class route must not redefine any --ui-type-* token (type is scheme-independent; dark resolves identical)", theme)
+			}
+
+			for _, step := range typeScaleSteps {
+				props := decomposeThemeStep(t, light, step)
+				got := composeTypeAlias(props)
+				want := strings.Join(strings.Fields(themeWant[step]), " ")
+				gotNorm := strings.Join(strings.Fields(got), " ")
+				if gotNorm != want {
+					t.Errorf("%s: composed --ui-type-%s = %q, want baseline %q (decomposition changed the resolved value)",
+						theme, step, gotNorm, want)
+				}
+			}
+		})
+	}
+}
+
+// TestTypeAliasesComposeDecomposedTokens proves the alias contract of the
+// decomposition (R1): every shorthand --ui-type-<step> in the core must be a
+// single font: composition of its five decomposed tokens — never a standalone
+// literal value. Themes own the decomposed values; the core owns the alias
+// shape.
+func TestTypeAliasesComposeDecomposedTokens(t *testing.T) {
+	core, err := sourceStyles.ReadFile("styles/tokens.css")
+	if err != nil {
+		t.Fatalf("read core tokens: %v", err)
+	}
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(string(core), " ")
+	for _, step := range typeScaleSteps {
+		want := fmt.Sprintf("--ui-type-%s: var(--ui-type-%s-weight) var(--ui-type-%s-size)/var(--ui-type-%s-line-height) var(--ui-type-%s-family);",
+			step, step, step, step, step)
+		if !strings.Contains(css, want) {
+			t.Errorf("core tokens.css must define --ui-type-%s as a font: composition of its decomposed tokens, got missing %q", step, want)
+		}
+	}
+}
+
+// TestThemesNeverRedeclareTypeAliases proves the ownership split of the
+// decomposition (R1): themes override the five decomposed props per step and
+// must NEVER redeclare the shorthand alias (that would fork the alias from the
+// core composition and break snapshot equivalence).
+func TestThemesNeverRedeclareTypeAliases(t *testing.T) {
+	for _, theme := range availableThemes(t) {
+		theme := theme
+		t.Run(theme, func(t *testing.T) {
+			css := themeCSS(t, theme)
+			for _, step := range typeScaleSteps {
+				re := regexp.MustCompile(`--ui-type-` + regexp.QuoteMeta(step) + `\s*:`)
+				if m := re.FindString(css); m != "" {
+					t.Errorf("%s must not redeclare the shorthand alias %s (themes override decomposed values only)", theme, m)
 				}
 			}
 		})

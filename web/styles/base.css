@@ -7,6 +7,7 @@
     background: var(--ui-color-canvas);
     color: var(--ui-color-fg);
     font: var(--ui-type-body-md);
+    letter-spacing: var(--ui-type-body-md-letter-spacing);
   }
   a { color: inherit; }
 }
@@ -22,9 +23,9 @@
     background: var(--ui-color-surface);
     box-shadow: var(--ui-shadow-1);
   }
-  .brand { font: var(--ui-type-title-lg); text-decoration: none; }
+  .brand { font: var(--ui-type-title-lg); letter-spacing: var(--ui-type-title-lg-letter-spacing); text-decoration: none; }
   .site-header nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
-  .site-header nav a { color: var(--ui-color-primary); font: var(--ui-type-label-lg); }
+  .site-header nav a { color: var(--ui-color-primary); font: var(--ui-type-label-lg); letter-spacing: var(--ui-type-label-lg-letter-spacing); }
   .site-header-end {
     display: flex;
     align-items: center;
@@ -88,14 +89,14 @@
   .docs-content,
   main.docs-shell.docs-content { width: min(68rem, calc(100% - 2rem)); margin: 4rem auto; }
   .prose { max-width: 48rem; }
-  .prose h1 { margin: 0 0 1rem; font: var(--ui-type-display-sm); }
-  .prose h2 { margin-top: 2.5rem; font: var(--ui-type-headline-sm); }
+  .prose h1 { margin: 0 0 1rem; font: var(--ui-type-display-sm); letter-spacing: var(--ui-type-display-sm-letter-spacing); }
+  .prose h2 { margin-top: 2.5rem; font: var(--ui-type-headline-sm); letter-spacing: var(--ui-type-headline-sm-letter-spacing); }
   .prose p { color: var(--ui-color-fg-muted); line-height: 1.7; }
   .hero-action { margin-top: 2rem; }
 
   /* Landing hero: the home page presents Gelium UI above the fold with a
      larger display and a call to action, without changing the docs shell. */
-  .landing-hero h1 { font: var(--ui-type-display-lg); max-width: 22ch; }
+  .landing-hero h1 { font: var(--ui-type-display-lg); letter-spacing: var(--ui-type-display-lg-letter-spacing); max-width: 22ch; }
   .landing-hero p { font-size: 1.125rem; max-width: 48ch; }
   .prose ul { line-height: 1.8; }
   .prose li code, .prose p code { padding: .125rem .375rem; border-radius: var(--ui-radius-xs); background: var(--ui-color-surface-container); font-size: .9em; }
