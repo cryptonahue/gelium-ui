@@ -52,8 +52,8 @@ Chain strategy: stacked-to-main
 
 ## Phase 3: Contracts + polish (PR 3) — R1–R10, residual
 
-- [ ] 3.1 RED→GREEN: active `aria-current` peers; IA group strings; theme links `?theme=` only; `?theme=basecoat` root class
-- [ ] 3.2 Update `server_test.go` layout contracts (`main.docs-shell` / header assumptions)
-- [ ] 3.3 Sitemap/JSON-LD/footer regressions; paths stable (no redirects)
-- [ ] 3.4 Close nav-discoverability residual in `docs/gelium-ui-system-roadmap.md`
-- [ ] 3.5 `go test ./...` · `go vet ./...` · `go build -o /tmp/gelium ./cmd/gelium`
+- [x] 3.1 RED→GREEN: active `aria-current` peers; IA group strings; theme links `?theme=` only; `?theme=basecoat` root class
+- [x] 3.2 Update `server_test.go` layout contracts (`main.docs-shell` / header assumptions)
+- [x] 3.3 Sitemap/JSON-LD/footer regressions; paths stable (no redirects)
+- [x] 3.4 Close nav-discoverability residual in `docs/gelium-ui-system-roadmap.md`
+- [x] 3.5 `go test ./...` · `go vet ./...` · `go build -o /tmp/gelium ./cmd/gelium`
