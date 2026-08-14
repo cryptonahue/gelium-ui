@@ -2,7 +2,91 @@ package app
 
 import (
 	"net/http"
+	"strings"
 )
+
+// docsNavLink is one destination in the docs shell sidebar / footer export.
+type docsNavLink struct {
+	Path    string
+	Label   string
+	Current bool // exact path match against the active request path
+}
+
+// docsNavGroup is a labeled block of docs nav links (IA section).
+type docsNavGroup struct {
+	Title string
+	Links []docsNavLink
+}
+
+// docsNavView is the shell chrome model: grouped IA plus honest topbar slots.
+// Version aligns with the static asset query (?v=0.4.0). SearchDisabled is
+// always true in this change — placeholder only, no live corpus search.
+type docsNavView struct {
+	Groups         []docsNavGroup
+	Version        string
+	SearchDisabled bool
+}
+
+// docsShellVersion is the static version badge shown in the docs topbar.
+const docsShellVersion = "0.4.0"
+
+// usesDocsShell reports whether path should render the two-pane docs chrome.
+// Home, recipes, and demos stay on the legacy site-header layout.
+func usesDocsShell(path string) bool {
+	return path == "/docs" ||
+		strings.HasPrefix(path, "/docs/") ||
+		strings.HasPrefix(path, "/components/")
+}
+
+// docsNavFor builds the Scalar-style sidebar IA for activePath.
+// Exact path match sets Current; empty activePath marks nothing current
+// (used when flattening the same model into the site footer).
+func docsNavFor(activePath string) docsNavView {
+	link := func(path, label string) docsNavLink {
+		return docsNavLink{
+			Path:    path,
+			Label:   label,
+			Current: activePath != "" && path == activePath,
+		}
+	}
+
+	groups := make([]docsNavGroup, 0, 4+len(docsSections))
+	groups = append(groups, docsNavGroup{
+		Title: "Getting started",
+		Links: []docsNavLink{link("/docs", "Documentation")},
+	})
+	for _, section := range docsSections {
+		links := make([]docsNavLink, 0, len(section.Links))
+		for _, l := range section.Links {
+			links = append(links, link(l.Path, l.Label))
+		}
+		groups = append(groups, docsNavGroup{Title: section.Title, Links: links})
+	}
+	groups = append(groups,
+		docsNavGroup{
+			Title: "Patterns",
+			Links: []docsNavLink{link("/docs/patterns", "Patterns")},
+		},
+		docsNavGroup{
+			Title: "Recipes",
+			Links: []docsNavLink{
+				link("/recipes/admin-resource", "Admin Resource"),
+				link("/recipes/ops-queue", "Ops Queue"),
+				link("/recipes/public-feed", "Public Feed"),
+			},
+		},
+		docsNavGroup{
+			Title: "Themes",
+			Links: []docsNavLink{link("/docs/themes", "Themes")},
+		},
+	)
+
+	return docsNavView{
+		Groups:         groups,
+		Version:        docsShellVersion,
+		SearchDisabled: true,
+	}
+}
 
 // docsSections groups the component library into logical categories for the
 // /docs index page. Each entry links to the dogfooded component page.

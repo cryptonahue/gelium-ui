@@ -1,0 +1,280 @@
+package app
+
+import (
+	"testing"
+)
+
+func TestUsesDocsShell(t *testing.T) {
+	tests := []struct {
+		name string
+		path string
+		want bool
+	}{
+		{name: "docs hub", path: "/docs", want: true},
+		{name: "docs patterns stub", path: "/docs/patterns", want: true},
+		{name: "docs themes stub", path: "/docs/themes", want: true},
+		{name: "docs nested path", path: "/docs/anything", want: true},
+		{name: "component button", path: "/components/button", want: true},
+		{name: "component data table", path: "/components/data-table", want: true},
+		{name: "home", path: "/", want: false},
+		{name: "recipe admin", path: "/recipes/admin-resource", want: false},
+		{name: "recipe ops", path: "/recipes/ops-queue", want: false},
+		{name: "demo", path: "/demo/whatsapp", want: false},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			if got := usesDocsShell(tt.path); got != tt.want {
+				t.Fatalf("usesDocsShell(%q) = %v, want %v", tt.path, got, tt.want)
+			}
+		})
+	}
+}
+
+func TestDocsNavFor(t *testing.T) {
+	t.Run("topbar slots and five IA blocks", func(t *testing.T) {
+		nav := docsNavFor("/docs")
+		if nav.Version != "0.4.0" {
+			t.Errorf("Version = %q, want %q", nav.Version, "0.4.0")
+		}
+		if !nav.SearchDisabled {
+			t.Error("SearchDisabled must be true for honest placeholder search")
+		}
+
+		titles := docsNavGroupTitles(nav)
+		for _, want := range []string{
+			"Getting started",
+			"Patterns",
+			"Recipes",
+			"Themes",
+		} {
+			if !containsString(titles, want) {
+				t.Errorf("docsNavFor missing IA block %q; got %v", want, titles)
+			}
+		}
+		for _, section := range docsSections {
+			if !containsString(titles, section.Title) {
+				t.Errorf("docsNavFor missing docsSections group %q; got %v", section.Title, titles)
+			}
+		}
+		// Five top-level IA blocks: Getting started, Components (via docsSections),
+		// Patterns, Recipes, Themes — Components expands to one group per section.
+		if len(nav.Groups) < 5 {
+			t.Fatalf("docsNavFor groups = %d, want at least 5 IA blocks", len(nav.Groups))
+		}
+	})
+
+	t.Run("current on docs hub", func(t *testing.T) {
+		nav := docsNavFor("/docs")
+		current := currentDocsNavLinks(nav)
+		if len(current) != 1 {
+			t.Fatalf("current links = %v, want exactly one", current)
+		}
+		if current[0].Path != "/docs" || current[0].Label != "Documentation" {
+			t.Errorf("current = %+v, want Path=/docs Label=Documentation", current[0])
+		}
+	})
+
+	t.Run("current on component button", func(t *testing.T) {
+		nav := docsNavFor("/components/button")
+		current := currentDocsNavLinks(nav)
+		if len(current) != 1 {
+			t.Fatalf("current links = %v, want exactly one", current)
+		}
+		if current[0].Path != "/components/button" || current[0].Label != "Button" {
+			t.Errorf("current = %+v, want Path=/components/button Label=Button", current[0])
+		}
+		// Peers in the same Actions group must not be current.
+		for _, g := range nav.Groups {
+			if g.Title != "Actions" {
+				continue
+			}
+			for _, link := range g.Links {
+				if link.Path == "/components/button" {
+					continue
+				}
+				if link.Current {
+					t.Errorf("peer %q must not be current", link.Path)
+				}
+			}
+		}
+	})
+
+	t.Run("recipes are real outbound paths", func(t *testing.T) {
+		nav := docsNavFor("/docs")
+		var recipes *docsNavGroup
+		for i := range nav.Groups {
+			if nav.Groups[i].Title == "Recipes" {
+				recipes = &nav.Groups[i]
+				break
+			}
+		}
+		if recipes == nil {
+			t.Fatal("missing Recipes group")
+		}
+		wantPaths := map[string]string{
+			"/recipes/admin-resource": "Admin Resource",
+			"/recipes/ops-queue":      "Ops Queue",
+			"/recipes/public-feed":    "Public Feed",
+		}
+		if len(recipes.Links) != len(wantPaths) {
+			t.Fatalf("Recipes links = %d, want %d", len(recipes.Links), len(wantPaths))
+		}
+		for _, link := range recipes.Links {
+			label, ok := wantPaths[link.Path]
+			if !ok {
+				t.Errorf("unexpected recipe path %q", link.Path)
+				continue
+			}
+			if link.Label != label {
+				t.Errorf("recipe %q label = %q, want %q", link.Path, link.Label, label)
+			}
+		}
+	})
+
+	t.Run("patterns and themes stub paths", func(t *testing.T) {
+		nav := docsNavFor("/docs/patterns")
+		if !hasDocsNavLink(nav, "/docs/patterns", true) {
+			t.Error("Patterns group must mark /docs/patterns current")
+		}
+		if !hasDocsNavLink(nav, "/docs/themes", false) {
+			t.Error("Themes group must include /docs/themes")
+		}
+	})
+}
+
+func TestDefaultFooter(t *testing.T) {
+	footer := defaultFooter()
+	if footer == nil {
+		t.Fatal("defaultFooter() returned nil")
+	}
+	if footer.Brand != "Gelium UI" {
+		t.Errorf("Brand = %q, want %q", footer.Brand, "Gelium UI")
+	}
+	if footer.Legal != "© 2026 Gelium UI · MIT" {
+		t.Errorf("Legal = %q, want %q", footer.Legal, "© 2026 Gelium UI · MIT")
+	}
+
+	// Footer sections must be derived from the same docsNavFor model (flat export),
+	// not a second hand-maintained component list.
+	nav := docsNavFor("")
+	navTitles := docsNavGroupTitles(nav)
+	if len(footer.Sections) == 0 {
+		t.Fatal("defaultFooter must expose sections from docs nav")
+	}
+	for _, section := range footer.Sections {
+		if section.Title == "Documentation" {
+			// Legacy Documentation heading may wrap Getting started + Home.
+			continue
+		}
+		if !containsString(navTitles, section.Title) && section.Title != "Components" {
+			t.Errorf("footer section %q is not sourced from docsNavFor groups %v", section.Title, navTitles)
+		}
+	}
+
+	// Every docsSections component link must appear somewhere in the footer.
+	flat := footerFlatPaths(footer)
+	for _, section := range docsSections {
+		for _, link := range section.Links {
+			if !containsString(flat, link.Path) {
+				t.Errorf("footer missing component link %q from docsSections", link.Path)
+			}
+		}
+	}
+	// Docs hub and Home remain reachable from footer chrome.
+	if !containsString(flat, "/docs") {
+		t.Error("footer must include /docs")
+	}
+	if !containsString(flat, "/") {
+		t.Error("footer must include Home /")
+	}
+	// Patterns, recipes, and themes stay in lockstep with the nav model.
+	for _, path := range []string{
+		"/docs/patterns",
+		"/docs/themes",
+		"/recipes/admin-resource",
+		"/recipes/ops-queue",
+		"/recipes/public-feed",
+	} {
+		if !containsString(flat, path) {
+			t.Errorf("footer missing nav path %q", path)
+		}
+	}
+}
+
+func TestNavLinksDerivedFromDocsSections(t *testing.T) {
+	links := navLinks()
+	if len(links) == 0 || links[0].Path != "/docs" || links[0].Label != "Docs" {
+		t.Fatalf("navLinks()[0] = %+v, want Docs → /docs", firstNavLink(links))
+	}
+	// Component entries must match docsSections order and labels — not componentRoutes.
+	want := make([]navLink, 0)
+	for _, section := range docsSections {
+		want = append(want, section.Links...)
+	}
+	got := links[1:]
+	if len(got) != len(want) {
+		t.Fatalf("component nav links = %d, want %d from docsSections", len(got), len(want))
+	}
+	for i := range want {
+		if got[i] != want[i] {
+			t.Errorf("navLinks()[%d] = %+v, want %+v (docsSections order)", i+1, got[i], want[i])
+		}
+	}
+}
+
+func docsNavGroupTitles(nav docsNavView) []string {
+	titles := make([]string, 0, len(nav.Groups))
+	for _, g := range nav.Groups {
+		titles = append(titles, g.Title)
+	}
+	return titles
+}
+
+func currentDocsNavLinks(nav docsNavView) []docsNavLink {
+	var out []docsNavLink
+	for _, g := range nav.Groups {
+		for _, link := range g.Links {
+			if link.Current {
+				out = append(out, link)
+			}
+		}
+	}
+	return out
+}
+
+func hasDocsNavLink(nav docsNavView, path string, current bool) bool {
+	for _, g := range nav.Groups {
+		for _, link := range g.Links {
+			if link.Path == path && link.Current == current {
+				return true
+			}
+		}
+	}
+	return false
+}
+
+func footerFlatPaths(f *footerView) []string {
+	var paths []string
+	for _, section := range f.Sections {
+		for _, link := range section.Links {
+			paths = append(paths, link.Path)
+		}
+	}
+	return paths
+}
+
+func containsString(ss []string, want string) bool {
+	for _, s := range ss {
+		if s == want {
+			return true
+		}
+	}
+	return false
+}
+
+func firstNavLink(links []navLink) navLink {
+	if len(links) == 0 {
+		return navLink{}
+	}
+	return links[0]
+}

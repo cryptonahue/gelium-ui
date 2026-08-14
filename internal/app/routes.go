@@ -46,13 +46,18 @@ func componentRoutes() []componentRoute {
 	}
 }
 
+// navLinks is the flat header/legacy nav: Docs hub plus every component link
+// derived from docsSections only so registration order in componentRoutes
+// cannot drift from the docs IA categories.
 func navLinks() []navLink {
-	links := make([]navLink, 0, len(componentRoutes())+2)
-	links = append(links,
-		navLink{Path: "/docs", Label: "Docs"},
-	)
-	for _, r := range componentRoutes() {
-		links = append(links, navLink{Path: r.Path, Label: r.Label})
+	n := 1
+	for _, section := range docsSections {
+		n += len(section.Links)
+	}
+	links := make([]navLink, 0, n)
+	links = append(links, navLink{Path: "/docs", Label: "Docs"})
+	for _, section := range docsSections {
+		links = append(links, section.Links...)
 	}
 	return links
 }
