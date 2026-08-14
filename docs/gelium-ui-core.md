@@ -129,6 +129,35 @@ Cada token se clasifica en una de estas categorías:
 | `--ui-select-menu-item-icon` | theme-material (muerto) | **deprecated** | ninguno | Eliminar |
 | `--ui-slider-fill` | slider.css | **internal implementation** | Slider | Documentar como privado |
 
+**Matriz por familia — 8 familias scoped (Phase A)**: cada familia tiene una fila
+de propiedad explícita; el theme solo puede sobrescribir los grados de libertad
+que el contrato del componente declare (color, shape, type, motion), nunca la
+anatomía.
+
+| Familia | Archivo CSS | Owner | Familia token |
+|---|---|---|---|
+| List | `list.css` | **component token** | `--ui-list-*` (scoped) |
+| Menu | `menu.css` | **component token** | `--ui-menu-*` (scoped) |
+| Data table | `data-table.css` | **component token** | `--ui-data-table-*` (scoped) |
+| Navigation bar | `navigation-bar.css` | **component token** | `--ui-nav-bar-*` (scoped) |
+| Navigation tab | `navigation-tab.css` | **component token** | `--ui-nav-tab-*` (scoped) |
+| Navigation drawer | `navigation-drawer.css` | **component token** | `--ui-navigation-drawer-*` (scoped) |
+| Segmented button | `segmented-button.css` | **component token** | `--ui-segmented-button-*` (scoped) |
+| Tooltip | `tooltip.css` | **component token** | `--ui-tooltip-*` (scoped) |
+
+**Regla de flagging internal**: un token consumido por un único archivo se
+clasifica **internal implementation token** (privado, fuera del contrato); un
+token sin ningún consumidor se clasifica **deprecated/dead** y se elimina o se
+mantiene por compatibilidad con decisión explícita. Ningún `--ui-*` queda
+huérfano: toda referencia resuelve a un token owned.
+
+**Política de compatibilidad de tokens muertos (Phase A)**: la eliminación de un
+token con consumidores conserva un alias de compatibilidad documentado y una nota
+de migración (§5.2.3). El triplete muerto (`--ui-radius-xl`,
+`--ui-state-dragged-opacity`, `--ui-select-menu-item-icon`) está **ausente del
+core** (verificado por grep) — no se reintroduce. El alias de compatibilidad
+`--ui-color-error` → `--ui-color-danger` **se mantiene** (danger es canónico).
+
 ### 5.1 Naming
 
 Convención canónica: `--ui-<familia>-<token>` para familias transversales y `--ui-<componente>-<rol>` para cobertura por componente.
@@ -160,7 +189,7 @@ Convención canónica: `--ui-<familia>-<token>` para familias transversales y `-
    - `--ui-font-mono` (referenciado, sin definir).
 3. **Sin tokens muertos**: eliminar o justificar `--ui-radius-xl`, `--ui-state-dragged-opacity`, `--ui-select-menu-item-icon`.
 4. **Un solo mecanismo dark**: sin duplicación clase + media query; sin drift (`--ui-switch-track-unselected` solo en una ruta = bug conocido).
-5. **State layers theme-aware**: los overlays de estado se pintan con `color-mix()` sobre el token `-fg` (patrón ya usado en `button.css:27-32`, `fab.css:80-88`), nunca con `rgb()` fijo (`button.css:17-18`, `chips.css:32,35,107,141-142` son acoplamientos a corregir).
+5. **State layers theme-aware**: los overlays de estado (hover/focus/pressed/selected/disabled) se pintan con `color-mix(in oklab, var(--ui-color-*-fg), transparent <opacity>)` sobre el token `-fg` definitorio del layer. `rgb()`/`rgba()` y `currentColor` están **prohibidos** en `web/styles/*.css` (tokens.css exento: es dueño de los valores crudos, incluido el scrim). El `currentColor` decorativo (fill de SVG, checkmarks, indicadores `::before`) queda permitido por contrato — solo los state layers usan tokens.
 
 ### 5.3 Cobertura por componente
 
@@ -187,26 +216,35 @@ Vocabulario semántico a nivel core (los themes definen valores; los componentes
 
 | Rol | Uso semántico |
 |---|---|
+| `--ui-color-canvas` / `--ui-color-surface` / `--ui-color-surface-container` | Superficies (fondo, elevado, contenedor) |
 | `--ui-color-primary` / `-fg` | Acción principal, elemento enfatizado |
 | `--ui-color-secondary` / `-fg` | Acción/énfasis secundario |
-| `--ui-color-success` / `-fg` | Éxito (no debe confundirse con primary) |
+| `--ui-color-danger` / `-fg` | Error/destructivo (**canónico**; `error` es alias de compatibilidad) |
 | `--ui-color-warning` / `-fg` | Advertencia |
-| `--ui-color-danger` / `-fg` | Error/destructivo (canónico; `error` pasa a alias) |
+| `--ui-color-success` / `-fg` | Éxito (no debe confundirse con primary) |
 | `--ui-color-info` / `-fg` | Informativo |
-| `--ui-color-outline` / `-strong` | Bordes/contornos |
-| `--ui-color-surface` / `-muted` / `-container` | Superficies |
-| `--ui-color-content` / `-muted` | Texto/contenido |
-| `--ui-color-border` | Separadores y bordes |
+| `--ui-color-border` / `--ui-color-border-strong` | Separadores y bordes; **el rol outline lo sirve `--ui-color-border-strong`** |
+| `--ui-color-fg` / `-fg-muted` | Texto/contenido |
 | `--ui-color-scrim` | Fondo de overlays |
 | `--ui-color-focus-ring` | Anillo de foco |
 
-Regla: los componentes referencian el **rol** (`var(--ui-color-success)`), nunca un valor; el theme define el valor por rol.
+Regla: los componentes referencian el **rol** (`var(--ui-color-success)`), nunca un valor; el theme define el valor por rol. **No existe token `--ui-color-outline`**: el rol outline se resuelve a `--ui-color-border-strong` (contrato verificado por grep — solo comentarios/docs pueden mencionar el nombre). `--ui-color-error` es un alias de compatibilidad de `--ui-color-danger` (`tokens.css:38`) y se mantiene para consumidores existentes.
 
 ## 5.6 Dark mode (Phase A)
 
-- **Una única rutina** para dark mode; sin duplicación, sin drift, sin selectores contradictorios, sin valores Material hardcodeados fuera del theme.
-- Mecanismo acordado: cada theme autocontenido con su bloque dark (clase única o `light-dark()` según decisión del theme contract), eliminando la duplicación `theme.css:203-251` vs `253-299` (bug: `--ui-switch-track-unselected` solo en una ruta).
-- `color-scheme` con una sola fuente de verdad.
+- **Un único mecanismo por theme (DECIDIDO)**: la clase explícita
+  `.theme-{name}.theme-dark` (con aliases `.dark` / `[data-theme="dark"]`).
+  `color-scheme: dark` vive dentro del bloque de clase. **No** existe bloque
+  `@media (prefers-color-scheme: dark)` en el CSS de ningún theme — el
+  contrato lo verifica con grep y count (cada token dark definido exactamente
+  una vez).
+- Consecuencia de comportamiento (anunciada): el OS `prefers-color-scheme` ya
+  no oscurece automáticamente; el servidor debe emitir la clase `theme-dark`
+  (`{{.ThemeClass}}`, allowlist server-side). Phase B restaura el switcher JS.
+- `light-dark()` queda rechazado (D1): el harness de test parsea el CSS
+  textualmente y los valores dark dejarían de ser extraíbles; además choca con
+  la identidad server-driven del theme.
+- Sin duplicación, sin drift, sin valores Material hardcodeados fuera del theme.
 
 ## 5.7 Referencias rotas (Phase A)
 
@@ -222,20 +260,24 @@ Auditar y resolver; decisión por token:
 
 ## 5.8 State layers (Phase A)
 
-- **Eliminar colores fijos `rgb(...)`** cuando representen hover/focus/pressed/dragged.
-- Implementar state layers **theme-aware** usando tokens y `color-mix()` cuando corresponda (patrón ya usado en `button.css:27-32`, `fab.css:80-88`).
+- **Contrato cerrado**: los state layers (hover/focus/pressed/selected/disabled)
+  usan `color-mix(in oklab, var(--ui-color-*-fg), transparent <opacity>)` sobre
+  el token `-fg` definitorio del layer — implementado en button, chips, fab e
+  icon-button (Phase A). `rgb()`/`rgba()`/`currentColor` en state layers están
+  **prohibidos** en `web/styles/*.css` (tokens.css exento). El `currentColor`
+  decorativo (fill/stroke de iconos y checkmarks) queda permitido.
+- Theme CSS (p. ej. switch-track con `rgb(255 255 255 / .15)` en basecoat) queda
+  fuera del alcance del grep de component CSS — aceptado en el contrato.
 - Contrato de estados:
 
 | Estado | Mecanismo |
 |---|---|
-| hover | `color-mix(in srgb, <fg-token> calc(var(--ui-state-hover-opacity)*100%), transparent)` |
-| focus | `:focus-visible` + `--ui-focus-*` + ring |
-| pressed | `color-mix(... var(--ui-state-pressed-opacity) ...)` |
+| hover | `color-mix(in oklab, var(--ui-color-*-fg) calc(var(--ui-state-hover-opacity)*100%), transparent)` |
+| focus | `:focus-visible` + `--ui-focus-*` + ring (y layer `--ui-state-focus-opacity` donde aplica) |
+| pressed | `color-mix(in oklab, var(--ui-color-*-fg) calc(var(--ui-state-pressed-opacity)*100%), transparent)` |
 | dragged | solo si existe consumidor (hoy no); si no, no tokenizar |
 | disabled | `var(--ui-state-disabled-opacity)` sobre el control |
 | selected | `:checked`/`aria-current`/`aria-sort` + color de selección del theme |
-
-- Acoplamientos a corregir: `button.css:17-18`, `icon-button.css:22,25`, `chips.css:32,35,107,141-142`.
 
 ## 6. HTML-first
 
