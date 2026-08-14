@@ -118,7 +118,8 @@ ux-decision-rules.md           (normative R-* catalog; references composition-ru
 schemas/screen-recipe.schema.json   ─┐  machine-readable recipe (19 fields + protocol fields)
 schemas/flow.schema.json            ─┴  machine-readable flow (Intent → screens)
         │
-contracts/{admin-resource,inbox-conversation,public-marketing-page,inbox-flow}.json
+contracts/{admin-resource,inbox-conversation,public-marketing-page}.json
+contracts/{admin-resource-flow,inbox-flow,public-marketing-flow}.json
         │
 composition-validation.md      (gates: schema conformance, rule compliance, a11y, no-JS, SEO/GEO)
         │

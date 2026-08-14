@@ -14,56 +14,40 @@
     "Scan value propositions",
     "Explore product sections (features, recipes)",
     "Take trust signals into account",
-    "Subscribe to the newsletter",
-    "Switch language",
     "Read the docs"
   ],
   "surface": "page",
   "ux_pattern": [
     "F2 Hero/Billboard",
-    "F13 Split",
-    "F7 Feature Card",
-    "F6 CTA Link",
-    "F10 Newsletter",
-    "F8 Footer",
     "F12 Section Heading",
-    "F1 Article",
-    "F3 Breadcrumb",
-    "F14 Video",
-    "F9 Language Switcher"
+    "F7 Feature Card",
+    "F13 Split",
+    "F6 CTA Link",
+    "F8 Footer"
   ],
   "visual_vocabulary": [
     "Hero (single h1 + subtitle + CTA Button link + optional media scrim)",
-    "Split (media + body)",
-    "Feature Card (Card + media + CTA Link)",
     "Section Heading (always h2)",
-    "Footer (details/summary sections)",
-    "Newsletter (inline aside, POST + 422)",
+    "Feature Card (Card + media + CTA Link)",
+    "Split (media + body)",
     "CTA Link (Button link)",
-    "Breadcrumb (aria-current)",
-    "Video (native controls + captions)",
-    "Language Switcher (GET form, visible submit)"
+    "Footer (details/summary sections)",
+    "Theme + scheme switcher (0-JS links, site chrome)"
   ],
   "components": [
     "hero",
-    "split",
     "feature-card",
     "card",
     "section-heading",
-    "footer",
-    "newsletter",
+    "split",
     "button",
-    "breadcrumb",
-    "video",
-    "language-switcher"
+    "footer"
   ],
   "states": ["rest", "error"],
   "accessibility": [
     "Exactly one h1 in the Hero (R-A11Y-03)",
     "All CTAs are real links/buttons",
     "Decorative media aria-hidden",
-    "Newsletter form native label + aria-invalid on 422",
-    "Video native controls + captions track",
     "Footer sections <details>/<summary>",
     "Forced-colors and reduced-motion by primitives"
   ],
@@ -87,34 +71,30 @@
     "factual": true,
     "stable_deep_links": true,
     "visible_provenance": true,
-    "json_ld_types": ["BreadcrumbList", "Organization"]
+    "json_ld_types": ["WebSite", "Organization"]
   },
   "server_contract": {
     "get_params": {
-      "lang": "locale code; GET ?lang= resolves 303 to the localized URL (Language Switcher)"
+      "theme": "closed vocabulary (availableThemes allowlist, site chrome)",
+      "scheme": "light|dark (site chrome)"
     },
-    "mutation_contract": "POST_303",
-    "validation_contract": "422_X_LOOM_VALIDATION",
-    "post_only_paths": [],
-    "notes": "Newsletter: POST + 422 X-Loom-Validation on invalid email (inline alert, value preserved); success re-renders a persistent role=status (example) or POST + 303 -> GET success (production). Language switcher is GET navigation, not a mutation."
+    "notes": "The home has no mutation surface in v0.1: no POST, no validation, no transient feedback. All CTAs are GET links. ?theme=/?scheme= are allowlisted chrome params (themeQueryMiddleware), not list state."
   },
-  "no_js_flow": "Complete: every CTA is a real link; the newsletter is a native POST form with 422 inline feedback; the language switcher is a GET form with a visible submit (zero auto-submit); the video uses native controls; footer sections use native details/summary.",
-  "htmx_enhancement": "Optional: the newsletter aside may hx-swap on 200/422. No mutation contract change (R-NOJS-03).",
+  "no_js_flow": "Complete: every CTA is a real link; the theme and scheme switchers are real 0-JS links preserving the chrome query; footer sections use native details/summary; the page renders fully server-side with zero required JS.",
+  "htmx_enhancement": "None required: the v0.1 home is fully server-rendered with no HTMX enhancement. No mutation contract exists to change (R-NOJS-03 n/a).",
   "responsive_behavior": "Fluid grid (auto-fit/minmax) for feature cards; Hero and Split stack on narrow; footer grid -> stack; overlays n/a; no breakpoint-worship.",
   "theme_requirements": "Public patterns use tokens --ui-* only; zero color literals; forced-colors/reduced-motion by primitives; theme switcher stays 0-JS (?theme=).",
   "alternatives_rejected": [
     "JS carousel for features: a fluid grid suffices (R-RESP-01)",
     "SPA/client-side rendering: server-rendered marketing home (R-NOJS-01)",
-    "Modal newsletter capture: inline aside + POST + 422 (R-OVERLAY-01)",
     "Hero as 'Callout': naming collision resolved, Hero is promotional, Callout is the Phase D tip box",
-    "Auto-submit language switcher: visible submit required"
+    "Newsletter/video/language-switcher on the v0.1 home: real Phase F patterns (F9/F10/F14) but not composed here; they belong to future marketing surfaces"
   ],
-  "rationale": "Dogfoods the Phase F public patterns as the indexable single-screen flow of the protocol, validating R-SEO-01 and R-GEO-01 (clean canonical, JSON-LD) on the only indexable surface. Matches the implemented marketing home (internal/app/landing.go).",
+  "rationale": "Dogfoods the Phase F public patterns as the indexable single-screen flow of the protocol, validating R-SEO-01 and R-GEO-01 (clean canonical, WebSite + Organization JSON-LD) on the only indexable surface. Matches the implemented marketing home (internal/app/landing.go), which composes exactly Hero + Section Heading + Feature Card + Split + CTA Link over the shared layout.",
   "decision_rules": [
-    "R-DATA-04", "R-OVERLAY-01", "R-FEEDBACK-01", "R-FEEDBACK-02", "R-FEEDBACK-03",
-    "R-ACTION-01", "R-STATE-01", "R-STATE-04", "R-A11Y-01", "R-A11Y-02",
-    "R-A11Y-03", "R-A11Y-04", "R-A11Y-05", "R-A11Y-06", "R-A11Y-07",
-    "R-NOJS-01", "R-NOJS-02", "R-NOJS-03", "R-ERROR-01", "R-ERROR-02",
+    "R-DATA-04", "R-ACTION-01", "R-STATE-04", "R-RESP-01", "R-A11Y-01", "R-A11Y-02",
+    "R-A11Y-03", "R-A11Y-04", "R-A11Y-06", "R-A11Y-07",
+    "R-NOJS-01", "R-ERROR-02",
     "R-SEO-01", "R-GEO-01", "R-CONTENT-01", "R-CONTENT-02", "R-CONTENT-04",
     "R-CONTENT-05"
   ],

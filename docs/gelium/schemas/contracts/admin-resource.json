@@ -118,13 +118,14 @@
   ],
   "rationale": "Exercises the largest set of canonical contracts (GET params, selection, POST+303 destructive, Dialog confirm, 422, empty, toast, banner/inline persistent) over the most mature primitive (Data table); validates the recipe framework reused by Ops Queue and Public Feed.",
   "decision_rules": [
-    "R-DATA-01", "R-OVERLAY-01", "R-OVERLAY-03", "R-FEEDBACK-01", "R-FEEDBACK-02",
-    "R-FEEDBACK-03", "R-ACTION-01", "R-STATE-01", "R-STATE-02", "R-STATE-03",
-    "R-STATE-04", "R-NAV-02", "R-RESP-01", "R-A11Y-01", "R-A11Y-02",
-    "R-A11Y-03", "R-A11Y-04", "R-A11Y-05", "R-A11Y-06", "R-A11Y-07",
-    "R-NOJS-01", "R-NOJS-02", "R-NOJS-03", "R-ERROR-01", "R-ERROR-02",
-    "R-ERROR-03", "R-ERROR-04", "R-DESTRUCT-01", "R-SEO-01", "R-GEO-01",
-    "R-CONTENT-01", "R-CONTENT-02", "R-CONTENT-03", "R-CONTENT-04", "R-CONTENT-05"
+    "R-DATA-01", "R-OVERLAY-01", "R-OVERLAY-02", "R-OVERLAY-03", "R-FEEDBACK-01",
+    "R-FEEDBACK-02", "R-FEEDBACK-03", "R-ACTION-01", "R-ACTION-02", "R-STATE-01",
+    "R-STATE-02", "R-STATE-03", "R-STATE-04", "R-NAV-02", "R-RESP-01",
+    "R-RESP-02", "R-A11Y-01", "R-A11Y-02", "R-A11Y-03", "R-A11Y-04",
+    "R-A11Y-05", "R-A11Y-06", "R-A11Y-07", "R-NOJS-01", "R-NOJS-02",
+    "R-NOJS-03", "R-ERROR-01", "R-ERROR-02", "R-ERROR-03", "R-ERROR-04",
+    "R-DESTRUCT-01", "R-SEO-01", "R-GEO-01", "R-CONTENT-01", "R-CONTENT-02",
+    "R-CONTENT-03", "R-CONTENT-04", "R-CONTENT-05"
   ],
   "references": [
     "docs/gelium-ui-screen-recipes.md",

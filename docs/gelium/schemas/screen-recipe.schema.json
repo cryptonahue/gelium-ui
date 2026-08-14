@@ -181,8 +181,8 @@
         "visible_provenance": { "type": "boolean" },
         "json_ld_types": {
           "type": "array",
-          "items": { "enum": ["BreadcrumbList", "Organization", "TechArticle"] },
-          "description": "Structured-data types emitted by the surface."
+          "items": { "enum": ["WebSite", "Organization", "SoftwareApplication", "BreadcrumbList", "TechArticle"] },
+          "description": "Structured-data types emitted by the surface (geo-contract.md §14 table)."
         }
       }
     },

@@ -19,10 +19,8 @@
   ],
   "surface": "page",
   "ux_pattern": [
-    "Feed (thread, chronological message order)",
     "E9 Error recovery",
-    "E15 Notifications",
-    "Form (native reply form)"
+    "E15 Notifications"
   ],
   "visual_vocabulary": [
     "List two-line (message items in a thread)",

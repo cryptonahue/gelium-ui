@@ -115,7 +115,9 @@ jq empty docs/gelium/schemas/*.json docs/gelium/schemas/contracts/*.json
 python3 -m jsonschema -i docs/gelium/schemas/contracts/admin-resource.json docs/gelium/schemas/screen-recipe.schema.json
 python3 -m jsonschema -i docs/gelium/schemas/contracts/inbox-conversation.json docs/gelium/schemas/screen-recipe.schema.json
 python3 -m jsonschema -i docs/gelium/schemas/contracts/public-marketing-page.json docs/gelium/schemas/screen-recipe.schema.json
+python3 -m jsonschema -i docs/gelium/schemas/contracts/admin-resource-flow.json docs/gelium/schemas/flow.schema.json
 python3 -m jsonschema -i docs/gelium/schemas/contracts/inbox-flow.json docs/gelium/schemas/flow.schema.json
+python3 -m jsonschema -i docs/gelium/schemas/contracts/public-marketing-flow.json docs/gelium/schemas/flow.schema.json
 
 # Documentation slice hygiene
 git diff --check

@@ -37,8 +37,8 @@ recipes), extended two layers upward (screen → flow, flow → intent).
 | 4 | **Flow** | An ordered, URL-navigable sequence of screens that fulfils the task. The flow owns the navigation contracts between screens (GET links, POST + 303, 422). | New in the protocol; concretized in `schemas/flow.schema.json`. | Inbox list → Conversation → (reply/close). | Marketing home (single-screen flow in v0.1). |
 | 5 | **Screen** | One navigable state (one URL) with a single primary task per surface. The page is the unit of URL; overlays never own flow state. | Screen grammar "superficie"; surface rules (`composition-rules.md` §3); "página = unidad de URL". | `/inbox/{conversation_id}` | `/` (marketing home) |
 | 6 | **Recipe** | The 19-field specification that fully defines a screen: surface, user, tasks, pattern, vocabulary, components, states, a11y, content, SEO/GEO, server contract, no-JS, HTMX, responsive, theme, alternatives, rationale. | 19-field template (`screen-composition.md` §3), implemented recipes (`screen-recipes.md`). | `contracts/inbox-conversation.json` | `contracts/public-marketing-page.json` |
-| 7 | **Pattern** | A reusable composition of components over a server contract (state D1–D8, UX E1–E19, public F1–F14). | `pattern-registry.md`, `ux-patterns.md`, `public-content-patterns.md`. | Feed (thread) + Form + Error recovery + Notifications. | Hero (F2), Split (F13), Feature Card (F7), Newsletter (F10), CTA Link (F6). |
-| 8 | **Component** | A real partial + CSS + optional view-model from the registry. Recipes only wire existing components. | `component-registry.md` §2; dependency metadata §2. | Avatar, List, Text field, Button, Badge, Toast, Empty state. | Hero, Split, Feature Card, Card, Button (link), Newsletter, Footer, Video, Breadcrumb. |
+| 7 | **Pattern** | A reusable composition of components over a server contract (state D1–D8, UX E1–E19, public F1–F14). | `pattern-registry.md`, `ux-patterns.md`, `public-content-patterns.md`. | Feed (thread) + Form + Error recovery + Notifications. | Hero (F2), Section Heading (F12), Feature Card (F7), Split (F13), CTA Link (F6), Footer (F8). |
+| 8 | **Component** | A real partial + CSS + optional view-model from the registry. Recipes only wire existing components. | `component-registry.md` §2; dependency metadata §2. | Avatar, List, Text field, Button, Badge, Toast, Empty state. | Hero, Split, Feature Card, Card, Section Heading, Button (link), Footer. |
 
 ## 3. Invariants
 
@@ -83,10 +83,14 @@ Task    : read context → reply/triage (primary); filter, refresh (secondary)
 Flow    : Inbox list → Conversation        (see contracts/inbox-flow.json)
 Screen  : /inbox/{conversation_id}         (contracts/inbox-conversation.json)
 Recipe  : 19 fields; pattern = Feed (thread) + Form(reply) + Error recovery + Notifications
-Patterns: E9, E15, F? none public; vocabulary Feed + Form
+Patterns: E9, E15; vocabulary Feed + Form (thread/reply composition)
 Server  : GET page; POST reply → 303 (+ 422 validation); refresh POST-only + loom:toast
 Components: avatar, badge, list, text-field, button, toast, empty-state, banner, error-state
 ```
+
+The v0.1 flow contract covers the Conversation screen; the inbox list
+(planned) is the flow entry that precedes it and is reached by real links
+(`inbox-flow.json` `no_js_flow`).
 
 The thread composition mirrors the WhatsApp chat pattern already in the system
 (`internal/app/demo_whatsapp.go`, `web/templates/demo-whatsapp.html`), which is
@@ -100,14 +104,19 @@ User    : prospective customer/visitor
 Task    : understand the offer and take the primary conversion CTA
 Flow    : Marketing home (single screen in v0.1)
 Screen  : / (contracts/public-marketing-page.json)
-Patterns: F2 Hero, F13 Split, F7 Feature Card, F6 CTA Link, F10 Newsletter, F8 Footer, F12 Section Heading, F1 Article, F3 Breadcrumb, F14 Video
-Components: hero, split, feature-card, card, button (link), newsletter, footer, breadcrumb, video, language-switcher
+Patterns: F2 Hero, F12 Section Heading, F7 Feature Card, F13 Split, F6 CTA Link, F8 Footer
+Components: hero, split, feature-card, card, section-heading, button (link), footer
 ```
 
 Evidence in the real system: the marketing home is implemented by
-`internal/app/landing.go` (`marketingLanding()`) composing the same public
-patterns, and it is the indexable surface (`index, follow`, clean canonical,
-JSON-LD) per `internal/app/server.go` `resolveMeta`/`jsonLDBreadcrumb`.
+`internal/app/landing.go` (`marketingLanding()`) composing exactly those public
+patterns (Hero + Feature Cards + Split + CTA band) over the shared layout
+(`web/templates/landing.html`, `web/templates/layout.html`), and it is the
+indexable surface (`index, follow`, clean canonical, WebSite + Organization
+JSON-LD) per `internal/app/server.go` `resolveMeta`/`websiteJSONLD`. The Phase F
+patterns NOT composed on the home in v0.1 (Newsletter F10, Video F14, Language
+Switcher F9, Breadcrumb F3, Article F1) are real registry patterns for future
+marketing surfaces, not part of this screen contract.
 
 ### 5.3 Admin Resource (existing recipe, machine-readable)
 

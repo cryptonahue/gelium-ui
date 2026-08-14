@@ -9,20 +9,19 @@
   "user": "Prospective customer/visitor on a public marketing surface.",
   "primary_task": "Understand the offering and take the primary conversion CTA.",
   "secondary_tasks": [
-    "Explore product sections",
-    "Subscribe to the newsletter",
-    "Switch language"
+    "Explore product sections (features, recipes)",
+    "Read the docs"
   ],
   "entry_screen": "marketing/home",
   "screens": ["marketing/home"],
   "navigation": [],
-  "success_state": "The visitor reaches the primary destination (docs, components, or newsletter success) from a real link.",
-  "failure_recovery": "Newsletter 422 inline alert preserves the email; 404/500 render error-state with retry (R-ERROR-01/02).",
-  "no_js_flow": "Complete: all CTAs are real links; the newsletter is a native POST form with 422 inline feedback; the language switcher is a GET form with a visible submit; the video uses native controls.",
-  "htmx_enhancement": "Optional newsletter aside swap; no mutation contract change (R-NOJS-03).",
+  "success_state": "The visitor reaches the primary destination (docs or components) from a real link.",
+  "failure_recovery": "404/500 render error-state with retry (R-ERROR-02).",
+  "no_js_flow": "Complete: all CTAs are real links; the theme and scheme switchers are 0-JS links; the page renders fully server-side with zero required JS.",
+  "htmx_enhancement": "None in v0.1: no HTMX enhancement on the home; no mutation contract to change (R-NOJS-03 n/a).",
   "decision_rules": [
-    "R-ACTION-01", "R-SEO-01", "R-GEO-01", "R-NOJS-01", "R-NOJS-02",
-    "R-ERROR-01", "R-ERROR-02"
+    "R-ACTION-01", "R-SEO-01", "R-GEO-01", "R-NOJS-01",
+    "R-ERROR-02"
   ],
   "references": [
     "internal/app/landing.go",
