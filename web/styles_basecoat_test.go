@@ -89,7 +89,6 @@ var basecoatMandatoryTokens = []string{
 	"--ui-focus-thickness:",
 	"--ui-focus-offset:",
 	"--ui-motion-short:",
-	"--ui-motion-medium:",
 	"--ui-motion-long:",
 	"--ui-easing-standard:",
 	"--ui-state-hover-opacity:",

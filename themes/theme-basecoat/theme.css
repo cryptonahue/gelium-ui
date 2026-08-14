@@ -333,8 +333,9 @@
   /* State, focus, and motion. State opacities approximate Basecoat's
      color-swap hover (bg-primary/80 => ~20% mix; hover:bg-muted => solid
      fill) inside Gelium's color-mix state-layer model; disabled matches
-     Basecoat's opacity-50. Motion uses Tailwind's duration-100/200/300 and
-     the default ease. */
+     Basecoat's opacity-50. Motion uses Tailwind's duration-100/300 and
+     the default ease; there is no medium step (D3 defers tokens without
+     a migrated consumer). */
   --ui-state-hover-opacity: .20;
   --ui-state-focus-opacity: .10;
   --ui-state-pressed-opacity: .20;
@@ -343,7 +344,6 @@
   --ui-focus-thickness: 3px;
   --ui-focus-offset: 2px;
   --ui-motion-short: 100ms;
-  --ui-motion-medium: 200ms;
   --ui-motion-long: 300ms;
   --ui-easing-standard: cubic-bezier(.4, 0, .2, 1);
 }

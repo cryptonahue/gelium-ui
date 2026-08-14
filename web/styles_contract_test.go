@@ -1253,3 +1253,113 @@ func TestLabelMdClosure(t *testing.T) {
 		}
 	}
 }
+
+// TestConsumerGatedInvariants is the Phase B R3 contract (D1, D3): no
+// density/z/breakpoint families, no motion-medium/easing token without a real
+// consumer, and every new Phase B token must have at least one var() consumer
+// (no orphans). Geometry stays in --ui-size-*; dialog/popover use the top
+// layer. A future token added without a consumer trips this test.
+func TestConsumerGatedInvariants(t *testing.T) {
+	// 1. The forbidden families must not exist as definitions anywhere under
+	// web/styles or themes (density/z/breakpoint are deferred, D3).
+	sources := allStyleSources(t)
+	for _, forbidden := range []string{"--ui-density-", "--ui-z-", "--ui-breakpoint-"} {
+		var offenders []string
+		for _, src := range sources {
+			for token := range findTokenDefinitions(src.css, forbidden) {
+				offenders = append(offenders, src.name+":"+token)
+			}
+		}
+		if len(offenders) > 0 {
+			t.Errorf("forbidden consumer-gated family %s must not be defined (D3 defers): %v", forbidden, offenders)
+		}
+	}
+
+	// 2. Every motion/easing token defined in the core or a theme must have at
+	// least one var() consumer in component or layout CSS. A motion-medium or
+	// new easing with no consumer trips here.
+	motionDefs := map[string]string{} // token -> where defined
+	for _, src := range sources {
+		for name, def := range findTokenDefinitions(src.css, "--ui-motion-") {
+			motionDefs[name] = src.name + ": " + def
+		}
+		for name, def := range findTokenDefinitions(src.css, "--ui-easing-") {
+			motionDefs[name] = src.name + ": " + def
+		}
+	}
+	for token, where := range motionDefs {
+		if !hasVarConsumer(token, sources) {
+			t.Errorf("motion/easing token %s has zero var() consumers (defined at %s) — D3 defers tokens without a migrated consumer", token, where)
+		}
+	}
+
+	// 3. Every Phase B type token (the decomposed steps plus label-md) must
+	// have at least one var() consumer: aliases consume the 4 font-composed
+	// props, the letter-spacing declarations consume the tracking props, and
+	// base.css/docs-shell consume the label-md alias.
+	for _, step := range append(append([]string{}, typeScaleSteps...), "label-md") {
+		for _, prop := range typeStepProps {
+			token := "--ui-type-" + step + "-" + prop
+			if !hasVarConsumer(token, sources) {
+				t.Errorf("Phase B token %s has zero var() consumers (orphan)", token)
+			}
+		}
+	}
+}
+
+// styleSource is one CSS source file scanned by the consumer-gated invariants.
+type styleSource struct {
+	name string
+	css  string
+}
+
+// allStyleSources concatenates every CSS file under web/styles plus every
+// theme's theme.css, tagged by file name, so consumer scans can attribute
+// definitions to their owning file.
+func allStyleSources(t *testing.T) []styleSource {
+	t.Helper()
+	var sources []styleSource
+	entries, err := sourceStyles.ReadDir("styles")
+	if err != nil {
+		t.Fatalf("list styles dir: %v", err)
+	}
+	for _, entry := range entries {
+		if entry.IsDir() || !strings.HasSuffix(entry.Name(), ".css") {
+			continue
+		}
+		css, err := sourceStyles.ReadFile("styles/" + entry.Name())
+		if err != nil {
+			t.Fatalf("read styles/%s: %v", entry.Name(), err)
+		}
+		sources = append(sources, styleSource{name: "web/styles/" + entry.Name(), css: string(css)})
+	}
+	for _, theme := range availableThemes(t) {
+		sources = append(sources, styleSource{name: "themes/" + theme + "/theme.css", css: themeCSS(t, theme)})
+	}
+	return sources
+}
+
+// findTokenDefinitions returns every --ui-<family>...: definition found in a
+// CSS blob, as token -> raw definition line.
+func findTokenDefinitions(css, family string) map[string]string {
+	out := map[string]string{}
+	re := regexp.MustCompile(`(--ui-` + regexp.QuoteMeta(strings.TrimPrefix(family, "--ui-")) + `[a-z0-9-]*)\s*:\s*([^;]+);`)
+	for _, m := range re.FindAllStringSubmatch(css, -1) {
+		if _, ok := out[m[1]]; !ok {
+			out[m[1]] = strings.TrimSpace(m[2])
+		}
+	}
+	return out
+}
+
+// hasVarConsumer reports whether any scanned source references the token via
+// var().
+func hasVarConsumer(token string, sources []styleSource) bool {
+	needle := "var(" + token
+	for _, src := range sources {
+		if strings.Contains(src.css, needle) {
+			return true
+		}
+	}
+	return false
+}
