@@ -1,6 +1,6 @@
 @layer components {
 /* Select: a native <select> enhanced with CSS. The element stays the focusable,
-      operable control; appearance: none removes the browser chrome so Loom paints
+      operable control; appearance: none removes the browser chrome so Gelium paints
       the Material 3 field from --ui-select-* tokens. Filled uses a surface-container-
       highest background with a top-only 4px radius and a bottom active indicator;
       outlined uses a transparent field with a full 4px radius and a 1px outline that

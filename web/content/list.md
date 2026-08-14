@@ -1,6 +1,6 @@
 # List
 
-List is a continuous, vertical index of text and images. Loom reimplements the Material 3 list over semantic HTML — the root is a real `<ul>`, `<ol>`, `<nav>`, or `<menu>`, and each item is a `<li>`. No component JavaScript: navigation items are real `<a href>` links, and selection items are native checkboxes in a real form.
+List is a continuous, vertical index of text and images. Gelium reimplements the Material 3 list over semantic HTML — the root is a real `<ul>`, `<ol>`, `<nav>`, or `<menu>`, and each item is a `<li>`. No component JavaScript: navigation items are real `<a href>` links, and selection items are native checkboxes in a real form.
 
 ## Anatomy
 
@@ -26,7 +26,7 @@ The root carries the `ui-list` class and paints the container surface. Each `ui-
 
 ## Content types
 
-The roadmap requires a list to distinguish navigation, selection, and static content — Loom ports each to native semantics.
+The roadmap requires a list to distinguish navigation, selection, and static content — Gelium ports each to native semantics.
 
 - **Static** — a plain `<li class="ui-list-item">` with text content.
 - **Navigation** — the item wraps a real link: `<li class="ui-list-item"><a class="ui-list-item-link" href="...">`. The anchor fills the row and is the focusable element.

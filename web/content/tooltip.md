@@ -1,6 +1,6 @@
 # Tooltip
 
-Tooltip is a short, contextual label that appears on hover or keyboard focus near a control. Loom reimplements the Material 3 tooltip over **server-rendered HTML with pure CSS interaction**: the styled `.ui-tooltip` surface lives inside a `.ui-tooltip-host` wrapper and is revealed with the native `:hover` / `:focus-within` pseudo-classes. There is **no component JavaScript** — the show/hide is declarative CSS, works without JavaScript, and is keyboard-focus accessible.
+Tooltip is a short, contextual label that appears on hover or keyboard focus near a control. Gelium reimplements the Material 3 tooltip over **server-rendered HTML with pure CSS interaction**: the styled `.ui-tooltip` surface lives inside a `.ui-tooltip-host` wrapper and is revealed with the native `:hover` / `:focus-within` pseudo-classes. There is **no component JavaScript** — the show/hide is declarative CSS, works without JavaScript, and is keyboard-focus accessible.
 
 ## Anatomy
 
@@ -41,7 +41,7 @@ Audited August 2026:
 
 - `:hover` and `:focus-within` — universally supported (Baseline).
 - Popover API (`popover`, `popovertarget`) — Baseline 2024, but popover surfaces are toggle- or script-opened and need the Interest Invokers API to open on hover/focus, so they are not used here.
-- Interest Invokers (`interesttarget` / `interestaction`) — **not Baseline as of August 2026** (no caniuse/MDN/Chrome-Status support). The roadmap's preferred mechanism (a `popover` tooltip opened by `interestaction="show-popover"`) is therefore not viable without JavaScript, so Loom uses the CSS hover/focus reveal instead — the roadmap's "accessible visible fallback".
+- Interest Invokers (`interesttarget` / `interestaction`) — **not Baseline as of August 2026** (no caniuse/MDN/Chrome-Status support). The roadmap's preferred mechanism (a `popover` tooltip opened by `interestaction="show-popover"`) is therefore not viable without JavaScript, so Gelium uses the CSS hover/focus reveal instead — the roadmap's "accessible visible fallback".
 - CSS anchor positioning — Baseline 2026, but the tooltip is a small surface attached to its own host, so plain `position: absolute` inside the relative host covers below/above placement with broader support and no extra dependency.
 - Native `title` — universal, but not styleable to Material anatomy and not reliably keyboard-revealed, so it is not used as the primary mechanism.
 

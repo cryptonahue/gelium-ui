@@ -20,7 +20,7 @@ func TestWhatsAppDemoRouteRendersConversationsAndWindow(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`LoomChat`,
+		`GeliumChat`,
 		`Ana Souza`,
 		`Carlos Lima`,
 		`María Fernanda`,

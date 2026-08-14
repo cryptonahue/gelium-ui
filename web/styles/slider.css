@@ -1,6 +1,6 @@
 @layer components {
   /* Slider: a native input[type="range"] enhanced with CSS. appearance: none
-     removes the browser chrome; Loom paints the 4px Material track whose active
+     removes the browser chrome; Gelium paints the 4px Material track whose active
      portion fills from the start to --ui-slider-fill (a percentage custom
      property), the inactive remainder, and the 20px primary handle that grows
      to 24px while pressed. WebKit has no progress pseudo-element, so the fill

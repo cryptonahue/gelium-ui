@@ -10,7 +10,7 @@ import (
 	"time"
 )
 
-// WhatsApp demo: a functional chat application that dogfoods the Loom
+// WhatsApp demo: a functional chat application that dogfoods the Gelium
 // components with server-side mock data modeled on the Datafy WhatsApp Cloud
 // API (https://app.datafyapi.com.br). The main experience is for non-technical
 // users (conversation list, chat bubbles, message states, templates presented
@@ -223,8 +223,8 @@ func newWhatsAppStore() *whatsAppStore {
 	now := time.Now()
 	s := &whatsAppStore{
 		Numbers: []whatsAppNumber{
-			{DisplayPhone: "+55 11 9xxxx-0001", VerifiedName: "LoomChat", Quality: "GREEN", Throughput: "STANDARD"},
-			{DisplayPhone: "+55 21 8xxxx-0002", VerifiedName: "LoomChat", Quality: "YELLOW", Throughput: "LOW"},
+			{DisplayPhone: "+55 11 9xxxx-0001", VerifiedName: "GeliumChat", Quality: "GREEN", Throughput: "STANDARD"},
+			{DisplayPhone: "+55 21 8xxxx-0002", VerifiedName: "GeliumChat", Quality: "YELLOW", Throughput: "LOW"},
 		},
 		QRCodes: []whatsAppQR{
 			{Code: "A4O4YGZ", Prefilled: "Olá! Gostaria de saber mais.", DeepLinkURL: "https://wa.me/message/A4O4YGZ"},

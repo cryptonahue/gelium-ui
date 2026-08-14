@@ -67,7 +67,7 @@ const (
 )
 
 // defaultNavigationDrawerDestinations is the shared destination set. Every
-// destination is a real link to a Loom component page so clicking it navigates
+// destination is a real link to a Gelium component page so clicking it navigates
 // normally (no JavaScript); the current page is marked active server-side by
 // markActive.
 func defaultNavigationDrawerDestinations() []navigationDrawerDestination {

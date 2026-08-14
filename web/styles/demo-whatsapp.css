@@ -1,5 +1,5 @@
 @layer components {
-  /* WhatsApp demo app (LoomChat): a chat application that composes the Loom
+  /* WhatsApp demo app (GeliumChat): a chat application that composes the Gelium
      primitives. Demo scaffolding classes carry NO ui- prefix (repo
      convention); the ui- prefix stays reserved for the component primitives
      that appear inside (buttons, select, toasts, fab). The layout is a

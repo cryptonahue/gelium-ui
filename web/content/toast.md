@@ -1,6 +1,6 @@
 # Toast
 
-Toast is a Loom-only component for transient, server-driven feedback. An action completes server-side and announces the result without pushing users to another view.
+Toast is a Gelium-only component for transient, server-driven feedback. An action completes server-side and announces the result without pushing users to another view.
 
 ## Variants and semantics
 

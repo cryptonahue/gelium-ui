@@ -1,6 +1,6 @@
 # Slider
 
-Slider is a native `input[type="range"]` enhanced with CSS: the browser default chrome is removed and Loom paints the 4px Material track, its active fill, and the 20px primary handle from the `--ui-slider-*` tokens. The real control stays the focusable, operable element, so form semantics, keyboard input, and assisted input work unchanged.
+Slider is a native `input[type="range"]` enhanced with CSS: the browser default chrome is removed and Gelium paints the 4px Material track, its active fill, and the 20px primary handle from the `--ui-slider-*` tokens. The real control stays the focusable, operable element, so form semantics, keyboard input, and assisted input work unchanged.
 
 ## Anatomy
 

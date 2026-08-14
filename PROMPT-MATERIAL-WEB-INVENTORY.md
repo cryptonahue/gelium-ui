@@ -1,4 +1,4 @@
-# Prompt para IA: primera auditoría Material Web → Loom UI
+# Prompt para IA: primera auditoría Material Web → Gelium UI
 
 Copiar el siguiente prompt en la IA/coding agent que vaya a realizar la primera auditoría.
 
@@ -6,13 +6,13 @@ Copiar el siguiente prompt en la IA/coding agent que vaya a realizar la primera 
 
 ## Prompt
 
-Estás trabajando en el proyecto `Loom UI`, ubicado en:
+Estás trabajando en el proyecto `Gelium UI`, ubicado en:
 
 ```text
 D:\repos\loom-ui
 ```
 
-El objetivo de esta tarea es producir la **primera auditoría técnica y funcional de Material Web** para decidir qué convertir a Loom UI.
+El objetivo de esta tarea es producir la **primera auditoría técnica y funcional de Material Web** para decidir qué convertir a Gelium UI.
 
 ### Fuentes locales obligatorias
 
@@ -32,9 +32,9 @@ https://github.com/material-components/material-web
 
 No asumas que el fork local está actualizado. Compara siempre contra el upstream actual.
 
-### Contexto de Loom UI
+### Contexto de Gelium UI
 
-Loom UI será:
+Gelium UI será:
 
 ```text
 Tailwind CSS + HTML/templates + HTMX + themes + server-rendered applications
@@ -55,12 +55,12 @@ Tailwind CSS
 
 No usar Astro ni `templ` en esta fase.
 
-Material Web y Basecoat UI son referencias/inspiraciones. Loom UI no es un fork oficial de ninguno de los dos.
+Material Web y Basecoat UI son referencias/inspiraciones. Gelium UI no es un fork oficial de ninguno de los dos.
 
 - Material Web: https://github.com/material-components/material-web
 - Basecoat UI: https://basecoatui.com/
 - shadcn/ui: referencia para open-code y registry.
-- shadcn-templ: referencia para distribución y presets, no para atar Loom a Go/templ.
+- shadcn-templ: referencia para distribución y presets, no para atar Gelium a Go/templ.
 - HTMX 4: referencia para interacción server-driven, history, multi-target, validation, SSE y WebSockets.
 
 ### Regla de seguridad
@@ -97,7 +97,7 @@ Debe devolver:
 - tokens nuevos respecto al fork;
 - tokens que conviene mapear a `@theme` de Tailwind;
 - tokens que son específicos de Web Components y no conviene portar;
-- recomendaciones para el theme Material de Loom.
+- recomendaciones para el theme Material de Gelium.
 
 ### Subagente B — Componentes
 
@@ -154,7 +154,7 @@ Para cada componente, registra:
 - complejidad de portarlo a HTML + Tailwind;
 - necesidad de JavaScript local;
 - posible patrón HTMX;
-- prioridad Loom: `P0`, `P1`, `P2`, `defer` o `skip`.
+- prioridad Gelium: `P0`, `P1`, `P2`, `defer` o `skip`.
 
 No confundas un token con un componente implementado.
 
@@ -170,7 +170,7 @@ Analiza:
 - tests;
 - diferencias de archivos tracked;
 - estado de `material-tailwind`;
-- qué partes pueden reutilizarse en Loom sin arrastrar Lit/Web Components;
+- qué partes pueden reutilizarse en Gelium sin arrastrar Lit/Web Components;
 - qué partes de la documentación y playground pueden inspirar las docs Go.
 
 Debe devolver:
@@ -230,7 +230,7 @@ Con estas secciones:
    - estado upstream;
    - estado fork;
    - estado material-tailwind;
-   - prioridad Loom.
+   - prioridad Gelium.
 
 5. **Diferencias upstream vs fork**
 
@@ -242,14 +242,14 @@ Con estas secciones:
    - Custom Elements como arquitectura obligatoria;
    - controllers que sólo tengan sentido en el runtime de Material Web.
 
-8. **Traducción conceptual a Loom**
+8. **Traducción conceptual a Gelium**
    - Custom Element → HTML + clases/atributos;
    - Lit property → atributo o estado server-side;
    - Lit event → evento HTML/HTMX;
    - Shadow DOM CSS → Tailwind + tokens;
    - imperative JS → HTMX/server response cuando sea posible.
 
-9. **Matriz de progreso Loom**
+9. **Matriz de progreso Gelium**
    - `NOT_STARTED`;
    - `IN_REVIEW`;
    - `DESIGN_READY`;
@@ -290,7 +290,7 @@ button → form/input → dialog → toast
 
 Usa una tabla como ésta:
 
-| Componente | Categoría | Upstream | Fork | Material Tailwind | Variantes | Estados | HTMX pattern | Prioridad | Loom status | Evidencia |
+| Componente | Categoría | Upstream | Fork | Material Tailwind | Variantes | Estados | HTMX pattern | Prioridad | Gelium status | Evidencia |
 |---|---|---|---|---|---|---|---|---|---|---|
 | Button | Core | Sí | Sí | Sí | filled, outlined... | disabled, focus... | form/action | P0 | NOT_STARTED | rutas exactas |
 
@@ -316,6 +316,6 @@ material-web-tailwind/material-tailwind/src/...
 
 ## Resultado final esperado
 
-Un documento accionable para que el siguiente trabajo pueda comenzar directamente por el primer vertical slice, sin volver a descubrir qué existe en Material Web, qué quedó en el fork viejo y qué piezas sirven para Loom UI.
+Un documento accionable para que el siguiente trabajo pueda comenzar directamente por el primer vertical slice, sin volver a descubrir qué existe en Material Web, qué quedó en el fork viejo y qué piezas sirven para Gelium UI.
 
 ---

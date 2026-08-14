@@ -35,7 +35,7 @@
 6. **Contrato server** (si aplica) — 422/`loom:toast`/GET params/POST+303, vocabularios cerrados, view model Go concreto (nunca `map[string]any`, prompt §10).
 7. **Registrar en el registry** — actualizar `docs/gelium-ui-component-registry.md` (tabla maestra) y `gelium-ui-dependency-metadata.md` (dependencias) — este es el paso que Phase J agrega.
 8. **Verificación** — `npm run build`, `go test ./...`, `go vet ./...`, `go mod verify`, `node --check web/static/app.js`.
-9. **Smoke en puerto propio** (nunca `:8787`, no tocar `loom.exe`) — light/dark, narrow/wide, keyboard, no-JS, HTMX, reduced motion, forced colors (§17).
+9. **Smoke en puerto propio** (nunca `:8787`, no tocar `gelium.exe`) — light/dark, narrow/wide, keyboard, no-JS, HTMX, reduced motion, forced colors (§17).
 10. **Estado final** — exactamente uno de `COMPLETE_AWAITING_USER_ACCEPTANCE` / `READY_FOR_INTEGRATION` / `BLOCKED` / `ABORTED_ON_DRIFT`; entrega con checklist observable (§18-20).
 
 **Plantilla mínima de asignación**: ver `AI-COMPONENT-IMPLEMENTER-PROMPT.md` ("Plantilla mínima de asignación", ejemplo Checkbox).
@@ -91,7 +91,7 @@
 | `ISOLATED_PHYSICAL_WORKSPACE` | copia física autorizada; nunca el canónico | varias IAs |
 | `EXCLUSIVE_INTEGRATION` | shared files canónicos con reserva literal | integrador único |
 
-Shared files por defecto (no editar sin reserva): `server.go`, `server_test.go`, `layout.html`, `app.css`, `theme.css`, `styles_contract_test.go`, `static/app.css`, `static/app.js`, `static/htmx.min.js`, `assets.go`, `README.md`, `package.json`, `package-lock.json`, `go.mod`, `go.sum`, `cmd/loom/*` (`AI-COMPONENT-IMPLEMENTER-PROMPT.md` §4.2). Sin Git en workers (`git init/status/diff/commit` prohibidos); el integrador commitea.
+Shared files por defecto (no editar sin reserva): `server.go`, `server_test.go`, `layout.html`, `app.css`, `theme.css`, `styles_contract_test.go`, `static/app.css`, `static/app.js`, `static/htmx.min.js`, `assets.go`, `README.md`, `package.json`, `package-lock.json`, `go.mod`, `go.sum`, `cmd/gelium/*` (`AI-COMPONENT-IMPLEMENTER-PROMPT.md` §4.2). Sin Git en workers (`git init/status/diff/commit` prohibidos); el integrador commitea.
 
 ---
 

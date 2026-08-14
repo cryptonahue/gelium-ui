@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "loomui/web"
+	webassets "geliumui/web"
 )
 
 // TestThemeClassRenderedAndServedCSSCarriesRootSelector proves the Phase H

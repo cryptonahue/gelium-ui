@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "loomui/web"
+	webassets "geliumui/web"
 )
 
 func renderIconButton(t *testing.T, view iconButtonView) string {

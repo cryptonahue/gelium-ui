@@ -371,7 +371,7 @@ Leyenda de estado en Gelium: **✅ implementado** · **◐ parcial** (ad-hoc) ·
 
 - **Intención**: agrupar controles con submit/validación server-side.
 - **Semántica HTML**: `<form>` nativo + `<fieldset>`/`<legend>` para grupos; `Field` es primitive interna, no publicable.
-- **Contrato**: HTTP 422 + `X-Gelium-Validation`; GET para estado de listados.
+- **Contrato**: HTTP 422 + `X-Loom-Validation`; GET para estado de listados.
 - **JS**: 0; H opcional.
 
 ---

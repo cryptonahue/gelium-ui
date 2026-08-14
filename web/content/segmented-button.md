@@ -2,7 +2,7 @@
 
 > **Labs** — experimental component. Breaking changes may happen outside major-version bumps, mirroring Material Web's own Labs warning.
 
-Segmented buttons display a set of options or actions in a single, mutually exclusive row. Loom reimplements the Material 3 outlined segmented button set over **server-rendered HTML with native form semantics**: single-select groups use `input[type="radio"]`, multi-select groups use `input[type="checkbox"]`, and non-selection actions use `button[type="button"]`. Selection state is derived from the native `:checked` pseudo-class — there is **no component JavaScript** and the checked values submit through a normal `<form>`.
+Segmented buttons display a set of options or actions in a single, mutually exclusive row. Gelium reimplements the Material 3 outlined segmented button set over **server-rendered HTML with native form semantics**: single-select groups use `input[type="radio"]`, multi-select groups use `input[type="checkbox"]`, and non-selection actions use `button[type="button"]`. Selection state is derived from the native `:checked` pseudo-class — there is **no component JavaScript** and the checked values submit through a normal `<form>`.
 
 ## Anatomy
 
@@ -43,8 +43,8 @@ The demo markup is static and trusted: `html/template` renders it verbatim, the 
 
 ## Divergences from Material Web
 
-- **Selection semantics** — upstream `md-outlined-segmented-button` uses a `<button aria-pressed>` plus component JS in the set to manage selection. Loom uses native radio/checkbox/button semantics with `:checked`, per the roadmap's "Single/multi select debe preferir radios/checkboxes sin JS". Consequence: radio groups get native arrow-key navigation and form submission instead of per-button tab stops.
-- **Geometry** — upstream tokens define the set and segment outer corners as `corner-full` (9999px, a pill); Loom matches that. The upstream checkmark draw-in animation is a multi-phase keyframe sequence; Loom reveals it as a stroke-dashoffset transition driven by `:checked`.
+- **Selection semantics** — upstream `md-outlined-segmented-button` uses a `<button aria-pressed>` plus component JS in the set to manage selection. Gelium uses native radio/checkbox/button semantics with `:checked`, per the roadmap's "Single/multi select debe preferir radios/checkboxes sin JS". Consequence: radio groups get native arrow-key navigation and form submission instead of per-button tab stops.
+- **Geometry** — upstream tokens define the set and segment outer corners as `corner-full` (9999px, a pill); Gelium matches that. The upstream checkmark draw-in animation is a multi-phase keyframe sequence; Gelium reveals it as a stroke-dashoffset transition driven by `:checked`.
 
 ## Visual checklist
 

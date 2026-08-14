@@ -71,7 +71,7 @@ const (
 )
 
 // defaultNavigationBarDestinations is the demo app's shared destination set.
-// Every destination is a real link to a Loom component page so clicking it
+// Every destination is a real link to a Gelium component page so clicking it
 // navigates normally (no JavaScript); the current page is marked active
 // server-side by markActive.
 func defaultNavigationBarDestinations() []navigationBarDestination {

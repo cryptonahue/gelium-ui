@@ -1,12 +1,12 @@
 # Navigation drawer
 
 > **Labs** — experimental. Material Web ships this component as a Labs feature
-> with a stability warning; Loom mirrors that status. The contract may change
+> with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
 A Material 3 navigation drawer with two variants: a **modal** drawer that opens
 over a scrim and a **standard** (permanent) drawer embedded in the layout.
-Loom reimplements it over server-rendered HTML — the standard variant is a real
+Gelium reimplements it over server-rendered HTML — the standard variant is a real
 `<nav>` in the layout, the modal variant is a native `<dialog>`, and every
 destination is a real `<a href>` whose active state is derived server-side from
 the current page (the roadmap's "navegación real con links"). No component
@@ -64,7 +64,7 @@ JavaScript exists.
 destination). Hover, focus, and press paint the Material state layer (a
 full-bleed `::before` at the shared `--ui-state-*` opacities) and shift the
 inactive icon/label toward on-surface; the selected destination uses
-`on-secondary-container` for its state layer. `:focus-visible` shows the Loom
+`on-secondary-container` for its state layer. `:focus-visible` shows the Gelium
 focus ring. Because destinations are native links, keyboard activation and tab
 order come for free and focus never changes geometry.
 
@@ -103,14 +103,14 @@ destinations are plain links.
 
 ## Divergences from Material Web
 
-| Area | Material Web | Loom |
+| Area | Material Web | Gelium |
 | --- | --- | --- |
 | Root semantics (standard) | `<div role="dialog">` inside a host with the `opened` property | real `<nav>` embedded in the layout |
 | Root semantics (modal) | custom host + separate scrim `<div>`, JS `opened` toggling | native `<dialog>` + `::backdrop` scrim, declarative invoker trigger |
 | Active state | `aria-expanded`/`aria-hidden` on a wrapper | `aria-current="page"` derived server-side from the current page |
 | Icon | two `slot` copies (active/inactive), consumer-swapped | single `24px` glyph per destination, recolored by state |
 | Active indicator | `active-indicator.width: 336px`, `height: 56px`, `corner-full` | same geometry via the `ui-navigation-drawer-indicator` pill |
-| Focus ring | inward focus indicator | Loom `:focus-visible` outline (consistent with the rest of Loom) |
+| Focus ring | inward focus indicator | Gelium `:focus-visible` outline (consistent with the rest of Gelium) |
 | Scrim | deprecated `scrim` tokens (neutral-variant20) | existing `--ui-dialog-scrim` (32% on black) reused from the Dialog contract |
 | Modal container | `surface-container-low`, level-1 elevation | `--ui-dialog-container` (carries `surface-container-low`) + `--ui-shadow-1` |
 | `pivot` start/end | property on both variants | not ported — no demonstrated consumer need; logical properties anchor start |

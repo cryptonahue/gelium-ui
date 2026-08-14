@@ -1,4 +1,4 @@
-module loomui
+module geliumui
 
 go 1.24.0
 

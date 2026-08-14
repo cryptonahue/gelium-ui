@@ -14,7 +14,7 @@ import (
 
 	"github.com/yuin/goldmark"
 
-	webassets "loomui/web"
+	webassets "geliumui/web"
 )
 
 // defaultThemeClass is the theme applied when none is requested. The value must

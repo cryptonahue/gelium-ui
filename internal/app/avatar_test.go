@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "loomui/web"
+	webassets "geliumui/web"
 )
 
 // renderPartial executes one recipe/primitive partial from the same embedded

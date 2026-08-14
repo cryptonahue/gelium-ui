@@ -1,7 +1,7 @@
 @layer components {
   /* Switch: a native input[type="checkbox"] enhanced with CSS. The real
      control stays the focusable, operable element; appearance: none removes
-     the browser default so Loom paints the 52x32 Material track, its outline,
+     the browser default so Gelium paints the 52x32 Material track, its outline,
      and the sliding handle from --ui-switch-* tokens. The handle grows from
      16px to 24px when checked and 28px while pressed, mirroring Material 3
      switch geometry. Disabled state follows the Material split: the track

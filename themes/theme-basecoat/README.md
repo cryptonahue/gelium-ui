@@ -1,6 +1,6 @@
 # Gelium UI — Basecoat theme
 
-> **Phase I** — token-only theme on the Loom contract. Same markup, same
+> **Phase I** — token-only theme on the Gelium contract. Same markup, same
 > component API, same server contracts, different visual direction.
 > Reference audit: `docs/handoffs/basecoat-audit.md`.
 

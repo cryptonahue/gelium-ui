@@ -1,7 +1,7 @@
 @layer components {
   /* Radio: a native input[type="radio"] enhanced with CSS. The real control
      stays the focusable, operable element; appearance: none removes the
-     browser default so Loom paints the 20px Material ring and the inner
+     browser default so Gelium paints the 20px Material ring and the inner
      checked dot from --ui-radio-* tokens. All paints are token-driven so
      states survive light and dark schemes. */
   .ui-radio {

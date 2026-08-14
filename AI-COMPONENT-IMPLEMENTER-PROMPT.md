@@ -1,4 +1,4 @@
-# Loom UI — Prompt para implementar un componente con otra IA
+# Gelium UI — Prompt para implementar un componente con otra IA
 
 Este documento es un prompt reusable. Copia desde “PROMPT COPIABLE”, completa los parámetros y entrégalo a la IA responsable de exactamente un componente.
 
@@ -24,15 +24,15 @@ Hoy la opción recomendada para varias IAs es investigación paralela + workspac
 # PROMPT COPIABLE
 
 ````text
-# Agente de componente Loom UI — contrato operativo seguro
+# Agente de componente Gelium UI — contrato operativo seguro
 
-Implementa exactamente UN componente de Loom UI siguiendo este contrato.
+Implementa exactamente UN componente de Gelium UI siguiendo este contrato.
 
 ## 0. Parámetros
 
 COMPONENTE: {{COMPONENT_NAME}}
 SLUG: {{COMPONENT_SLUG}}
-CATEGORÍA: {{CORE | LABS | LOOM_ONLY}}
+CATEGORÍA: {{CORE | LABS | GELIUM_ONLY}}
 VARIANTES REQUERIDAS: {{REQUIRED_VARIANTS}}
 ESTADOS REQUERIDOS: {{REQUIRED_STATES}}
 COMPORTAMIENTOS REQUERIDOS: {{REQUIRED_BEHAVIORS}}
@@ -68,7 +68,7 @@ Preserva por separado:
 2. interacción y precedencia de estados;
 3. semántica y accesibilidad;
 4. comportamiento de datos/forms;
-5. arquitectura Loom.
+5. arquitectura Gelium.
 
 Cambiar Lit/Web Components por HTML server-rendered NO autoriza simplificar el diseño Material, omitir estados ni alterar el contrato visual.
 
@@ -126,13 +126,13 @@ No inventes compatibilidad, rutas, tests, reviews ni resultados. Usa `UNKNOWN` c
 
 ## 3. Seguridad de procesos y puertos
 
-La app aceptada puede estar en `http://localhost:8787` y puede existir `loom.exe`.
+La app aceptada puede estar en `http://localhost:8787` y puede existir `gelium.exe`.
 
 Reglas absolutas del worker:
 
 - nunca inicies nada en `:8787`;
 - nunca detengas, reinicies o señales el proceso de `:8787`;
-- nunca sobrescribas, reconstruyas, ejecutes o reemplaces `loom.exe`;
+- nunca sobrescribas, reconstruyas, ejecutes o reemplaces `gelium.exe`;
 - nunca mates un proceso ajeno;
 - no pruebes cambios contra `:8787`;
 - usa exclusivamente `:8788` para smoke y sólo si está libre.
@@ -144,13 +144,13 @@ Inspección inicial read-only permitida:
 ```bash
 netstat -ano | grep -E '[:.]8787[[:space:]]' || true
 netstat -ano | grep -E '[:.]8788[[:space:]]' || true
-tasklist.exe /FI "IMAGENAME eq loom.exe" || true
+tasklist.exe /FI "IMAGENAME eq gelium.exe" || true
 curl -fsS --max-time 3 http://localhost:8787/healthz || true
 ```
 
 No derives acciones destructivas de esos resultados.
 
-Para smoke, inicia `PORT=8788 go run ./cmd/loom` con la capacidad de procesos background de tu herramienta, conserva su session/process ID y detén únicamente ese proceso al finalizar. No uses `&`, `nohup` ni procesos huérfanos.
+Para smoke, inicia `PORT=8788 go run ./cmd/gelium` con la capacidad de procesos background de tu herramienta, conserva su session/process ID y detén únicamente ese proceso al finalizar. No uses `&`, `nohup` ni procesos huérfanos.
 
 Si `:8788` está ocupado por un proceso que no iniciaste:
 
@@ -206,9 +206,9 @@ package.json
 package-lock.json
 go.mod
 go.sum
-cmd/loom/main.go
-cmd/loom/main_test.go
-loom.exe
+cmd/gelium/main.go
+cmd/gelium/main_test.go
+gelium.exe
 ```
 
 También son compartidos router/mux, page view central, navegación, registry, layout, bundles, índices y archivos generados.
@@ -266,7 +266,7 @@ TESTS THAT PROVE IT:
 ## 5. Descubrimiento obligatorio — todavía no escribas
 
 1. Lee `README.md`, `COMPONENT-ROADMAP.md` y `MATERIAL-WEB-PROGRESS.md`.
-2. Inspecciona componentes Loom existentes similares.
+2. Inspecciona componentes Gelium existentes similares.
 3. Inspecciona Go, templates, tests, CSS, theme, docs, build y versión de assets relevantes.
 4. Reporta modo, ownership, paths protegidos y estado de puertos/procesos.
 5. Distingue hechos, inferencias, `UNKNOWN` y decisiones que requieren aprobación.
@@ -352,7 +352,7 @@ Para navegadores sin la primitive moderna, usa una ruta/página server-rendered 
 
 Produce una matriz:
 
-| Feature | Contrato upstream | Estrategia Loom | Test | Divergencia |
+| Feature | Contrato upstream | Estrategia Gelium | Test | Divergencia |
 |---|---|---|---|---|
 
 Debe cubrir:
@@ -514,7 +514,7 @@ Prueba:
 5. no CDN;
 6. output corresponde al source.
 
-No construyas `loom.exe`.
+No construyas `gelium.exe`.
 
 ## 15. Reviews separadas
 
@@ -582,7 +582,7 @@ Entrega checklist observable y específica. Como mínimo:
 - consola;
 - docs reales;
 - asset versionado;
-- confirmación de que `:8787`/`loom.exe` no fueron tocados.
+- confirmación de que `:8787`/`gelium.exe` no fueron tocados.
 
 No integres otro componente ni reemplaces la app estable. Espera aceptación explícita.
 
@@ -606,7 +606,7 @@ Usa exactamente uno:
 Componente, alcance, modo y resultado.
 
 ### Seguridad de app
-Estado de `:8787`, `loom.exe`, `:8788` y proceso propio.
+Estado de `:8787`, `gelium.exe`, `:8788` y proceso propio.
 
 ### Evidencia upstream
 Snapshot ID/manifest provistos, paths y divergencias.
@@ -639,7 +639,7 @@ Casos observables.
 UNKNOWN, riesgos y trabajo pendiente.
 
 ### Confirmación
-Declara explícitamente: no Git, no credenciales, no CDN, no React/Lit/Shadow DOM/Astro/templ, no JS sin gap, upstream read-only, `:8787`/`loom.exe` intactos, sin overwrite concurrente y sin resultados inventados.
+Declara explícitamente: no Git, no credenciales, no CDN, no React/Lit/Shadow DOM/Astro/templ, no JS sin gap, upstream read-only, `:8787`/`gelium.exe` intactos, sin overwrite concurrente y sin resultados inventados.
 ````
 
 ## Plantilla mínima de asignación
@@ -669,4 +669,4 @@ NUEVA VERSIÓN DE ASSETS PROPUESTA: integrator-owned
 
 ## Nota de coordinación
 
-Mientras Loom no complete la Wave P del roadmap, asignar dos componentes a dos IAs NO significa permitir dos escritores sobre `D:\repos\loom-ui`. Los workers preparan contratos/artifacts en paralelo; un integrador único incorpora cada lane de forma serial.
+Mientras Gelium no complete la Wave P del roadmap, asignar dos componentes a dos IAs NO significa permitir dos escritores sobre `D:\repos\loom-ui`. Los workers preparan contratos/artifacts en paralelo; un integrador único incorpora cada lane de forma serial.

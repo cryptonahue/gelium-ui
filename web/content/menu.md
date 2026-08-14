@@ -1,6 +1,6 @@
 # Menu
 
-Menus display a list of choices on a temporary surface. Loom reimplements the Material 3 menu over **server-rendered HTML with the native Popover API**: the menu surface is a `[popover]` element opened and closed declaratively by a real trigger button through `popovertarget` / `popovertargetaction`, positioned with CSS anchor positioning when the browser supports it. There is **no component JavaScript** — the trigger, the top-layer open/close, light dismiss and Escape are all platform-native.
+Menus display a list of choices on a temporary surface. Gelium reimplements the Material 3 menu over **server-rendered HTML with the native Popover API**: the menu surface is a `[popover]` element opened and closed declaratively by a real trigger button through `popovertarget` / `popovertargetaction`, positioned with CSS anchor positioning when the browser supports it. There is **no component JavaScript** — the trigger, the top-layer open/close, light dismiss and Escape are all platform-native.
 
 ## Anatomy
 
@@ -40,10 +40,10 @@ The demo markup is static and trusted: `html/template` renders it verbatim, the 
 
 ## Divergences from Material Web
 
-- **Surface opening** — upstream `md-menu` uses component JavaScript (`show()`/`close()`) to manage a popover-positioned surface. Loom uses the native `popover` attribute + `popovertarget`/`popovertargetaction` and CSS anchor positioning, with no component JS.
-- **Roles** — upstream defaults to `role="menu"` with `role="menuitem"` items and full keyboard/typeahead JS. Loom keeps native link/button/checkbox/radio semantics (real links navigate, real buttons/forms submit), so no roving focus or typeahead JavaScript is needed; Tab/Enter/Space and native radio arrows cover the keyboard.
-- **Geometry** — upstream items inherit list-item tokens (56px); Loom pins the Material menu item height to 48px and a 12px row padding, per the menu item token contract.
-- **Submenus** — deferred: upstream `md-sub-menu` needs hover/timing JS; Loom documents nested menus as a follow-up rather than porting the JS controller.
+- **Surface opening** — upstream `md-menu` uses component JavaScript (`show()`/`close()`) to manage a popover-positioned surface. Gelium uses the native `popover` attribute + `popovertarget`/`popovertargetaction` and CSS anchor positioning, with no component JS.
+- **Roles** — upstream defaults to `role="menu"` with `role="menuitem"` items and full keyboard/typeahead JS. Gelium keeps native link/button/checkbox/radio semantics (real links navigate, real buttons/forms submit), so no roving focus or typeahead JavaScript is needed; Tab/Enter/Space and native radio arrows cover the keyboard.
+- **Geometry** — upstream items inherit list-item tokens (56px); Gelium pins the Material menu item height to 48px and a 12px row padding, per the menu item token contract.
+- **Submenus** — deferred: upstream `md-sub-menu` needs hover/timing JS; Gelium documents nested menus as a follow-up rather than porting the JS controller.
 
 ## Visual checklist
 

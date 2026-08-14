@@ -14,7 +14,7 @@ Every screen recipe, new component and content decision MUST be justified agains
 
 **How Gelium UI applies it.**
 - Themes are single files over the `--ui-*` token contract (`themes/theme-material/theme.css`); components never hardcode Material classes (`roadmap.md:52` → `m3-select-trigger` → `ui-select-trigger`).
-- The Material Loom vocabulary is semantic-first: Card, List, Data table, Badge, Divider, Elevation, Focus ring exist to encode meaning, not style.
+- The Material Gelium vocabulary is semantic-first: Card, List, Data table, Badge, Divider, Elevation, Focus ring exist to encode meaning, not style.
 - State layers are theme-aware `color-mix()` over `-fg` tokens, never decorative `rgb()` literals (`button.css:17-18`).
 
 **Evidence.** `web/styles/tokens.css` (semantic roles), `COMPONENT-ROADMAP.md`, `demo-whatsapp.css:403` documented as drift (hardcoded fallback defeats clarity).

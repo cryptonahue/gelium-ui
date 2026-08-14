@@ -28,7 +28,7 @@ No es solamente una colección de componentes Material: es un sistema UI reutili
 
 | Área | Estado | Evidencia |
 |---|---|---|
-| Core Go + Markdown + embed | Completado | `cmd/loom`, `internal/app`, `web/assets.go` |
+| Core Go + Markdown + embed | Completado | `cmd/gelium`, `internal/app`, `web/assets.go` |
 | Build Tailwind CSS 4 + HTMX local | Completado | `package.json`, `web/static/` |
 | Theme Material light/dark | Completado | `themes/theme-material/theme.css` |
 | Componentes Material (contract Gelium) | 20+ entregados | `COMPONENT-ROADMAP.md`, `web/templates/`, tests |
@@ -57,7 +57,7 @@ Resultado de la investigación paralela (`docs/handoffs/{core,vocabulary,composi
 
 6. **Naming resuelto**: Popover = mecanismo web (no patrón); Multi-select = capacidad (no widget); Drawer → canónico "Navigation drawer"; Snackbar → alias de Toast; **Callout** (Gelium = tip box) y **Notification Bar** (≈ Banner) requieren resolución contra Protocol (colisión detectada por mozilla-protocol-audit).
 7. **Del vocabulario objetivo (29 términos)**: 8 ya implementados, 8 parciales, 13 sin equivalente. Los **patrones de estado** (Empty, Loading/Skeleton, Inline alert, Banner, Callout, Error state, Validation summary, Success feedback) son requisito bloqueante de toda screen recipe.
-8. **Contratos server-driven canónicos** (no inventar otros): (a) HTTP 422 + `X-Gelium-Validation`; (b) `HX-Trigger {"loom:toast":…}`; (c) GET con params estables; (d) POST + 303 redirect.
+8. **Contratos server-driven canónicos** (no inventar otros): (a) HTTP 422 + `X-Loom-Validation`; (b) `HX-Trigger {"loom:toast":…}`; (c) GET con params estables; (d) POST + 303 redirect.
 9. **Anti-reglas confirmadas**: validación nunca toast; no toast para feedback persistente; no table para ≤5-8 filas; no board para FIFO; no dialog para flujos largos; estado nunca color-only; URL es el estado.
 
 ### UX / accesibilidad (ux-accessibility-audit)
@@ -392,7 +392,7 @@ Handoffs: `docs/handoffs/{core,vocabulary,composition,theme-architecture,basecoa
 | SEO origin + `og.png` placeholder | product | `siteBaseURL = https://gelium-ui.example`; no hay `web/static/og.png` real |
 | Nav discoverability | DX | **Cerrado (docs-shell):** `docsNavFor` + two-pane shell sidebar/topbar on `/docs` + `/components/*` expose Getting started, `docsSections` component groups, Patterns (`/docs/patterns`), Recipes (outbound `/recipes/*`), Themes (`/docs/themes`); theme switcher stays 0-JS `?theme=`. Demos remain secondary (`/demo/*`, noindex) — not a chrome gap. |
 | Docs pages para Avatar, Pagination, state/public patterns | dogfood | Partials+CSS+tests sí; `/components/*` no (policy o páginas) |
-| Branding operativo residual | docs | Wire `loom:*` / `X-Loom-*` **congelado**; LICENSE/prompts/COMPONENT-ROADMAP aún dicen Loom en superficies humanas |
+| Branding operativo residual | docs | Wire `loom:*` / `X-Loom-*` **congelado** (estrategia en `gelium-ui-wire-compatibility.md`); branding humano (LICENSE, prompts, COMPONENT-ROADMAP, README) ya migrado a Gelium |
 | Recetas restantes (Detail/Editor/Dashboard/Settings/Booking/Search/Auth) | recipe | Diferidas a propósito post-3 |
 | Registry JSON servido | tooling | Registries son Markdown; runtime JSON documentado como pendiente |
 | Version bump past 0.4.0 narrative | release | `package.json` + `?v=0.4.0` en layout |

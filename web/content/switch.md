@@ -1,6 +1,6 @@
 # Switch
 
-Switch is a native `input[type="checkbox"]` enhanced with CSS: the browser default look is removed and Loom paints the `52x32` Material track, its outline, and the sliding handle from the `--ui-switch-*` tokens. The real control stays the focusable, operable element, so form semantics and assisted input work unchanged.
+Switch is a native `input[type="checkbox"]` enhanced with CSS: the browser default look is removed and Gelium paints the `52x32` Material track, its outline, and the sliding handle from the `--ui-switch-*` tokens. The real control stays the focusable, operable element, so form semantics and assisted input work unchanged.
 
 ## Anatomy
 

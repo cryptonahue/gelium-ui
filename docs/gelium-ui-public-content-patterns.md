@@ -67,7 +67,7 @@
 | **Hero NO se llama Callout** — el "Callout" de Protocol (hero full-width) queda cubierto por `ui-hero`; el Callout Gelium (Phase D) es el tip box `<aside>` ignorable. Naming cerrado. | ✅ |
 | **Feature Card = composición**, no primitiva: `ui-feature-card` envuelve `.ui-card` + media + `.ui-card-title`/`.ui-card-body` + `.ui-card-action` (CTA Link). Sin variante horizontal (deprecada upstream). | ✅ |
 | **Language Switcher = GET navigation form**: `method="get"` + `<select name="lang">` + submit visible; el cambio de idioma es navegación (server responde 303 a la URL localizada), nunca POST. Cero auto-submit JS. | ✅ |
-| **Newsletter = POST + 422** con el header real del código **`X-Loom-Validation: true`** (documentado como `X-Gelium-Validation` en el roadmap; el código usa `X-Loom-Validation`, ver `screen-recipes-audit.md:17`). Error reusa `inline-alert--error`; success = texto `role="status"` persistente. | ✅ |
+| **Newsletter = POST + 422** con el header real del código **`X-Loom-Validation: true`** (el header real es `X-Loom-Validation`; ver `screen-recipes-audit.md:17`). Error reusa `inline-alert--error`; success = texto `role="status"` persistente. | ✅ |
 | **CTA Link = Button link** — no se crea componente propio; `{{template "button" .CTA}}` con `Href` es la forma canónica. | ✅ |
 | **Card slots públicos** — único pendiente de Phase F (extensión de `card.html`, no bloquea los 5 entregados). | ◐ |
 

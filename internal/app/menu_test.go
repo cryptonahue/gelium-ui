@@ -91,7 +91,7 @@ func TestMenuDocsActionsUseNativeButtons(t *testing.T) {
 
 // TestMenuDocsNavigationUsesRealLinks guards the roadmap's "fallback no-JS:
 // navegación o formulario real": navigation items must be real <a href> links
-// to existing Loom routes, never inaccessible CSS imitation.
+// to existing Gelium routes, never inaccessible CSS imitation.
 func TestMenuDocsNavigationUsesRealLinks(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/menu", nil))

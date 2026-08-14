@@ -1,7 +1,7 @@
 # Navigation tab
 
 > **Labs** — experimental. Material Web ships this component as a Labs feature
-> with a stability warning; Loom mirrors that status. The contract may change
+> with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
 A Material 3 navigation tab: the individual destination of a navigation bar,
@@ -37,7 +37,7 @@ reuses the existing `.ui-badge` for badge destinations — nothing is reinvented
   tab.
 - **Glyph swap** — Material's active/inactive icon pair maps to two glyphs in
   the icon slot, and only the active glyph is painted when the tab is selected.
-  When both slots carry the same glyph, Loom renders a single copy (there is
+  When both slots carry the same glyph, Gelium renders a single copy (there is
   nothing to swap).
 - **Badge** — an optional badge reuses the existing `.ui-badge` primitive
   (composed, not reinvented) and is anchored to the icon's top-end corner.
@@ -63,7 +63,7 @@ reuses the existing `.ui-badge` for badge destinations — nothing is reinvented
 `rest`, `hover`, `focus-visible`, `active`/`pressed`, and `selected` (the active
 tab). Hover, focus, and press paint the Material state layer (a full-bleed
 `::before` at the shared `--ui-state-*` opacities) and shift the inactive icon
-toward on-surface; `:focus-visible` shows the Loom focus ring. Because tabs are
+toward on-surface; `:focus-visible` shows the Gelium focus ring. Because tabs are
 native links, keyboard activation and tab order come for free and focus never
 changes geometry.
 
@@ -91,13 +91,13 @@ nothing for JavaScript to do.
 
 ## Divergences from Material Web
 
-| Area | Material Web | Loom |
+| Area | Material Web | Gelium |
 | --- | --- | --- |
 | Root semantics | `<button role="tab">` with roving `tabindex` and JS activation | real `<a href>` link (roadmap: "link semántico, no tab falso") |
 | Active state | `active` property driven by the bar's `activeIndex` | `aria-current="page"` derived server-side from the current page |
 | Arrow/Home/End keyboard | custom keydown handler in the bar | deferred (roadmap: requires a demonstrated platform gap); native tab order is sufficient for links |
 | Badge | `<md-badge>` inside an `aria-hidden` icon slot | existing `.ui-badge` composed into the same slot |
-| Focus ring | inward ring shape `corner-small` | Loom `:focus-visible` outline (consistent with the rest of Loom) |
+| Focus ring | inward ring shape `corner-small` | Gelium `:focus-visible` outline (consistent with the rest of Gelium) |
 
 ## Compatibility
 

@@ -10,7 +10,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "loomui/web"
+	webassets "geliumui/web"
 )
 
 func openingTagWithID(t *testing.T, body, element, id string) string {

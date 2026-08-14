@@ -1,6 +1,6 @@
 # Data table
 
-Data table is a server-rendered Material 3 table for displaying dense, sortable, filterable, paginated data. Loom reimplements it over native HTML table semantics — a real `<table>` with `<thead>`, `<tbody>`, `<th scope="col">`, and `<caption>`. There is no component JavaScript: sort, filter and pagination are real GET requests answered by the server, and row selection uses native checkboxes in a real form.
+Data table is a server-rendered Material 3 table for displaying dense, sortable, filterable, paginated data. Gelium reimplements it over native HTML table semantics — a real `<table>` with `<thead>`, `<tbody>`, `<th scope="col">`, and `<caption>`. There is no component JavaScript: sort, filter and pagination are real GET requests answered by the server, and row selection uses native checkboxes in a real form.
 
 ## Anatomy
 

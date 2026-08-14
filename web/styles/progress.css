@@ -1,6 +1,6 @@
 @layer components {
   /* Progress: a native <progress> element enhanced with CSS. appearance: none
-     strips the browser default so Loom paints the 4px Material track and the
+     strips the browser default so Gelium paints the 4px Material track and the
      primary indicator from --ui-progress-* tokens. A value attribute renders a
      determinate bar; omitting value renders the native indeterminate animation,
      which assistive technology announces without JavaScript. */

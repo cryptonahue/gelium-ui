@@ -1,6 +1,6 @@
 # Progress
 
-Progress is a native `progress` element decorated with CSS: the browser default chrome is removed and Loom paints the 4px Material track and its indicator from the `--ui-progress-*` tokens. The real element stays in the document, so its value semantics, `aria-valuenow`/`aria-valuetext` exposure, and determinate/indeterminate behavior work unchanged.
+Progress is a native `progress` element decorated with CSS: the browser default chrome is removed and Gelium paints the 4px Material track and its indicator from the `--ui-progress-*` tokens. The real element stays in the document, so its value semantics, `aria-valuenow`/`aria-valuetext` exposure, and determinate/indeterminate behavior work unchanged.
 
 ## Anatomy
 
@@ -18,7 +18,7 @@ The component is a single decorated progress element inside a `.ui-progress` wra
 
 ## States
 
-Progress covers `determinate` (a `value`/`max` pair) and `indeterminate` (a `progress` without `value`). The browser exposes real progress to assistive tech and the platform paints the indeterminate animation; Loom only re-skins the track so the motion stays the native one.
+Progress covers `determinate` (a `value`/`max` pair) and `indeterminate` (a `progress` without `value`). The browser exposes real progress to assistive tech and the platform paints the indeterminate animation; Gelium only re-skins the track so the motion stays the native one.
 
 ## When to use it
 

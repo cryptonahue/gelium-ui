@@ -3,7 +3,7 @@
      The roadmap audit (2026-08) found the Interest Invokers API (the
      trigger/target attribute pair that opens a popover on hover) is not
      Baseline, so that "popover opened on hover" mechanism is not viable
-     without JavaScript. Loom therefore uses the roadmap's accessible-visible
+     without JavaScript. Gelium therefore uses the roadmap's accessible-visible
      fallback: a styled .ui-tooltip surface inside a .ui-tooltip-host wrapper,
      shown with the native :hover and :focus-within pseudo-classes — no
      component JavaScript, keyboard focus included. The surface uses

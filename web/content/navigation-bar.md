@@ -1,11 +1,11 @@
 # Navigation bar
 
 > **Labs** — experimental. Material Web ships this component as a Labs feature
-> with a stability warning; Loom mirrors that status. The contract may change
+> with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
 A Material 3 bottom navigation bar: a fixed-height `80px` container that holds
-three to five equal destinations, one of which is the active page. Loom
+three to five equal destinations, one of which is the active page. Gelium
 reimplements it over server-rendered HTML — the root is a real `<nav>`, the
 destinations are real `<a href>` links (the roadmap's "navegación real con
 links"), and the active destination is derived server-side from the current
@@ -61,7 +61,7 @@ page, never from JavaScript. No component JavaScript exists.
 `rest`, `hover`, `focus-visible`, `active`/`pressed`, and `selected` (the active
 destination). Hover, focus, and press paint the Material state layer (a
 full-bleed `::before` at the shared `--ui-state-*` opacities) and shift the
-inactive icon toward on-surface; `:focus-visible` shows the Loom focus ring.
+inactive icon toward on-surface; `:focus-visible` shows the Gelium focus ring.
 Because destinations are native links, keyboard activation and tab order come
 for free and focus never changes geometry.
 
@@ -90,13 +90,13 @@ there is nothing for JavaScript to do.
 
 ## Divergences from Material Web
 
-| Area | Material Web | Loom |
+| Area | Material Web | Gelium |
 | --- | --- | --- |
 | Root semantics | `<div role="tablist">` with roving `tabindex` and JS activation | real `<nav>` with `<a href>` destinations |
 | Active state | `activeIndex` property driven by clicks and JS | `aria-current="page"` derived server-side from the current page |
 | Arrow/Home/End keyboard | custom keydown handler | deferred (roadmap: requires a demonstrated platform gap); native tab order is sufficient for links |
 | Badge | `<md-badge>` inside an `aria-hidden` icon slot | existing `.ui-badge` composed into the same slot |
-| Focus ring | inward ring shape `corner-small` | Loom `:focus-visible` outline (consistent with the rest of Loom) |
+| Focus ring | inward ring shape `corner-small` | Gelium `:focus-visible` outline (consistent with the rest of Gelium) |
 
 ## Compatibility
 

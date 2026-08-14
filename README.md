@@ -47,7 +47,7 @@ import (
 	"log"
 	"net/http"
 
-	"loomui/internal/app"
+	"geliumui/internal/app"
 )
 
 func main() {
@@ -58,8 +58,16 @@ func main() {
 La aplicación escucha en `http://localhost:8787`. Para elegir otro puerto:
 
 ```bash
-PORT=3000 go run ./cmd/loom   # dentro de tu aplicación consumidora
+PORT=3000 go run ./cmd/gelium   # dentro de tu aplicación consumidora
 ```
+
+## Wire compatibility (legacy `loom:*` / `X-Loom-*` contracts)
+
+El producto y la identidad del repo es **Gelium UI**, pero los contratos wire
+server-driven conservan sus nombres legacy a propósito: `loom:toast` (evento
+HX-Trigger + `#loom-toast-region`) y el header `X-Loom-Validation: true`.
+Renombrarlos rompería el hook HTMX servido (`web/static/app.js`) y a consumidores
+existentes. Política y tests: [`docs/gelium-ui-wire-compatibility.md`](docs/gelium-ui-wire-compatibility.md).
 
 Rutas disponibles:
 
@@ -79,7 +87,7 @@ Rutas disponibles:
 ## Estructura real
 
 ```text
-loom-ui/                  (ruta física del repo)
+gelium-ui/                 (producto Gelium UI; carpeta física `loom-ui`)
 ├── internal/app/
 │   ├── server.go         (http.Handler via app.New())
 │   ├── routes.go         (registro de rutas)

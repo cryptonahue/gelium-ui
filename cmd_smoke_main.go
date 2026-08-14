@@ -5,7 +5,7 @@ import (
 	"log"
 	"net/http"
 
-	"loomui/internal/app"
+	"geliumui/internal/app"
 )
 
 func main() {

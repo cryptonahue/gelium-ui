@@ -1,6 +1,6 @@
 # Checkbox
 
-Checkbox is a native `input[type="checkbox"]` enhanced with CSS: the browser default look is removed and Loom paints the Material box, its outline, and the checked chevron from the `--ui-checkbox-*` tokens. The real control stays the focusable, operable element, so form semantics and assisted input work unchanged.
+Checkbox is a native `input[type="checkbox"]` enhanced with CSS: the browser default look is removed and Gelium paints the Material box, its outline, and the checked chevron from the `--ui-checkbox-*` tokens. The real control stays the focusable, operable element, so form semantics and assisted input work unchanged.
 
 ## Anatomy
 

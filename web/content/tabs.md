@@ -1,6 +1,6 @@
 # Tabs
 
-Tabs organize groups of related content at the same level of hierarchy. Loom reimplements the Material 3 tab contract as server-rendered navigation links: each tab is a real `<a href>` to its own page or section, and the selected tab is marked by the handler from the current URL — there is no component JavaScript, no `role="tablist"` and no roving focus.
+Tabs organize groups of related content at the same level of hierarchy. Gelium reimplements the Material 3 tab contract as server-rendered navigation links: each tab is a real `<a href>` to its own page or section, and the selected tab is marked by the handler from the current URL — there is no component JavaScript, no `role="tablist"` and no roving focus.
 
 ## Anatomy
 
@@ -55,7 +55,7 @@ Each tab is a real link to its own section. On this page the primary tabs link t
 ## Accessibility
 
 - **Plain navigation semantics** — the bar is a `<nav aria-label>` with `<ul>`/`<li>`/`<a>`, and the selected tab uses `aria-current="page"`. This is the simplest semantics that satisfies accessibility for the link pattern.
-- **No `role="tablist"`** — the full tablist keyboard contract (roving tabindex, arrow-key focus, Home/End) cannot be satisfied without JavaScript, so Loom does not claim it. Native link keyboard behavior (Tab to move, Enter to activate) is complete and announced correctly.
+- **No `role="tablist"`** — the full tablist keyboard contract (roving tabindex, arrow-key focus, Home/End) cannot be satisfied without JavaScript, so Gelium does not claim it. Native link keyboard behavior (Tab to move, Enter to activate) is complete and announced correctly.
 - **No roving focus** — arrow-key roving focus would require a demonstrated platform gap; the roadmap only allows it when the gap is real, and for real navigation links there is none.
 - **Icon-only tabs** must carry an `aria-label`; icon and indicator are decorative and `aria-hidden`.
 - In forced-colors mode the indicator repaints as `CanvasText`, selected text becomes `Highlight`, and the focus ring becomes `Highlight`, so selection survives without color.

@@ -1,6 +1,6 @@
 # Elevation
 
-Elevation is a Loom-only primitive for visual depth. Apply one of the six utility classes — `.ui-elevation-0` through `.ui-elevation-5` — to lift an element with the theme shadow tokens `--ui-shadow-0` through `--ui-shadow-5`.
+Elevation is a Gelium-only primitive for visual depth. Apply one of the six utility classes — `.ui-elevation-0` through `.ui-elevation-5` — to lift an element with the theme shadow tokens `--ui-shadow-0` through `--ui-shadow-5`.
 
 ## Visual-only by contract
 

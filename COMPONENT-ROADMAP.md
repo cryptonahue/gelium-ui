@@ -1,4 +1,4 @@
-# Loom UI — Component Roadmap
+# Gelium UI — Component Roadmap
 
 > Estado operativo del catálogo y orden recomendado de implementación. Este documento complementa la auditoría histórica `MATERIAL-WEB-PROGRESS.md`; no la reemplaza ni modifica.
 
@@ -9,7 +9,7 @@ Construir una librería open-code, server-rendered y progresivamente mejorada ba
 Reglas del producto:
 
 - Material Web upstream define por defecto anatomía, geometría, estados, interacción y jerarquía visual.
-- Loom cambia la implementación, no simplifica el diseño sin una decisión explícita.
+- Gelium cambia la implementación, no simplifica el diseño sin una decisión explícita.
 - Antes de agregar JavaScript se auditan HTML Living Standard, CSS moderno, formularios, Popover API, top layer, Invoker Commands y capacidades nativas relacionadas.
 - Todo flujo acordado debe funcionar end-to-end sin JavaScript dentro de la matriz de navegadores declarada. HTMX sólo mejora la experiencia.
 - No se usan React, Lit, Shadow DOM, Astro, `templ`, Custom Elements obligatorios, CDN ni dependencias runtime de Material Web.
@@ -19,7 +19,7 @@ Reglas del producto:
 
 | Área | Estado | Evidencia principal |
 |---|---|---|
-| Foundation Go + Markdown + embed | Completado | `cmd/loom`, `internal/app`, `web/assets.go` |
+| Foundation Go + Markdown + embed | Completado | `cmd/gelium`, `internal/app`, `web/assets.go` |
 | Tailwind CSS 4 + HTMX local | Completado | `package.json`, `package-lock.json`, `web/static/` |
 | Theme Material light/dark | Completado | `themes/theme-material/theme.css` |
 | Button | Completado y aceptado | `web/templates/button.html`, `web/content/button.md` |
@@ -36,7 +36,7 @@ Reglas del producto:
 
 ### Wave 0 — inmediata
 
-#### Toast — Loom-only, P0 ✅ Completado y aceptado
+#### Toast — Gelium-only, P0 ✅ Completado y aceptado
 
 Objetivo: feedback transitorio reusable para acciones server-driven.
 
@@ -165,7 +165,7 @@ Single/multi select debe preferir radios/checkboxes sin JS.
 - HTMX sólo para contenido remoto, no para semántica básica.
 - ✅ Entregado (Wave 5, commit 4e1631c): modal sobre `<dialog>` nativo, permanente como `<nav>`, destinos `<a href>` con activo server-side, reusa `.ui-badge`.
 
-### Wave 6 — Loom-only posteriores
+### Wave 6 — Gelium-only posteriores
 
 #### Data table
 
@@ -189,7 +189,7 @@ Single/multi select debe preferir radios/checkboxes sin JS.
 Ripple es Core upstream, pero queda explícitamente diferido.
 
 - Dependencias: Button, Focus ring y state-layer tokens.
-- Loom ya cubre hover/focus/pressed mediante state layers CSS sin JavaScript.
+- Gelium ya cubre hover/focus/pressed mediante state layers CSS sin JavaScript.
 - Un ripple posicional fiel necesita coordenadas del puntero, lifecycle y JavaScript; no aporta semántica adicional.
 - Sólo se reconsiderará si un requisito de producto exige ripple posicional y la auditoría platform-first demuestra que CSS moderno no puede reproducirlo correctamente.
 - Si se aprueba, será enhancement visual framework-free: nunca requisito para activación, foco o feedback accesible.
@@ -243,10 +243,10 @@ Ripple es Core upstream, pero queda explícitamente diferido.
 
 - Item: contrato inestable/interno.
 - ARIA primitives: referencia de comportamiento, no componente visual distribuible.
-- Behaviors: infraestructura upstream, no runtime Loom.
+- Behaviors: infraestructura upstream, no runtime Gelium.
 - GB: experimental; no portar en bloque.
 
-### Loom-only
+### Gelium-only
 
 - Toast — P0.
 - Data table — posterior.
@@ -294,7 +294,7 @@ Theme/foundations
 - un build Tailwind mientras otro agente edita CSS;
 - Button y un consumidor de Button en paralelo;
 - cualquier componente en paralelo con foundations/theme;
-- dos agentes reiniciando servidores o reemplazando `loom.exe`.
+- dos agentes reiniciando servidores o reemplazando `gelium.exe`.
 
 ### Modelo operativo recomendado
 
@@ -328,7 +328,7 @@ Un componente no está terminado hasta cumplir todo:
 16. quality review APPROVED;
 17. smoke en `:8788`, HTTP y browser real;
 18. consola sin errores;
-19. `:8787` y `loom.exe` intactos durante implementación;
+19. `:8787` y `gelium.exe` intactos durante implementación;
 20. checklist manual aceptada por Nahuel antes de avanzar.
 
 ## Trabajo de sistema posterior

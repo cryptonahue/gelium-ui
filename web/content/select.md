@@ -1,6 +1,6 @@
 # Select
 
-The Select component wraps a native [`<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) with Material 3 field styling. The browser element stays the focusable, operable control — Loom only paints the field surface. No component JavaScript is required.
+The Select component wraps a native [`<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) with Material 3 field styling. The browser element stays the focusable, operable control — Gelium only paints the field surface. No component JavaScript is required.
 
 ## Usage
 

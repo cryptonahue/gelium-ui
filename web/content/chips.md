@@ -1,6 +1,6 @@
 # Chips
 
-Chips help people enter information, make selections, filter content, or trigger actions. They appear dynamically as a group of multiple interactive elements. Loom implements each of the four upstream variants — assist, filter, input, and suggestion — with native server-rendered semantics and no component JavaScript, instead of one generic `div`.
+Chips help people enter information, make selections, filter content, or trigger actions. They appear dynamically as a group of multiple interactive elements. Gelium implements each of the four upstream variants — assist, filter, input, and suggestion — with native server-rendered semantics and no component JavaScript, instead of one generic `div`.
 
 ## Types
 
@@ -40,7 +40,7 @@ The `appearance: none` checkbox paints the full Material chip container. On `:ch
 
 ### Input and removal
 
-Input chips are removable. Loom demonstrates removal as a no-JS server round-trip:
+Input chips are removable. Gelium demonstrates removal as a no-JS server round-trip:
 
 ```html
 <form method="post" action="/examples/chips/remove">

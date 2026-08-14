@@ -1,6 +1,6 @@
 # Icon
 
-Icon is the Loom-only primitive for trusted inline SVG glyphs. All icons are resolved server-side as trusted `template.HTML` markup — icon markup must never be built from user input.
+Icon is the Gelium-only primitive for trusted inline SVG glyphs. All icons are resolved server-side as trusted `template.HTML` markup — icon markup must never be built from user input.
 
 ## The `.ui-icon` utility
 
