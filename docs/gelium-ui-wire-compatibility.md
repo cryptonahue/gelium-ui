@@ -40,6 +40,22 @@ they are retained as the canonical wire contract:
    path (`loom-ui`) and historical audit documents keep their original names as
    factual/historical references only.
 
+## Residual Loom references (keep)
+
+After the rename, every remaining `Loom` occurrence falls into one of these
+categories and must NOT be renamed:
+
+| Category | Occurrences |
+|---|---|
+| Frozen wire contracts | `loom:toast`, `X-Loom-Validation`, `#loom-toast-region`, `data-loom-*`, schema enums `422_X_LOOM_VALIDATION` / `LOOM_TOAST` — in Go, JS, templates, tests, content and schema docs |
+| Physical path / history | Repo path `loom-ui` and `D:\repos\loom-ui` in prompts/roadmap; worktree/gitignore entries `loom`, `loom.exe`; the naming note in `gelium-ui-system-roadmap.md` |
+| Historical audit evidence | `MATERIAL-WEB-PROGRESS.md`, `docs/handoffs/*`, `openspec/changes/archive/*`, `.tmp/*` build/test caches |
+| Constraint statements | MUST NOT lists that forbid renaming `loom:*` (`openspec/specs/docs-shell/spec.md`, archived specs) |
+
+Current module/package identity is fully Gelium: Go module `geliumui` (go.mod,
+all imports), npm package `gelium-ui` (package.json), CLI/binary `gelium`
+(gitignore, implementer prompt).
+
 ## Tests that pin the frozen contracts
 
 - `internal/app/text_field_test.go`, `select_test.go`, `newsletter_test.go`,
