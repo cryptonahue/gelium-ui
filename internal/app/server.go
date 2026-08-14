@@ -154,19 +154,27 @@ type footerSection struct {
 	Links []navLink
 }
 
-// defaultFooter is the site-wide chrome data: the brand, the Documentation and
-// Components link groups (derived from the nav so they stay in lockstep), and
-// the legal line. It is injected at the render choke points; a consumer may
-// replace it per page by setting pageView.Footer explicitly.
+// defaultFooter is the site-wide chrome data: brand, IA sections from the same
+// docsNavFor builder as the docs sidebar (Home prepended under Getting started),
+// and the legal line. Injected at render choke points; a consumer may replace
+// it per page by setting pageView.Footer explicitly.
 func defaultFooter() *footerView {
-	nav := navLinks()
+	nav := docsNavFor("")
+	sections := make([]footerSection, 0, len(nav.Groups))
+	for _, g := range nav.Groups {
+		links := make([]navLink, 0, len(g.Links)+1)
+		if g.Title == "Getting started" {
+			links = append(links, navLink{Path: "/", Label: "Home"})
+		}
+		for _, l := range g.Links {
+			links = append(links, navLink{Path: l.Path, Label: l.Label})
+		}
+		sections = append(sections, footerSection{Title: g.Title, Links: links})
+	}
 	return &footerView{
-		Brand: "Gelium UI",
-		Sections: []footerSection{
-			{Title: "Documentation", Links: []navLink{{Path: "/", Label: "Home"}, nav[0]}},
-			{Title: "Components", Links: nav[1:]},
-		},
-		Legal: "© 2026 Gelium UI · MIT",
+		Brand:    "Gelium UI",
+		Sections: sections,
+		Legal:    "© 2026 Gelium UI · MIT",
 	}
 }
 

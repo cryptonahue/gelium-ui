@@ -661,8 +661,8 @@ func TestLayoutRendersFooterAfterMain(t *testing.T) {
 }
 
 // TestHomeRendersDefaultFooter proves the real home page ships the footer
-// chrome with the default site data: brand, Documentation/Components groups
-// derived from the nav, and the legal line.
+// chrome with the default site data: brand, docsNavFor IA groups (Getting
+// started + docsSections + Patterns/Recipes/Themes), and the legal line.
 func TestHomeRendersDefaultFooter(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
@@ -674,9 +674,16 @@ func TestHomeRendersDefaultFooter(t *testing.T) {
 		`<footer class="ui-footer">`,
 		`<p class="ui-footer-brand">Gelium UI</p>`,
 		`<nav class="ui-footer-nav" aria-label="Footer">`,
-		`<summary class="ui-footer-heading">Documentation</summary>`,
-		`<summary class="ui-footer-heading">Components</summary>`,
+		`<summary class="ui-footer-heading">Getting started</summary>`,
+		`<summary class="ui-footer-heading">Foundation</summary>`,
+		`<summary class="ui-footer-heading">Actions</summary>`,
+		`<summary class="ui-footer-heading">Patterns</summary>`,
+		`<summary class="ui-footer-heading">Recipes</summary>`,
+		`<summary class="ui-footer-heading">Themes</summary>`,
 		`<a href="/components/button">Button</a>`,
+		`<a href="/docs">Documentation</a>`,
+		`<a href="/docs/patterns">Patterns</a>`,
+		`<a href="/recipes/admin-resource">Admin Resource</a>`,
 		`<p class="ui-footer-legal">© 2026 Gelium UI · MIT</p>`,
 	} {
 		if !strings.Contains(body, contract) {
