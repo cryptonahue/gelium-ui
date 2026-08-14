@@ -2,12 +2,17 @@ package app
 
 import (
 	"net/http"
+	"net/url"
 	"strings"
 )
 
 // docsNavLink is one destination in the docs shell sidebar / footer export.
+// Path is the canonical route (identity, active match, footer). Href is what
+// the sidebar renders — Path plus an optional ?theme=<slug> so navigating the
+// IA does not drop the document-root theme selection.
 type docsNavLink struct {
 	Path    string
+	Href    string
 	Label   string
 	Current bool // exact path match against the active request path
 }
@@ -38,13 +43,47 @@ func usesDocsShell(path string) bool {
 		strings.HasPrefix(path, "/components/")
 }
 
+// docsNavHref builds a sidebar href. When themeSlug is a catalog slug, the
+// link carries only ?theme=<slug> so chrome navigation preserves visual
+// direction without re-emitting unrelated query state.
+func docsNavHref(path, themeSlug string) string {
+	if themeSlug == "" {
+		return path
+	}
+	if _, ok := themeBySlugOrClass(themeSlug); !ok {
+		return path
+	}
+	// Prefer the canonical short slug from the catalog (not theme-*).
+	slug := themeSlug
+	if t, ok := themeBySlugOrClass(themeSlug); ok {
+		slug = t.Slug
+	}
+	q := url.Values{}
+	q.Set("theme", slug)
+	return path + "?" + q.Encode()
+}
+
+// themeSlugFromClass maps a resolved theme class (theme-basecoat) to the
+// public ?theme= slug (basecoat). Empty when the class is unknown.
+func themeSlugFromClass(class string) string {
+	for _, t := range availableThemes {
+		if t.Class == class {
+			return t.Slug
+		}
+	}
+	return ""
+}
+
 // docsNavFor builds the Scalar-style sidebar IA for activePath.
 // Exact path match sets Current; empty activePath marks nothing current
 // (used when flattening the same model into the site footer).
-func docsNavFor(activePath string) docsNavView {
+// themeSlug, when non-empty and allowlisted, is appended as ?theme= on every
+// sidebar Href so in-shell navigation keeps the selected direction.
+func docsNavFor(activePath, themeSlug string) docsNavView {
 	link := func(path, label string) docsNavLink {
 		return docsNavLink{
 			Path:    path,
+			Href:    docsNavHref(path, themeSlug),
 			Label:   label,
 			Current: activePath != "" && path == activePath,
 		}

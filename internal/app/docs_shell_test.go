@@ -149,6 +149,46 @@ func TestDocsShellActiveAndIAGroups(t *testing.T) {
 	}
 }
 
+// TestDocsShellSidebarPreservesTheme proves in-shell sidebar navigation keeps
+// the selected ?theme= direction (Basecoat must not reset to Material).
+func TestDocsShellSidebarPreservesTheme(t *testing.T) {
+	body := getOKBody(t, "/components/button?theme=basecoat")
+	if !strings.Contains(body, `class="theme-basecoat"`) {
+		t.Fatal(`expected class="theme-basecoat" on document root`)
+	}
+	// Dual nav (mobile + desktop) must carry ?theme=basecoat on IA destinations.
+	// Footer may still use bare paths — only the list-item sidebar links are
+	// required to preserve theme (that is what drops direction on click).
+	for _, path := range []string{
+		"/components/button",
+		"/components/icon-button",
+		"/components/fab",
+		"/docs",
+		"/docs/patterns",
+		"/docs/themes",
+		"/recipes/admin-resource",
+	} {
+		want := `class="ui-list-item-link" href="` + path + `?theme=basecoat"`
+		wantCurrent := `class="ui-list-item-link is-current" href="` + path + `?theme=basecoat"`
+		if !strings.Contains(body, want) && !strings.Contains(body, wantCurrent) {
+			t.Errorf("sidebar missing theme-preserving list href for %q", path)
+		}
+	}
+	// Active Button marker uses the themed href in both nav trees.
+	wantCurrent := `class="ui-list-item-link is-current" href="/components/button?theme=basecoat" aria-current="page"`
+	if got := strings.Count(body, wantCurrent); got != 2 {
+		t.Fatalf("themed Button aria-current markers = %d, want 2", got)
+	}
+	// No bare list-item href for Button (would drop theme on the current item).
+	if strings.Contains(body, `class="ui-list-item-link is-current" href="/components/button" aria-current="page"`) {
+		t.Error("current Button list link must not be a bare path under ?theme=basecoat")
+	}
+	// Breadcrumb non-current shell crumbs also keep theme.
+	if !strings.Contains(body, `href="/docs?theme=basecoat"`) {
+		t.Error("breadcrumb shell crumb should preserve ?theme=basecoat on /docs")
+	}
+}
+
 // TestDocsShellChromeActivePeersAndIA (task 3.1) proves exact active-route peers,
 // full docsSections IA labels, theme switcher ?theme=-only links, and root class
 // for ?theme=basecoat on shell pages.
@@ -354,7 +394,7 @@ func TestUsesDocsShell(t *testing.T) {
 
 func TestDocsNavFor(t *testing.T) {
 	t.Run("topbar slots and five IA blocks", func(t *testing.T) {
-		nav := docsNavFor("/docs")
+		nav := docsNavFor("/docs", "")
 		if nav.Version != "0.4.0" {
 			t.Errorf("Version = %q, want %q", nav.Version, "0.4.0")
 		}
@@ -386,7 +426,7 @@ func TestDocsNavFor(t *testing.T) {
 	})
 
 	t.Run("current on docs hub", func(t *testing.T) {
-		nav := docsNavFor("/docs")
+		nav := docsNavFor("/docs", "")
 		current := currentDocsNavLinks(nav)
 		if len(current) != 1 {
 			t.Fatalf("current links = %v, want exactly one", current)
@@ -397,7 +437,7 @@ func TestDocsNavFor(t *testing.T) {
 	})
 
 	t.Run("current on component button", func(t *testing.T) {
-		nav := docsNavFor("/components/button")
+		nav := docsNavFor("/components/button", "")
 		current := currentDocsNavLinks(nav)
 		if len(current) != 1 {
 			t.Fatalf("current links = %v, want exactly one", current)
@@ -422,7 +462,7 @@ func TestDocsNavFor(t *testing.T) {
 	})
 
 	t.Run("recipes are real outbound paths", func(t *testing.T) {
-		nav := docsNavFor("/docs")
+		nav := docsNavFor("/docs", "")
 		var recipes *docsNavGroup
 		for i := range nav.Groups {
 			if nav.Groups[i].Title == "Recipes" {
@@ -454,7 +494,7 @@ func TestDocsNavFor(t *testing.T) {
 	})
 
 	t.Run("patterns and themes stub paths", func(t *testing.T) {
-		nav := docsNavFor("/docs/patterns")
+		nav := docsNavFor("/docs/patterns", "")
 		if !hasDocsNavLink(nav, "/docs/patterns", true) {
 			t.Error("Patterns group must mark /docs/patterns current")
 		}
@@ -478,7 +518,7 @@ func TestDefaultFooter(t *testing.T) {
 
 	// Footer sections must be derived from the same docsNavFor model (flat export),
 	// not a second hand-maintained component list.
-	nav := docsNavFor("")
+	nav := docsNavFor("", "")
 	navTitles := docsNavGroupTitles(nav)
 	if len(footer.Sections) == 0 {
 		t.Fatal("defaultFooter must expose sections from docs nav")
