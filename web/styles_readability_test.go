@@ -134,3 +134,48 @@ func TestProseHeadingTextBoxTrimProgressive(t *testing.T) {
 		t.Errorf(".prose h1/h2/h3 must set text-box-edge: cap alphabetic (progressive), got block: %s", heads)
 	}
 }
+
+// TestProseVerticalRhythm is the vertical-rhythm contract: a label line
+// (breadcrumb, provenance) or a lower heading must never collide with the
+// next heading. h2/h3/h4 carry top AND bottom margins; the provenance line
+// has its own label style with breathing room before the title.
+func TestProseVerticalRhythm(t *testing.T) {
+	css := readSourceStyle(t, "base.css")
+
+	h2 := cssBlock(t, css, ".prose h2")
+	if !strings.Contains(h2, "margin: 2.5rem 0 1rem") {
+		t.Errorf(".prose h2 must carry top+bottom margins (2.5rem 0 1rem), got block: %s", h2)
+	}
+	h3 := cssBlock(t, css, ".prose h3")
+	if !strings.Contains(h3, "margin: 1.75rem 0 .75rem") {
+		t.Errorf(".prose h3 must carry top+bottom margins (1.75rem 0 .75rem), got block: %s", h3)
+	}
+	// The provenance line must be label-styled, not body copy, and spaced
+	// from the title below it.
+	prov := cssBlock(t, css, ".article-provenance")
+	if !strings.Contains(prov, "font: var(--ui-type-label-md)") {
+		t.Errorf(".article-provenance must use label type, got block: %s", prov)
+	}
+	if !strings.Contains(prov, "margin: 0 0 1.25rem") {
+		t.Errorf(".article-provenance must have bottom breathing room (0 0 1.25rem), got block: %s", prov)
+	}
+}
+
+// TestBreadcrumbClearsPageTitle is the shell rhythm contract: the breadcrumb
+// nav above a page title must not collide with the h1.
+func TestBreadcrumbClearsPageTitle(t *testing.T) {
+	shell := readSourceStyle(t, "docs-shell.css")
+	idx := strings.Index(shell, `nav[aria-label="Breadcrumb"]`)
+	if idx < 0 {
+		t.Fatal("docs-shell.css must style the breadcrumb nav with bottom margin")
+	}
+	block := shell[idx:]
+	end := strings.Index(block, "}")
+	if end < 0 {
+		t.Fatal("breadcrumb rule is unterminated")
+	}
+	rule := block[:end+1]
+	if !strings.Contains(rule, "margin-bottom: 1rem") {
+		t.Errorf("breadcrumb nav must have margin-bottom: 1rem, got rule: %s", rule)
+	}
+}

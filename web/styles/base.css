@@ -143,9 +143,19 @@
      character count. text-wrap: pretty avoids orphaned final lines;
      hyphens: auto gives per-language hyphenation from <html lang>. */
   .prose { max-width: 65ch; hyphens: auto; }
+  /* Vertical rhythm: every heading margin covers BOTH directions so a label
+     (provenance, breadcrumb, h3 under h2) never collides with the next
+     heading. h1 opens the article (margin below only); h2+ carry top and
+     bottom margins sized by hierarchy. */
   .prose h1 { margin: 0 0 1rem; font: var(--ui-type-display-sm); letter-spacing: var(--ui-type-display-sm-letter-spacing); }
-  .prose h2 { margin-top: 2.5rem; font: var(--ui-type-headline-sm); letter-spacing: var(--ui-type-headline-sm-letter-spacing); }
+  .prose h2 { margin: 2.5rem 0 1rem; font: var(--ui-type-headline-sm); letter-spacing: var(--ui-type-headline-sm-letter-spacing); }
+  .prose h3 { margin: 1.75rem 0 .75rem; font: var(--ui-type-title-md); letter-spacing: var(--ui-type-title-md-letter-spacing); }
+  .prose h4 { margin: 1.25rem 0 .5rem; font: var(--ui-type-label-lg); letter-spacing: var(--ui-type-label-lg-letter-spacing); }
   .prose p { color: var(--ui-color-fg-muted); line-height: 1.7; text-wrap: pretty; }
+  /* Article provenance (Published · Updated · version · license · source) is a
+     metadata line, not body copy: label type, muted ink, and breathing room
+     before the title instead of colliding with it. */
+  .article-provenance { font: var(--ui-type-label-md); color: var(--ui-color-fg-muted); margin: 0 0 1.25rem; }
   /* Balanced headings plus progressive leading trim: text-wrap: balance evens
      heading line breaks (Baseline 2024). text-box-trim/text-box-edge trim the
      visual leading around cap/alphabetic where supported (Chromium only for

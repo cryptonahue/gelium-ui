@@ -196,6 +196,11 @@
     width: min(68rem, 100%);
     margin: 0;
   }
+  /* Breadcrumb sits above the page title: give it breathing room so the
+     label line never collides with the h1 (vertical rhythm, see base.css). */
+  .docs-shell-main > nav[aria-label="Breadcrumb"] {
+    margin-bottom: 1rem;
+  }
 
   .docs-nav-group-label {
     margin: .75rem 0 .25rem;
