@@ -158,6 +158,7 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/principles", Label: "Design principles"},
 	{Path: "/docs/content-style", Label: "Content style"},
 	{Path: "/docs/acknowledgments", Label: "Acknowledgments"},
+	{Path: "/docs/changelog", Label: "Changelog"},
 }
 
 // docsSections groups the component library into logical categories for the
@@ -375,4 +376,10 @@ func (s *server) docsContentStyle(w http.ResponseWriter, r *http.Request) {
 // Gelium model (server-rendered, 0-JS, token-driven).
 func (s *server) docsAcknowledgments(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPage(w, r, pageView{Title: "Acknowledgments"}, "content/handbook-acknowledgments.md")
+}
+
+// docsChangelog is GET /docs/changelog — the Changelog page: the full project
+// process documented per version, mirrored from the repository CHANGELOG.md.
+func (s *server) docsChangelog(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Changelog"}, "content/handbook-changelog.md")
 }

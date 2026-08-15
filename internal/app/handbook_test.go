@@ -29,6 +29,7 @@ var handbookRoutes = []handbookRoute{
 	{path: "/docs/principles", label: "Design principles", h1: "Design principles", contract: "Native semantics first"},
 	{path: "/docs/content-style", label: "Content style", h1: "Content style", contract: "plain English"},
 	{path: "/docs/acknowledgments", label: "Acknowledgments", h1: "Acknowledgments", contract: "inspired by, not a copy"},
+	{path: "/docs/changelog", label: "Changelog", h1: "Changelog", contract: "Keep a Changelog"},
 }
 
 // TestHandbookPagesRender proves every Handbook destination returns 200 under
