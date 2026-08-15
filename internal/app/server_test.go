@@ -793,6 +793,7 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 		`<loc>https://gelium-ui.example/</loc>`,
 		`<loc>https://gelium-ui.example/docs</loc>`,
 		`<loc>https://gelium-ui.example/docs/patterns</loc>`,
+		`<loc>https://gelium-ui.example/docs/information-architecture</loc>`,
 		`<loc>https://gelium-ui.example/docs/themes</loc>`,
 		`<loc>https://gelium-ui.example/docs/tokens</loc>`,
 		`<loc>https://gelium-ui.example/docs/server-contracts</loc>`,
@@ -806,8 +807,8 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 		}
 	}
 	// home + /docs + patterns + handbook pages + all components
-	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+8 {
-		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + patterns + handbook + all components)", got, len(componentRoutes())+8)
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+9 {
+		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + patterns + handbook + all components)", got, len(componentRoutes())+9)
 	}
 	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
 		if strings.Contains(body, excluded) {

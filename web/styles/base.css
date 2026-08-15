@@ -35,7 +35,7 @@
   }
   .site-header .ui-theme-switcher { margin-inline-start: 0; }
 
-  /* Theme direction switcher: product labels, plain ?theme= links, 0 JS. */
+  /* Theme direction switcher: native select in a 0-JS GET form. */
   .ui-theme-switcher {
     display: inline-flex;
     align-items: center;
@@ -47,24 +47,70 @@
     letter-spacing: var(--ui-type-label-md-letter-spacing);
     color: var(--ui-color-fg-muted);
   }
-  .ui-theme-switcher-options {
-    display: inline-flex;
-    flex-wrap: wrap;
-    gap: .25rem;
-  }
-  .ui-theme-switcher-option {
+  .ui-theme-switcher-select {
     padding: .25rem .625rem;
+    border: 1px solid var(--ui-color-border);
     border-radius: var(--ui-radius-sm);
-    color: var(--ui-color-primary);
-    font: var(--ui-type-label-md);
-    letter-spacing: var(--ui-type-label-md-letter-spacing);
-    text-decoration: none;
-  }
-  .ui-theme-switcher-option.is-current,
-  .ui-theme-switcher-option[aria-current="true"] {
     background: var(--ui-color-surface-container, var(--ui-color-surface));
     color: var(--ui-color-fg);
-    font-weight: 600;
+    font: var(--ui-type-label-md);
+    letter-spacing: var(--ui-type-label-md-letter-spacing);
+  }
+  .ui-theme-switcher-submit {
+    padding: .25rem .625rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-sm);
+    background: var(--ui-color-surface-container, var(--ui-color-surface));
+    color: var(--ui-color-fg);
+    font: var(--ui-type-label-md);
+    letter-spacing: var(--ui-type-label-md-letter-spacing);
+    cursor: pointer;
+  }
+
+  /* Light/Dark switch (docs chrome): native checkbox styled as a pill switch.
+     State is server-driven (checked → ?scheme=dark); no JS required. */
+  .ui-scheme-switch {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    cursor: pointer;
+  }
+  .ui-scheme-switch input[type="checkbox"] {
+    appearance: none;
+    -webkit-appearance: none;
+    position: relative;
+    width: 2.25rem;
+    height: 1.25rem;
+    margin: 0;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-color-surface-container, var(--ui-color-surface));
+  }
+  .ui-scheme-switch input[type="checkbox"]::before {
+    content: "";
+    position: absolute;
+    inset-block: .125rem;
+    inset-inline-start: .125rem;
+    width: .875rem;
+    border-radius: 50%;
+    background: var(--ui-color-fg-muted);
+  }
+  .ui-scheme-switch input[type="checkbox"]:checked {
+    border-color: var(--ui-color-primary);
+    background: var(--ui-color-primary);
+  }
+  .ui-scheme-switch input[type="checkbox"]:checked::before {
+    inset-inline-start: 1.25rem;
+    background: var(--ui-color-primary-fg);
+  }
+  .ui-scheme-switch input[type="checkbox"]:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-focus-offset);
+  }
+  .ui-scheme-switch-label {
+    font: var(--ui-type-label-md);
+    letter-spacing: var(--ui-type-label-md-letter-spacing);
+    color: var(--ui-color-fg-muted);
   }
 
   /* Skip link (G7): the first focusable element on every layout page. It sits

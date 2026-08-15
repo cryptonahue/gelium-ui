@@ -118,3 +118,23 @@ document.addEventListener("htmx:beforeSwap", function (event) {
     slider.style.setProperty("--ui-slider-fill", toPercent(input) + "%");
   });
 })();
+
+(function () {
+  "use strict";
+
+  // Docs chrome enhancement: the theme select and the scheme switch live in
+  // 0-JS GET forms with a real submit button. With JavaScript available,
+  // changing either control submits the form directly and the button hides;
+  // without JavaScript the button still performs the same GET submission.
+  // This only submits forms — the server still decides the direction.
+  var FORMS = document.querySelectorAll("form[data-chrome-form]");
+  for (var i = 0; i < FORMS.length; i++) {
+    (function (form) {
+      var submit = form.querySelector('button[type="submit"]');
+      if (submit) submit.hidden = true;
+      form.addEventListener("change", function () {
+        form.submit();
+      });
+    })(FORMS[i]);
+  }
+})();

@@ -1,12 +1,18 @@
-{{/* Color scheme switcher (docs chrome). Light/Dark via ?scheme=; 0 JS.
-     Keeps the current ?theme= slug on each option href. */}}
+{{/* Color scheme switcher (docs chrome). Native switch in a 0-JS GET form:
+     checked → ?scheme=dark, unchecked → ?scheme=light. A cleared checkbox
+     submits nothing, so a hidden light twin AFTER the checkbox supplies
+     ?scheme=light (first value wins server-side: dark when checked). The
+     hidden theme input keeps the current ?theme= slug. JS enhancement
+     (app.js): onchange submits and hides the submit button. */}}
 {{define "color-scheme-switcher"}}
-<nav class="ui-theme-switcher ui-scheme-switcher" aria-label="{{or .Label "Appearance"}}">
+<form class="ui-theme-switcher ui-scheme-switcher" method="get" data-chrome-form role="group" aria-label="{{or .Label "Appearance"}}">
   <span class="ui-theme-switcher-label" id="scheme-switcher-label">{{or .Label "Appearance"}}</span>
-  <span class="ui-theme-switcher-options" role="list" aria-labelledby="scheme-switcher-label">
-    {{range .Options}}
-    <a role="listitem" class="ui-theme-switcher-option{{if .Current}} is-current{{end}}" href="{{.Href}}"{{if .Current}} aria-current="true"{{end}}>{{.Label}}</a>
-    {{end}}
-  </span>
-</nav>
+  <label class="ui-scheme-switch">
+    <input type="checkbox" role="switch" name="scheme" value="dark"{{if .Checked}} checked{{end}}>
+    <span class="ui-scheme-switch-label">Dark</span>
+  </label>
+  <input type="hidden" name="scheme" value="light">
+  {{if .Theme}}<input type="hidden" name="theme" value="{{.Theme}}">{{end}}
+  <button type="submit" class="ui-theme-switcher-submit">Apply</button>
+</form>
 {{end}}

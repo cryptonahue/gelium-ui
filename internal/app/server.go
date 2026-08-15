@@ -36,18 +36,30 @@ var availableThemes = []themeDirection{
 	{Class: "theme-basecoat", Slug: "basecoat", Label: "Basecoat"},
 }
 
-// themeOptionView is one link in a document-root chrome switcher (theme or scheme).
+// themeOptionView is one <option> in the native theme direction select.
 type themeOptionView struct {
-	Label   string
-	Href    string
-	Current bool
+	Label    string
+	Value    string // public ?theme= slug the select submits: material, basecoat
+	Selected bool
 }
 
-// themeSwitcherView is server-driven chrome for swapping visual direction or
-// color scheme with plain links (0 JS).
+// themeSwitcherView is server-driven chrome for swapping visual direction: a
+// native <select> inside a 0-JS GET form. Scheme carries the current ?scheme=
+// so a hidden input preserves light/dark when the theme changes.
 type themeSwitcherView struct {
-	Label   string // accessible product label: "Theme" or "Appearance"
+	Label   string // accessible product label: "Theme"
 	Options []themeOptionView
+	Scheme  string
+}
+
+// schemeSwitcherView is server-driven chrome for the light/dark control: a
+// native switch (<input type="checkbox" role="switch">) inside a 0-JS GET
+// form. Checked maps to ?scheme=dark; unchecked to ?scheme=light. Theme
+// carries the current ?theme= slug so a hidden input preserves direction.
+type schemeSwitcherView struct {
+	Label   string // accessible product label: "Appearance"
+	Theme   string
+	Checked bool
 }
 
 // themeContextKey carries the theme selected via the ?theme= query parameter
@@ -173,8 +185,9 @@ func chromeHref(path, themeSlug, scheme string) string {
 
 // themeSwitcherFor builds the direction switcher for the current request.
 // Labels are product directions (Material, Basecoat, …), never internal class
-// names. Each option is a real GET link to the same path with allowlisted
-// ?theme= and the current ?scheme= (when set). Other query params are dropped.
+// names. The native select submits ?theme=<slug> to the same URL (0-JS GET
+// form); the hidden scheme input preserves the current ?scheme= when set.
+// Other query params are dropped, matching the old link-list contract.
 func themeSwitcherFor(r *http.Request, currentClass, themeSlug, scheme string) *themeSwitcherView {
 	current := themeClass(currentClass)
 	if r != nil {
@@ -182,40 +195,28 @@ func themeSwitcherFor(r *http.Request, currentClass, themeSlug, scheme string) *
 			current = q
 		}
 	}
-	pathStr := requestPath(r)
 	opts := make([]themeOptionView, 0, len(availableThemes))
 	for _, t := range availableThemes {
 		opts = append(opts, themeOptionView{
-			Label:   t.Label,
-			Href:    chromeHref(pathStr, t.Slug, scheme),
-			Current: t.Class == current,
+			Label:    t.Label,
+			Value:    t.Slug,
+			Selected: t.Class == current,
 		})
 	}
-	return &themeSwitcherView{Label: "Theme", Options: opts}
+	return &themeSwitcherView{Label: "Theme", Options: opts, Scheme: normalizeScheme(scheme)}
 }
 
-// schemeSwitcherFor builds the Light/Dark appearance control (0 JS).
-// Links keep the current theme slug and set ?scheme=light|dark. When the
-// request has no scheme yet, Light is treated as current (matches default
-// light tokens before OS dark media applies an override).
-func schemeSwitcherFor(r *http.Request, themeSlug, scheme string) *themeSwitcherView {
-	pathStr := requestPath(r)
-	current := normalizeScheme(scheme)
-	if current == "" {
-		current = "light"
+// schemeSwitcherFor builds the Light/Dark appearance control: a native switch
+// in a 0-JS GET form. Checked → ?scheme=dark, unchecked → ?scheme=light
+// (a hidden light twin after the checkbox supplies the light value, since a
+// cleared checkbox submits nothing). The hidden theme input keeps the current
+// ?theme= slug. No scheme yet = light (matches default light tokens).
+func schemeSwitcherFor(r *http.Request, themeSlug, scheme string) *schemeSwitcherView {
+	return &schemeSwitcherView{
+		Label:   "Appearance",
+		Theme:   themeSlug,
+		Checked: normalizeScheme(scheme) == "dark",
 	}
-	opts := make([]themeOptionView, 0, 2)
-	for _, s := range []struct{ slug, label string }{
-		{"light", "Light"},
-		{"dark", "Dark"},
-	} {
-		opts = append(opts, themeOptionView{
-			Label:   s.label,
-			Href:    chromeHref(pathStr, themeSlug, s.slug),
-			Current: current == s.slug,
-		})
-	}
-	return &themeSwitcherView{Label: "Appearance", Options: opts}
 }
 
 // applyDocumentRootScheme mutates ThemeClass / DataTheme for explicit scheme.
@@ -723,11 +724,12 @@ type pageView struct {
 	Nav       []navLink
 	// DocsNav enables the two-pane docs shell when non-nil (docs + components).
 	DocsNav *docsNavView
-	// ThemeSwitcher is the 0-JS ?theme= chrome. On shell routes it lives in the
-	// topbar; on legacy header routes it may sit in the site-header.
+	// ThemeSwitcher is the native-select ?theme= chrome (0-JS GET form). On
+	// shell routes it lives in the topbar; on legacy header routes it may sit
+	// in the site-header.
 	ThemeSwitcher *themeSwitcherView
-	// SchemeSwitcher is the 0-JS Light/Dark control (docs topbar / site header).
-	SchemeSwitcher *themeSwitcherView
+	// SchemeSwitcher is the native Light/Dark switch (docs topbar / site header).
+	SchemeSwitcher *schemeSwitcherView
 	// Landing enables the marketing home composition (hero, features, recipes).
 	// When non-nil, layout renders the landing template instead of Markdown prose.
 	Landing              *landingView
@@ -794,6 +796,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /{$}", s.home)
 	mux.HandleFunc("GET /docs", s.docsIndex)
 	mux.HandleFunc("GET /docs/patterns", s.docsPatterns)
+	mux.HandleFunc("GET /docs/information-architecture", s.docsInformationArchitecture)
 	mux.HandleFunc("GET /docs/themes", s.docsThemes)
 	mux.HandleFunc("GET /docs/tokens", s.docsTokens)
 	mux.HandleFunc("GET /docs/server-contracts", s.docsServerContracts)

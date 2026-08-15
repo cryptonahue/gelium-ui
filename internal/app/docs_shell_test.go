@@ -44,10 +44,10 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 					`ui-divider`,
 					`>0.4.0<`,
 					`Gelium UI`,
-					`disabled`,
+					`type="search"`,
 					`aria-label="Theme"`,
 					`aria-label="Appearance"`,
-				} {
+					} {
 					if !strings.Contains(body, contract) {
 						t.Errorf("%s missing shell contract %q", tt.path, contract)
 					}
@@ -94,18 +94,16 @@ func TestDocsStubRoutesAndShellChrome(t *testing.T) {
 				`<main id="main-content"`,
 				`href="#main-content"`,
 				`type="search"`,
-				`disabled`,
+				`name="q"`,
 			} {
 				if !strings.Contains(body, contract) {
 					t.Errorf("%s missing contract %q", path, contract)
 				}
 			}
-			// Search must not be a live submitting corpus form.
-			if strings.Contains(body, `action=`) && strings.Contains(body, `type="search"`) {
-				// Only fail if the search control sits inside a form with action.
-				if strings.Contains(body, `<form`) && strings.Contains(body, `type="search"`) {
-					t.Errorf("%s must not wrap search in a live form submit", path)
-				}
+			// Search is a live GET form to the /docs hub: 0-JS Enter submits
+			// /docs?q=<term>; with JS, search.js filters the nav index client-side.
+			if !strings.Contains(body, `<form class="docs-topbar-search" method="get" action="/docs" role="search">`) {
+				t.Errorf("%s must wrap search in a live GET form to /docs", path)
 			}
 		})
 	}
@@ -165,13 +163,17 @@ func TestDocsShellColorSchemeSwitcher(t *testing.T) {
 		if !strings.Contains(body, `aria-label="Appearance"`) {
 			t.Error("docs topbar must expose Appearance (scheme) switcher")
 		}
-		if !strings.Contains(body, `>Dark<`) || !strings.Contains(body, `>Light<`) {
-			t.Error("scheme switcher must offer Light and Dark labels")
+		// Native switch: checkbox with role=switch, checked → ?scheme=dark.
+		if !strings.Contains(body, `<input type="checkbox" role="switch" name="scheme" value="dark" checked`) {
+			t.Error("scheme switch must render checked under ?scheme=dark")
 		}
-		// Dark option is current.
-		if !strings.Contains(body, `href="/components/button?scheme=dark"`) &&
-			!strings.Contains(body, `scheme=dark`) {
-			t.Error("scheme switcher must link with scheme=dark")
+		// Unchecked state maps to ?scheme=light via the hidden twin after the
+		// checkbox (first value wins server-side: dark when checked, light when not).
+		if !strings.Contains(body, `<input type="hidden" name="scheme" value="light">`) {
+			t.Error("scheme switch must carry the hidden light twin for the unchecked state")
+		}
+		if !strings.Contains(body, `name="scheme"`) {
+			t.Error("scheme switch must submit name=scheme")
 		}
 	})
 
@@ -251,6 +253,7 @@ func TestDocsShellSidebarPreservesTheme(t *testing.T) {
 		"/components/fab",
 		"/docs",
 		"/docs/patterns",
+		"/docs/information-architecture",
 		"/docs/themes",
 		"/docs/tokens",
 		"/docs/server-contracts",
@@ -346,20 +349,29 @@ func TestDocsShellChromeActivePeersAndIA(t *testing.T) {
 		}
 	})
 
-	t.Run("theme links only theme query on path", func(t *testing.T) {
-		// Extra query params must be stripped from switcher hrefs.
+	t.Run("theme select only theme query on path", func(t *testing.T) {
+		// Extra query params must be stripped from the chrome form: the select
+		// emits only name=theme (values produce the same ?theme= URLs as the
+		// old link list), plus a hidden scheme only when one is set.
 		body := getOKBody(t, "/components/button?foo=bar&theme=material")
-		for _, slug := range []string{"material", "basecoat"} {
-			want := `href="/components/button?theme=` + slug + `"`
-			if !strings.Contains(body, want) {
-				t.Errorf("topbar theme switcher missing exact href %q", want)
+		if !strings.Contains(body, `<form class="ui-theme-switcher" method="get"`) {
+			t.Error("topbar theme switcher must be a GET form")
+		}
+		for _, opt := range []string{`<option value="material"`, `<option value="basecoat"`} {
+			if !strings.Contains(body, opt) {
+				t.Errorf("topbar theme select missing option %q", opt)
 			}
 		}
-		// Must not re-emit non-theme query state into chrome links.
-		if strings.Contains(body, `theme=material&foo=`) ||
-			strings.Contains(body, `foo=bar&theme=`) ||
-			strings.Contains(body, `?foo=bar`) {
-			t.Error("theme switcher must not preserve non-theme query params")
+		if !strings.Contains(body, `value="material" selected`) {
+			t.Error("current theme must be selected in the native select")
+		}
+		// Must not re-emit non-theme query state into the chrome form.
+		if strings.Contains(body, `name="foo"`) || strings.Contains(body, "?foo=bar") {
+			t.Error("theme form must not preserve non-theme query params")
+		}
+		// The old link-list switcher is gone.
+		if strings.Contains(body, "ui-theme-switcher-option") {
+			t.Error("theme switcher must no longer render link-list options")
 		}
 	})
 
@@ -381,6 +393,7 @@ func TestDocsShellPathsStableNoRedirect(t *testing.T) {
 	for _, path := range []string{
 		"/docs",
 		"/docs/patterns",
+		"/docs/information-architecture",
 		"/docs/themes",
 		"/docs/tokens",
 		"/docs/server-contracts",
@@ -415,6 +428,7 @@ func TestDocsShellFooterAndJSONLDRegressions(t *testing.T) {
 		`class="ui-footer-heading">Recipes</summary>`,
 		`class="ui-footer-heading">Handbook</summary>`,
 		`<a href="/docs/patterns">Patterns</a>`,
+		`<a href="/docs/information-architecture">Information architecture</a>`,
 		`<a href="/docs/themes">Themes</a>`,
 		`<a href="/docs/principles">Design principles</a>`,
 		`<a href="/recipes/admin-resource">Admin Resource</a>`,
@@ -488,13 +502,18 @@ func TestUsesDocsShell(t *testing.T) {
 }
 
 func TestDocsNavFor(t *testing.T) {
-	t.Run("topbar slots and five IA blocks", func(t *testing.T) {
+	t.Run("topbar slots and IA blocks", func(t *testing.T) {
 		nav := docsNavFor("/docs", "", "")
 		if nav.Version != "0.4.0" {
 			t.Errorf("Version = %q, want %q", nav.Version, "0.4.0")
 		}
-		if !nav.SearchDisabled {
-			t.Error("SearchDisabled must be true for honest placeholder search")
+		// The nav model drives client-side search: a JSON index of every
+		// destination is emitted so search.js can filter without a server.
+		if nav.SearchIndex == "" || !strings.Contains(string(nav.SearchIndex), `"title":"Documentation"`) {
+			t.Error("SearchIndex must be a non-empty JSON index including the Documentation hub")
+		}
+		if nav.ThemeSlug != "" || nav.Scheme != "" {
+			t.Errorf("ThemeSlug/Scheme = %q/%q, want empty without chrome query", nav.ThemeSlug, nav.Scheme)
 		}
 
 		titles := docsNavGroupTitles(nav)
@@ -647,6 +666,7 @@ func TestDefaultFooter(t *testing.T) {
 	// Patterns, recipes, and handbook pages stay in lockstep with the nav model.
 	for _, path := range []string{
 		"/docs/patterns",
+		"/docs/information-architecture",
 		"/docs/themes",
 		"/docs/tokens",
 		"/docs/server-contracts",

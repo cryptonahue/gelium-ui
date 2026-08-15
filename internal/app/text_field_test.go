@@ -346,7 +346,9 @@ func TestTextFieldFormAndLocalScriptImplementHTMX422SwapContract(t *testing.T) {
 		t.Fatalf("docs status = %d, want %d", res.Code, http.StatusOK)
 	}
 	body := res.Body.String()
-	form := regexp.MustCompile(`<form\b[^>]*>`).FindString(body)
+	// Scope to the validation form specifically: the docs chrome now renders
+	// its own GET forms (theme select / scheme switch) earlier in the body.
+	form := regexp.MustCompile(`<form\b[^>]*hx-post="/examples/text-field/validate"[^>]*>`).FindString(body)
 	if form == "" {
 		t.Fatal("docs are missing validation form")
 	}
