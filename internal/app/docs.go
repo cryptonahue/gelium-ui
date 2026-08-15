@@ -1,6 +1,7 @@
 package app
 
 import (
+	"io/fs"
 	"net/http"
 	"strings"
 )
@@ -179,11 +180,37 @@ var docsSections = []struct {
 	},
 }
 
+// docsRootLeadSource is the embedded docs root (web/content/index.md) that
+// leads the generated /docs hub. It is embedded in the bundle so the hub can
+// explain what Gelium UI is without duplicating prose in Go.
+const docsRootLeadSource = "content/index.md"
+
+// stripDocsRootH1 removes a single leading H1 line so an embedded docs root
+// can lead the /docs hub without creating a second heading level 1 on the page.
+// Anything after the H1 — including further headings — is preserved verbatim;
+// blank lines left by the stripped heading are collapsed.
+func stripDocsRootH1(source string) string {
+	if strings.HasPrefix(source, "# ") {
+		if i := strings.IndexByte(source, '\n'); i >= 0 {
+			return strings.TrimLeft(source[i+1:], "\n")
+		}
+		return ""
+	}
+	return source
+}
+
 // docsIndex is the GET /docs handler. It renders a Markdown page whose content
 // is generated from the same componentRoutes registry that drives the nav, so
-// the index can never drift from the actual library.
+// the index can never drift from the actual library. The embedded docs root
+// (web/content/index.md) leads the page so the hub explains what Gelium UI is
+// and how to use it before cataloging the library.
 func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	var md string
+	if source, err := fs.ReadFile(s.assets, docsRootLeadSource); err == nil {
+		if lead := stripDocsRootH1(string(source)); strings.TrimSpace(lead) != "" {
+			md += lead + "\n\n"
+		}
+	}
 	md += "# Documentation\n\n"
 	md += "The Gelium UI component library, organized by category. Every page is dogfooded: it renders the real component it documents.\n\n"
 	for _, section := range docsSections {

@@ -179,8 +179,11 @@ func TestDocsShellColorSchemeSwitcher(t *testing.T) {
 		if !strings.Contains(body, `data-theme="light"`) {
 			t.Error(`?scheme=light must set data-theme="light" so OS dark media is suppressed`)
 		}
-		if strings.Contains(body, `theme-dark`) {
-			t.Error("light scheme must not add theme-dark class")
+		// The document root must not carry theme-dark under ?scheme=light.
+		// Scope to the <html> tag: the docs prose may legitimately mention the
+		// class route while the root class itself stays light.
+		if strings.Contains(htmlClassSnippet(body), "theme-dark") {
+			t.Error("light scheme must not add theme-dark class to the document root")
 		}
 	})
 
