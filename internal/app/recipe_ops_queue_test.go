@@ -49,7 +49,7 @@ func TestRecipeOpsQueueListRendersQueueWithAvatarToneBadgeAndActions(t *testing.
 		`method="post" action="/recipes/ops-queue/order-1042/advance"`,
 		`method="post" action="/recipes/ops-queue/order-1042/dequeue"`,
 		`id="queue-panel"`,
-		`id="loom-toast-region"`,
+		`id="gelium-toast-region"`,
 		`<span class="ui-pagination-page ui-pagination-page--current" aria-current="page">1</span>`,
 		`8 items · page 1 of 2`,
 	} {
@@ -257,7 +257,7 @@ func TestRecipeOpsQueueEmptyState(t *testing.T) {
 // TestRecipeOpsQueueRefreshPostOnly proves the refresh action is POST-only (GET
 // answers 405 with Allow: POST), the no-JS refresh re-renders the list with a
 // persistent inline toast + progress, and the HTMX refresh returns the fragment
-// plus an HX-Trigger loom:toast.
+// plus an HX-Trigger gelium:toast.
 func TestRecipeOpsQueueRefreshPostOnly(t *testing.T) {
 	resetRecipeQueueStore()
 
@@ -292,8 +292,8 @@ func TestRecipeOpsQueueRefreshPostOnly(t *testing.T) {
 	if res.Code != http.StatusOK {
 		t.Fatalf("HX refresh status = %d, want %d", res.Code, http.StatusOK)
 	}
-	if trigger := res.Header().Get("HX-Trigger"); !strings.Contains(trigger, "loom:toast") || !strings.Contains(trigger, "Queue refreshed.") {
-		t.Errorf("HX-Trigger = %q, want loom:toast payload", trigger)
+	if trigger := res.Header().Get("HX-Trigger"); !strings.Contains(trigger, "gelium:toast") || !strings.Contains(trigger, "Queue refreshed.") {
+		t.Errorf("HX-Trigger = %q, want gelium:toast payload", trigger)
 	}
 	body = res.Body.String()
 	if strings.Contains(body, "<html") {

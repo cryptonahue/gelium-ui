@@ -16,7 +16,7 @@ func TestToastRendersMaterialSnackbarAnatomy(t *testing.T) {
 		`aria-hidden="true"`,
 		`focusable="false"`,
 		`<span class="ui-toast-message">Saved</span>`,
-		`<button class="ui-toast-action" type="button" data-loom-toast-dismiss aria-label="Dismiss notification">Dismiss</button>`,
+		`<button class="ui-toast-action" type="button" data-gelium-toast-dismiss aria-label="Dismiss notification">Dismiss</button>`,
 	} {
 		if !strings.Contains(rendered, contract) {
 			t.Errorf("toast is missing %q", contract)
@@ -60,7 +60,7 @@ func TestToastDocsRenderVariantsAndLiveRegion(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`id="loom-toast-region"`,
+		`id="gelium-toast-region"`,
 		`aria-live="polite"`,
 		`class="ui-toast ui-toast-success"`,
 		`class="ui-toast ui-toast-error"`,
@@ -128,7 +128,7 @@ func TestToastDemoHXReturnsTriggerAndFragment(t *testing.T) {
 		Toast struct {
 			Type    string `json:"type"`
 			Message string `json:"message"`
-		} `json:"loom:toast"`
+		} `json:"gelium:toast"`
 	}
 	if err := json.Unmarshal([]byte(trigger), &parsed); err != nil {
 		t.Fatalf("HX-Trigger is not valid JSON: %v", err)
@@ -184,7 +184,7 @@ func TestToastTriggerJSONEscapesMessage(t *testing.T) {
 		Toast struct {
 			Type    string `json:"type"`
 			Message string `json:"message"`
-		} `json:"loom:toast"`
+		} `json:"gelium:toast"`
 	}
 	if err := json.Unmarshal([]byte(trigger), &parsed); err != nil {
 		t.Fatalf("escaped header must remain valid JSON: %v", err)
@@ -202,8 +202,8 @@ func TestAppJSWiresHTMXToastTriggerEvent(t *testing.T) {
 	}
 	js := res.Body.String()
 	for _, contract := range []string{
-		`addEventListener("loom:toast"`,
-		`#loom-toast-region`,
+		`addEventListener("gelium:toast"`,
+		`#gelium-toast-region`,
 		`ui-toast-show`,
 		`Dismiss notification`,
 	} {

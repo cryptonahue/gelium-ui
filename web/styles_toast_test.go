@@ -13,7 +13,7 @@ func TestToastReleaseDocsAndPackageVersionStayCoherent(t *testing.T) {
 	if !strings.Contains(packageJSON, `"version": "0.4.0"`) {
 		t.Error("package version must identify the Toast release as 0.4.0")
 	}
-	for _, contract := range []string{"/components/toast", "v0.4.0", "loom:toast", "no-JS"} {
+	for _, contract := range []string{"/components/toast", "v0.4.0", "gelium:toast", "no-JS"} {
 		if !strings.Contains(readme, contract) {
 			t.Errorf("README is missing Toast release contract %q", contract)
 		}

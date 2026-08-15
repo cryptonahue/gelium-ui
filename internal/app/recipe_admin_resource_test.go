@@ -42,7 +42,7 @@ func TestRecipeAdminResourceListRendersDataTableWithFilterSortPage(t *testing.T)
 		`name="selection" value="all" aria-label="Select all rows"`,
 		`<span class="ui-data-table-page ui-data-table-page--current" aria-current="page">1</span>`,
 		`id="resource-panel"`,
-		`id="loom-toast-region"`,
+		`id="gelium-toast-region"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("list does not contain contract %q", contract)
@@ -475,8 +475,8 @@ func TestRecipeAdminResourceRefreshPostOnly(t *testing.T) {
 	if res.Code != http.StatusOK {
 		t.Fatalf("HX refresh status = %d, want %d", res.Code, http.StatusOK)
 	}
-	if trigger := res.Header().Get("HX-Trigger"); !strings.Contains(trigger, "loom:toast") || !strings.Contains(trigger, "Projects refreshed.") {
-		t.Errorf("HX-Trigger = %q, want loom:toast payload", trigger)
+	if trigger := res.Header().Get("HX-Trigger"); !strings.Contains(trigger, "gelium:toast") || !strings.Contains(trigger, "Projects refreshed.") {
+		t.Errorf("HX-Trigger = %q, want gelium:toast payload", trigger)
 	}
 	body = res.Body.String()
 	if strings.Contains(body, "<html") {

@@ -32,7 +32,7 @@ func TestRecipePublicFeedListRendersCardsWithAvatarAndStates(t *testing.T) {
 		`class="ui-skeleton ui-skeleton--avatar"`,
 		`role="status"`,
 		`id="feed-panel"`,
-		`id="loom-toast-region"`,
+		`id="gelium-toast-region"`,
 		`<span class="ui-pagination-page ui-pagination-page--current" aria-current="page">1</span>`,
 		`6 posts · page 1 of 2`,
 	} {
@@ -196,7 +196,7 @@ func TestRecipePublicFeedEmptyState(t *testing.T) {
 // TestRecipePublicFeedRefreshPostOnly proves the refresh action is POST-only
 // (GET answers 405 with Allow: POST), the no-JS refresh re-renders the page
 // with a persistent inline toast + progress, and the HTMX refresh returns the
-// fragment plus an HX-Trigger loom:toast.
+// fragment plus an HX-Trigger gelium:toast.
 func TestRecipePublicFeedRefreshPostOnly(t *testing.T) {
 	resetRecipeFeedStore()
 
@@ -231,8 +231,8 @@ func TestRecipePublicFeedRefreshPostOnly(t *testing.T) {
 	if res.Code != http.StatusOK {
 		t.Fatalf("HX refresh status = %d, want %d", res.Code, http.StatusOK)
 	}
-	if trigger := res.Header().Get("HX-Trigger"); !strings.Contains(trigger, "loom:toast") || !strings.Contains(trigger, "Feed refreshed.") {
-		t.Errorf("HX-Trigger = %q, want loom:toast payload", trigger)
+	if trigger := res.Header().Get("HX-Trigger"); !strings.Contains(trigger, "gelium:toast") || !strings.Contains(trigger, "Feed refreshed.") {
+		t.Errorf("HX-Trigger = %q, want gelium:toast payload", trigger)
 	}
 	body = res.Body.String()
 	if strings.Contains(body, "<html") {

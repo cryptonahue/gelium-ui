@@ -681,7 +681,7 @@ func TestLayoutRendersFooterAfterMain(t *testing.T) {
 	}
 
 	mainEnd := strings.Index(body, "</main>")
-	toastPos := strings.Index(body, "loom-toast-region")
+	toastPos := strings.Index(body, "gelium-toast-region")
 	footerPos := strings.Index(body, `<footer class="ui-footer">`)
 	if mainEnd < 0 || toastPos < 0 {
 		t.Fatal("layout is missing the main landmark or toast region")
