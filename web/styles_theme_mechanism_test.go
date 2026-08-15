@@ -77,9 +77,12 @@ func TestAppCSSImportsEveryThemeExplicitly(t *testing.T) {
 
 // TestThemeSelectionIsClassDrivenWithoutJS proves contract point (c): the
 // served bundle is a single inlined asset (zero residual @imports) and the
-// shipped app.js carries no theme-selection logic. Switching themes is purely a
-// class swap on the document root driven by the server ({{.ThemeClass}}) — no
-// runtime JavaScript picks or toggles a theme, no rebuild is needed.
+// shipped app.js carries no theme-SELECTION logic — it never builds a
+// .theme-* class or picks a theme. Switching themes is a class swap on the
+// document root driven by the server ({{.ThemeClass}}). With hx-boost the
+// server still decides: app.js only REPLICATES the response's html class
+// onto the live <html> after a boosted swap (htmx swaps the body only), so
+// the JS never chooses — it echoes the server's decision.
 func TestThemeSelectionIsClassDrivenWithoutJS(t *testing.T) {
 	compiled := compiledAppCSS(t)
 	if strings.Contains(compiled, "@import") {
@@ -91,9 +94,17 @@ func TestThemeSelectionIsClassDrivenWithoutJS(t *testing.T) {
 		t.Fatalf("read static/app.js: %v", err)
 	}
 	js := string(appJS)
-	for _, forbidden := range []string{".theme-", "data-theme"} {
-		if strings.Contains(js, forbidden) {
-			t.Errorf("app.js must not contain %q (theme selection is class-driven server-side, no JS)", forbidden)
+	// JS must never construct a theme class or select one itself. The sync
+	// code legitimately references data-theme (no "theme-" substring), so a
+	// plain "theme-" probe is the right contract.
+	if strings.Contains(js, "theme-") {
+		t.Errorf("app.js must not contain %q (theme selection is class-driven server-side, no JS)", "theme-")
+	}
+	// The boosted-nav sync is allowed and REQUIRED: it copies the server's
+	// decision from the response html onto the live document root.
+	for _, required := range []string{"responseText", "className"} {
+		if !strings.Contains(js, required) {
+			t.Errorf("app.js must sync the response html class after boosted swaps (missing %q)", required)
 		}
 	}
 }

@@ -138,3 +138,59 @@ document.addEventListener("htmx:beforeSwap", function (event) {
     })(FORMS[i]);
   }
 })();
+
+(function () {
+  "use strict";
+
+  // hx-boost navigation enhancement. The body is boosted (hx-boost="true"),
+  // so internal links and GET forms navigate via AJAX and htmx swaps only
+  // the <body>. Three concerns need explicit handling:
+
+  // 1. Theme/scheme live on <html class> (and data-theme), which htmx does
+  //    NOT swap. The boosted response carries the server-decided html; copy
+  //    its class + data-theme onto the real <html> so a theme or scheme
+  //    change survives the swap. 0-JS fallback is untouched.
+  function syncDocumentClass() {
+    var html = document.documentElement;
+    var response = document.body.getAttribute("data-gelium-boost-html");
+    if (!response) return;
+    var match = /<html[^>]*class="([^"]*)"/.exec(response);
+    if (match && html.className !== match[1]) html.className = match[1];
+    var themeMatch = /<html[^>]*data-theme="([^"]*)"/.exec(response);
+    if (themeMatch) {
+      if (themeMatch[1]) html.setAttribute("data-theme", themeMatch[1]);
+      else html.removeAttribute("data-theme");
+    }
+  }
+
+  // 2. Scroll position: without JS htmx restores to the top of the target;
+  //    for docs navigation we prefer to keep the reader's place (e.g. a
+  //    sidebar click while scrolled deep). Restore the previous scrollY
+  //    after the swap, falling back to htmx defaults for fragment links.
+  var lastScrollY = 0;
+  document.body.addEventListener("htmx:beforeRequest", function () {
+    lastScrollY = window.scrollY || document.documentElement.scrollTop || 0;
+  });
+  // Keep the raw response html available for the class sync: htmx swaps the
+  // <body> but the theme/scheme live on <html>, so we stash the response on
+  // the body before the swap and read it in htmx:afterSwap.
+  document.body.addEventListener("htmx:beforeSwap", function (event) {
+    if (event.detail && event.detail.xhr) {
+      document.body.setAttribute("data-gelium-boost-html", event.detail.xhr.responseText || "");
+    }
+  });
+  document.body.addEventListener("htmx:afterSwap", function () {
+    syncDocumentClass();
+    var h = document.getElementById("main-content");
+    if (h) {
+      // Move focus into the new content so keyboard/screen-reader users
+      // land on the page they navigated to, not the stale link.
+      h.setAttribute("tabindex", "-1");
+      h.focus({ preventScroll: true });
+    }
+    if (lastScrollY > 0) {
+      window.scrollTo(0, lastScrollY);
+    }
+    document.body.removeAttribute("data-gelium-boost-html");
+  });
+})();
