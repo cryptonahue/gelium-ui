@@ -32,9 +32,11 @@ every theme. Rationale: theme is a presentational layer; SEO is a content and se
 
 ### Brand
 
-The canonical brand is **Gelium UI** (roadmap naming, `gelium-ui-system-roadmap.md:7`). Legacy
-strings "Gelidium UI" (`layout.html:6,13`, `server.go:253`) and "LoomChat" (demos) are unification
-work inside Phase E and are assumed resolved for this contract. All metadata uses the unified brand.
+The canonical brand is **Gelium UI** (roadmap naming, `gelium-ui-system-roadmap.md:7`). Unification is
+**complete**: every served surface (title, brand, demos, content) and the repo metadata use `Gelium UI` —
+no Gelidium/Loom UI residue remains. "LoomChat" survives only as the fictional in-app chat persona inside
+the WhatsApp demo data (`demo_whatsapp.go`), which is demo content, not a brand or metadata surface. All
+metadata uses the unified brand.
 
 ---
 
@@ -416,8 +418,11 @@ from the sitemap.
 variants (`?q=`, `?sort=`, `?page=`, `data_table.go`) are the same document; they must not generate
 canonical URLs or sitemap entries. This keeps the index free of duplicate permutations.
 
-**Implementation**: `Canonical = BASE_URL + r.URL.Path` (path only, query dropped). `metaFor`
-never reads `r.URL.RawQuery` when building the canonical.
+**Implementation**: the canonical is `siteBaseURL + path` (path only, query dropped), resolved per
+route in `resolveMeta` (`server.go`). The origin is **env-configurable**: `BASE_URL` is read at startup
+and resolved through the pure `resolveBaseURL` function, defaulting to `https://gelium-ui.example` when
+unset; canonical, og:url, og:image, JSON-LD and sitemap all derive from the resolved origin.
+`resolveMeta` never reads `r.URL.RawQuery` when building the canonical.
 
 **Example**:
 
