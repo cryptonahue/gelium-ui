@@ -156,6 +156,7 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
 	{Path: "/docs/accessibility", Label: "Accessibility"},
 	{Path: "/docs/principles", Label: "Design principles"},
+	{Path: "/docs/content-style", Label: "Content style"},
 	{Path: "/docs/acknowledgments", Label: "Acknowledgments"},
 }
 
@@ -358,6 +359,14 @@ func (s *server) docsAccessibility(w http.ResponseWriter, r *http.Request) {
 // enforce them.
 func (s *server) docsPrinciples(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPage(w, r, pageView{Title: "Design principles"}, "content/principles.md")
+}
+
+// docsContentStyle is GET /docs/content-style — the Content style handbook
+// page: the one voice every Gelium UI string follows (errors, toasts, empty
+// states, banners, docs), with the action-pattern rules and the copy contract
+// tests that enforce them.
+func (s *server) docsContentStyle(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Content style"}, "content/handbook-content-style.md")
 }
 
 // docsAcknowledgments is GET /docs/acknowledgments — the Acknowledgments page:
