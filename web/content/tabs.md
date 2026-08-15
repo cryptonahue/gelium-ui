@@ -1,6 +1,6 @@
 # Tabs
 
-Tabs organize groups of related content at the same level of hierarchy. Gelium reimplements the Material 3 tab contract as server-rendered navigation links: each tab is a real `<a href>` to its own page or section, and the selected tab is marked by the handler from the current URL — there is no component JavaScript, no `role="tablist"` and no roving focus.
+Tabs organize groups of related content at the same level of hierarchy. Use tabs when a page holds several peer sections and people should switch between them — each tab is a real `<a href>` link to its own page or section, so deep-linking and no-JS navigation work for free. Gelium reimplements the Material 3 tab contract as server-rendered navigation links: there is no component JavaScript, no `role="tablist"` and no roving focus.
 
 ## Anatomy
 
@@ -36,7 +36,7 @@ Material defines two tab variants, and each supports icon-only, label-only, and 
 
 Use the same variant for every tab in a bar, and never mix primary and secondary tabs in one bar.
 
-## States
+## What states can a tab be in?
 
 The selected tab is decided by the server, so the bar always shows its state without JavaScript:
 
@@ -60,10 +60,10 @@ Each tab is a real link to its own section. On this page the primary tabs link t
 - **Icon-only tabs** must carry an `aria-label`; icon and indicator are decorative and `aria-hidden`.
 - In forced-colors mode the indicator repaints as `CanvasText`, selected text becomes `Highlight`, and the focus ring becomes `Highlight`, so selection survives without color.
 
-## Keyboard
+## How does keyboard navigation work?
 
 Because every tab is a real link, keyboard use is native: `Tab` moves between tabs, `Enter` activates the focused tab, and browser conventions (focus outline, current-page announcement) apply unchanged.
 
 ## Progressive enhancement
 
-There is no enhancement layer: the server-rendered link flow is the complete flow. HTMX panel swapping could be added later, but it is not required — the fallback already navigates normally with plain links.
+There is no enhancement layer: the server-rendered link flow is the complete flow. HTMX (the progressive-enhancement library that swaps server-rendered fragments) panel swapping could be added later, but it is not required — the fallback already navigates normally with plain links.

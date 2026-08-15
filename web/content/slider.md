@@ -1,6 +1,6 @@
 # Slider
 
-Slider is a native `input[type="range"]` enhanced with CSS: the browser default chrome is removed and Gelium paints the 4px Material track, its active fill, and the 20px primary handle from the `--ui-slider-*` tokens. The real control stays the focusable, operable element, so form semantics, keyboard input, and assisted input work unchanged.
+Slider is a native `input[type="range"]` painted with the Material track, its active fill, and the handle from the `--ui-slider-*` tokens — the real control stays the focusable, operable element. Use a slider when a single value sits on a continuous or discrete ordered range — volume, brightness, a price cap — and approximate precision is acceptable. Form semantics, keyboard input, and assisted input work unchanged.
 
 ## Anatomy
 
@@ -17,7 +17,7 @@ The component is a single decorated range input. Put the visual `--ui-slider-fil
 - **Handle** — the thumb is a 20px circle in `--ui-slider-handle` with `--ui-slider-handle-elevation`, growing to `--ui-slider-handle-pressed-size` while pressed.
 - **`--ui-slider-fill`** — a percentage custom property. Set it inline to the value you render. The `data-ui-slider` enhancement in `app.js` keeps it in sync while dragging; without JavaScript the fill reflects the served value.
 
-## States
+## What states can a slider be in?
 
 The slider covers `unselected` (value at minimum), `populated` (an intermediate value), and `disabled`. Disabled follows the Material contract: the track and handle repaint through `--ui-slider-disabled` at `--ui-slider-disabled-opacity` (`.38`) and interaction stops.
 

@@ -1,6 +1,6 @@
 # Chips
 
-Chips help people enter information, make selections, filter content, or trigger actions. They appear dynamically as a group of multiple interactive elements. Gelium implements each of the four upstream variants — assist, filter, input, and suggestion — with native server-rendered semantics and no component JavaScript, instead of one generic `div`.
+Chips are compact interactive elements that represent a choice, an attribute, or an action. Use chips when people enter information, make selections, filter content, or trigger actions in a tight space — each of the four upstream variants (assist, filter, input, and suggestion) keeps native server-rendered semantics with no component JavaScript, instead of one generic `div`.
 
 ## Types
 
@@ -36,7 +36,7 @@ The filter chip keeps a real checkbox inside its `label`:
 </label>
 ```
 
-The `appearance: none` checkbox paints the full Material chip container. On `:checked` the container fills with the secondary container and the selected icon (a check) appears; on `:indeterminate` the checkbox is the only visual toggle surface. Because it is a native checkbox, Space toggles it without any JavaScript and the state is submitted with the surrounding form.
+The `appearance: none` checkbox paints the full Material chip container. On `:checked` (the CSS pseudo-class matching a checked native input) the container fills with the secondary container and the selected icon (a check) appears; on `:indeterminate` the checkbox is the only visual toggle surface. Because it is a native checkbox, Space toggles it without any JavaScript and the state is submitted with the surrounding form.
 
 ### Input and removal
 
@@ -51,7 +51,7 @@ Input chips are removable. Gelium demonstrates removal as a no-JS server round-t
 </form>
 ```
 
-Clicking the remove icon submits the form; the server re-renders the page with that chip removed and a `role="status"` notice. This keeps the primary flow complete without JavaScript. Removal could equally be enhanced by HTMX for an in-place swap, but a plain POST already completes the action.
+Clicking the remove icon submits the form; the server re-renders the page with that chip removed and a `role="status"` notice. This keeps the primary flow complete without JavaScript. Removal could equally be enhanced by HTMX (the progressive-enhancement library that swaps server-rendered fragments) for an in-place swap, but a plain POST already completes the action.
 
 ## States
 

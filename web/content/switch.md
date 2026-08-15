@@ -1,6 +1,6 @@
 # Switch
 
-Switch is a native `input[type="checkbox"]` enhanced with CSS: the browser default look is removed and Gelium paints the `52x32` Material track, its outline, and the sliding handle from the `--ui-switch-*` tokens. The real control stays the focusable, operable element, so form semantics and assisted input work unchanged.
+Switch is a native `input[type="checkbox"]` styled as the Material `52x32` track, its outline, and the sliding handle from the `--ui-switch-*` tokens — the real control stays the focusable, operable element. Use a switch when a setting is either on or off and should read as an immediate toggle — enabling a feature, dark mode, notifications — with the state submitting through a real `<form>`. Form semantics and assisted input work unchanged.
 
 ## Anatomy
 
@@ -20,7 +20,7 @@ The label wraps the native checkbox plus two decorative overlay spans. Keep the 
 - **Handle** — `ui-switch-handle`, a circular `span` that starts at `16px`, grows to `24px` when checked, and stretches to `28px` while pressed (`--ui-switch-handle-size`, `--ui-switch-handle-selected-size`, `--ui-switch-handle-pressed-size`). It slides to the opposite edge via `translateX`.
 - **Label** — `ui-switch-label`, the visible text paired with the track. Put the accessible name here and wrap both in a `label` so clicking the text toggles the input.
 
-## States
+## What states can a switch be in?
 
 The switch covers `checked`, `unchecked`, and `disabled` (both disabled states shown in the preview). Disabled follows the Material 3 split-opacity contract: the track drops to `--ui-switch-disabled-track-opacity` (`.12`) while the unchecked handle drops to `--ui-switch-disabled-handle-opacity` (`.38`); a disabled checked handle keeps full opacity and repaints through `--ui-switch-disabled-handle`.
 

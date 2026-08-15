@@ -1,6 +1,6 @@
 # List
 
-List is a continuous, vertical index of text and images. Gelium reimplements the Material 3 list over semantic HTML — the root is a real `<ul>`, `<ol>`, `<nav>`, or `<menu>`, and each item is a `<li>`. No component JavaScript: navigation items are real `<a href>` links, and selection items are native checkboxes in a real form.
+List is a continuous, vertical index of text and images. Use a list when people must scan, select, or navigate through a group of related rows — settings, actions, or collections. Gelium reimplements the Material 3 list over semantic HTML — the root is a real `<ul>`, `<ol>`, `<nav>`, or `<menu>`, and each item is a `<li>`. No component JavaScript: navigation items are real `<a href>` links, and selection items are native checkboxes in a real form.
 
 ## Anatomy
 
