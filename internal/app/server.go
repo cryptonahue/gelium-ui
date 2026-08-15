@@ -13,8 +13,10 @@ import (
 	"path"
 	"strings"
 
+	"github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
 	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark-highlighting/v2"
 
 	webassets "geliumui/web"
 )
@@ -801,7 +803,15 @@ func New() http.Handler {
 	templates := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
 	s := &server{
 		templates: templates,
-		markdown:  goldmark.New(goldmark.WithExtensions(extension.GFM)),
+		markdown:  goldmark.New(
+			goldmark.WithExtensions(
+				extension.GFM,
+				highlighting.NewHighlighting(
+					highlighting.WithStyle("monokai"),
+					highlighting.WithFormatOptions(html.WithClasses(true)),
+				),
+			),
+		),
 		assets:    webassets.Assets,
 	}
 

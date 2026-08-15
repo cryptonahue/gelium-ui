@@ -197,3 +197,31 @@ func TestProseTablesRender(t *testing.T) {
 		t.Errorf(".prose th/td must pad cells, got block: %s", cells)
 	}
 }
+
+// TestProseCodeBlocksRender is the fenced-code-block contract: markdown
+// <pre> blocks must be styled (border, surface-container, mono) and carry
+// chroma syntax-highlighting classes driven by theme tokens.
+func TestProseCodeBlocksRender(t *testing.T) {
+	css := readSourceStyle(t, "base.css")
+	pre := cssBlock(t, css, ".prose pre")
+	if !strings.Contains(pre, "background: var(--ui-color-surface-container)") {
+		t.Errorf(".prose pre must use the surface-container token, got block: %s", pre)
+	}
+	if !strings.Contains(pre, "font-family: var(--ui-font-mono") {
+		t.Errorf(".prose pre must use the mono font, got block: %s", pre)
+	}
+	// Chroma selectors are comma-grouped, so assert by substring instead of
+	// a standalone block.
+	if !strings.Contains(css, ".prose .chroma .k, ") && !strings.Contains(css, ".prose .chroma .k ") {
+		t.Errorf("chroma keyword selectors must exist, got css without .chroma .k")
+	}
+	if !strings.Contains(css, ".prose .chroma .k") || !strings.Contains(css, "var(--ui-color-primary)") {
+		t.Errorf("chroma keywords must map to the primary token")
+	}
+	if !strings.Contains(css, ".prose .chroma .c,") && !strings.Contains(css, ".prose .chroma .c ") {
+		t.Errorf("chroma comment selectors must exist, got css without .chroma .c")
+	}
+	if !strings.Contains(css, ".prose .chroma .c") || !strings.Contains(css, "var(--ui-color-fg-muted)") {
+		t.Errorf("chroma comments must map to the muted token")
+	}
+}
