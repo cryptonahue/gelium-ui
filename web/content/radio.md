@@ -1,6 +1,6 @@
 # Radio
 
-Radio is a native `input[type="radio"]` enhanced with CSS: the browser default look is removed and Gelium paints the Material ring and the inner checked dot from the `--ui-radio-*` tokens. The real control stays the focusable, operable element, so form semantics, grouping, and assisted input work unchanged.
+Radio is a native `input[type="radio"]` painted with the Material ring and the inner checked dot from the `--ui-radio-*` tokens — the real control stays the focusable, operable element. Use a radio group when exactly one option from a mutually exclusive set must be chosen, and the choice has to submit through a real `<form>`. Grouping, form semantics, and assisted input work unchanged.
 
 ## Anatomy
 

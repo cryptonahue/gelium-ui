@@ -4,6 +4,7 @@ import (
 	"bytes"
 	"encoding/json"
 	"html/template"
+	"io/fs"
 	"net/http"
 	"net/http/httptest"
 	"regexp"
@@ -1049,9 +1050,91 @@ func TestResolveBaseURL(t *testing.T) {
 	}
 }
 
-// TestHomeRendersOGImageAndTwitterCard proves the home page ships the default
-// og:image placeholder and the matching large-image twitter:card (SEO contract
-// §6).
+// answerFirstIntroSignal is a deterministic proxy for the GEO §1-4
+// answer-first rule: the intro paragraph must state what the component is
+// (it names the component) AND when to use it. A when-clause ("Use X when…",
+// "…when you need…") or an explicit "use … for/to" purpose expresses that.
+var answerFirstIntroSignal = regexp.MustCompile(`\bwhen\b|(?i)\buse\b.{0,80}\b(for|to|when)\b`)
+
+// firstProseParagraph returns the first prose paragraph of a markdown doc:
+// the first run of consecutive non-empty lines after the H1 whose first line
+// is not a non-paragraph block (heading, blockquote, list, table, code fence,
+// raw HTML). GEO §1-4 reads this paragraph in isolation.
+func firstProseParagraph(t *testing.T, source string) string {
+	t.Helper()
+	lines := strings.Split(source, "\n")
+	start := -1
+	for i, line := range lines {
+		if strings.HasPrefix(line, "# ") {
+			start = i + 1
+			break
+		}
+	}
+	if start < 0 {
+		t.Fatal("document has no H1")
+	}
+	for i := start; i < len(lines); i++ {
+		trimmed := strings.TrimSpace(lines[i])
+		if trimmed == "" {
+			continue
+		}
+		if strings.HasPrefix(trimmed, "#") ||
+			strings.HasPrefix(trimmed, ">") ||
+			strings.HasPrefix(trimmed, "-") ||
+			strings.HasPrefix(trimmed, "*") ||
+			strings.HasPrefix(trimmed, "|") ||
+			strings.HasPrefix(trimmed, "`") ||
+			strings.HasPrefix(trimmed, "<") ||
+			regexp.MustCompile(`^\d+\.`).MatchString(trimmed) {
+			continue
+		}
+		var para []string
+		for j := i; j < len(lines); j++ {
+			if strings.TrimSpace(lines[j]) == "" {
+				break
+			}
+			para = append(para, strings.TrimSpace(lines[j]))
+		}
+		if len(para) > 0 {
+			return strings.Join(para, " ")
+		}
+	}
+	t.Fatal("document has no prose paragraph after the H1")
+	return ""
+}
+
+// TestContentFilesLeadWithAnswerFirst proves every component content file
+// leads with an answer-first summary (GEO §1-4): the first prose paragraph
+// after the H1 is non-empty, at least 40 chars, names the component, and
+// states when to use it — self-contained, with no back-references. The slug
+// table grows in two chunks: chunk A here, chunk B added by task 4.1.
+func TestContentFilesLeadWithAnswerFirst(t *testing.T) {
+	slugs := []string{
+		// Chunk A (PR2): data entry, selection and feedback.
+		"text-field", "checkbox", "radio", "switch", "select", "slider",
+		"progress", "segmented-button", "menu", "chips", "tabs", "list",
+		"data-table",
+	}
+	for _, slug := range slugs {
+		t.Run(slug, func(t *testing.T) {
+			source, err := fs.ReadFile(webassets.Assets, "content/"+slug+".md")
+			if err != nil {
+				t.Fatalf("read content/%s.md: %v", slug, err)
+			}
+			para := firstProseParagraph(t, string(source))
+			if len(para) < 40 {
+				t.Errorf("answer-first intro is only %d chars (want ≥40): %q", len(para), para)
+			}
+			name := strings.ReplaceAll(slug, "-", " ")
+			if !strings.Contains(strings.ToLower(para), name) {
+				t.Errorf("answer-first intro must name the component %q: %q", name, para)
+			}
+			if !answerFirstIntroSignal.MatchString(para) {
+				t.Errorf("answer-first intro must state when to use the component: %q", para)
+			}
+		})
+	}
+}
 func TestHomeRendersOGImageAndTwitterCard(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))

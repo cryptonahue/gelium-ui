@@ -1,8 +1,10 @@
 # Segmented buttons
 
+Segmented buttons show a set of related options or actions in one mutually exclusive row. Use them when a small set of choices belongs together — transport mode, formatting toggles — and selection must submit through a real `<form>` with no component JavaScript.
+
 > **Labs** — experimental component. Breaking changes may happen outside major-version bumps, mirroring Material Web's own Labs warning.
 
-Segmented buttons display a set of options or actions in a single, mutually exclusive row. Gelium reimplements the Material 3 outlined segmented button set over **server-rendered HTML with native form semantics**: single-select groups use `input[type="radio"]`, multi-select groups use `input[type="checkbox"]`, and non-selection actions use `button[type="button"]`. Selection state is derived from the native `:checked` pseudo-class — there is **no component JavaScript** and the checked values submit through a normal `<form>`.
+Segmented buttons display a set of options or actions in a single, mutually exclusive row. Gelium reimplements the Material 3 outlined segmented button set over **server-rendered HTML with native form semantics**: single-select groups use `input[type="radio"]`, multi-select groups use `input[type="checkbox"]`, and non-selection actions use `button[type="button"]`. Selection state is derived from the native `:checked` pseudo-class (the CSS selector that matches a checked native input) — there is **no component JavaScript** and the checked values submit through a normal `<form>`.
 
 ## Anatomy
 

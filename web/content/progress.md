@@ -1,6 +1,6 @@
 # Progress
 
-Progress is a native `progress` element decorated with CSS: the browser default chrome is removed and Gelium paints the 4px Material track and its indicator from the `--ui-progress-*` tokens. The real element stays in the document, so its value semantics, `aria-valuenow`/`aria-valuetext` exposure, and determinate/indeterminate behavior work unchanged.
+Progress is the native `progress` element decorated with the Material track and its indicator from the `--ui-progress-*` tokens — the real element stays in the document, so its value semantics, `aria-valuenow`/`aria-valuetext` exposure, and determinate/indeterminate behavior work unchanged. Use it when an operation is in flight: determinate when the task has a measurable duration, indeterminate when only activity is known.
 
 ## Anatomy
 

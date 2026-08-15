@@ -1,6 +1,6 @@
 # Checkbox
 
-Checkbox is a native `input[type="checkbox"]` enhanced with CSS: the browser default look is removed and Gelium paints the Material box, its outline, and the checked chevron from the `--ui-checkbox-*` tokens. The real control stays the focusable, operable element, so form semantics and assisted input work unchanged.
+Checkbox is a native `input[type="checkbox"]` painted with the Material box, its outline, and the checked chevron from the `--ui-checkbox-*` tokens — the real control stays the focusable, operable element. Use a checkbox when an option toggles independently or several options multiply across a list, and the selection must submit through a real `<form>`. Form semantics and assisted input work unchanged.
 
 ## Anatomy
 
