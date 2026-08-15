@@ -11,10 +11,13 @@ import (
 // system beyond a thin page frame.
 type landingView struct {
 	Hero            *heroView
+	Claims          []string
 	FeaturesHeading sectionHeadingView
 	Features        []featureCardView
 	Split           *splitView
+	Demo            *landingDemoView
 	Recipes         *landingRecipesView
+	FAQ             *landingFAQView
 	CTABand         *landingCTABandView
 }
 
@@ -67,6 +70,28 @@ type landingCTABandView struct {
 	SecondaryCTA *buttonView
 }
 
+// landingDemoView is the visual demo card (Basecoat pattern): a prominent
+// link into the live WhatsApp demo with a token-styled preview.
+type landingDemoView struct {
+	Heading sectionHeadingView
+	Body    string
+	CTA     buttonView
+	Media   template.HTML
+}
+
+// landingFAQView is the closing FAQ section (Base UI pattern): answers
+// developer objections with zero-JS native disclosures.
+type landingFAQView struct {
+	Heading sectionHeadingView
+	Items   []faqItemView
+}
+
+// faqItemView is a single question/answer pair.
+type faqItemView struct {
+	Question string
+	Answer   string
+}
+
 // marketingLanding builds the home page composition from Gelium primitives.
 func marketingLanding() landingView {
 	return landingView{
@@ -78,6 +103,12 @@ func marketingLanding() landingView {
 				{Label: "Get started", Variant: "primary", Href: "/docs"},
 				{Label: "Browse components", Variant: "secondary", Href: "/components/button"},
 			},
+		},
+		Claims: []string{
+			"Zero required JS",
+			"Two themes, one bundle",
+			"735+ contract tests",
+			"Open code, MIT",
 		},
 		FeaturesHeading: sectionHeadingView{
 			Eyebrow:  "Why Gelium",
@@ -117,6 +148,25 @@ http.ListenAndServe(":8787", app.New())
 // HX-Trigger     → transient toast only</code></pre>`,
 			),
 		},
+		Demo: &landingDemoView{
+			Heading: sectionHeadingView{
+				Eyebrow:  "See it live",
+				Title:    "A real app, running on Gelium",
+				Centered: true,
+			},
+			Body: "The WhatsApp manager demo — chat list, search, send, and templates — is a complete server-rendered app built from the same public components and tokens you embed.",
+			CTA:  buttonView{Label: "Launch live demo", Variant: "primary", Href: "/demo/whatsapp"},
+			Media: template.HTML(
+				`<div class="ui-landing-demo-phone" aria-hidden="true">
+  <div class="ui-landing-demo-phone-bar"></div>
+  <div class="ui-landing-demo-chat">
+    <div class="ui-landing-demo-bubble ui-landing-demo-bubble--in"></div>
+    <div class="ui-landing-demo-bubble ui-landing-demo-bubble--out"></div>
+    <div class="ui-landing-demo-bubble ui-landing-demo-bubble--in ui-landing-demo-bubble--short"></div>
+  </div>
+</div>`,
+			),
+		},
 		Recipes: &landingRecipesView{
 			Heading: sectionHeadingView{
 				Eyebrow:  "Screen recipes",
@@ -138,6 +188,31 @@ http.ListenAndServe(":8787", app.New())
 					Title: "Public Feed",
 					Body:  "Social-style feed composition with reactions and progressive enhancement.",
 					CTA:   &buttonView{Label: "Open recipe", Variant: "secondary", Href: "/recipes/public-feed"},
+				},
+			},
+		},
+		FAQ: &landingFAQView{
+			Heading: sectionHeadingView{
+				Eyebrow:  "FAQ",
+				Title:    "Frequently asked questions",
+				Centered: true,
+			},
+			Items: []faqItemView{
+				{
+					Question: "Is Gelium UI a framework?",
+					Answer:   "No — it's a Go module you embed. app.New() returns an http.Handler your server mounts; there is no runtime to install and no service to run.",
+				},
+				{
+					Question: "Does it work with my existing stack?",
+					Answer:   "Yes — components are HTML partials and CSS, so any server-rendered stack can use them. HTMX stays optional: the core contract is plain forms, links, and progressive enhancement.",
+				},
+				{
+					Question: "How does it differ from a React component library?",
+					Answer:   "No component JavaScript and no build step for consumers — Gelium ships server contracts instead of props, and the server renders the HTML.",
+				},
+				{
+					Question: "Can I switch themes?",
+					Answer:   "Yes — Material is the default and Basecoat ships in the same bundle. Switch with ?theme=basecoat on any URL or a class on the html element; no rebuild required.",
 				},
 			},
 		},
@@ -237,6 +312,9 @@ func applyLandingChrome(l *landingView, themeSlug, scheme string) {
 	}
 	if l.Split != nil && l.Split.CTA != nil && l.Split.CTA.Href != "" {
 		l.Split.CTA.Href = chromeHref(l.Split.CTA.Href, themeSlug, scheme)
+	}
+	if l.Demo != nil && l.Demo.CTA.Href != "" {
+		l.Demo.CTA.Href = chromeHref(l.Demo.CTA.Href, themeSlug, scheme)
 	}
 	if l.Recipes != nil {
 		for i := range l.Recipes.Cards {

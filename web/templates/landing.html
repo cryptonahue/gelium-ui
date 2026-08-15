@@ -2,6 +2,12 @@
 <div class="ui-landing">
   {{if .Hero}}{{template "hero" .Hero}}{{end}}
 
+  {{if .Claims}}
+  <ul class="ui-landing-claims" aria-label="Gelium UI at a glance">
+    {{range .Claims}}<li><span class="ui-landing-claims-mark" aria-hidden="true">✓</span>{{.}}</li>{{end}}
+  </ul>
+  {{end}}
+
   {{if .Features}}
   <section class="ui-landing-section" aria-label="Why Gelium UI">
     {{template "section-heading" .FeaturesHeading}}
@@ -17,11 +23,38 @@
   </section>
   {{end}}
 
+  {{if .Demo}}
+  <section class="ui-landing-section" aria-label="Live demo">
+    {{template "section-heading" .Demo.Heading}}
+    <div class="ui-landing-demo-card">
+      <div class="ui-landing-demo-media">{{.Demo.Media}}</div>
+      <div class="ui-landing-demo-body">
+        {{if .Demo.Body}}<p class="ui-landing-demo-copy">{{.Demo.Body}}</p>{{end}}
+        {{if .Demo.CTA.Href}}<div class="ui-landing-demo-action">{{template "button" .Demo.CTA}}</div>{{end}}
+      </div>
+    </div>
+  </section>
+  {{end}}
+
   {{if .Recipes}}
   <section class="ui-landing-section" aria-label="Screen recipes">
     {{template "section-heading" .Recipes.Heading}}
     <div class="ui-landing-feature-grid">
       {{range .Recipes.Cards}}{{template "feature-card" .}}{{end}}
+    </div>
+  </section>
+  {{end}}
+
+  {{if .FAQ}}
+  <section class="ui-landing-section ui-landing-faq" aria-label="Frequently asked questions">
+    {{template "section-heading" .FAQ.Heading}}
+    <div class="ui-landing-faq-list">
+      {{range .FAQ.Items}}
+      <details class="ui-landing-faq-item">
+        <summary>{{.Question}}</summary>
+        <p class="ui-landing-faq-answer">{{.Answer}}</p>
+      </details>
+      {{end}}
     </div>
   </section>
   {{end}}
