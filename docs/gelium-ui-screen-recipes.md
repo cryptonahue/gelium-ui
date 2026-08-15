@@ -84,7 +84,7 @@ Data table (`data-table.html`/`data_table.go`, reuso de columnas/paginación/emp
 
 ### CONTENT_RULES
 
-Botones = verbos de acción ("New project", "Delete Alpha release", nunca "OK"); confirmación = qué se hace + irreversibilidad explícita ("This action cannot be undone."); errores = qué pasó + cómo resolverlo ("Name is required."); empty = mensaje + CTA real; copy en inglés por contrato, localizable.
+Botones = verbos de acción ("New project", "Delete Alpha release", nunca "OK"); confirmación = qué se hace + irreversibilidad explícita ("This action cannot be undone."); errores = qué pasó + cómo resolverlo ("Enter the project name."); empty = mensaje + CTA real; copy en inglés por contrato, localizable.
 
 ### SEO_REQUIREMENTS
 

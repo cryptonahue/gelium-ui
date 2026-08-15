@@ -404,7 +404,7 @@ func recipeFeedEmptyState(viewValue string) emptyStateView {
 	case "following":
 		return emptyStateView{
 			Title:    "No posts from people you follow",
-			Body:     "Posts from the people you follow will appear here.",
+			Body:     "Posts from the people you follow will appear here. Follow more people to fill this feed.",
 			CTA:      true,
 			CTAHref:  "/recipes/public-feed?view=for-you",
 			CTALabel: "See all posts",
