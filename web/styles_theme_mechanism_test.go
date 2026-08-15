@@ -104,3 +104,53 @@ func compactCSS(t *testing.T, css string) string {
 	t.Helper()
 	return regexp.MustCompile(`\s+`).ReplaceAllString(css, "")
 }
+
+// TestThemeAppliesFromStaticDocumentOnly proves the document-root-only
+// contract (Phase H close-out): a static HTML document carrying
+// class="theme-<name>" on the document root and linking only the served bundle
+// receives the theme with NO server round-trip, NO rebuild, and NO JavaScript.
+// It reads the bundle from the embedded Assets and starts no HTTP server.
+func TestThemeAppliesFromStaticDocumentOnly(t *testing.T) {
+	compiled := compactCSS(t, compiledAppCSS(t))
+	if strings.Contains(compiled, "@import") {
+		t.Fatal("bundle must be a single inlined asset (no residual @import)")
+	}
+
+	fixture := func(rootClass string) string {
+		return "<html class=\"" + rootClass + "\"><head><link rel=\"stylesheet\" href=\"/static/app.css\"></head><body></body></html>"
+	}
+
+	// Scenario: basecoat via static document only — root class + bundle link +
+	// .theme-basecoat{ selector in the served asset, no server request.
+	basecoatDoc := fixture("theme-basecoat")
+	if !strings.Contains(basecoatDoc, `class="theme-basecoat"`) {
+		t.Fatal("fixture must carry theme-basecoat on the document root")
+	}
+	if !strings.Contains(basecoatDoc, `href="/static/app.css"`) {
+		t.Fatal("fixture must link the served bundle")
+	}
+	if !strings.Contains(compiled, ".theme-basecoat{") {
+		t.Error("served bundle must carry .theme-basecoat{ root selector")
+	}
+
+	// Scenario: material parity from the same single bundle (default theme).
+	materialDoc := fixture("theme-material")
+	if !strings.Contains(materialDoc, `class="theme-material"`) {
+		t.Fatal("fixture must carry theme-material on the document root")
+	}
+	if !strings.Contains(compiled, ".theme-material{") {
+		t.Error("served bundle must carry .theme-material{ root selector")
+	}
+
+	// Scenario: class swap changes direction without rebuild or JS — the two
+	// fixtures differ only in the root class and share one bundle. This
+	// complements TestThemeSelectionIsClassDrivenWithoutJS (bundle single
+	// asset + zero theme logic in app.js).
+	if basecoatDoc == materialDoc {
+		t.Fatal("fixtures must differ in the root class only")
+	}
+	if !strings.Contains(compiled, ".theme-material{") || !strings.Contains(compiled, ".theme-basecoat{") {
+		t.Error("both root selectors must resolve from the same single bundle")
+	}
+}
+

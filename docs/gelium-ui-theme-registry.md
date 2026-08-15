@@ -68,7 +68,7 @@ El contrato completo está en `docs/gelium-ui-theme-contract.md`. Resumen de lo 
 ### Mecanismo Phase H (2 pasos mínimos)
 
 1. **Importar el theme en el bundle**: agregar `@import "../../themes/<theme>/theme.css";` en `web/styles/app.css` (lista explícita, junto a los otros themes).
-2. **Seleccionarlo en runtime por clase**: `<html class="theme-<name>">` (o `data-theme="<name>"`) en `layout.html`, data-driven desde el server cuando Phase A lo haga.
+2. **Seleccionarlo en runtime por clase**: `<html class="theme-<name>">` (o `data-theme="<name>")` en `layout.html` (línea 2), data-driven desde el server (`{{.ThemeClass}}`, allowlist en `themeClass()`, `internal/app/server.go`). **Placement: `<html>` es el documento raíz** — el literal `<body>` del roadmap no se adopta (decisión Phase H, `theme-contract.md` §2).
 
 Con esto, cambiar la clase cambia la dirección visual **sin rebuild ni JS** (`theme-contract.md` §2, `theme-architecture-audit.md` §7).
 

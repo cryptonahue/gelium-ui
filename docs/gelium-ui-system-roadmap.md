@@ -251,13 +251,15 @@ rationale
 
 **DoD**: 3 recipes completas con los 17 campos, usando componentes reales, con server contract y fallback no-JS; smoke en browser.
 
-### Phase H — Theme mechanism
+### Phase H — Theme mechanism ✅ DONE (2026-08-14)
+
+> **Decisión de placement**: el literal `<body class="...">` del roadmap NO se adoptó — la clase vive en el **documento raíz** `<html class="{{.ThemeClass}}">` (`layout.html:2`), que ES el documento raíz según el propio roadmap («documento raíz»). Mover a `body` churnearía ~10 tests por cero ganancia funcional. Ver `theme-contract.md` §2.
 
 Implementar **solo el mecanismo mínimo**:
 
 ```text
-<body class="theme-material">
-<body class="theme-basecoat">
+<html class="theme-material">
+<html class="theme-basecoat">
 ```
 
 - La selección debe poder venir del **servidor** o del **documento raíz**.
