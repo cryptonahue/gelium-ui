@@ -732,7 +732,10 @@ type pageView struct {
 	SchemeSwitcher *schemeSwitcherView
 	// Landing enables the marketing home composition (hero, features, recipes).
 	// When non-nil, layout renders the landing template instead of Markdown prose.
-	Landing              *landingView
+	Landing *landingView
+	// Blog enables the blog space (index + posts). When non-nil, layout
+	// renders the blog template — a separate surface from the docs shell.
+	Blog                 *blogView
 	Banner               *bannerView
 	Breadcrumb           *breadcrumbView
 	Footer               *footerView
@@ -807,6 +810,10 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/acknowledgments", s.docsAcknowledgments)
 	mux.HandleFunc("GET /docs/changelog", s.docsChangelog)
 	mux.HandleFunc("GET /docs/roadmap", s.docsRoadmap)
+	// Blog space: separate surface with its own look. /blog is the index;
+	// /blog/{slug} renders a post from the registry (unknown slugs 404).
+	mux.HandleFunc("GET /blog", s.blogIndex)
+	mux.HandleFunc("GET /blog/{slug}", s.blogPost)
 	for _, r := range componentRoutes() {
 		r := r
 		mux.HandleFunc("GET "+r.Path, func(w http.ResponseWriter, req *http.Request) {

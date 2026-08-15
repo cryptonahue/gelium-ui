@@ -1,0 +1,30 @@
+{{define "blog"}}
+<div class="ui-blog">
+  {{if .Post}}
+  <a class="ui-blog-back" href="/blog">← All posts</a>
+  <header class="ui-blog-post-header">
+    <h1>{{.Post.Title}}</h1>
+    <p class="ui-blog-provenance">
+      <time datetime="{{.Post.Date}}">{{.Post.Date}}</time> · {{.Post.Author}} · {{.Post.ReadingTime}} min read
+    </p>
+  </header>
+  <article class="prose ui-blog-post">{{.Post.Content}}</article>
+  {{else}}
+  <header class="ui-blog-header">
+    <h1>{{.Title}}</h1>
+    {{if .Intro}}<p class="ui-blog-intro">{{.Intro}}</p>{{end}}
+  </header>
+  <ul class="ui-blog-card-grid" aria-label="Blog posts">
+    {{range .Posts}}
+    <li>
+      <a class="ui-card ui-card-outlined ui-blog-card" href="/blog/{{.Slug}}">
+        <h2 class="ui-card-title">{{.Title}}</h2>
+        <p class="ui-card-meta">{{.Date}}</p>
+        <p class="ui-card-body">{{.Summary}}</p>
+      </a>
+    </li>
+    {{end}}
+  </ul>
+  {{end}}
+</div>
+{{end}}

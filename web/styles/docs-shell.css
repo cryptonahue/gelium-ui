@@ -147,6 +147,19 @@
     flex: none;
   }
 
+  /* Blog link in the docs topbar. Static internal href — never
+     chrome-rewritten, the same query-cleanliness rule as the GitHub link. */
+  .docs-topbar-blog {
+    flex: none;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-md);
+    letter-spacing: var(--ui-type-label-md-letter-spacing);
+    text-decoration: none;
+  }
+  .docs-topbar-blog:hover {
+    color: var(--ui-color-fg);
+  }
+
   /* Mobile: details/summary disclosure with the same nav model. */
   .docs-nav-mobile {
     display: block;
