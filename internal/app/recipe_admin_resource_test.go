@@ -436,7 +436,7 @@ func TestRecipeAdminResourceNotFound(t *testing.T) {
 // TestRecipeAdminResourceRefreshPostOnly proves the refresh action is POST-only
 // (a GET answers 405 with Allow: POST), that the no-JS refresh re-renders the
 // list with a persistent inline toast + progress, and that the HTMX refresh
-// returns the fragment plus an HX-Trigger loom:toast.
+// returns the fragment plus an HX-Trigger gelium:toast.
 func TestRecipeAdminResourceRefreshPostOnly(t *testing.T) {
 	resetRecipeResourceStore()
 

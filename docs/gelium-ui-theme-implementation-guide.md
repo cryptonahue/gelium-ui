@@ -151,7 +151,7 @@ En el puerto permitido por el entorno, browser real:
 - consola sin errores;
 - keyboard (tab, enter, escape, arrows donde aplique);
 - no-JS (flujo principal completo sin JS);
-- HTMX (enhancement: validación 422, toast `loom:toast`, refresh data table);
+- HTMX (enhancement: validación 422, toast `gelium:toast`, refresh data table);
 - light/dark;
 - narrow/wide;
 - reduced motion;

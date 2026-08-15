@@ -53,9 +53,9 @@ are real.
 
 | ID | Rule | Source | Applies to |
 |---|---|---|---|
-| R-FEEDBACK-01 | **Persistent ≠ transient.** Persistent-contextual feedback NEVER travels via `loom:toast`; transient action results NEVER occupy a persistent slot (Banner/Inline). | `state-patterns-audit.md:45`, `ux-patterns.md` cross-cutting | Notifications E15; all recipes |
-| R-FEEDBACK-02 | **Validation never toast.** Field/form validation → `422 + X-Loom-Validation` + Inline alert (`role="alert"`) + Validation summary; NEVER a toast. | `composition-rules.md` §5.3, §9.1; `toast.go:129-133` | Form 422; Auth/Editor/Settings |
-| R-FEEDBACK-03 | **Channel selection.** Transient result of an action → **Toast** (`HX-Trigger {"loom:toast":…}`, closed vocabulary info/success/warning/error). Persistent page/site notice requiring action → **Banner**. Persistent contextual/section or field error → **Inline alert**. Ignorable informative note → **Callout**. | `composition-rules.md` §4.8, §5.4 | Notifications E15; state patterns D3–D5, D8 |
+| R-FEEDBACK-01 | **Persistent ≠ transient.** Persistent-contextual feedback NEVER travels via `gelium:toast`; transient action results NEVER occupy a persistent slot (Banner/Inline). | `state-patterns-audit.md:45`, `ux-patterns.md` cross-cutting | Notifications E15; all recipes |
+| R-FEEDBACK-02 | **Validation never toast.** Field/form validation → `422 + X-Gelium-Validation` + Inline alert (`role="alert"`) + Validation summary; NEVER a toast. | `composition-rules.md` §5.3, §9.1; `toast.go:129-133` | Form 422; Auth/Editor/Settings |
+| R-FEEDBACK-03 | **Channel selection.** Transient result of an action → **Toast** (`HX-Trigger {"gelium:toast":…}`, closed vocabulary info/success/warning/error). Persistent page/site notice requiring action → **Banner**. Persistent contextual/section or field error → **Inline alert**. Ignorable informative note → **Callout**. | `composition-rules.md` §4.8, §5.4 | Notifications E15; state patterns D3–D5, D8 |
 
 ---
 
@@ -117,7 +117,7 @@ are real.
 |---|---|---|---|
 | R-NOJS-01 | **No-JS end-to-end.** The primary flow completes with JS disabled; HTMX only enhances. (P1) | `AI-COMPONENT-IMPLEMENTER-PROMPT.md` §12 | Every recipe |
 | R-NOJS-02 | **Mutations are POST + 303.** All mutations use `POST + 303 SeeOther`; GET on a POST-only path responds `405` with `Allow: POST` (`postOnlyPaths()`). | `composition-rules.md` §9.4 | All mutating routes |
-| R-NOJS-03 | **HTMX never changes the mutation contract.** HTMX enhancement swaps fragments (`hx-get`) for reading/refresh; mutations remain `POST + 303` (no `hx-post`). The refresh fragment may add `HX-Trigger loom:toast` (transient). | `composition-rules.md` §9; recipes HTMX_ENHANCEMENT | Refresh flows |
+| R-NOJS-03 | **HTMX never changes the mutation contract.** HTMX enhancement swaps fragments (`hx-get`) for reading/refresh; mutations remain `POST + 303` (no `hx-post`). The refresh fragment may add `HX-Trigger gelium:toast` (transient). | `composition-rules.md` §9; recipes HTMX_ENHANCEMENT | Refresh flows |
 
 ---
 
@@ -125,7 +125,7 @@ are real.
 
 | ID | Rule | Source | Applies to |
 |---|---|---|---|
-| R-ERROR-01 | **Validation recovery.** Field/form validation → `422 + X-Loom-Validation: true`, per-field `aria-invalid` + `aria-describedby`, Inline alert + Validation summary with real anchor links, submitted value preserved, focus returns to the failing field (not in the HTMX branch). | `composition-rules.md` §9.1; `ux-patterns.md` E9; `text_field.go:62-67` | Forms (E1/E9/E12–E14/E16/E17) |
+| R-ERROR-01 | **Validation recovery.** Field/form validation → `422 + X-Gelium-Validation: true`, per-field `aria-invalid` + `aria-describedby`, Inline alert + Validation summary with real anchor links, submitted value preserved, focus returns to the failing field (not in the HTMX branch). | `composition-rules.md` §9.1; `ux-patterns.md` E9; `text_field.go:62-67` | Forms (E1/E9/E12–E14/E16/E17) |
 | R-ERROR-02 | **Resource and global errors.** Missing/invalid resource or server failure → real HTTP status (404/500/503) + `error-state` with retry GET. Persistent global notice → Banner (`role="alert"`, no auto-dismiss). Never a toast for these. | `composition-rules.md` §5.4; `ux-patterns.md` E9; recipes 404 | 404/500 handling; global banners |
 | R-ERROR-03 | **Transport errors.** HTMX transport failures (network/5xx) → generic transient toast (never validation copy); no silent failure. **GAP G5** remains an open residual; until resolved, never swallow the error. | `ux-patterns.md` note (G5); `app.js` | Any remote refresh |
 | R-ERROR-04 | **Recovery is explicit and lossless.** Errors state what + how to resolve (`content-rules.md` §1); retry re-submits without data loss; `POST + 303` keeps workflows resumable. | `content-rules.md` §1, `ux-patterns.md` E9 | All error paths |

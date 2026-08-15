@@ -57,13 +57,13 @@ mutations; no client-side list state. Evidence: `composition-rules.md` §9.6,
 
 ### P4. Persistent-contextual ≠ transient-action feedback
 Persistent feedback (empty, inline alert, banner, callout, error state,
-validation summary, persistent success) never travels through `loom:toast`;
+validation summary, persistent success) never travels through `gelium:toast`;
 transient action results never occupy a persistent slot. Evidence:
 `state-patterns-audit.md:45`, `ux-patterns.md` "Cross-cutting rule".
 
 ### P5. Canonical wire contracts only
 A composition reuses exactly the existing server-driven contracts: `422 +
-X-Loom-Validation: true`, `HX-Trigger {"loom:toast":…}`, GET stable params,
+X-Gelium-Validation: true`, `HX-Trigger {"gelium:toast":…}`, GET stable params,
 `POST + 303 SeeOther`. No new contract is invented by a recipe. Evidence:
 `composition-rules.md` §9.
 

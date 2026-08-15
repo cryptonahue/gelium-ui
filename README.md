@@ -61,13 +61,12 @@ La aplicación escucha en `http://localhost:8787`. Para elegir otro puerto:
 PORT=3000 go run ./cmd/gelium   # dentro de tu aplicación consumidora
 ```
 
-## Wire compatibility (legacy `loom:*` / `X-Loom-*` contracts)
+## Wire contract (`gelium:*` / `X-Gelium-*`)
 
-El producto y la identidad del repo es **Gelium UI**, pero los contratos wire
-server-driven conservan sus nombres legacy a propósito: `loom:toast` (evento
-HX-Trigger + `#loom-toast-region`) y el header `X-Loom-Validation: true`.
-Renombrarlos rompería el hook HTMX servido (`web/static/app.js`) y a consumidores
-existentes. Política y tests: [`docs/gelium-ui-wire-compatibility.md`](docs/gelium-ui-wire-compatibility.md).
+Los contratos wire server-driven usan el prefijo del producto: `gelium:toast`
+(evento HX-Trigger + `#gelium-toast-region`) y el header `X-Gelium-Validation: true`.
+El hook HTMX servido (`web/static/app.js`) y los tests los fijan como canónicos.
+Referencia canónica: [`docs/gelium-ui-wire-compatibility.md`](docs/gelium-ui-wire-compatibility.md).
 
 Rutas disponibles:
 
@@ -82,7 +81,7 @@ Rutas disponibles:
 - `/healthz` — health check de texto plano.
 - `/static/app.css` — CSS Tailwind compilado y embebido.
 - `/static/htmx.min.js` — HTMX local y embebido.
-- `/static/app.js` — hook local que permite a HTMX intercambiar únicamente fragments HTTP 422 marcados con `X-Loom-Validation: true`.
+- `/static/app.js` — hook local que permite a HTMX intercambiar únicamente fragments HTTP 422 marcados con `X-Gelium-Validation: true`.
 
 ## Estructura real
 

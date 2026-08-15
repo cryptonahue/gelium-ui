@@ -58,7 +58,7 @@ Resultado de la investigación paralela (`docs/handoffs/{core,vocabulary,composi
 
 6. **Naming resuelto**: Popover = mecanismo web (no patrón); Multi-select = capacidad (no widget); Drawer → canónico "Navigation drawer"; Snackbar → alias de Toast; **Callout** (Gelium = tip box) y **Notification Bar** (≈ Banner) requieren resolución contra Protocol (colisión detectada por mozilla-protocol-audit).
 7. **Del vocabulario objetivo (29 términos)**: 8 ya implementados, 8 parciales, 13 sin equivalente. Los **patrones de estado** (Empty, Loading/Skeleton, Inline alert, Banner, Callout, Error state, Validation summary, Success feedback) son requisito bloqueante de toda screen recipe.
-8. **Contratos server-driven canónicos** (no inventar otros): (a) HTTP 422 + `X-Loom-Validation`; (b) `HX-Trigger {"loom:toast":…}`; (c) GET con params estables; (d) POST + 303 redirect.
+8. **Contratos server-driven canónicos** (no inventar otros): (a) HTTP 422 + `X-Gelium-Validation`; (b) `HX-Trigger {"gelium:toast":…}`; (c) GET con params estables; (d) POST + 303 redirect.
 9. **Anti-reglas confirmadas**: validación nunca toast; no toast para feedback persistente; no table para ≤5-8 filas; no board para FIFO; no dialog para flujos largos; estado nunca color-only; URL es el estado.
 
 ### UX / accesibilidad (ux-accessibility-audit)
@@ -81,7 +81,7 @@ Resultado de la investigación paralela (`docs/handoffs/{core,vocabulary,composi
 ### Basecoat (basecoat-audit)
 
 18. **Basecoat es dirección visual válida, NO runtime**: no se instala `basecoat-css`; el theme es `themes/theme-basecoat/theme.css` traduciendo el style pack (default Vega) al vocabulario `--ui-*`.
-19. **Mapeo 5/7 limpio** (Button, Card, Badge, Dialog, Data table); **2 requieren decisión**: Text field (floating label = variante de theme/pattern, no requisito universal) y Toast (contrato `loom:toast` no-JS se conserva; solo estética).
+19. **Mapeo 5/7 limpio** (Button, Card, Badge, Dialog, Data table); **2 requieren decisión**: Text field (floating label = variante de theme/pattern, no requisito universal) y Toast (contrato `gelium:toast` no-JS se conserva; solo estética).
 20. **Basecoat no tokeniza** elevation/spacing/motion/typescale/state-opacities → derivar del style pack; oklch → hex.
 
 ---
@@ -290,7 +290,7 @@ Data table
 **Decisiones obligatorias**:
 
 - **floating label de Text field**: tratarlo como **variante de theme o pattern**, no como requisito universal;
-- **Toast**: conservar `loom:toast`, `aria-live` y fallback no-JS;
+- **Toast**: conservar `gelium:toast`, `aria-live` y fallback no-JS;
 - verificar **state layers, borders, density y radii**;
 - **auditar cualquier JavaScript requerido**.
 
@@ -397,7 +397,7 @@ Handoffs: `docs/handoffs/{core,vocabulary,composition,theme-architecture,basecoa
 | SEO origin + `og.png` placeholder | product | `siteBaseURL = https://gelium-ui.example`; no hay `web/static/og.png` real |
 | Nav discoverability | DX | **Cerrado (docs-shell):** `docsNavFor` + two-pane shell sidebar/topbar on `/docs` + `/components/*` expose Getting started, `docsSections` component groups, Patterns (`/docs/patterns`), Recipes (outbound `/recipes/*`), Themes (`/docs/themes`); theme switcher stays 0-JS `?theme=`. Demos remain secondary (`/demo/*`, noindex) — not a chrome gap. |
 | Docs pages para Avatar, Pagination, state/public patterns | dogfood | Partials+CSS+tests sí; `/components/*` no (policy o páginas) |
-| Branding operativo residual | docs | Wire `loom:*` / `X-Loom-*` **congelado** (estrategia en `gelium-ui-wire-compatibility.md`); branding humano (LICENSE, prompts, COMPONENT-ROADMAP, README) ya migrado a Gelium |
+| Branding operativo residual | docs | Wire `gelium:*` / `X-Gelium-*` **canónico** (migrado desde el prefijo legacy el 2026-08-15; estrategia en `gelium-ui-wire-compatibility.md`); branding humano (LICENSE, prompts, COMPONENT-ROADMAP, README) ya migrado a Gelium |
 | Recetas restantes (Detail/Editor/Dashboard/Settings/Booking/Search/Auth) | recipe | Diferidas a propósito post-3 |
 | Registry JSON servido | tooling | Registries son Markdown; runtime JSON documentado como pendiente |
 | Version bump past 0.4.0 narrative | release | `package.json` + `?v=0.4.0` en layout |
@@ -521,4 +521,4 @@ Phases **A–J están entregadas en el árbol** (plus docs-shell chrome). El tra
 6. Optional expansion    más screen recipes · tercer theme · registry JSON runtime
 ```
 
-**No reabrir A–H** salvo regresión. Wire protocol `loom:toast` / `X-Loom-Validation` permanece congelado.
+**No reabrir A–H** salvo regresión. Wire protocol `gelium:toast` / `X-Gelium-Validation` es canónico (migrado desde `loom:*` el 2026-08-15).

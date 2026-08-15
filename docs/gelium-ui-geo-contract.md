@@ -114,7 +114,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 - **Requirements**:
   - no marketing superlatives or unverifiable claims;
   - token values quoted exactly as declared (`--ui-*` tables like `data-table.md:69-82`);
-  - state the server contract in the same terms the code uses (HTTP status, `loom:toast`, GET semantics — roadmap §61);
+  - state the server contract in the same terms the code uses (HTTP status, `gelium:toast`, GET semantics — roadmap §61);
   - do not state a behavior as universal if it is theme-specific (e.g. Material-specific hexes).
 
 ### 12. Boundaries

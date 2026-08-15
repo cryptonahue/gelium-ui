@@ -100,7 +100,7 @@ El flujo operativo completo (inspección → token mapping → implementación �
 
 ## 6. Divergencias documentadas
 
-- Toast conserva `loom:toast` + `aria-live` + fallback no-JS (`theme-contract.md:88`, decisión Phase I).
+- Toast conserva `gelium:toast` + `aria-live` + fallback no-JS (`theme-contract.md:88`, decisión Phase I).
 - Floating label de Text field es patrón Gelium; Basecoat lo conserva con `--ui-size-field: 3rem` (divergencia documentada en `themes/theme-basecoat/README.md` §5, no es variante de theme).
 - Variantes que un theme nuevo aporte y Gelium no tenga (p. ej. `destructive` Button, pills de Badge) se resuelven como decisión del contrato: extender el core o documentar divergencia — nunca CSS de theme sobre markup distinto (`theme-contract.md` §7). En Basecoat quedan fuera de scope Phase I y documentadas.
 

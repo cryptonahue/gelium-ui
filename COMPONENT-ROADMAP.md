@@ -25,7 +25,7 @@ Reglas del producto:
 | Button | Completado y aceptado | `web/templates/button.html`, `web/content/button.md` |
 | Text field | Completado y aceptado | `web/templates/text-field.html`, validación HTTP 422/200 |
 | Dialog | Completado y aceptado | `web/templates/dialog.html`, Invoker Commands, `<dialog>` |
-| Toast | Completado y aceptado | `web/templates/toast.html`, `HX-Trigger loom:toast`, región `aria-live` en `web/static/app.js` |
+| Toast | Completado y aceptado | `web/templates/toast.html`, `HX-Trigger gelium:toast`, región `aria-live` en `web/static/app.js` |
 | Divider | Completado y aceptado | `web/templates/divider.html`, tokens `--ui-divider-*`, route `/components/divider` |
 | Card | Completado y aceptado | `web/templates/card.html`, tokens `--ui-card-*`, route `/components/card` |
 | Badge | Completado y aceptado | `web/templates/badge.html`, tokens `--ui-badge-*`, route `/components/badge` |
@@ -42,8 +42,8 @@ Objetivo: feedback transitorio reusable para acciones server-driven.
 
 Implementación cerrada con:
 
-- wire contract congelado y testeado: `HX-Trigger: {"loom:toast":{"type":"success","message":"..."}}`;
-- región `aria-live` (`role="status"`/`alert` según tipo) en `web/static/app.js` + listener global `loom:toast`;
+- wire contract canónico y testeado: `HX-Trigger: {"gelium:toast":{"type":"success","message":"..."}}`;
+- región `aria-live` (`role="status"`/`alert` según tipo) en `web/static/app.js` + listener global `gelium:toast`;
 - auto-dismiss pausable (hover/focus), dismiss manual, closed vocabulary `info|success|warning|error`;
 - flujo no-JS real: re-render de página completa con toast inline persistente;
 - validación nunca anuncia toast: HTTP 422 sin `HX-Trigger`;

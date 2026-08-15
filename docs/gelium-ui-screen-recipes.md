@@ -34,12 +34,12 @@ Rutas vivas (`internal/app/server.go`):
 |---|---|---|
 | Listar/filtrar/ordenar/paginar/seleccionar | `GET /recipes/admin-resource` | GET params estables `?q=&sort=&dir=&page=&selection=`; `HX-Request` bifurca el fragmento `#resource-panel` |
 | Crear (form) | `GET /recipes/admin-resource/new` | página completa no-JS |
-| Crear (mutación) | `POST /recipes/admin-resource` | 303 a la lista (éxito, banner persistente) o 422 + `X-Loom-Validation` (fallo) |
+| Crear (mutación) | `POST /recipes/admin-resource` | 303 a la lista (éxito, banner persistente) o 422 + `X-Gelium-Validation` (fallo) |
 | Editar (form) | `GET /recipes/admin-resource/{id}/edit` | página completa; 404 con `error-state` si el id no existe |
 | Editar (mutación) | `POST /recipes/admin-resource/{id}/edit` | 303 o 422 |
 | Borrar (confirmación) | `GET /recipes/admin-resource/{id}/delete` | Dialog page variant (`<dialog open>` nativo) |
 | Borrar (mutación) | `POST /recipes/admin-resource/{id}/delete` | 303 a la lista + banner success |
-| Refresh remoto | `POST /recipes/admin-resource/refresh` | POST-only; HX → fragmento + `HX-Trigger loom:toast`; no-JS → página con toast inline |
+| Refresh remoto | `POST /recipes/admin-resource/refresh` | POST-only; HX → fragmento + `HX-Trigger gelium:toast`; no-JS → página con toast inline |
 
 ### SURFACE
 
@@ -76,7 +76,7 @@ Data table (`data-table.html`/`data_table.go`, reuso de columnas/paginación/emp
 - **Loading**: no aplica a la carga inicial (server-rendered); el refresh usa `.ui-progress` determinate.
 - **Error**: campo → 422 con `role="alert"` por campo + validation-summary; recurso → `error-state` 404; global persistente → `banner--error` (nunca toast).
 - **Selected**: checkboxes nativos `:checked` renderizados server-side desde `?selection=`; select-all con `aria-label` oculto cuando no hay filas.
-- **Success**: persistente post-303 con `banner--success` (`role="status"`, nunca `loom:toast`); transitorio solo en refresh con toast.
+- **Success**: persistente post-303 con `banner--success` (`role="status"`, nunca `gelium:toast`); transitorio solo en refresh con toast.
 
 ### ACCESSIBILITY
 
@@ -92,11 +92,11 @@ Toda ruta `/recipes/*` emite `robots: noindex, nofollow` (superficie de demo, ig
 
 ### GEO_REQUIREMENTS
 
-Contenido factual citado del vocabulario del sistema (estados Active/Pending/Done, contrato server 422/303/`loom:toast`); URLs estables y deep-linkables por `{id}`; sin claim universal no verificado; Gelium UI es la entidad única (no hay marca externa).
+Contenido factual citado del vocabulario del sistema (estados Active/Pending/Done, contrato server 422/303/`gelium:toast`); URLs estables y deep-linkables por `{id}`; sin claim universal no verificado; Gelium UI es la entidad única (no hay marca externa).
 
 ### SERVER_CONTRACT
 
-`GET ?q=&sort=&dir=&page=&selection=` con vocabularios cerrados sanitizados (`dataTableSortKeys`, `dataTableStatuses`, page ≥ 1 → defaults seguros); `POST + 303 SeeOther` para todas las mutaciones; `422 + X-Loom-Validation: true` para validación (nunca toast); `HX-Trigger: {"loom:toast":{...}}` para transitorio (refresh); banner/inline success para persistente; `HX-Request` bifurca fragmento `#resource-panel` vs página completa; `POST /recipes/admin-resource/refresh` registrado en `postOnlyPaths()` → GET responde 405 con `Allow: POST`.
+`GET ?q=&sort=&dir=&page=&selection=` con vocabularios cerrados sanitizados (`dataTableSortKeys`, `dataTableStatuses`, page ≥ 1 → defaults seguros); `POST + 303 SeeOther` para todas las mutaciones; `422 + X-Gelium-Validation: true` para validación (nunca toast); `HX-Trigger: {"gelium:toast":{...}}` para transitorio (refresh); banner/inline success para persistente; `HX-Request` bifurca fragmento `#resource-panel` vs página completa; `POST /recipes/admin-resource/refresh` registrado en `postOnlyPaths()` → GET responde 405 con `Allow: POST`.
 
 ### NO_JS_FLOW
 
@@ -104,7 +104,7 @@ Completo: filtro/orden/página/sort = links GET reales (la URL es el estado); se
 
 ### HTMX_ENHANCEMENT
 
-Swap de `#resource-panel` (`outerHTML`) en sort/filter/page; refresh devuelve el fragmento del form + `HX-Trigger loom:toast`; focus al validation-summary en 422 (opcional). Las mutaciones de form permanecen POST+303 (sin `hx-post`) — el contrato de mutación no cambia.
+Swap de `#resource-panel` (`outerHTML`) en sort/filter/page; refresh devuelve el fragmento del form + `HX-Trigger gelium:toast`; focus al validation-summary en 422 (opcional). Las mutaciones de form permanecen POST+303 (sin `hx-post`) — el contrato de mutación no cambia.
 
 ### RESPONSIVE_BEHAVIOR
 
@@ -116,7 +116,7 @@ Solo tokens `--ui-*` existentes; cero literales de color en el CSS de la recipe 
 
 ### ALTERNATIVES_REJECTED
 
-**Board**: es un set con filtros, no un workflow multi-vía (criterio 4.1). **List** para >8-10 filas: anti-regla (`composition-rules.md`) — la colección columnar pide Data table. **Dialog para el listado completo**: página = URL/back (anti-regla "no flujo largo en dialog"). **Toast para errores de validación**: contrato 422 + `X-Loom-Validation`, persistente nunca transitorio. **Drag & drop**: server-first, POST+303.
+**Board**: es un set con filtros, no un workflow multi-vía (criterio 4.1). **List** para >8-10 filas: anti-regla (`composition-rules.md`) — la colección columnar pide Data table. **Dialog para el listado completo**: página = URL/back (anti-regla "no flujo largo en dialog"). **Toast para errores de validación**: contrato 422 + `X-Gelium-Validation`, persistente nunca transitorio. **Drag & drop**: server-first, POST+303.
 
 ### RATIONALE
 
@@ -133,7 +133,7 @@ Rutas vivas (`internal/app/server.go`):
 | Listar/filtrar/paginar | `GET /recipes/ops-queue` | GET params estables `?status=&kind=&page=` (vocabularios cerrados, sanitizados); `HX-Request` bifurca el fragmento `#queue-panel` |
 | Avanzar al siguiente estado | `POST /recipes/ops-queue/{id}/advance` | 303 a la cola + banner success persistente (`pending→in_progress→done`; `blocked→in_progress`; `done` terminal → banner info) |
 | Sacar de la cola | `POST /recipes/ops-queue/{id}/dequeue` | 303 a la cola + banner success; 404 con `error-state` si el id no existe |
-| Refresh remoto | `POST /recipes/ops-queue/refresh` | POST-only; HX → fragmento + `HX-Trigger loom:toast`; no-JS → página con toast inline + progress |
+| Refresh remoto | `POST /recipes/ops-queue/refresh` | POST-only; HX → fragmento + `HX-Trigger gelium:toast`; no-JS → página con toast inline + progress |
 
 ### SURFACE
 
@@ -174,7 +174,7 @@ List (`ui-list` two-line), **Avatar** (`avatar.html`), **Badge tone** (`ui-badge
 
 ### ACCESSIBILITY
 
-Avatar `aria-hidden="true"` (decorativo, el nombre del requester está en texto visible); estado del ítem = badge con label textual + tone (nunca color-only); acciones por fila = `<button>` reales en forms POST; `aria-current="page"` en paginación standalone; banner deriva `role="status"`; `#loom-toast-region` `aria-live` para transitorio; forced-colors cubre avatar, badge y pagination; `aria-label` en los selects del filtro vía `<label>` asociado.
+Avatar `aria-hidden="true"` (decorativo, el nombre del requester está en texto visible); estado del ítem = badge con label textual + tone (nunca color-only); acciones por fila = `<button>` reales en forms POST; `aria-current="page"` en paginación standalone; banner deriva `role="status"`; `#gelium-toast-region` `aria-live` para transitorio; forced-colors cubre avatar, badge y pagination; `aria-label` en los selects del filtro vía `<label>` asociado.
 
 ### CONTENT_RULES
 
@@ -186,11 +186,11 @@ Ruta `/recipes/ops-queue` → `robots: noindex, nofollow` (superficie de demo). 
 
 ### GEO_REQUIREMENTS
 
-Contenido factual citado del vocabulario del sistema (estados pending/in_progress/done/blocked, contrato 303/422/`loom:toast`); URLs estables y deep-linkables por `{id}`; sin claim universal no verificado; Gelium UI es la entidad única.
+Contenido factual citado del vocabulario del sistema (estados pending/in_progress/done/blocked, contrato 303/422/`gelium:toast`); URLs estables y deep-linkables por `{id}`; sin claim universal no verificado; Gelium UI es la entidad única.
 
 ### SERVER_CONTRACT
 
-`GET ?status=&kind=&page=` con vocabularios cerrados sanitizados (`recipeQueueStatuses`, `recipeQueueKinds`, page ≥ 1 → defaults seguros); `POST + 303 SeeOther` para cada transición (advance/dequeue) con banner flash consumido en el siguiente render; el orden operativo y el tone se derivan **server-side** (`recipeQueueRank`, `recipeQueueItemTone`); `HX-Trigger: {"loom:toast":{...}}` solo para refresh; `HX-Request` bifurca `#queue-panel` vs página completa; `/recipes/ops-queue/refresh` en `postOnlyPaths()` → GET responde 405 con `Allow: POST`.
+`GET ?status=&kind=&page=` con vocabularios cerrados sanitizados (`recipeQueueStatuses`, `recipeQueueKinds`, page ≥ 1 → defaults seguros); `POST + 303 SeeOther` para cada transición (advance/dequeue) con banner flash consumido en el siguiente render; el orden operativo y el tone se derivan **server-side** (`recipeQueueRank`, `recipeQueueItemTone`); `HX-Trigger: {"gelium:toast":{...}}` solo para refresh; `HX-Request` bifurca `#queue-panel` vs página completa; `/recipes/ops-queue/refresh` en `postOnlyPaths()` → GET responde 405 con `Allow: POST`.
 
 ### NO_JS_FLOW
 
@@ -198,7 +198,7 @@ Completo: filtro = form GET real (URL es el estado), paginación = links reales,
 
 ### HTMX_ENHANCEMENT
 
-Swap de `#queue-panel` (`outerHTML`) al filtrar (hx-get en el form de filtro); refresh devuelve el fragmento del form + `HX-Trigger loom:toast`. Las mutaciones permanecen POST+303 (sin `hx-post`) — el contrato de mutación no cambia.
+Swap de `#queue-panel` (`outerHTML`) al filtrar (hx-get en el form de filtro); refresh devuelve el fragmento del form + `HX-Trigger gelium:toast`. Las mutaciones permanecen POST+303 (sin `hx-post`) — el contrato de mutación no cambia.
 
 ### RESPONSIVE_BEHAVIOR
 
@@ -226,7 +226,7 @@ Rutas vivas (`internal/app/server.go`):
 |---|---|---|
 | Ver el feed | `GET /recipes/public-feed` | GET params estables `?view=&page=` (vocabulario cerrado `for-you|following|new`); `HX-Request` bifurca el fragmento `#feed-panel` |
 | Reaccionar (like) | `POST /recipes/public-feed/{id}/react` | 303 al feed + toast flash transitorio en el siguiente render; 404 con `error-state` si el id no existe |
-| Refresh remoto | `POST /recipes/public-feed/refresh` | POST-only; HX → fragmento + `HX-Trigger loom:toast`; no-JS → página con toast inline + progress |
+| Refresh remoto | `POST /recipes/public-feed/refresh` | POST-only; HX → fragmento + `HX-Trigger gelium:toast`; no-JS → página con toast inline + progress |
 
 ### SURFACE
 
@@ -263,7 +263,7 @@ Card (`ui-card ui-card-outlined`), **Avatar** (`avatar.html`, sm, decorativo con
 - **Empty**: por vista — "Nothing new yet" / "No posts from people you follow" / "No posts yet", cada una con CTA real (ver todos / refresh).
 - **Error**: reacción a íd inválido → `error-state` 404 con retry; transporte → toast error transitorio (`app.js` `htmx:responseError`).
 - **New**: marcador con label ("New" en badge tone info) + `aria-label` de la tarjeta — nunca color-only.
-- **Success**: reacción → toast flash transitorio post-303; refresh → toast inline/`loom:toast`.
+- **Success**: reacción → toast flash transitorio post-303; refresh → toast inline/`gelium:toast`.
 
 ### ACCESSIBILITY
 
@@ -283,7 +283,7 @@ Contenido del feed factual/verificable (items de demo sin claims no verificados)
 
 ### SERVER_CONTRACT
 
-`GET ?view=&page=` con vocabulario cerrado sanitizado (`recipeFeedViews`, page ≥ 1 → defaults seguros); orden cronológico inverso **server-side**; `POST + 303 SeeOther` para reacciones con toast flash consumido en el siguiente render; `HX-Trigger: {"loom:toast":{...}}` solo para refresh; `HX-Request` bifurca `#feed-panel` vs página completa; `/recipes/public-feed/refresh` en `postOnlyPaths()` → GET responde 405 con `Allow: POST`; empty/loading son output del servidor (nunca flash cliente).
+`GET ?view=&page=` con vocabulario cerrado sanitizado (`recipeFeedViews`, page ≥ 1 → defaults seguros); orden cronológico inverso **server-side**; `POST + 303 SeeOther` para reacciones con toast flash consumido en el siguiente render; `HX-Trigger: {"gelium:toast":{...}}` solo para refresh; `HX-Request` bifurca `#feed-panel` vs página completa; `/recipes/public-feed/refresh` en `postOnlyPaths()` → GET responde 405 con `Allow: POST`; empty/loading son output del servidor (nunca flash cliente).
 
 ### NO_JS_FLOW
 
@@ -291,7 +291,7 @@ Completo: vistas = links reales (Tabs), paginación = links reales, like = form 
 
 ### HTMX_ENHANCEMENT
 
-Swap de `#feed-panel` (`outerHTML`) al cambiar de vista (hx-get en los tabs) y paginar; refresh devuelve el fragmento del form + `HX-Trigger loom:toast`. Las reacciones permanecen POST+303 (sin `hx-post`) — el contrato de mutación no cambia.
+Swap de `#feed-panel` (`outerHTML`) al cambiar de vista (hx-get en los tabs) y paginar; refresh devuelve el fragmento del form + `HX-Trigger gelium:toast`. Las reacciones permanecen POST+303 (sin `hx-post`) — el contrato de mutación no cambia.
 
 ### RESPONSIVE_BEHAVIOR
 

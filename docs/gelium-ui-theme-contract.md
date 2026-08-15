@@ -106,7 +106,7 @@ List, Menu, Data table, Navigation bar, Navigation tab, Navigation drawer, Segme
 
 - Semántica HTML (artículo/lista/tabla/dialog/controls nativos).
 - Clases de componente `ui-*` y variantes existentes.
-- Contratos server-driven (422, `loom:toast`, GET params).
+- Contratos server-driven (422, `gelium:toast`, GET params).
 - Comportamiento no-JS end-to-end.
 - Estructura de estados del componente (hover/focus/pressed/disabled/selected/error).
 

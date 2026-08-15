@@ -15,7 +15,7 @@ Cada entrada de la tabla maestra ($2) declara:
 - **Template / CSS** — el partial `{{define "…"}}` y su hoja. La convención de partials es `web/templates/<x>.html` + `web/styles/<x>.css` + `@import` en `web/styles/app.css` + `web/styles_<x>_test.go` (`public-content-patterns.md:81`).
 - **Tokens que consume** — los `var(--ui-*)` leídos por el CSS del componente (inventario extraído de los archivos fuente; el contrato de cobertura vive en `theme-contract.md` §3).
 - **Estados** — la superficie de estados del componente (rest/hover/focus/pressed/disabled/selected/error/loading/empty), modelada en el CSS del componente, nunca en el theme.
-- **Contrato server** — si aplica (422, `loom:toast`, GET params, POST+303, none). Componentes sin contrato propio son partials inertes o con contrato nativo de form.
+- **Contrato server** — si aplica (422, `gelium:toast`, GET params, POST+303, none). Componentes sin contrato propio son partials inertes o con contrato nativo de form.
 - **Variantes** — clases/variantes reales, no inventadas.
 - **Categoría** — foundation/action/input/feedback/navigation/data/public/state-pattern/recipe-primitive. Los **state patterns** (Phase D) y los **public patterns** (Phase F) son categorías de *patterns*, no de componentes: se documentan como tales (ver `gelium-ui-pattern-registry.md`) y aparecen aquí porque cada uno tiene al menos un partial real.
 
@@ -95,12 +95,12 @@ El contrato completo de cada recipe vive en `docs/gelium-ui-screen-recipes.md`. 
 
 | Componente | Contrato server | Dónde |
 |---|---|---|
-| Text field | 422 + `X-Loom-Validation: true`; valor preservado (`text_field.go:62`), focus al campo fallido (`text_field.go:67`) | `internal/app/text_field.go` |
-| Select | 422 + `X-Loom-Validation` (campo error); `:has(select:disabled)` | `select.css:88` |
-| Data table | `GET ?q=&sort=&dir=&page=&selection=` (vocabularios cerrados); `HX-Request` bifurca fragmento vs página; refresh `POST` + `HX-Trigger loom:toast` | `data_table.go`, `data-table.html` |
-| Toast | `HX-Trigger: {"loom:toast":{"type":"info\|success\|warning\|error","message":"…"}}`; fallback no-JS inline (`toast.go`); validación NUNCA toast (`toast.go:129-133`) | `toast.go:13-14,45` |
+| Text field | 422 + `X-Gelium-Validation: true`; valor preservado (`text_field.go:62`), focus al campo fallido (`text_field.go:67`) | `internal/app/text_field.go` |
+| Select | 422 + `X-Gelium-Validation` (campo error); `:has(select:disabled)` | `select.css:88` |
+| Data table | `GET ?q=&sort=&dir=&page=&selection=` (vocabularios cerrados); `HX-Request` bifurca fragmento vs página; refresh `POST` + `HX-Trigger gelium:toast` | `data_table.go`, `data-table.html` |
+| Toast | `HX-Trigger: {"gelium:toast":{"type":"info\|success\|warning\|error","message":"…"}}`; fallback no-JS inline (`toast.go`); validación NUNCA toast (`toast.go:129-133`) | `toast.go:13-14,45` |
 | Banner | dismiss = `POST + 303` | `banner.html` |
-| Newsletter | `POST` + 422 `X-Loom-Validation`; success `role="status"` persistente | `internal/app/newsletter.go` |
+| Newsletter | `POST` + 422 `X-Gelium-Validation`; success `role="status"` persistente | `internal/app/newsletter.go` |
 | Dialog | `GET/POST /components/dialog/confirm`; page variant `<dialog open>` server-rendered | `dialog.go` |
 | Pagination | `GET ?page=` con clamping al rango válido | `pagination.go` |
 | Error state | status HTTP real (404/500/503) + re-render server | `server.go` (render 404) |

@@ -21,5 +21,5 @@ Transient feedback is server-driven: the response carries `HX-Trigger: {"gelium:
 ## Contract rules
 
 - Validation errors are never toasts, and persistent success is never an `HX-Trigger` toast — persistent feedback uses the banner / inline-alert pattern instead.
-- The `loom:*` prefixes and `X-Loom-*` headers are frozen: reference them, never invent new ones.
+- The `gelium:*` prefixes and `X-Gelium-*` headers are the canonical wire contract: reference them, never invent new ones.
 - Every JavaScript enhancement has a real no-JS fallback; the main flow never breaks without JavaScript.
