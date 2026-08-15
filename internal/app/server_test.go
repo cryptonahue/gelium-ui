@@ -693,7 +693,7 @@ func TestLayoutRendersFooterAfterMain(t *testing.T) {
 
 // TestHomeRendersDefaultFooter proves the real home page ships the footer
 // chrome with the default site data: brand, docsNavFor IA groups (Getting
-// started + docsSections + Patterns/Recipes/Themes), and the legal line.
+// started + docsSections + Patterns/Recipes/Handbook), and the legal line.
 func TestHomeRendersDefaultFooter(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
@@ -710,7 +710,7 @@ func TestHomeRendersDefaultFooter(t *testing.T) {
 		`<summary class="ui-footer-heading">Actions</summary>`,
 		`<summary class="ui-footer-heading">Patterns</summary>`,
 		`<summary class="ui-footer-heading">Recipes</summary>`,
-		`<summary class="ui-footer-heading">Themes</summary>`,
+		`<summary class="ui-footer-heading">Handbook</summary>`,
 		`<a href="/components/button">Button</a>`,
 		`<a href="/docs">Documentation</a>`,
 		`<a href="/docs/patterns">Patterns</a>`,
@@ -794,6 +794,10 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 		`<loc>https://gelium-ui.example/docs</loc>`,
 		`<loc>https://gelium-ui.example/docs/patterns</loc>`,
 		`<loc>https://gelium-ui.example/docs/themes</loc>`,
+		`<loc>https://gelium-ui.example/docs/tokens</loc>`,
+		`<loc>https://gelium-ui.example/docs/server-contracts</loc>`,
+		`<loc>https://gelium-ui.example/docs/accessibility</loc>`,
+		`<loc>https://gelium-ui.example/docs/principles</loc>`,
 		`<loc>https://gelium-ui.example/components/button</loc>`,
 		`<loc>https://gelium-ui.example/components/data-table</loc>`,
 	} {
@@ -801,9 +805,9 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 			t.Errorf("sitemap is missing %q", contract)
 		}
 	}
-	// home + /docs + patterns + themes + all components
-	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+4 {
-		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + stubs + all components)", got, len(componentRoutes())+4)
+	// home + /docs + patterns + handbook pages + all components
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+8 {
+		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + patterns + handbook + all components)", got, len(componentRoutes())+8)
 	}
 	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
 		if strings.Contains(body, excluded) {

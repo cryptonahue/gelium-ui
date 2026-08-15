@@ -74,8 +74,9 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 	}
 }
 
-// TestDocsStubRoutesAndShellChrome proves Patterns/Themes stubs return 200 with
-// shell chrome, honest disabled search, landmarks, and dual mobile markup (2.2).
+// TestDocsStubRoutesAndShellChrome proves Patterns/Handbook routes return 200
+// with shell chrome, honest disabled search, landmarks, and dual mobile
+// markup (2.2).
 func TestDocsStubRoutesAndShellChrome(t *testing.T) {
 	for _, path := range []string{"/docs/patterns", "/docs/themes"} {
 		t.Run(path, func(t *testing.T) {
@@ -125,7 +126,7 @@ func TestDocsShellActiveAndIAGroups(t *testing.T) {
 		"Actions",
 		"Patterns",
 		"Recipes",
-		"Themes",
+		"Handbook",
 	} {
 		if !strings.Contains(body, group) {
 			t.Errorf("sidebar missing IA group %q", group)
@@ -251,6 +252,10 @@ func TestDocsShellSidebarPreservesTheme(t *testing.T) {
 		"/docs",
 		"/docs/patterns",
 		"/docs/themes",
+		"/docs/tokens",
+		"/docs/server-contracts",
+		"/docs/accessibility",
+		"/docs/principles",
 		"/recipes/admin-resource",
 	} {
 		want := `class="ui-list-item-link" href="` + path + `?theme=basecoat"`
@@ -326,7 +331,7 @@ func TestDocsShellChromeActivePeersAndIA(t *testing.T) {
 			"Getting started",
 			"Patterns",
 			"Recipes",
-			"Themes",
+			"Handbook",
 		}
 		for _, section := range docsSections {
 			want = append(want, section.Title)
@@ -377,6 +382,10 @@ func TestDocsShellPathsStableNoRedirect(t *testing.T) {
 		"/docs",
 		"/docs/patterns",
 		"/docs/themes",
+		"/docs/tokens",
+		"/docs/server-contracts",
+		"/docs/accessibility",
+		"/docs/principles",
 		"/components/button",
 		"/components/data-table",
 	} {
@@ -404,9 +413,10 @@ func TestDocsShellFooterAndJSONLDRegressions(t *testing.T) {
 		`class="ui-footer-heading">Actions</summary>`,
 		`class="ui-footer-heading">Patterns</summary>`,
 		`class="ui-footer-heading">Recipes</summary>`,
-		`class="ui-footer-heading">Themes</summary>`,
+		`class="ui-footer-heading">Handbook</summary>`,
 		`<a href="/docs/patterns">Patterns</a>`,
 		`<a href="/docs/themes">Themes</a>`,
+		`<a href="/docs/principles">Design principles</a>`,
 		`<a href="/recipes/admin-resource">Admin Resource</a>`,
 		`"@type":"BreadcrumbList"`,
 		`"@type":"TechArticle"`,
@@ -492,7 +502,7 @@ func TestDocsNavFor(t *testing.T) {
 			"Getting started",
 			"Patterns",
 			"Recipes",
-			"Themes",
+			"Handbook",
 		} {
 			if !containsString(titles, want) {
 				t.Errorf("docsNavFor missing IA block %q; got %v", want, titles)
@@ -504,7 +514,7 @@ func TestDocsNavFor(t *testing.T) {
 			}
 		}
 		// Five top-level IA blocks: Getting started, Components (via docsSections),
-		// Patterns, Recipes, Themes — Components expands to one group per section.
+		// Patterns, Recipes, Handbook — Components expands to one group per section.
 		if len(nav.Groups) < 5 {
 			t.Fatalf("docsNavFor groups = %d, want at least 5 IA blocks", len(nav.Groups))
 		}
@@ -634,10 +644,14 @@ func TestDefaultFooter(t *testing.T) {
 	if !containsString(flat, "/") {
 		t.Error("footer must include Home /")
 	}
-	// Patterns, recipes, and themes stay in lockstep with the nav model.
+	// Patterns, recipes, and handbook pages stay in lockstep with the nav model.
 	for _, path := range []string{
 		"/docs/patterns",
 		"/docs/themes",
+		"/docs/tokens",
+		"/docs/server-contracts",
+		"/docs/accessibility",
+		"/docs/principles",
 		"/recipes/admin-resource",
 		"/recipes/ops-queue",
 		"/recipes/public-feed",

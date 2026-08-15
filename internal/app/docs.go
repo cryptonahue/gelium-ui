@@ -81,6 +81,10 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 		}
 		groups = append(groups, docsNavGroup{Title: section.Title, Links: links})
 	}
+	handbook := make([]docsNavLink, 0, len(handbookNavLinks))
+	for _, l := range handbookNavLinks {
+		handbook = append(handbook, link(l.Path, l.Label))
+	}
 	groups = append(groups,
 		docsNavGroup{
 			Title: "Patterns",
@@ -94,10 +98,7 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 				link("/recipes/public-feed", "Public Feed"),
 			},
 		},
-		docsNavGroup{
-			Title: "Themes",
-			Links: []docsNavLink{link("/docs/themes", "Themes")},
-		},
+		docsNavGroup{Title: "Handbook", Links: handbook},
 	)
 
 	return docsNavView{
@@ -105,6 +106,17 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 		Version:        docsShellVersion,
 		SearchDisabled: true,
 	}
+}
+
+// handbookNavLinks is the Gelium Handbook IA: the four handbook sections plus
+// the Design Principles page. It drives the sidebar group, the /docs hub
+// section, and the sitemap so the destinations can never drift.
+var handbookNavLinks = []navLink{
+	{Path: "/docs/themes", Label: "Themes"},
+	{Path: "/docs/tokens", Label: "Tokens"},
+	{Path: "/docs/server-contracts", Label: "Server contracts"},
+	{Path: "/docs/accessibility", Label: "Accessibility"},
+	{Path: "/docs/principles", Label: "Design principles"},
 }
 
 // docsSections groups the component library into logical categories for the
@@ -221,7 +233,12 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 		}
 		md += "\n"
 	}
-	md += "## Demos\n\n"
+	md += "## Handbook\n\n"
+	md += "How Gelium UI works: themes, tokens, server contracts, accessibility, and the principles behind the library.\n\n"
+	for _, link := range handbookNavLinks {
+		md += "- [" + link.Label + "](" + link.Path + ")\n"
+	}
+	md += "\n## Demos\n\n"
 	md += "- [WhatsApp manager](/demo/whatsapp) — a complete chat application built with the library.\n"
 	md += "\n## Screen recipes\n\n"
 	md += "Phase G screen recipes — full screens composed from the library primitives on the canonical server contract.\n\n"
@@ -253,25 +270,36 @@ See the [Documentation](/docs) index for foundation, actions, input, feedback, n
 	s.renderMarkdown(w, r, pageView{Title: "Patterns"}, md, "/docs/patterns")
 }
 
-// docsThemes is GET /docs/themes — thin stub explaining visual directions and
-// the 0-JS ?theme= switcher hosted in the docs topbar.
+// docsThemes is GET /docs/themes — the Themes handbook page: how themes work
+// over one markup surface, the Material default and Basecoat direction, and
+// the 0-JS ?theme=/class selection routes hosted in the docs topbar.
 func (s *server) docsThemes(w http.ResponseWriter, r *http.Request) {
-	md := `# Themes
+	s.renderMarkdownPage(w, r, pageView{Title: "Themes"}, "content/handbook-themes.md")
+}
 
-Gelium UI ships multiple visual directions on one markup surface. Selection is document-root and zero-JS: append ` + "`?theme=<slug>`" + ` to any docs or component URL, or use the Theme control in the docs topbar.
+// docsTokens is GET /docs/tokens — the Tokens handbook page: the --ui-* token
+// vocabulary, core families, theme-owned values, and naming conventions.
+func (s *server) docsTokens(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Tokens"}, "content/handbook-tokens.md")
+}
 
-## Directions
+// docsServerContracts is GET /docs/server-contracts — the server contract
+// handbook page: GET+query state, POST+303 mutations, 422 validation, and
+// HX-Trigger toast feedback.
+func (s *server) docsServerContracts(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Server contracts"}, "content/handbook-server-contracts.md")
+}
 
-| Direction | Query |
-|-----------|-------|
-| Material (default) | ` + "`?theme=material`" + ` |
-| Basecoat | ` + "`?theme=basecoat`" + ` |
+// docsAccessibility is GET /docs/accessibility — the accessibility handbook
+// page: native semantics, accessible names, states, focus, live regions,
+// reduced motion, forced colors, contrast, and RTL.
+func (s *server) docsAccessibility(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Accessibility"}, "content/handbook-accessibility.md")
+}
 
-Only allowlisted slugs apply. Unknown values keep the default direction.
-
-## What stays the same
-
-Theme switching must not change URLs, landmarks, or SEO metadata — only the root class and cascade tokens.
-`
-	s.renderMarkdown(w, r, pageView{Title: "Themes"}, md, "/docs/themes")
+// docsPrinciples is GET /docs/principles — the Design Principles page: the
+// four foundation principles with what/why/example each, plus how tests
+// enforce them.
+func (s *server) docsPrinciples(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Design principles"}, "content/principles.md")
 }
