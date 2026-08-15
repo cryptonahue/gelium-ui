@@ -799,6 +799,7 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 		`<loc>https://gelium-ui.example/docs/server-contracts</loc>`,
 		`<loc>https://gelium-ui.example/docs/accessibility</loc>`,
 		`<loc>https://gelium-ui.example/docs/principles</loc>`,
+		`<loc>https://gelium-ui.example/docs/content-style</loc>`,
 		`<loc>https://gelium-ui.example/docs/acknowledgments</loc>`,
 		`<loc>https://gelium-ui.example/components/button</loc>`,
 		`<loc>https://gelium-ui.example/components/data-table</loc>`,
