@@ -247,8 +247,8 @@ func TestDataTableRefreshHXReturnsFragmentAndToastTrigger(t *testing.T) {
 	if res.Code != http.StatusOK {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
 	}
-	if got := res.Header().Get("HX-Trigger"); !strings.Contains(got, "loom:toast") {
-		t.Errorf("HX refresh must raise loom:toast, got %q", got)
+	if got := res.Header().Get("HX-Trigger"); !strings.Contains(got, "gelium:toast") {
+		t.Errorf("HX refresh must raise gelium:toast, got %q", got)
 	}
 	body := res.Body.String()
 	if !strings.Contains(body, `<form class="data-table-demo-refresh"`) {

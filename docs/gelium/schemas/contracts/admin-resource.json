@@ -99,14 +99,14 @@
       "selection": "csv of ids"
     },
     "mutation_contract": "POST_303",
-    "validation_contract": "422_X_LOOM_VALIDATION",
-    "transient_feedback": "LOOM_TOAST",
+    "validation_contract": "422_X_GELIUM_VALIDATION",
+    "transient_feedback": "GELIUM_TOAST",
     "post_only_paths": ["/recipes/admin-resource/refresh"],
     "fragment_swap": "#resource-panel",
     "notes": "HX-Request bifurcates the #resource-panel fragment vs the full page. Mutations never use hx-post (R-NOJS-03)."
   },
   "no_js_flow": "Complete: filter/sort/page/selection are real GET links (URL is state); create/edit/delete are native POST + 303; 422 re-renders the full page preserving values; delete confirm is a server-rendered <dialog open> with a real POST form; refresh reloads with an inline toast.",
-  "htmx_enhancement": "hx-get swaps #resource-panel on sort/filter/page; refresh returns the fragment + HX-Trigger loom:toast. Mutations remain POST + 303 (no hx-post).",
+  "htmx_enhancement": "hx-get swaps #resource-panel on sort/filter/page; refresh returns the fragment + HX-Trigger gelium:toast. Mutations remain POST + 303 (no hx-post).",
   "responsive_behavior": "Fluid max-width column, no breakpoints; server-side pagination instead of horizontal table scroll; form grid with min()/clamp(); row actions stay inline links on narrow.",
   "theme_requirements": "Tokens --ui-* only; zero color literals (guard TestNoColorLiteralsInComponents); light/dark/forced-colors/reduced-motion by primitives; no new density or breakpoint tokens.",
   "alternatives_rejected": [

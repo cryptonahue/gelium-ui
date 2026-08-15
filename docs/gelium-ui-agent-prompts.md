@@ -11,7 +11,7 @@
 1. **No-JS end-to-end**: el flujo principal DEBE completarse con JS/HTMX deshabilitado (`AI-COMPONENT-IMPLEMENTER-PROMPT.md` §12). JS solo si queda una brecha de plataforma demostrada (auditoría platform-first, §7 del mismo prompt).
 2. **HTML-first**: elementos nativos antes que ARIA; `div`/`span` nunca reemplazan controles (`core.md`, prompt §11).
 3. **Tokens `--ui-*`**: todo valor visual público es token; cero literales de color/geometría en componentes (guard `TestNoColorLiteralsInComponents`). Los mappings Material viven en el theme, no en componentes.
-4. **Server-first**: estado navegable = URL; validación = 422 + `X-Loom-Validation`; feedback persistente ≠ toast (`composition-rules.md` §9).
+4. **Server-first**: estado navegable = URL; validación = 422 + `X-Gelium-Validation`; feedback persistente ≠ toast (`composition-rules.md` §9).
 5. **No tocar**: `app.js`, `tokens.css`/`theme.css` (salvo theme work), `go.mod`/`package.json`, `COMPONENT-ROADMAP.md`, `MATERIAL-WEB-PROGRESS.md`, `docs/handoffs/*` — salvo tarea explícita.
 6. **Worktree aislado**: trabaja en una copia física autorizada, nunca en el checkout canónico (`AI-COMPONENT-IMPLEMENTER-PROMPT.md` §4.1 `ISOLATED_PHYSICAL_WORKSPACE`).
 
@@ -32,7 +32,7 @@
    - `web/styles_<x>_test.go` + `sourceAppCSS` en `styles_contract_test.go`
    - `internal/app/<x>.go` (view model) + `<x>_test.go`
    - ruta en `routes.go` + sección en `docs.go` + `web/content/<x>.md` (si docs page)
-6. **Contrato server** (si aplica) — 422/`loom:toast`/GET params/POST+303, vocabularios cerrados, view model Go concreto (nunca `map[string]any`, prompt §10).
+6. **Contrato server** (si aplica) — 422/`gelium:toast`/GET params/POST+303, vocabularios cerrados, view model Go concreto (nunca `map[string]any`, prompt §10).
 7. **Registrar en el registry** — actualizar `docs/gelium-ui-component-registry.md` (tabla maestra) y `gelium-ui-dependency-metadata.md` (dependencias) — este es el paso que Phase J agrega.
 8. **Verificación** — `npm run build`, `go test ./...`, `go vet ./...`, `go mod verify`, `node --check web/static/app.js`.
 9. **Smoke en puerto propio** (nunca `:8787`, no tocar `gelium.exe`) — light/dark, narrow/wide, keyboard, no-JS, HTMX, reduced motion, forced colors (§17).
@@ -49,7 +49,7 @@
 1. **Justificar contra composition-rules** — ¿qué pattern del vocabulario cubre, con qué regla de selección (§4)? ¿qué estados de la state matrix (§8) cubre y cuáles son GAP? ¿qué anti-regla podría violar (§5)? Rationale obligatorio (`composition-rules.md` §11).
 2. **Elegir componentes del registry** — SOLO componentes existentes; cero primitivas nuevas salvo aprobación (las recipes Phase G son 100% wiring; Avatar/pagination fueron la excepción aprobada con su propio contrato).
 3. **Completar los 19 campos** (SURFACE, USER, PRIMARY_TASK, SECONDARY_TASKS, UX_PATTERN, VISUAL_VOCABULARY, COMPONENTS, STATES, ACCESSIBILITY, CONTENT_RULES, SEO_REQUIREMENTS, GEO_REQUIREMENTS, SERVER_CONTRACT, NO_JS_FLOW, HTMX_ENHANCEMENT, RESPONSIVE_BEHAVIOR, THEME_REQUIREMENTS, ALTERNATIVES_REJECTED, RATIONALE) — ver `gelium-ui-screen-composition.md` §3.
-4. **Server contract** — GET params con vocabularios cerrados, POST+303 para mutaciones, 422 + `X-Loom-Validation` para validación, `loom:toast` solo transitorio; rutas `POST` de refresh en `postOnlyPaths()`.
+4. **Server contract** — GET params con vocabularios cerrados, POST+303 para mutaciones, 422 + `X-Gelium-Validation` para validación, `gelium:toast` solo transitorio; rutas `POST` de refresh en `postOnlyPaths()`.
 5. **No-JS + HTMX** — rama no-HX completa + enhancement `hx-get`/fragmento; testea ambos por separado (`HX-Request: true`).
 6. **SEO/GEO** — `/recipes/*` = `noindex, nofollow`; title/description por ruta; canonical limpio; JSON-LD cuando indexable.
 7. **Archivos** — `internal/app/recipe_<x>.go` + `<x>_test.go`, `web/templates/recipe-<x>.html`, `web/styles/recipe-<x>.css` (solo layout, sin literales de color), rutas en `server.go`.

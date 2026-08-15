@@ -84,7 +84,7 @@ Flow    : Inbox list → Conversation        (see contracts/inbox-flow.json)
 Screen  : /inbox/{conversation_id}         (contracts/inbox-conversation.json)
 Recipe  : 19 fields; pattern = Feed (thread) + Form(reply) + Error recovery + Notifications
 Patterns: E9, E15; vocabulary Feed + Form (thread/reply composition)
-Server  : GET page; POST reply → 303 (+ 422 validation); refresh POST-only + loom:toast
+Server  : GET page; POST reply → 303 (+ 422 validation); refresh POST-only + gelium:toast
 Components: avatar, badge, list, text-field, button, toast, empty-state, banner, error-state
 ```
 

@@ -13,7 +13,7 @@
 2. **Seleccionar el pattern del vocabulario** (`gelium-ui-pattern-registry.md`) con la regla de selección de `composition-rules.md` §4 (table vs list, list vs queue, feed vs collection, dialog vs page, toast vs inline vs banner vs callout…).
 3. **Descomponer en componentes del registry** (`gelium-ui-component-registry.md`) — SOLO piezas existentes; la recipe es wiring, cero primitivas nuevas salvo aprobación.
 4. **Resolver estados** — todo pattern de datos declara los 4 estados (rest/vacío/carga/error) con los state patterns (D): Empty state, Skeleton, Inline alert, Banner, Error state, Validation summary, Success feedback.
-5. **Fijar el contrato server** (`composition-rules.md` §9): GET params estables para listados, POST+303 para mutaciones, 422 + `X-Loom-Validation` para validación, `HX-Trigger loom:toast` solo transitorio.
+5. **Fijar el contrato server** (`composition-rules.md` §9): GET params estables para listados, POST+303 para mutaciones, 422 + `X-Gelium-Validation` para validación, `HX-Trigger gelium:toast` solo transitorio.
 6. **Completar los 19 campos** (§3) y **verificar la matriz de consumidores** (§4).
 
 ## 2. Ejemplo real: Admin Resource descompuesto
@@ -27,9 +27,9 @@
 | **State patterns** | Empty state (2 variantes: "No results"/"No projects yet"), Banner (`--success` persistente post-303), Inline alert + Validation summary (422), Error state (404), Toast (refresh) | `pattern-registry.md` §2 | todos los estados de la pantalla |
 | **Action/input** | Text field (search + form), Select (estado), Button/Icon button, Dialog (confirm page variant) | `component-registry.md` §2 | búsqueda, filtros, crear/editar/borrar |
 | **Recipe primitives** | Skeleton (refresh), Progress (refresh) | `component-registry.md` §2 | loading |
-| **Server contract** | `GET ?q=&sort=&dir=&page=&selection=`; `POST+303`; `422 + X-Loom-Validation`; `loom:toast` solo refresh; `HX-Request` bifurca `#resource-panel`; refresh en `postOnlyPaths()` | `screen-recipes.md` §1, `composition-rules.md` §9 | el esqueleto de la interacción |
+| **Server contract** | `GET ?q=&sort=&dir=&page=&selection=`; `POST+303`; `422 + X-Gelium-Validation`; `gelium:toast` solo refresh; `HX-Request` bifurca `#resource-panel`; refresh en `postOnlyPaths()` | `screen-recipes.md` §1, `composition-rules.md` §9 | el esqueleto de la interacción |
 | **No-JS flow** | links GET reales + checkboxes nativos + form POST+303 + `<dialog open>` server-rendered + reload con toast inline | `screen-recipes.md` §1 NO_JS_FLOW | funciona sin JS |
-| **HTMX enhancement** | `hx-get` swap de `#resource-panel`; refresh → fragmento + `HX-Trigger loom:toast` | `screen-recipes.md` §1 HTMX_ENHANCEMENT | mejora sin cambiar contrato |
+| **HTMX enhancement** | `hx-get` swap de `#resource-panel`; refresh → fragmento + `HX-Trigger gelium:toast` | `screen-recipes.md` §1 HTMX_ENHANCEMENT | mejora sin cambiar contrato |
 | **SEO/GEO** | `/recipes/*` = `noindex, nofollow`; title/description por ruta; canonical limpio; un solo `<h1>`; entidad única Gelium UI | `screen-recipes.md` §1 SEO/GEO_REQUIREMENTS | indexabilidad correcta |
 | **Theme** | solo tokens `--ui-*` existentes; cero literales de color (`TestNoColorLiteralsInComponents` sobre `recipe-admin-resource.css`); light/dark/forced-colors por primitivos | `theme-registry.md`, `theme-contract.md` | apariencia sin trabajo extra |
 
@@ -53,7 +53,7 @@
 | 10 | CONTENT_RULES | copy, botones = verbos, empty = mensaje + CTA | `content-rules.md` |
 | 11 | SEO_REQUIREMENTS | noindex/noindex, title/desc por ruta, canonical, h1 | `seo-contract.md`, `seo-patterns.md` |
 | 12 | GEO_REQUIREMENTS | contenido factual, URLs deep-linkables, entidad única | `geo-contract.md`, `geo-patterns.md` |
-| 13 | SERVER_CONTRACT | GET params, POST+303, 422, loom:toast, postOnlyPaths | `composition-rules.md` §9 |
+| 13 | SERVER_CONTRACT | GET params, POST+303, 422, gelium:toast, postOnlyPaths | `composition-rules.md` §9 |
 | 14 | NO_JS_FLOW | rama no-HX completa | `AI-COMPONENT-IMPLEMENTER-PROMPT.md` §12 |
 | 15 | HTMX_ENHANCEMENT | fragmento swap, sin cambiar contrato de mutación | `composition-rules.md` §9 |
 | 16 | RESPONSIVE_BEHAVIOR | columna fluida, min()/clamp(), paginación server-side | `composition-rules.md` §7 |

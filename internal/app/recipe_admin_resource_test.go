@@ -42,7 +42,7 @@ func TestRecipeAdminResourceListRendersDataTableWithFilterSortPage(t *testing.T)
 		`name="selection" value="all" aria-label="Select all rows"`,
 		`<span class="ui-data-table-page ui-data-table-page--current" aria-current="page">1</span>`,
 		`id="resource-panel"`,
-		`id="loom-toast-region"`,
+		`id="gelium-toast-region"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("list does not contain contract %q", contract)
@@ -206,7 +206,7 @@ func TestRecipeAdminResourceNewForm(t *testing.T) {
 }
 
 // TestRecipeAdminResourceCreateValidation422 proves the create failure uses the
-// 422 contract: the X-Loom-Validation header, the inline alert, the validation
+// 422 contract: the X-Gelium-Validation header, the inline alert, the validation
 // summary linking to each field error and the preserved submitted values.
 func TestRecipeAdminResourceCreateValidation422(t *testing.T) {
 	resetRecipeResourceStore()
@@ -220,8 +220,8 @@ func TestRecipeAdminResourceCreateValidation422(t *testing.T) {
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if res.Header().Get("X-Loom-Validation") != "true" {
-		t.Errorf("X-Loom-Validation = %q, want true", res.Header().Get("X-Loom-Validation"))
+	if res.Header().Get("X-Gelium-Validation") != "true" {
+		t.Errorf("X-Gelium-Validation = %q, want true", res.Header().Get("X-Gelium-Validation"))
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
@@ -324,8 +324,8 @@ func TestRecipeAdminResourceEditValidation422(t *testing.T) {
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if res.Header().Get("X-Loom-Validation") != "true" {
-		t.Errorf("X-Loom-Validation = %q, want true", res.Header().Get("X-Loom-Validation"))
+	if res.Header().Get("X-Gelium-Validation") != "true" {
+		t.Errorf("X-Gelium-Validation = %q, want true", res.Header().Get("X-Gelium-Validation"))
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
@@ -436,7 +436,7 @@ func TestRecipeAdminResourceNotFound(t *testing.T) {
 // TestRecipeAdminResourceRefreshPostOnly proves the refresh action is POST-only
 // (a GET answers 405 with Allow: POST), that the no-JS refresh re-renders the
 // list with a persistent inline toast + progress, and that the HTMX refresh
-// returns the fragment plus an HX-Trigger loom:toast.
+// returns the fragment plus an HX-Trigger gelium:toast.
 func TestRecipeAdminResourceRefreshPostOnly(t *testing.T) {
 	resetRecipeResourceStore()
 
@@ -475,8 +475,8 @@ func TestRecipeAdminResourceRefreshPostOnly(t *testing.T) {
 	if res.Code != http.StatusOK {
 		t.Fatalf("HX refresh status = %d, want %d", res.Code, http.StatusOK)
 	}
-	if trigger := res.Header().Get("HX-Trigger"); !strings.Contains(trigger, "loom:toast") || !strings.Contains(trigger, "Projects refreshed.") {
-		t.Errorf("HX-Trigger = %q, want loom:toast payload", trigger)
+	if trigger := res.Header().Get("HX-Trigger"); !strings.Contains(trigger, "gelium:toast") || !strings.Contains(trigger, "Projects refreshed.") {
+		t.Errorf("HX-Trigger = %q, want gelium:toast payload", trigger)
 	}
 	body = res.Body.String()
 	if strings.Contains(body, "<html") {

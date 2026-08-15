@@ -107,7 +107,7 @@ func (s *server) toastDocs(w http.ResponseWriter, r *http.Request) {
 
 // toastTriggerJSON encodes the wire contract of the HX-Trigger response header:
 //
-//	{"loom:toast":{"type":"success","message":"Saved"}}
+//	{"gelium:toast":{"type":"success","message":"Saved"}}
 //
 // The message is JSON-escaped so it can never break out of the header or body.
 func toastTriggerJSON(typ, message string) (string, error) {
@@ -115,7 +115,7 @@ func toastTriggerJSON(typ, message string) (string, error) {
 		Toast struct {
 			Type    string `json:"type"`
 			Message string `json:"message"`
-		} `json:"loom:toast"`
+		} `json:"gelium:toast"`
 	}{}
 	payload.Toast.Type = typ
 	payload.Toast.Message = message
@@ -128,7 +128,7 @@ func toastTriggerJSON(typ, message string) (string, error) {
 
 // toastDemo completes a server-driven action. Without JavaScript it re-renders the
 // full documentation page with a persistent inline toast (no-JS flow); with HTMX it
-// returns only the form fragment and an HX-Trigger that raises the loom:toast event,
+// returns only the form fragment and an HX-Trigger that raises the gelium:toast event,
 // which the local enhancement layer displays as an auto-dismissing toast in the
 // aria-live region. Validation failures are never reported as toasts.
 func (s *server) toastDemo(w http.ResponseWriter, r *http.Request) {
@@ -175,7 +175,7 @@ func (s *server) toastDemo(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if status == http.StatusUnprocessableEntity {
-		w.Header().Set("X-Loom-Validation", "true")
+		w.Header().Set("X-Gelium-Validation", "true")
 	}
 
 	var rendered bytes.Buffer

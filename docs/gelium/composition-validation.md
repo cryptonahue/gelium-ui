@@ -38,8 +38,8 @@ For every screen contract, verify the 19 fields of the recipe template
 - [ ] STATES are a subset of the closed set (rest/hover/focus/pressed/selected/
       disabled/empty/loading/error/success) and every data surface declares
       empty + loading + error (R-STATE-01).
-- [ ] SERVER_CONTRACT uses only canonical contracts (P5): 422 + `X-Loom-Validation`,
-      `loom:toast`, GET stable params, POST + 303. No invented contract.
+- [ ] SERVER_CONTRACT uses only canonical contracts (P5): 422 + `X-Gelium-Validation`,
+      `gelium:toast`, GET stable params, POST + 303. No invented contract.
 - [ ] NO_JS_FLOW is a complete, walkable branch (no JS required).
 - [ ] HTMX_ENHANCEMENT never changes the mutation contract (R-NOJS-03).
 - [ ] ALTERNATIVES_REJECTED names the patterns/anti-rules considered and why

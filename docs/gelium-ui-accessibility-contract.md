@@ -11,7 +11,7 @@
 1. **HTML-first, server-first, no-JS end-to-end**: the primary flow of every component and screen works with no JavaScript. ARIA only completes what native semantics cannot express.
 2. **Native before ARIA**: `button`, `a`, `dialog`, `progress`, `select`, `table/caption`, native `input` types, `nav`, `aside`, `label`, `fieldset/legend` are preferred over invented widgets. No fake roles: no `tablist`, no fake `menu`, no fake `dialog`.
 3. **State is never color-only**: every state ported by color (`:checked`, `aria-sort`, `aria-current`, `aria-invalid`, `aria-busy`, `role`, disabled) is also carried by semantics or text.
-4. **Persistent-contextual feedback ≠ transient-action feedback**: nothing persistent is announced through `loom:toast`; nothing transient occupies a persistent slot. Formalized in Phase D and enforced by tests.
+4. **Persistent-contextual feedback ≠ transient-action feedback**: nothing persistent is announced through `gelium:toast`; nothing transient occupies a persistent slot. Formalized in Phase D and enforced by tests.
 5. **Focus is native**: focus management is delegated to the browser (dialog `showModal`, popover, native controls). Roving focus is only acceptable when the full keyboard contract is already solved natively — and even then links with `aria-current` are preferred.
 6. **Reduced motion and forced colors are first-class**: every component that moves or relies on color has a `prefers-reduced-motion` and `forced-colors` treatment.
 7. **AA contrast by design**: semantic tokens, not hardcoded values, drive the palette; the theme is responsible for AA ratios in both light and dark.
@@ -145,7 +145,7 @@ On server-side validation failure (HTTP 422), focus must be placed back on the f
 
 **Application in Gelium UI**
 - `text_field.go:65-68`: on empty value the field is marked with `Error` and `Autofocus = !isHX`; the re-rendered `<input>`/`<textarea>` carries `autofocus` (`text-field.html:5`).
-- `internal/app/server.go` 422 status + `X-Loom-Validation: true` header in HX branch (`text_field.go:87-89`); `app.js:1-9` swaps only 422 with that header.
+- `internal/app/server.go` 422 status + `X-Gelium-Validation: true` header in HX branch (`text_field.go:87-89`); `app.js:1-9` swaps only 422 with that header.
 - The error message (`role="alert"`) is right below the field, so the recovered focus lands adjacent to the announcement.
 
 **Evidence / tests**
@@ -223,10 +223,10 @@ Loading state must be announced: the control exposes `aria-busy="true"` and its 
 ### 1.12 Validation HTTP 422
 
 **Architecture rule (mandatory)**
-Server-side validation failures return HTTP 422 with the `X-Loom-Validation: true` header. The re-render (full page no-JS, or fragment with HTMX) carries: per-field `aria-invalid="true"` + `role="alert"` message + `aria-describedby`, and a form-level **validation summary** with real anchor links to each invalid field. Validation never fires `loom:toast`.
+Server-side validation failures return HTTP 422 with the `X-Gelium-Validation: true` header. The re-render (full page no-JS, or fragment with HTMX) carries: per-field `aria-invalid="true"` + `role="alert"` message + `aria-describedby`, and a form-level **validation summary** with real anchor links to each invalid field. Validation never fires `gelium:toast`.
 
 **Application in Gelium UI**
-- Contract header: `X-Loom-Validation: true` (`text_field.go:88`); `app.js:1-9` instructs HTMX to swap 422-with-header as success.
+- Contract header: `X-Gelium-Validation: true` (`text_field.go:88`); `app.js:1-9` instructs HTMX to swap 422-with-header as success.
 - Per-field: `text-field.html:5,8` (`aria-invalid` + `role="alert"` + `aria-describedby`); `select.html:84` (`ui-select-error` `role="alert"`).
 - Validation summary: `validation-summary.html` — `role="alert"` container, heading level configurable, `<ul>` of `<li><a href="#{field}-error">` anchors that jump natively to the field.
 - Value preservation on 422 (`text_field.go:62`); focus recovery via autofocus (§1.7).
@@ -243,8 +243,8 @@ Server-side validation failures return HTTP 422 with the `X-Loom-Validation: tru
 Transient feedback is announced via a polite live region; persistent errors bound to context use `role="alert"` (assertive) or `role="status"` (polite) placed near the context. The toast region is the single live region for transient action feedback.
 
 **Application in Gelium UI**
-- Toast region: `#loom-toast-region` with `aria-live="polite" aria-atomic="false" aria-relevant="additions text"` (`toast.html:10`); each toast sets `role="status"` (info/success/warning) or `role="alert"` (error) (`toast.html:2`, `app.js:45`).
-- Server-driven contract: `HX-Trigger {"loom:toast":…}` with closed vocabulary `info|success|warning|error`; no-JS inline toast fallback (`toast.go:161-164`).
+- Toast region: `#gelium-toast-region` with `aria-live="polite" aria-atomic="false" aria-relevant="additions text"` (`toast.html:10`); each toast sets `role="status"` (info/success/warning) or `role="alert"` (error) (`toast.html:2`, `app.js:45`).
+- Server-driven contract: `HX-Trigger {"gelium:toast":…}` with closed vocabulary `info|success|warning|error`; no-JS inline toast fallback (`toast.go:161-164`).
 - State patterns map: `role="alert"` for error tones, `role="status"` for info/success (see §2); `empty-state` uses `role="status"`; skeleton uses `role="status"`.
 - Persistent-contextual feedback is never announced through the toast region (§0.4).
 
@@ -325,16 +325,16 @@ Every state pattern is a server-rendered component. "Role" is derived, never ove
 |---|---|---|---|---|
 | Empty state | `role="status"` | A list/table/search has zero results; gives the user guidance or a CTA | GET params; output of the handler, never client state (`data_table.go` empty row, `colspan`) | Persistent-contextual |
 | Skeleton | `role="status"` + `sr-only` text + `aria-hidden` blocks | Initial data load placeholder | Server-rendered static HTML; replaced by the next request | Persistent-contextual (placeholder) |
-| Inline alert | `role="alert"` (error tone) / `role="status"` (info/success/warning) | Section/form-level feedback bound to context; per-field error uses the field's own `role="alert"` message | 422 + `X-Loom-Validation` re-render, or fragment | Persistent-contextual |
+| Inline alert | `role="alert"` (error tone) / `role="status"` (info/success/warning) | Section/form-level feedback bound to context; per-field error uses the field's own `role="alert"` message | 422 + `X-Gelium-Validation` re-render, or fragment | Persistent-contextual |
 | Banner | `role="alert"` (error tone) / `role="status"` (info/success/warning) | Page/site-level notice; never auto-dismissed; dismiss = form `POST` + 303 | POST + 303 redirect (dismiss); server-rendered in layout slot between `</header>` and `<main>` | Persistent-contextual |
 | Callout | none (static `aside`) | Optional informational note, ignorable; tone variants must never be color-only | None (static markup) | Persistent-contextual |
 | Error state | `role="alert"` | Full-page/resource failure; single `h1`, descriptive body, real retry link, real HTTP status | HTTP status (404/500/503) + server-rendered re-render | Persistent-contextual |
-| Validation summary | `role="alert"` | Form-level list of invalid fields; anchors `#field-error` jump natively; heading level configurable | 422 + `X-Loom-Validation` (no new header) | Persistent-contextual |
-| Success (persistent) | `role="status"` | Post-save/page confirmation that must survive navigation; reuses Banner/Inline alert success tone | POST + 303 redirect re-render, or post-submit fragment; NEVER `loom:toast` | Persistent-contextual |
-| Toast | `role="status"` (info/success/warning) / `role="alert"` (error) | Transient action result; auto-dismiss 4s/8s pausable; single live region | `HX-Trigger {"loom:toast":…}`; no-JS inline fallback | Transient-action |
+| Validation summary | `role="alert"` | Form-level list of invalid fields; anchors `#field-error` jump natively; heading level configurable | 422 + `X-Gelium-Validation` (no new header) | Persistent-contextual |
+| Success (persistent) | `role="status"` | Post-save/page confirmation that must survive navigation; reuses Banner/Inline alert success tone | POST + 303 redirect re-render, or post-submit fragment; NEVER `gelium:toast` | Persistent-contextual |
+| Toast | `role="status"` (info/success/warning) / `role="alert"` (error) | Transient action result; auto-dismiss 4s/8s pausable; single live region | `HX-Trigger {"gelium:toast":…}`; no-JS inline fallback | Transient-action |
 | Loading (button/operation) | `aria-busy` + dynamic name `Loading {Label}`; `<progress>` for operations | In-progress action | Server-rendered state | Transient-action |
 
-**Rule**: `role="alert"` only for content that needs immediate assertive interruption (errors, required action); everything else polite (`role="status"`). No persistent pattern emits `loom:toast`; no transient pattern occupies a persistent slot (§0.4).
+**Rule**: `role="alert"` only for content that needs immediate assertive interruption (errors, required action); everything else polite (`role="status"`). No persistent pattern emits `gelium:toast`; no transient pattern occupies a persistent slot (§0.4).
 
 ---
 
@@ -364,9 +364,9 @@ Tracked in `docs/handoffs/ux-accessibility-audit.md` §8 and `docs/gelium-ui-sys
 
 ### 4.1 Server contract tests (`internal/app/`)
 - `server_test.go` — banner slot position and role derivation; inline-alert role derivation; error-state markup with single `h1`; unknown route renders error state; theme class server-driven; semantic foundation contracts; layout h1 ownership; docs index.
-- `text_field_test.go` — 422 + `X-Loom-Validation`, autofocus on no-JS re-render, no autofocus in HX branch, value preservation, `role="status"` success helper.
+- `text_field_test.go` — 422 + `X-Gelium-Validation`, autofocus on no-JS re-render, no autofocus in HX branch, value preservation, `role="status"` success helper.
 - `select_test.go` — 422 validation, error `role="alert"`, native select vs select-menu.
-- `toast_test.go` — `loom:toast` contract, closed vocabulary, role derivation, no-JS inline fallback, **validation never toast**.
+- `toast_test.go` — `gelium:toast` contract, closed vocabulary, role derivation, no-JS inline fallback, **validation never toast**.
 - `data_table_test.go` — empty state row (`colspan`, message, CTA), select-all absent at 0 rows, HX empty-state fragment, query escaping, sort/pagination links.
 - `demo_whatsapp_test.go` — demo screens render (baseline for G2/G3 cleanup).
 

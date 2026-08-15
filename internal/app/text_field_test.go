@@ -143,7 +143,7 @@ func TestTextFieldDocsExplainHTTP422AndHTMXSwapContract(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/text-field", nil))
 	body := res.Body.String()
-	for _, contract := range []string{"HTTP 422", "X-Loom-Validation", "htmx:beforeSwap", "shouldSwap", "isError", "outerHTML", "without JavaScript", "complete documentation page"} {
+	for _, contract := range []string{"HTTP 422", "X-Gelium-Validation", "htmx:beforeSwap", "shouldSwap", "isError", "outerHTML", "without JavaScript", "complete documentation page"} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("text field docs are missing 422/HTMX explanation %q", contract)
 		}
@@ -161,8 +161,8 @@ func TestTextFieldValidationWithHXRejectsWhitespaceWithCompleteAccessibleFormFra
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if got := res.Header().Get("X-Loom-Validation"); got != "true" {
-		t.Errorf("X-Loom-Validation = %q, want %q", got, "true")
+	if got := res.Header().Get("X-Gelium-Validation"); got != "true" {
+		t.Errorf("X-Gelium-Validation = %q, want %q", got, "true")
 	}
 	body := res.Body.String()
 	if strings.Contains(body, `<!doctype html>`) || strings.Contains(body, `<title>`) {
@@ -195,8 +195,8 @@ func TestTextFieldValidationWithoutHXRejectsWhitespaceInCompleteDocumentationPag
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if got := res.Header().Get("X-Loom-Validation"); got != "" {
-		t.Errorf("non-HX X-Loom-Validation = %q, want no fragment-only validation header", got)
+	if got := res.Header().Get("X-Gelium-Validation"); got != "" {
+		t.Errorf("non-HX X-Gelium-Validation = %q, want no fragment-only validation header", got)
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
@@ -384,9 +384,9 @@ func TestTextFieldFormAndLocalScriptImplementHTMX422SwapContract(t *testing.T) {
 			t.Errorf("app.js is missing 422 hook contract %q", contract)
 		}
 	}
-	validation422 := regexp.MustCompile(`status\s*===\s*422\s*&&\s*event\.detail\.xhr\.getResponseHeader\("X-Loom-Validation"\)\s*===\s*"true"`)
+	validation422 := regexp.MustCompile(`status\s*===\s*422\s*&&\s*event\.detail\.xhr\.getResponseHeader\("X-Gelium-Validation"\)\s*===\s*"true"`)
 	if !validation422.MatchString(js) {
-		t.Error("app.js must only swap a 422 when X-Loom-Validation is true")
+		t.Error("app.js must only swap a 422 when X-Gelium-Validation is true")
 	}
 }
 

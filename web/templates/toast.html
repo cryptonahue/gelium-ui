@@ -2,12 +2,12 @@
 <div class="ui-toast ui-toast-{{.Type}}" id="{{.ID}}" role="{{.Role}}">
   {{.IconSVG}}
   <span class="ui-toast-message">{{.Message}}</span>
-  {{if .Dismiss}}<button class="ui-toast-action" type="button" data-loom-toast-dismiss aria-label="Dismiss notification">Dismiss</button>{{end}}
+  {{if .Dismiss}}<button class="ui-toast-action" type="button" data-gelium-toast-dismiss aria-label="Dismiss notification">Dismiss</button>{{end}}
 </div>
 {{end}}
 
 {{define "toast-region"}}
-<div id="loom-toast-region" class="ui-toast-region" aria-live="polite" aria-atomic="false" aria-relevant="additions text"></div>
+<div id="gelium-toast-region" class="ui-toast-region" aria-live="polite" aria-atomic="false" aria-relevant="additions text"></div>
 {{end}}
 
 {{define "toast-demo-form"}}

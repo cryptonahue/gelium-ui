@@ -323,13 +323,13 @@ Reglas del markup (derivadas de la implementación, `web/templates/*.html`):
 
 El core define y reutiliza estos contratos (evidencia en `composition-audit.md` §3); las screen recipes NO inventan otros:
 
-1. **HTTP 422 + `X-Loom-Validation: true`** — validación server-side de campos/valores.
+1. **HTTP 422 + `X-Gelium-Validation: true`** — validación server-side de campos/valores.
    - Sin HX: re-render de página completa con 422, preservando valor + `aria-invalid` + mensaje.
    - Con HX: `htmx:beforeSwap` (`web/static/app.js:1-9`) swapea solo 422 con header.
    - Regla: **la validación nunca dispara toast** (`toast.go:129-133`).
-2. **`HX-Trigger: {"loom:toast":{"type":"success","message":"…"}}`** — feedback transitorio server-driven.
+2. **`HX-Trigger: {"gelium:toast":{"type":"success","message":"…"}}`** — feedback transitorio server-driven.
    - Vocabulario cerrado `info|success|warning|error`; `error` → `role="alert"`.
-   - Región `#loom-toast-region` con `aria-live="polite"`.
+   - Región `#gelium-toast-region` con `aria-live="polite"`.
    - Sin JS: toast inline persistente; con JS: auto-dismiss 4s/8s pausable.
 3. **GET con parámetros estables** (`?q=&sort=&dir=&page=&selection=`) — estado de listados (Data table).
    - La URL es el estado: no-JS = reload completo; HTMX = fragmento `outerHTML`.
@@ -340,7 +340,7 @@ El core define y reutiliza estos contratos (evidencia en `composition-audit.md` 
 ## 8. Progressive enhancement
 
 - HTMX local (`web/static/htmx.min.js`, copiado desde npm `htmx.org`, sin CDN) y opcional.
-- El hook local `app.js` solo intercambia fragments HTTP 422 con `X-Loom-Validation: true`.
+- El hook local `app.js` solo intercambia fragments HTTP 422 con `X-Gelium-Validation: true`.
 - Primitivas declarativas con fallback: `<dialog>` + Invoker Commands (`command`/`commandfor`) + `closedby="any"` (navegadores compatibles); Popover API (`popover`/`popovertarget`) para menús; Interest Invokers evaluados y rechazados para tooltip por no-Baseline.
 - Toda mejora JS tiene un fallback server-rendered real; nunca se rompe el flujo principal sin JS.
 

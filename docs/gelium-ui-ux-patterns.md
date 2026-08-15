@@ -29,7 +29,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 | 12 | Multi-step form | Phase G | Steps (gap), Progress, Validation summary, 422 |
 | 13 | Checkout | Phase G | Steps (gap), Text field, 422, Validation summary |
 | 14 | Booking | Phase G | Steps (gap), date/datetime input, 422, Success feedback |
-| 15 | Notifications | Ready | Toast (`loom:toast`), Banner, Toast region `aria-live` |
+| 15 | Notifications | Ready | Toast (`gelium:toast`), Banner, Toast region `aria-live` |
 | 16 | Settings | Phase G | Panel, List, Text field, Banner/Inline alert success, 422 |
 | 17 | Permissions | Phase G | List + checkboxes, Segmented buttons, Dialog, 422 |
 | 18 | Confirmation | Ready | Dialog confirm/cancel, `closedby="any"` |
@@ -47,11 +47,11 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Happy path**: submit credentials → server validates → `POST + 303` redirect to the protected home.
 - **Empty path**: first visit — empty form with helper text; no pre-filled credentials.
 - **Loading path**: submit button `aria-busy` + spinner (`button.html:4,9`).
-- **Error path**: wrong credentials → **422 + `X-Loom-Validation`** → Inline alert (`role="alert"`) + per-field `aria-invalid` + Validation summary with anchor links.
+- **Error path**: wrong credentials → **422 + `X-Gelium-Validation`** → Inline alert (`role="alert"`) + per-field `aria-invalid` + Validation summary with anchor links.
 - **Recovery path**: server preserves the entered value (`text_field.go:62`); focus returns to the failing field (`text_field.go:67`); "Reset password" and "Try again" as real links. Global/session-level errors → Banner.
 - **Mobile behavior**: single-column form, full-width primary button; no side-by-side fields.
 - **Accessibility**: `role="alert"` on the error summary; never announce credentials via `aria-live`; autofocus to the first error field.
-- **Server contract**: `POST` + `422 + X-Loom-Validation: true` on failure; `POST + 303 SeeOther` on success. Validation never triggers a toast (`toast.go:129-133`).
+- **Server contract**: `POST` + `422 + X-Gelium-Validation: true` on failure; `POST + 303 SeeOther` on success. Validation never triggers a toast (`toast.go:129-133`).
 - **When NOT to use**: a transient "login as" inside a demo, or any surface where auth is not a distinct navigable state.
 
 ---
@@ -68,7 +68,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Recovery path**: back navigation is server-rendered links; values survive re-submit; no data loss.
 - **Mobile behavior**: one field/decision per screen; large touch targets.
 - **Accessibility**: each step has an `<h1>`; error summary is `role="alert"`; skip-link to content.
-- **Server contract**: `POST + 303` per step; `422 + X-Loom-Validation` per step; **Steps is a Phase D gap** (`vocabulary.md:190-197`).
+- **Server contract**: `POST + 303` per step; `422 + X-Gelium-Validation` per step; **Steps is a Phase D gap** (`vocabulary.md:190-197`).
 - **When NOT to use**: flows that fit on one page, or when the user can opt out without penalty.
 
 ---
@@ -183,11 +183,11 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Happy path**: submit succeeds → success feedback / redirect.
 - **Empty path**: n/a.
 - **Loading path**: button `aria-busy` during retry.
-- **Error path**: validation → `422 + X-Loom-Validation` + Inline alert + Validation summary; resource → `error-state.html` with status + retry link.
+- **Error path**: validation → `422 + X-Gelium-Validation` + Inline alert + Validation summary; resource → `error-state.html` with status + retry link.
 - **Recovery path**: value preserved (`text_field.go:62`), focus returns to the failing field (`text_field.go:67`), summary links jump to fields, retry link re-GETs.
 - **Mobile behavior**: summary links are full-width tap targets on narrow surfaces.
 - **Accessibility**: `role="alert"` for errors; focus returns to the first error; transport errors announced via `aria-live` (G5 pending).
-- **Server contract**: `422 + X-Loom-Validation: true`; real HTTP status (404/500/503); `POST + 303` for resumable workflows.
+- **Server contract**: `422 + X-Gelium-Validation: true`; real HTTP status (404/500/503); `POST + 303` for resumable workflows.
 - **When NOT to use**: an empty result (use empty state); a transient action result (use Toast).
 
 ---
@@ -238,7 +238,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Recovery path**: back/forward server-rendered; values preserved on validation failure.
 - **Mobile behavior**: one field-group per step; sticky step submit.
 - **Accessibility**: `<h1>` per step; summary `role="alert"`; focus to the first error field.
-- **Server contract**: `422 + X-Loom-Validation` per step; `POST + 303` between steps.
+- **Server contract**: `422 + X-Gelium-Validation` per step; `POST + 303` between steps.
 - **When NOT to use**: a flow that fits on one page (`vocabulary.md:197`).
 
 ---
@@ -255,7 +255,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Recovery path**: values preserved; clear "Back" and order-summary consistency.
 - **Mobile behavior**: payment fields collapse to a single column; security badges visible but never decorative.
 - **Accessibility**: logical tab order through payment fields; errors `role="alert"`.
-- **Server contract**: `POST + 303` per step; `422 + X-Loom-Validation`; success → persistent Success feedback (Banner/inline, never only Toast).
+- **Server contract**: `POST + 303` per step; `422 + X-Gelium-Validation`; success → persistent Success feedback (Banner/inline, never only Toast).
 - **When NOT to use**: single-screen purchases (one page is enough).
 
 ---
@@ -272,7 +272,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Recovery path**: values preserved on failure; resumable by URL/redirect.
 - **Mobile behavior**: slot pickers collapse to one column; native `input type="date"` preferred.
 - **Accessibility**: native inputs for keyboard/calendar semantics; error summary `role="alert"`.
-- **Server contract**: `POST + 303` on success; `422 + X-Loom-Validation` on failure.
+- **Server contract**: `POST + 303` on success; `422 + X-Gelium-Validation` on failure.
 - **When NOT to use**: when a single GET-parameter slot picker (e.g. a queue) suffices; or when there is no time dimension.
 
 ---
@@ -281,15 +281,15 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 
 - **Problem**: surface transient results and persistent site-level announcements without mixing them.
 - **User**: any user.
-- **Context**: transient → Toast (`loom:toast`); persistent/global → Banner; contextual → Inline alert / Callout.
-- **Happy path**: action completes → server emits `loom:toast` → auto-dismiss 4s/8s, pausable (`app.js:11-77`).
+- **Context**: transient → Toast (`gelium:toast`); persistent/global → Banner; contextual → Inline alert / Callout.
+- **Happy path**: action completes → server emits `gelium:toast` → auto-dismiss 4s/8s, pausable (`app.js:11-77`).
 - **Empty path**: no notifications; nothing rendered.
 - **Loading path**: n/a.
 - **Error path**: global error/session expiry → Banner `role="alert"` (persistent, no auto-dismiss); never a toast for persistent/critical feedback (`composition-rules.md:126`).
 - **Recovery path**: Banner dismiss = `POST + 303` (`banner.html`); toast dismiss manual + auto.
 - **Mobile behavior**: toast region stacked bottom on narrow surfaces; Banner full-width top.
-- **Accessibility**: `#loom-toast-region` `aria-live="polite"` `aria-atomic="false"` (`toast.html:10`); `role="alert"` for error toasts.
-- **Server contract**: `HX-Trigger: {"loom:toast":{...}}` with closed vocabulary `info|success|warning|error` (`toast.go:13-14,45`); validation never toast (`toast.go:129-133`).
+- **Accessibility**: `#gelium-toast-region` `aria-live="polite"` `aria-atomic="false"` (`toast.html:10`); `role="alert"` for error toasts.
+- **Server contract**: `HX-Trigger: {"gelium:toast":{...}}` with closed vocabulary `info|success|warning|error` (`toast.go:13-14,45`); validation never toast (`toast.go:129-133`).
 - **When NOT to use**: persistent feedback (Inline alert/Banner instead); validation errors (422 inline instead).
 
 ---
@@ -306,7 +306,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Recovery path**: values preserved (`text_field.go:62`); success is a non-ephemeral Banner/Inline `role="status"` (Success feedback, `vocabulary.md:140-151`).
 - **Mobile behavior**: sections stack; save action sticky.
 - **Accessibility**: grouped fields in `<fieldset>`/`<legend>`; success `role="status"` polite.
-- **Server contract**: `POST + 303` after save; `422 + X-Loom-Validation` on validation; persistent success never via `loom:toast`.
+- **Server contract**: `POST + 303` after save; `422 + X-Gelium-Validation` on validation; persistent success never via `gelium:toast`.
 - **When NOT to use**: quick single toggles that belong inline in the current page (Segmented/Checkbox + POST).
 
 ---
@@ -323,7 +323,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Recovery path**: change is a URL/redirect state; values preserved on failure.
 - **Mobile behavior**: one permission per row on narrow surfaces.
 - **Accessibility**: native controls (`checkbox.html`, `radio.html`, `segmented-button.html`); groups in `<fieldset>`.
-- **Server contract**: `POST + 303`; `422 + X-Loom-Validation`; destructive grants use Dialog confirm (see #18).
+- **Server contract**: `POST + 303`; `422 + X-Gelium-Validation`; destructive grants use Dialog confirm (see #18).
 - **When NOT to use**: when permissions come from an external identity provider and are read-only.
 
 ---
@@ -366,13 +366,13 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 
 | Contract | Patterns that own it |
 |---|---|
-| `422 + X-Loom-Validation: true` | Authentication, Onboarding, Multi-step form, Checkout, Booking, Settings, Permissions, Error recovery |
-| `HX-Trigger {"loom:toast":…}` | Notifications, Undo (transient), action results in Resource list / Bulk / Destructive |
+| `422 + X-Gelium-Validation: true` | Authentication, Onboarding, Multi-step form, Checkout, Booking, Settings, Permissions, Error recovery |
+| `HX-Trigger {"gelium:toast":…}` | Notifications, Undo (transient), action results in Resource list / Bulk / Destructive |
 | `GET` stable params (`?q=&sort=&dir=&page=&selection=`) | Resource list, Search, Filters, Pagination |
 | `POST + 303 SeeOther` | Authentication, Onboarding, Checkout, Booking, Destructive, Bulk, Confirmation, Settings, Permissions, Undo |
 | Persistent success (Banner/Inline `role="status"`) | Checkout, Booking, Settings, Destructive (post-redirect) |
 
-**Cross-cutting rule**: persistent feedback never travels through `loom:toast`; transient action results never occupy a persistent slot (`state-patterns-audit.md:45`).
+**Cross-cutting rule**: persistent feedback never travels through `gelium:toast`; transient action results never occupy a persistent slot (`state-patterns-audit.md:45`).
 
 ---
 

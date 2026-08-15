@@ -21,7 +21,7 @@
 | 7 | **Feature Card** | ✅ | 2 | `feature-card.html`/`feature-card.css` + `styles_feature_card_test.go`; composición Card + media + CTA Link (no primitiva); sin variante horizontal (deprecada upstream) |
 | 8 | **Footer** | ✅ | 3 | `footer.html`/`footer.css` + slot en `layout.html` + `pageView.Footer`/`defaultFooter()` en `server.go`; `<details>/<summary>`; bloqueante Phase G |
 | 9 | **Language Switcher** | ✅ | 3 | `language-switcher.html`/`language-switcher.css` + `styles_language_switcher_test.go`; GET `?lang=` → 303 a URL localizada; submit visible (no auto-submit JS) |
-| 10 | **Newsletter** | ✅ | 3 | `newsletter.html`/`newsletter.css` + `styles_newsletter_test.go` + handler `internal/app/newsletter.go`; POST + 422 `X-Loom-Validation` + success view (reusa inline-alert) |
+| 10 | **Newsletter** | ✅ | 3 | `newsletter.html`/`newsletter.css` + `styles_newsletter_test.go` + handler `internal/app/newsletter.go`; POST + 422 `X-Gelium-Validation` + success view (reusa inline-alert) |
 | 11 | **Notification Bar** | ✅ (≈ Banner) | 4 | Alias documental del Banner Gelium (`banner.html`, Phase D); variantes sticky/scripted diferidas |
 | 12 | **Section Heading** | ✅ | 1 | Utilidad tipográfica: `section-heading.html`/`section-heading.css`; siempre `h2`, nunca `h1` |
 | 13 | **Split** | ✅ | 2 | `split.html`/`split.css` + `styles_split_test.go`; grid 2 col (`.ui-split` + `.ui-split-body` + `.ui-split-media`); stack en narrow; bidi RTL automático |
@@ -51,7 +51,7 @@
 ### Tier 3 — server contract
 
 10. **Footer** ✅ — partial + slot en layout + modelo de datos (`footerView`); `<details>/<summary>`. **Bloqueante Phase G (entregado).**
-11. **Newsletter** ✅ — `newsletter.html`/`newsletter.css` + handler `internal/app/newsletter.go`: **POST + 422 `X-Loom-Validation`** (header real del código) + success view persistente; ejemplo en `GET/POST /examples/newsletter` (noindex).
+11. **Newsletter** ✅ — `newsletter.html`/`newsletter.css` + handler `internal/app/newsletter.go`: **POST + 422 `X-Gelium-Validation`** (header real del código) + success view persistente; ejemplo en `GET/POST /examples/newsletter` (noindex).
 12. **Language Switcher** ✅ — `language-switcher.html`/`language-switcher.css`: **GET form + submit visible**, cero auto-submit JS. El **modelo de locales** (`?lang=` → 303 a URL localizada, swap `<html lang>`/RTL) queda **fuera de alcance** (no hay i18n real todavía) — el patrón es la primitiva lista; el server debe resolver `?lang=`.
 
 ### Tier 4 — alias documental
@@ -67,7 +67,7 @@
 | **Hero NO se llama Callout** — el "Callout" de Protocol (hero full-width) queda cubierto por `ui-hero`; el Callout Gelium (Phase D) es el tip box `<aside>` ignorable. Naming cerrado. | ✅ |
 | **Feature Card = composición**, no primitiva: `ui-feature-card` envuelve `.ui-card` + media + `.ui-card-title`/`.ui-card-body` + `.ui-card-action` (CTA Link). Sin variante horizontal (deprecada upstream). | ✅ |
 | **Language Switcher = GET navigation form**: `method="get"` + `<select name="lang">` + submit visible; el cambio de idioma es navegación (server responde 303 a la URL localizada), nunca POST. Cero auto-submit JS. | ✅ |
-| **Newsletter = POST + 422** con el header real del código **`X-Loom-Validation: true`** (el header real es `X-Loom-Validation`; ver `screen-recipes-audit.md:17`). Error reusa `inline-alert--error`; success = texto `role="status"` persistente. | ✅ |
+| **Newsletter = POST + 422** con el header real del código **`X-Gelium-Validation: true`** (el header real es `X-Gelium-Validation`; ver `screen-recipes-audit.md:17`). Error reusa `inline-alert--error`; success = texto `role="status"` persistente. | ✅ |
 | **CTA Link = Button link** — no se crea componente propio; `{{template "button" .CTA}}` con `Href` es la forma canónica. | ✅ |
 | **Card slots públicos** — cerrado: primitiva `{{define "card"}}` con slots media/tag/meta/CTA opcionales (data-driven, `{{if}}` guards); demo sin cambios. | ✅ |
 

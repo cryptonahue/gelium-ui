@@ -228,7 +228,7 @@ Los patrones de estado comunican la condición de la interfaz: qué está pasand
 - **Cuándo usarlo**: guardado exitoso de settings, operación global completada (POST + 303 → página destino re-renderiza el success persistente).
 - **Cuándo no**: feedback transitorio post-acción → Toast; error → `inline-alert--error` / `banner--error`.
 - **Prompt para agentes**: Usá Success feedback para confirmar de forma no efímera una operación exitosa que debe sobrevivir a la navegación: guardado de settings u operación global completada (POST + 303 → la página destino re-renderiza el success persistente). Implementación: reusa `inline-alert--success` (sección/form) o `banner--success` (página/operación global), con `role="status"` polite derivado del tone; cero JS. No lo uses para feedback transitorio post-acción (Toast) y nunca lo anuncies por un canal transitorio tipo HX-Trigger.
-- **Server contract**: POST + 303 → la página destino re-renderiza el success persistente; NUNCA `HX-Trigger loom:toast` para persistente.
+- **Server contract**: POST + 303 → la página destino re-renderiza el success persistente; NUNCA `HX-Trigger gelium:toast` para persistente.
 - **Mapping a Gelium**: reuso de `web/templates/inline-alert.html` (tone success) y `web/templates/banner.html` (tone success); sin partial propio.
 - **JS**: 0.
 - **Relación con patterns**: contraparte persistente del Toast (transitorio).
@@ -239,13 +239,13 @@ Los patrones de estado comunican la condición de la interfaz: qué está pasand
 - **Nombres alternativos**: snackbar, toast notification, notification.
 - **Intención**: feedback **transitorio del resultado de una acción**; no bloquea; auto-dismiss.
 - **Anatomía**: `.ui-toast-{info|success|warning|error}`, `.ui-toast-message`, `.ui-toast-action`.
-- **Semántica HTML**: `role="status"` (info/success) o `role="alert"` (error) en región `#loom-toast-region aria-live="polite"`.
+- **Semántica HTML**: `role="status"` (info/success) o `role="alert"` (error) en región `#gelium-toast-region aria-live="polite"`.
 - **Estados**: variantes info/success/warning/error; auto-dismiss 4s/8s pausable; dismiss manual.
 - **Accesibilidad**: `role="status"`/`role="alert"` según variante + `aria-live="polite"` en la región (`toast.html:10`).
-- **Server contract**: operación server-driven dispara el toast vía HX-Trigger (prefijo congelado — referencia únicamente; nunca para persistente).
-- **Cuándo usarlo**: resultado de operaciones server-driven (`HX-Trigger loom:toast`).
+- **Server contract**: operación server-driven dispara el toast vía HX-Trigger (prefijo canónico `gelium:*` — referencia únicamente; nunca para persistente).
+- **Cuándo usarlo**: resultado de operaciones server-driven (`HX-Trigger gelium:toast`).
 - **Cuándo no**: validación de campos (NUNCA, `toast.go:129-133`); feedback persistente/crítico → Inline alert o Banner.
-- **Prompt para agentes**: Usá Toast para feedback transitorio del resultado de una operación server-driven: el servidor lo dispara vía HX-Trigger (prefijo congelado — referencia únicamente) y auto-dismiss con pausa en hover/focus. Contrato: `role="status"` (info/success) o `role="alert"` (error) en región `aria-live="polite"`, variantes info/success/warning/error y fallback no-JS que re-renderiza un inline persistente. No lo uses NUNCA para validación de campos (`toast.go:129-133`) ni para feedback persistente o crítico (Inline alert o Banner).
+- **Prompt para agentes**: Usá Toast para feedback transitorio del resultado de una operación server-driven: el servidor lo dispara vía HX-Trigger (prefijo canónico `gelium:*` — referencia únicamente) y auto-dismiss con pausa en hover/focus. Contrato: `role="status"` (info/success) o `role="alert"` (error) en región `aria-live="polite"`, variantes info/success/warning/error y fallback no-JS que re-renderiza un inline persistente. No lo uses NUNCA para validación de campos (`toast.go:129-133`) ni para feedback persistente o crítico (Inline alert o Banner).
 - **Mapping a Gelium**: `web/templates/toast.html`, `web/styles/toast.css`, `web/styles_toast_test.go`, `/components/toast`.
 - **JS**: J* — sin JS toast inline persistente; con JS región aria-live + auto-dismiss.
 - **Relación con patterns**: feedback de operaciones en Queue, Data table refresh, Resource Editor.
@@ -396,7 +396,7 @@ Los patrones de estado comunican la condición de la interfaz: qué está pasand
 
 - **Intención**: conversión de audiencia (suscripción); formulario **zero-JS** con contrato server completo.
 - **Semántica HTML**: `<aside class="ui-newsletter" aria-labelledby>` → título `h2` + descripción + `<form method="post" action="{{.Action}}">` con email (`type="email"` + `required`) + submit (Button). Success reemplaza el form por un `<p role="status">` persistente.
-- **Contrato server**: **POST + 422 + `X-Loom-Validation: true`** (header real del código; el roadmap lo escribe `X-Gelium-Validation`, ver `screen-recipes-audit.md:17`) en email inválido, re-render con `inline-alert--error` y valor preservado; **POST → 200 success** (ejemplo) o **POST + 303 → GET success** (producción, contrato d). HTMX opcional (swap del aside).
+- **Contrato server**: **POST + 422 + `X-Gelium-Validation: true`** (header real del código; el roadmap lo escribe `X-Gelium-Validation`, ver `screen-recipes-audit.md:17`) en email inválido, re-render con `inline-alert--error` y valor preservado; **POST → 200 success** (ejemplo) o **POST + 303 → GET success** (producción, contrato d). HTMX opcional (swap del aside).
 - **Tokens**: scoped `--ui-newsletter-*` sobre `--ui-color-surface-container`/`error`, `--ui-type-headline-sm`, `--ui-radius-*`, `--ui-space-*`; forced-colors.
 - **Mapping a Gelium**: `web/templates/newsletter.html`, `web/styles/newsletter.css`, `internal/app/newsletter.go`, ejemplo `GET/POST /examples/newsletter` (noindex).
 - **JS**: 0 (HTMX opcional).
@@ -458,7 +458,7 @@ Los patrones de estado comunican la condición de la interfaz: qué está pasand
 
 - **Intención**: agrupar controles con submit/validación server-side.
 - **Semántica HTML**: `<form>` nativo + `<fieldset>`/`<legend>` para grupos; `Field` es primitive interna, no publicable.
-- **Contrato**: HTTP 422 + `X-Loom-Validation`; GET para estado de listados.
+- **Contrato**: HTTP 422 + `X-Gelium-Validation`; GET para estado de listados.
 - **JS**: 0; H opcional.
 
 ---

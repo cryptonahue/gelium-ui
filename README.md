@@ -2,7 +2,7 @@
 
 > Themeable, open-code UI components for Tailwind CSS and HTMX.
 
-Current release: **v0.4.0**, adding a Gelium-only Toast component for server-driven, transient feedback — an accessible `aria-live` region, an HTMX `loom:toast` trigger contract, a complete no-JS inline fallback, and a minimal framework-free auto-dismiss enhancement.
+Current release: **v0.4.0**, adding a Gelium-only Toast component for server-driven, transient feedback — an accessible `aria-live` region, an HTMX `gelium:toast` trigger contract, a complete no-JS inline fallback, and a minimal framework-free auto-dismiss enhancement.
 
 Este primer vertical slice es una aplicación de documentación server-rendered en Go. Usa HTML semántico, componentes copiables, un theme Material basado en tokens propios `--ui-*`, Tailwind CSS 4 y HTMX servido localmente.
 
@@ -61,13 +61,12 @@ La aplicación escucha en `http://localhost:8787`. Para elegir otro puerto:
 PORT=3000 go run ./cmd/gelium   # dentro de tu aplicación consumidora
 ```
 
-## Wire compatibility (legacy `loom:*` / `X-Loom-*` contracts)
+## Wire contract (`gelium:*` / `X-Gelium-*`)
 
-El producto y la identidad del repo es **Gelium UI**, pero los contratos wire
-server-driven conservan sus nombres legacy a propósito: `loom:toast` (evento
-HX-Trigger + `#loom-toast-region`) y el header `X-Loom-Validation: true`.
-Renombrarlos rompería el hook HTMX servido (`web/static/app.js`) y a consumidores
-existentes. Política y tests: [`docs/gelium-ui-wire-compatibility.md`](docs/gelium-ui-wire-compatibility.md).
+Los contratos wire server-driven usan el prefijo del producto: `gelium:toast`
+(evento HX-Trigger + `#gelium-toast-region`) y el header `X-Gelium-Validation: true`.
+El hook HTMX servido (`web/static/app.js`) y los tests los fijan como canónicos.
+Referencia canónica: [`docs/gelium-ui-wire-compatibility.md`](docs/gelium-ui-wire-compatibility.md).
 
 Rutas disponibles:
 
@@ -76,13 +75,13 @@ Rutas disponibles:
 - `/components/text-field` — documentación, estados y demo HTMX real del Text field.
 - `/components/dialog` — documentación y preview del Dialog como variante página: trigger link a `/components/dialog/confirm`, Confirm como form POST real y Cancel como link de vuelta (fallback G1, sin JS). El modal `<dialog>` con comandos declarativos queda como mejora opt-in documentada.
 - `/components/dialog/confirm` — página de confirmación inline: `POST /components/dialog/confirm` redirige con 303 de vuelta a `/components/dialog?confirmed=1`, que muestra el resultado en un inline alert persistente.
-- `/components/toast` — documentation y demo HTMX del Toast: variantes, contrato `loom:toast` y fallback inline sin JS.
+- `/components/toast` — documentation y demo HTMX del Toast: variantes, contrato `gelium:toast` y fallback inline sin JS.
 - `POST /examples/text-field/validate` — validación server-side; devuelve 422 para vacío/whitespace y 200 para valores válidos. Sin JavaScript renderiza la página de documentación completa; con `HX-Request: true`, HTMX recibe únicamente el form actualizado como progressive enhancement.
-- `POST /examples/toast/demo` — feedback server-driven; devuelve `HX-Trigger: {"loom:toast":{...}}` para HTMX y, sin JavaScript, re-renderiza la página con un toast inline persistente. 422 para mensaje vacío.
+- `POST /examples/toast/demo` — feedback server-driven; devuelve `HX-Trigger: {"gelium:toast":{...}}` para HTMX y, sin JavaScript, re-renderiza la página con un toast inline persistente. 422 para mensaje vacío.
 - `/healthz` — health check de texto plano.
 - `/static/app.css` — CSS Tailwind compilado y embebido.
 - `/static/htmx.min.js` — HTMX local y embebido.
-- `/static/app.js` — hook local que permite a HTMX intercambiar únicamente fragments HTTP 422 marcados con `X-Loom-Validation: true`.
+- `/static/app.js` — hook local que permite a HTMX intercambiar únicamente fragments HTTP 422 marcados con `X-Gelium-Validation: true`.
 
 ## Estructura real
 

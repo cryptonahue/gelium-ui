@@ -1,7 +1,7 @@
 document.addEventListener("htmx:beforeSwap", function (event) {
   if (
     event.detail.xhr.status === 422 &&
-    event.detail.xhr.getResponseHeader("X-Loom-Validation") === "true"
+    event.detail.xhr.getResponseHeader("X-Gelium-Validation") === "true"
   ) {
     event.detail.shouldSwap = true;
     event.detail.isError = false;
@@ -13,7 +13,7 @@ document.addEventListener("htmx:beforeSwap", function (event) {
 
   // Minimal, framework-free enhancement for the Toast component. It only makes
   // server-driven feedback transient; the no-JS inline flow is complete without it.
-  var REGION_SELECTOR = "#loom-toast-region";
+  var REGION_SELECTOR = "#gelium-toast-region";
   var DEFAULT_TIMEOUT = 4000;
   var ERROR_TIMEOUT = 8000;
   var KNOWN_TYPES = { info: true, success: true, warning: true, error: true };
@@ -23,8 +23,8 @@ document.addEventListener("htmx:beforeSwap", function (event) {
   }
 
   function dismiss(el) {
-    if (el.getAttribute("data-loom-toast-done")) return;
-    el.setAttribute("data-loom-toast-done", "true");
+    if (el.getAttribute("data-gelium-toast-done")) return;
+    el.setAttribute("data-gelium-toast-done", "true");
     if (el._timer) clearTimeout(el._timer);
     el.classList.remove("ui-toast-show");
     window.setTimeout(function () {
@@ -33,7 +33,7 @@ document.addEventListener("htmx:beforeSwap", function (event) {
   }
 
   function schedule(el, ms) {
-    if (el.getAttribute("data-loom-toast-done")) return;
+    if (el.getAttribute("data-gelium-toast-done")) return;
     if (el._timer) clearTimeout(el._timer);
     el._timer = window.setTimeout(function () { dismiss(el); }, ms);
   }
@@ -74,7 +74,7 @@ document.addEventListener("htmx:beforeSwap", function (event) {
     schedule(el, el._timeoutMs);
   }
 
-  document.addEventListener("loom:toast", function (event) {
+  document.addEventListener("gelium:toast", function (event) {
     var detail = event.detail || {};
     if (!detail.message) return;
     showToast(detail.type, detail.message);

@@ -129,7 +129,7 @@ superficie (nivel de inmersión)
 | Persistencia | Transitorio (auto-dismiss) | Persistente junto al campo | Persistente nivel página/sitio | Persistente ignorable |
 | Origen | Resultado de acción | Validación/error de sección | Aviso global que exige acción | Contenido informativo |
 | Rol | `status`/`alert` (aria-live) | `alert` junto al campo | `alert`/`status` sin dismiss | Nota, sin urgencia |
-| Contrato | `HX-Trigger loom:toast` | 422 + `X-Loom-Validation` | — | — |
+| Contrato | `HX-Trigger gelium:toast` | 422 + `X-Gelium-Validation` | — | — |
 
 - **Anti-reglas**: validación nunca toast; feedback persistente/crítico nunca toast.
 
@@ -180,8 +180,8 @@ GAP = patrón de estado no implementado como componente reusable (Empty state, L
 
 Toda composición reutiliza los contratos existentes; NO se inventan otros:
 
-1. **Validación**: HTTP 422 + `X-Loom-Validation: true`; sin HX página completa 422; con HX fragmento. La validación nunca dispara toast.
-2. **Feedback transitorio**: `HX-Trigger: {"loom:toast":{"type":"info|success|warning|error","message":"…"}}`; sin JS toast inline persistente. Los errores de transporte HTMX (red/5xx) muestran un toast genérico transitorio (`app.js`), nunca un mensaje de validación.
+1. **Validación**: HTTP 422 + `X-Gelium-Validation: true`; sin HX página completa 422; con HX fragmento. La validación nunca dispara toast.
+2. **Feedback transitorio**: `HX-Trigger: {"gelium:toast":{"type":"info|success|warning|error","message":"…"}}`; sin JS toast inline persistente. Los errores de transporte HTMX (red/5xx) muestran un toast genérico transitorio (`app.js`), nunca un mensaje de validación.
 3. **Estado de listados**: GET con params estables (`?q=&sort=&dir=&page=&selection=`), vocabularios cerrados sanitizados, `HX-Request` bifurca fragmento vs página completa, links preservan estado.
 4. **Mover estados (workflow)**: POST + 303 SeeOther redirect (patrón WhatsApp) — simple, sin fragmentos, funciona sin JS.
 5. **Indexabilidad (SEO/GEO)**: la metadata se resuelve server-driven en el choke point de render. Los demos (`/demo/*`) y ejemplos (`/examples/*`) son `noindex, nofollow`; el resto `index, follow`. Toda página indexable emite canonical sin query (`siteBaseURL` + ruta limpia), `lang` server-driven (`es` en demos WhatsApp) y JSON-LD básico en home. Restricciones completas en `docs/gelium-ui-seo-contract.md` (§4, §16) y `docs/gelium-ui-geo-contract.md` (entidad única **Gelium UI**).

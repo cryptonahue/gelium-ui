@@ -8,7 +8,7 @@ Text field is a single- or multi-line input built on native `<input>` and `<text
 
 ## Agent prompt
 
-Use Text field when people must enter or edit free-form text — names, email addresses, search terms — and the value has to submit through a real `<form>`. It is built on native `<input>` and `<textarea>` elements; every visible label is associated through `for`/`id`, helper and error messages are referenced by `aria-describedby`, and server-side validation returns HTTP 422 with the submitted value preserved, `aria-invalid="true"` and the `X-Loom-Validation: true` header for the HTMX swap hook. Never build a custom text-entry widget: the native control is the contract, disabled keeps the native `disabled` attribute, and disabled takes precedence over error.
+Use Text field when people must enter or edit free-form text — names, email addresses, search terms — and the value has to submit through a real `<form>`. It is built on native `<input>` and `<textarea>` elements; every visible label is associated through `for`/`id`, helper and error messages are referenced by `aria-describedby`, and server-side validation returns HTTP 422 with the submitted value preserved, `aria-invalid="true"` and the `X-Gelium-Validation: true` header for the HTMX swap hook. Never build a custom text-entry widget: the native control is the contract, disabled keeps the native `disabled` attribute, and disabled takes precedence over error.
 
 ## Variants and states
 
@@ -24,4 +24,4 @@ Whitespace-only input returns **HTTP 422** with the submitted value preserved, `
 
 The form works without JavaScript: its native `method` and `action` submit to the same endpoint, which returns a complete documentation page with the updated form while preserving the HTTP 422 or 200 status. HTMX (the progressive-enhancement library that swaps server-rendered fragments) is an optional layer; when it sends `HX-Request: true`, the server returns only the complete form fragment and replaces it using `hx-target="this"` plus `hx-swap="outerHTML"`.
 
-Expected HTMX validation failures return the explicit `X-Loom-Validation: true` response header. Local `/static/app.js` listens for `htmx:beforeSwap` and only when both that header is `true` and the status is 422 does it set `shouldSwap` to true and `isError` to false. Other HTTP 422 responses remain transport errors and are not swapped by this hook.
+Expected HTMX validation failures return the explicit `X-Gelium-Validation: true` response header. Local `/static/app.js` listens for `htmx:beforeSwap` and only when both that header is `true` and the status is 422 does it set `shouldSwap` to true and `isError` to false. Other HTTP 422 responses remain transport errors and are not swapped by this hook.

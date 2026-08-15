@@ -21,7 +21,7 @@ Los state patterns tienen partial real (ver component registry, categoría SP). 
 
 ## 2. State patterns (Phase D — 8)
 
-> Regla rectora (`state-patterns-audit.md:45`): **persistente-contextual** nunca viaja por `loom:toast`; **transitorio-de-acción** nunca ocupa un slot persistente.
+> Regla rectora (`state-patterns-audit.md:45`): **persistente-contextual** nunca viaja por `gelium:toast`; **transitorio-de-acción** nunca ocupa un slot persistente.
 
 | # | Pattern | Componente(s) | Cuándo usarlo (referencia) | Consumido por | Ejemplo real |
 |---|---|---|---|---|---|

@@ -27,9 +27,9 @@ core (tokens --ui-* + base.css + tokens.css)
 | Componente | Tokens (familias) | Primitivas que reusa | Contrato server |
 |---|---|---|---|
 | Button | color, state, size, radius, focus, motion, type, border | Icon (SVG inline), spinner propio | none (form nativo); `aria-busy` loading |
-| Text field | field, color, size, radius, border, state, type | Icon (error) | 422 + `X-Loom-Validation`; valor + focus preservados |
+| Text field | field, color, size, radius, border, state, type | Icon (error) | 422 + `X-Gelium-Validation`; valor + focus preservados |
 | Data table | data-table (scoped), color, state, size, type | Pagination (footer), Empty state, Skeleton, Progress, Toast (refresh) | `GET ?q=&sort=&dir=&page=&selection=`; `HX-Request` bifurca |
-| Toast | toast, color, shadow, radius, type | — | `HX-Trigger loom:toast` (vocabulario cerrado) |
+| Toast | toast, color, shadow, radius, type | — | `HX-Trigger gelium:toast` (vocabulario cerrado) |
 | Banner | banner, color | Button (CTA), Icon button (dismiss) | dismiss `POST + 303` |
 | Empty state | empty-state, color, type | Button (CTA link) | none (server output) |
 | Error state | error-state, color, type | Button (retry link) | status HTTP real (404/500/503) |
@@ -40,7 +40,7 @@ core (tokens --ui-* + base.css + tokens.css)
 | Card | card, color, shadow, radius | Button (CTA, vía CTA Link) | — |
 | Avatar | avatar, color, radius, size | — | none (decorativo `aria-hidden`) |
 | Pagination | pagination, color, radius, state | — | `GET ?page=` (clamping) |
-| Newsletter | newsletter, color | Inline alert, Button | `POST` + 422 `X-Loom-Validation` |
+| Newsletter | newsletter, color | Inline alert, Button | `POST` + 422 `X-Gelium-Validation` |
 | Footer | footer, color, type, space | Language Switcher (nav secundaria) | none (slot en layout, `footerView`) |
 | Breadcrumb | breadcrumb, color, type | — | none (data de `componentRoutes()`/`navLinks()`) |
 | Feature card | (media aspect) + reuso card | Card, Button (CTA Link) | — |
@@ -60,7 +60,7 @@ core (tokens --ui-* + base.css + tokens.css)
 | Destructive action (E10) | Button danger, Dialog confirm | POST+303 | Admin Resource delete |
 | Bulk action (E11) | Data table checkboxes, Dialog confirm | `?selection=` + POST+303 | Admin Resource |
 | Confirmation (E18) | Dialog confirm | POST+303 | Admin Resource delete |
-| Notifications (E15) | Toast, Banner, toast region | `loom:toast` | todas (refresh) |
+| Notifications (E15) | Toast, Banner, toast region | `gelium:toast` | todas (refresh) |
 | Queue (vocabulario) | List two-line, Avatar, Badge tone, Button, Toast, Empty state, Banner | POST+303 | **Ops Queue** |
 | Feed (vocabulario) | Card, Avatar, Badge, Tabs, Pagination, Skeleton, Empty state | POST+303 react + GET | **Public Feed** |
 | Empty state (D1) | Empty state + Button CTA | server output | TODAS las recipes |
@@ -107,7 +107,7 @@ core (tokens --ui-* + base.css + tokens.css)
  Text field     Banner + Toast        Empty state + Toast + Banner             │
  Select/Button  Error state (404)     Pagination + Error state (404)           │
  Dialog ── confirm                    Button (like)                            │
- Banner/Inline/Validation summary ────► 422 + POST+303 + loom:toast ────────────┘
+ Banner/Inline/Validation summary ────► 422 + POST+303 + gelium:toast ────────────┘
 ```
 
 ## 6. Tooling: endpoint `/registry.json` (pendiente, documentado)

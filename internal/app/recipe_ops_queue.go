@@ -16,7 +16,7 @@ import (
 // primitives; the order is operational (server-side status rank, then FIFO by
 // received time — position is state, never presentation), every transition is
 // a real POST+303 with a persistent success banner, and the refresh reuses the
-// Data table refresh contract (HX-Request bifurcation + loom:toast). The recipe
+// Data table refresh contract (HX-Request bifurcation + gelium:toast). The recipe
 // consumes the Avatar, badge tone and standalone pagination primitives
 // introduced alongside it; the queue itself introduces no new primitives.
 
@@ -257,7 +257,7 @@ func (s *server) recipeOpsQueueDequeue(w http.ResponseWriter, r *http.Request) {
 }
 
 // recipeOpsQueueRefresh completes a remote refresh for the queue. With HTMX it
-// returns the refresh form fragment and an HX-Trigger raising loom:toast;
+// returns the refresh form fragment and an HX-Trigger raising gelium:toast;
 // without JavaScript it re-renders the full page with the queue refreshed and a
 // persistent inline toast, exactly like the Data table refresh demo.
 func (s *server) recipeOpsQueueRefresh(w http.ResponseWriter, r *http.Request) {

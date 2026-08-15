@@ -43,7 +43,7 @@ Every screen recipe, new component and content decision MUST be justified agains
 **Definition.** The system always tells the user what is happening: what changed, what failed, what is loading, what was saved.
 
 **How Gelium UI applies it.**
-- Transient results → Toast (`loom:toast` contract, `web/templates/toast.html`, `toast.go:108-127`).
+- Transient results → Toast (`gelium:toast` contract, `web/templates/toast.html`, `toast.go:108-127`).
 - Persistent, contextual results → Inline alert / Banner / Validation summary (Phase D), never Toast (`composition-rules.md:126`).
 - Loading → `aria-busy` on buttons (`button.html:4,9`), native `<progress>` (`progress.html`), Skeleton for data regions (`skeleton.html`).
 - Empty and error states are server-rendered output, not silent voids (`empty-state.html`, `error-state.html`).
@@ -91,7 +91,7 @@ Every screen recipe, new component and content decision MUST be justified agains
 **Definition.** When an error happens, the user can recover quickly and understand why. Recovery is explicit, low-cost, and loses no data.
 
 **How Gelium UI applies it.**
-- **422 + `X-Loom-Validation`** preserves the submitted value and returns focus to the failing field (`text_field.go:62-67`) — nothing typed is lost.
+- **422 + `X-Gelium-Validation`** preserves the submitted value and returns focus to the failing field (`text_field.go:62-67`) — nothing typed is lost.
 - Validation summary links (`<a href="#{field}-error">`) let users jump straight to each problem (`validation-summary.html`).
 - Page/resource errors render a real `error-state.html` with status code + retry button; POST + 303 keeps workflows resumable.
 - Re-submit re-renders; helper text replaces the error (`ux-accessibility-audit.md:89`).

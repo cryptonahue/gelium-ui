@@ -12,14 +12,14 @@ Mutations move state with a plain form POST and a `303 See Other` redirect — n
 
 ## 422 validation
 
-Server-side field validation answers `422` with `X-Loom-Validation: true`. The response re-renders the form preserving the submitted value, marking each field `aria-invalid` and associating the message via `aria-describedby`. Without JavaScript the full page re-renders; with HTMX the local `app.js` hook swaps only the 422 fragment (`htmx:beforeSwap`). Validation never fires a toast — errors stay tied to their context. [Text field](/components/text-field) and [Select](/components/select) demonstrate the contract, and the [Dialog](/components/dialog) form flows use it too.
+Server-side field validation answers `422` with `X-Gelium-Validation: true`. The response re-renders the form preserving the submitted value, marking each field `aria-invalid` and associating the message via `aria-describedby`. Without JavaScript the full page re-renders; with HTMX the local `app.js` hook swaps only the 422 fragment (`htmx:beforeSwap`). Validation never fires a toast — errors stay tied to their context. [Text field](/components/text-field) and [Select](/components/select) demonstrate the contract, and the [Dialog](/components/dialog) form flows use it too.
 
 ## HX-Trigger toast feedback
 
-Transient feedback is server-driven: the response carries `HX-Trigger: {"loom:toast":{"type":"success","message":"…"}}`. The vocabulary is closed — `info | success | warning | error` — and `error` renders with `role="alert"` inside the `#loom-toast-region` live region. Without JavaScript the toast renders as a persistent inline region; with HTMX it auto-dismisses (4s/8s, pausable). [Toast](/components/toast) documents the full pattern.
+Transient feedback is server-driven: the response carries `HX-Trigger: {"gelium:toast":{"type":"success","message":"…"}}`. The vocabulary is closed — `info | success | warning | error` — and `error` renders with `role="alert"` inside the `#gelium-toast-region` live region. Without JavaScript the toast renders as a persistent inline region; with HTMX it auto-dismisses (4s/8s, pausable). [Toast](/components/toast) documents the full pattern.
 
 ## Contract rules
 
 - Validation errors are never toasts, and persistent success is never an `HX-Trigger` toast — persistent feedback uses the banner / inline-alert pattern instead.
-- The `loom:*` prefixes and `X-Loom-*` headers are frozen: reference them, never invent new ones.
+- The `gelium:*` prefixes and `X-Gelium-*` headers are the canonical wire contract: reference them, never invent new ones.
 - Every JavaScript enhancement has a real no-JS fallback; the main flow never breaks without JavaScript.

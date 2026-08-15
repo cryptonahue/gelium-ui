@@ -23,8 +23,8 @@ component/recipe/theme/documentary workflows (`gelium-ui-agent-prompts.md`).
    is a blocker, not an excuse to invent.
 2. **No new patterns.** Reference only patterns in
    `docs/gelium-ui-pattern-registry.md` (D1–D8, E1–E19, F1–F14).
-3. **No new wire contracts.** Use exactly: `422 + X-Loom-Validation: true`,
-   `HX-Trigger {"loom:toast":…}`, GET stable params, `POST + 303 SeeOther`.
+3. **No new wire contracts.** Use exactly: `422 + X-Gelium-Validation: true`,
+   `HX-Trigger {"gelium:toast":…}`, GET stable params, `POST + 303 SeeOther`.
    No parallel APIs (P5).
 4. **No AI / MCP / database / semantic search / new UI implementation.** This
    protocol is documentation + machine-readable contracts. Do not build
@@ -84,14 +84,14 @@ CONSTRAINTS (non-negotiable):
   token or wire contract.
 - No-JS end-to-end: the primary flow completes with JavaScript disabled;
   HTMX only enhances and never changes the mutation contract.
-- Persistent-contextual feedback never uses loom:toast; validation is never a
+- Persistent-contextual feedback never uses gelium:toast; validation is never a
   toast (422 + Inline alert + Validation summary).
 - Every data surface declares empty, loading and error states with real state
   patterns (R-STATE-01).
 - One primary action per surface; destructive is never primary (R-ACTION-01/02).
 - Exactly one h1 per page; state never color-only; reduced motion and forced
   colors by design.
-- Use only the canonical server contracts (422/X-Loom-Validation, loom:toast,
+- Use only the canonical server contracts (422/X-Gelium-Validation, gelium:toast,
   GET stable params, POST + 303).
 - English artifacts; UI strings server-rendered and localizable.
 
