@@ -20,6 +20,7 @@ type buttonView struct {
 }
 
 func (s *server) buttonDocs(w http.ResponseWriter, r *http.Request) {
+	examples, apiRef := examplesFor("button")
 	s.renderMarkdownPage(w, r, pageView{
 		Title: "Button",
 		Buttons: []buttonView{
@@ -29,5 +30,7 @@ func (s *server) buttonDocs(w http.ResponseWriter, r *http.Request) {
 			{Label: "Unavailable", Variant: "primary", Disabled: true},
 			{Label: "Save changes", Variant: "primary", Loading: true},
 		},
+		Examples: examples,
+		APIRef:   apiRef,
 	}, "content/button.md")
 }

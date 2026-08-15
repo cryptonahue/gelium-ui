@@ -739,7 +739,15 @@ type pageView struct {
 	Banner               *bannerView
 	Breadcrumb           *breadcrumbView
 	Footer               *footerView
-	Error                *errorStateView
+	// Examples renders the pilot "## Examples" section (Base UI pattern):
+	// live demos rendered through the real component partials, each paired
+	// with the actual Go template invocation that produced it. Nil on
+	// non-pilot pages so the layout emits nothing.
+	Examples []exampleBlock
+	// APIRef renders the pilot "## API reference" table from the component's
+	// real view-struct fields. Nil on non-pilot pages.
+	APIRef  *apiRefView
+	Error   *errorStateView
 	InlineAlert          *inlineAlertView
 	CTA                  *buttonView
 	Buttons              []buttonView
@@ -1105,6 +1113,19 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 	}
 	data.Meta = resolveMeta(data, routePath)
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
+	// Pilot Examples sections render their live demos at the choke point:
+	// every page that carries Examples (the three pilot components) gets the
+	// demos executed through the real component partials before layout, so
+	// the code blocks shown next to each demo can never drift from the
+	// partials that produced them. Non-pilot pages pass nil and skip this.
+	if len(data.Examples) > 0 {
+		examples, err := s.renderExampleDemos(data.Examples)
+		if err != nil {
+			s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePath)
+			return
+		}
+		data.Examples = examples
+	}
 	// Document-root theme selection (Phase H): a valid ?theme= query overrides
 	// the handler default; otherwise the handler value (or the default) wins.
 	themeSlug := ""

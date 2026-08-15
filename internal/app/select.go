@@ -48,12 +48,31 @@ func defaultSelectMenuDemo() selectMenuDemo {
 	}
 }
 
+// selectExamples returns the pilot Examples for the Select page with the
+// server-driven menu example bound to the current demo, so the example's
+// live form always reflects the latest selection. The Select partials
+// hardcode their element ids, so the Examples section OWNS the demos on the
+// pilot page: the standalone SelectDemo/SelectMenuDemo preview sections stay
+// nil to avoid duplicate ids on one page.
+func selectExamples(demo selectMenuDemo) ([]exampleBlock, *apiRefView) {
+	examples, apiRef := examplesFor("select")
+	out := make([]exampleBlock, len(examples))
+	copy(out, examples)
+	for i := range out {
+		if out[i].Partial == "select-menu-demo" {
+			out[i].Views = []any{demo}
+		}
+	}
+	return out, apiRef
+}
+
 func (s *server) selectDocs(w http.ResponseWriter, r *http.Request) {
 	demo := defaultSelectMenuDemo()
+	examples, apiRef := selectExamples(demo)
 	s.renderMarkdownPage(w, r, pageView{
-		Title:          "Select",
-		SelectDemo:     &selectDemo{},
-		SelectMenuDemo: &demo,
+		Title:    "Select",
+		Examples: examples,
+		APIRef:   apiRef,
 	}, "content/select.md")
 }
 
@@ -89,10 +108,11 @@ func (s *server) selectMenu(w http.ResponseWriter, r *http.Request) {
 	}
 
 	if !isHX {
+		examples, apiRef := selectExamples(demo)
 		s.renderMarkdownPageStatus(w, r, pageView{
-			Title:          "Select",
-			SelectDemo:     &selectDemo{},
-			SelectMenuDemo: &demo,
+			Title:    "Select",
+			Examples: examples,
+			APIRef:   apiRef,
 		}, "content/select.md", status)
 		return
 	}

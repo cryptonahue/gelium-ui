@@ -30,6 +30,7 @@ func (s *server) textFieldDocs(w http.ResponseWriter, r *http.Request) {
 }
 
 func textFieldPage(validationForm validationFormView) pageView {
+	examples, apiRef := examplesFor("text-field")
 	return pageView{
 		Title: "Text field",
 		TextFields: []textFieldView{
@@ -42,6 +43,8 @@ func textFieldPage(validationForm validationFormView) pageView {
 			{ID: "text-textarea", Label: "Biography", Variant: "outlined", Textarea: true, Helper: "Tell people a little about yourself."},
 		},
 		ValidationForm: &validationForm,
+		Examples:       examples,
+		APIRef:         apiRef,
 	}
 }
 
