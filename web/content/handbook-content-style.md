@@ -2,6 +2,18 @@
 
 Copy is part of the component contract, not decoration. Every string a Gelium UI screen renders — errors, toasts, empty states, banners, validation summaries, and the docs themselves — follows one voice: plain English, active voice, short sentences, no jargon, no "please" (GOV.UK content design), and language clear to anyone (Material 3 content design). Editorial mechanics — numbers, dates, capitalization — follow AP Style.
 
+## Reading on screen
+
+Most users **scan** pages instead of reading them, and that has been true since eye-tracking studies in the 1990s (NNG); only a minority reads linearly. Scanning follows the **F-pattern**: two horizontal bands — the title and the first lines — then a vertical band on the left as the reader drops down looking for anchors. So the important content goes top-left, never buried mid-paragraph, and every paragraph leads with its point. Web copy is shorter than print: people look for something specific, not pleasure reading (NNG).
+
+## Paragraphs and sentences
+
+- **Paragraphs** — 2-4 sentences, roughly 40-70 words, one topic each.
+- **Sentences** — at most 25 words, ideally 20; split any sentence that can be split.
+- **Lead paragraph** — inverted pyramid: the conclusion comes first.
+- **Lists** — prefer bullets over prose for three or more parallel items.
+- **Voice** — active voice, always; drop filler such as "please" and "you should".
+
 ## Error messages
 
 An error message does two jobs: **say what happened** and **say how to fix it** (NNG error-message guidelines, heuristic 9). Lead with the fix in the user's words. Never blame the user, and never leave a consequence alone.
@@ -38,4 +50,4 @@ Docs titles are **tasks, not topics**: "Choose the right control", not "Controls
 
 ## How it is enforced
 
-The copy contract tests in `internal/app/copy_contract_test.go` pin the action pattern on recipe errors and the action language in recipe empty states. The Handbook tests pin this page in the sidebar, the /docs hub, and the sitemap. The [Screen recipes](/recipes/admin-resource) dogfood the voice on real screens.
+The copy contract tests in `internal/app/copy_contract_test.go` pin the action pattern on recipe errors and the action language in recipe empty states. The same file carries the sentence-length contract: every sentence in every component page is at most 25 words (code and table rows are stripped before counting), per §Paragraphs and sentences. The Handbook tests pin this page in the sidebar, the /docs hub, and the sitemap. The [Screen recipes](/recipes/admin-resource) dogfood the voice on real screens.

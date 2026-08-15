@@ -4,17 +4,17 @@
 > with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
-Navigation bar is a Material 3 bottom navigation bar: a fixed-height `80px` container that holds three to five equal destinations, one of which is the active page. Use a navigation bar when an app's primary destinations must stay one tap away at the bottom of a phone-sized viewport. Gelium reimplements it over server-rendered HTML — the root is a real `<nav>`, the destinations are real `<a href>` links (the roadmap's "navegación real con links"), and the active destination is derived server-side from the current page, never from JavaScript. No component JavaScript exists.
+Navigation bar is a Material 3 bottom navigation bar: a fixed-height `80px` container that holds three to five equal destinations. One of them is the active page. Use a navigation bar when an app's primary destinations must stay one tap away at the bottom of a phone-sized viewport. Gelium reimplements it over server-rendered HTML — a real `<nav>` with real `<a href>` links (the roadmap's "navegación real con links"). The active destination is derived server-side from the current page, never from JavaScript. No component JavaScript exists.
 
 ## Guidance
 
 ### When to use
 
-Use a navigation bar when an app's primary destinations must stay one tap away at the bottom of a phone-sized viewport — three to five equal destinations, one of which is the active page.
+Use a navigation bar when an app's primary destinations must stay one tap away. It holds three to five equal destinations, one of which is the active page.
 
 ### When not to use
 
-Do not use a navigation bar when more destinations exist than fit in a bottom bar — a [Navigation drawer](/components/navigation-drawer) scales better. On desktop-sized layouts, prefer a sidebar or top-level navigation instead of a bottom bar.
+Do not use a navigation bar when more destinations exist than fit in a bottom bar. A [Navigation drawer](/components/navigation-drawer) scales better. On desktop-sized layouts, prefer a sidebar or top-level navigation instead of a bottom bar.
 
 ### Usability
 
@@ -67,45 +67,30 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 
 ## Variants
 
-- **Standard** — every destination shows its icon and label; the active
-  destination additionally shows the indicator pill, the active icon/label
-  colors, and the prominent `700` label weight.
-- **Hide inactive labels** — with the `ui-nav-bar--hide-inactive-labels`
-  modifier on the root, inactive destinations collapse to icon-only (`0`
-  height, transparent label) while the active destination keeps its label and
-  indicator. This mirrors the upstream `hideInactiveLabels` option.
+- **Standard** — every destination shows its icon and label. The active destination additionally shows the indicator pill, active colors, and the prominent `700` label weight.
+- **Hide inactive labels** — with the `ui-nav-bar--hide-inactive-labels` modifier on the root, inactive destinations collapse to icon-only (`0` height, transparent label). The active destination keeps its label and indicator. This mirrors the upstream `hideInactiveLabels` option.
 
 ## States
 
 `rest`, `hover`, `focus-visible`, `active`/`pressed`, and `selected` (the active
-destination). Hover, focus, and press paint the Material state layer (a
-full-bleed `::before` at the shared `--ui-state-*` opacities) and shift the
-inactive icon toward on-surface; `:focus-visible` shows the Gelium focus ring.
+destination). Hover, focus, and press paint the Material state layer (a full-bleed `::before` at the shared `--ui-state-*` opacities) and shift the inactive icon toward on-surface. `:focus-visible` shows the Gelium focus ring.
 Because destinations are native links, keyboard activation and tab order come
 for free and focus never changes geometry.
 
 ## Accessibility
 
-- Keep the native elements: `<nav>` carries the landmark, `<ul>`/`<li>` carry
-  list semantics, and destinations are real anchors, so the accessible name is
-  the visible label and activation is native.
-- The selected destination carries `aria-current="page"`; state is never
-  communicated by color alone (the indicator pill is the selected marker, focus
-  shows a ring, the label weight changes).
+- Keep the native elements: `<nav>` is the landmark, `<ul>`/`<li>` carry list semantics, and destinations are real anchors. The accessible name is the visible label and activation is native.
+- The selected destination carries `aria-current="page"`; state is never communicated by color alone. The indicator pill marks selection, focus shows a ring, and the label weight changes.
 - The icon slot is `aria-hidden`; the label text supplies the name. In
   icon-only mode the label stays in the DOM (only visually collapsed), so
   assistive technology still reads every destination.
 - Decorative SVGs are `aria-hidden` and `focusable="false"`.
-- In forced-colors mode the container keeps a `CanvasText` boundary, the active
-  destination becomes `HighlightText`, and the indicator pill is outlined with
-  `Highlight` so selection survives without color.
+- In forced-colors mode the container keeps a `CanvasText` boundary, the active destination becomes `HighlightText`, and the indicator pill is outlined with `Highlight`. Selection survives without color.
 
 ## No-JS behavior
 
 Navigation is plain HTTP: each destination is a real `<a href>` and clicking it
-navigates normally with scripting disabled. The active state is fixed at render
-time by the server (the destination whose href matches the request path), so
-there is nothing for JavaScript to do.
+navigates normally with scripting disabled. The active state is fixed at render time by the server (the destination whose href matches the request path). There is nothing for JavaScript to do.
 
 ## Divergences from Material Web
 

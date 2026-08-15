@@ -1,16 +1,16 @@
 # Slider
 
-Slider is a native `input[type="range"]` painted with the Material track, its active fill, and the handle from the `--ui-slider-*` tokens — the real control stays the focusable, operable element. Use a slider when a single value sits on a continuous or discrete ordered range — volume, brightness, a price cap — and approximate precision is acceptable. Form semantics, keyboard input, and assisted input work unchanged.
+Slider is a native `input[type="range"]` painted with the Material track, its active fill, and the handle from the `--ui-slider-*` tokens. The real control stays the focusable, operable element. Use a slider when a single value sits on a continuous or discrete ordered range. Approximate precision is acceptable — volume, brightness, a price cap. Form semantics, keyboard input, and assisted input work unchanged.
 
 ## Guidance
 
 ### When to use
 
-Use a slider when a single value sits on a continuous or discrete ordered range — volume, brightness, a price cap — and approximate precision is acceptable.
+Use a slider when a single value sits on a continuous or discrete ordered range. Approximate precision is acceptable — volume, brightness, a price cap.
 
 ### When not to use
 
-Do not use a slider when exact values matter — price, dates, account numbers: a [Text field](/components/text-field) is accurate where the user cannot aim precisely. For a small set of discrete labelled options, a [Select](/components/select) or [Radio](/components/radio) group is usually clearer.
+Do not use a slider when exact values matter — price, dates, account numbers. A [Text field](/components/text-field) is accurate where the user cannot aim precisely. For a small set of discrete labelled options, a [Select](/components/select) or [Radio](/components/radio) group is usually clearer.
 
 ### Usability
 
@@ -64,7 +64,7 @@ All slider paints are token-driven so states survive light and dark schemes.
 
 ## Progressive enhancement
 
-The slider is styled `input[type="range"]`; without the stylesheet it degrades to a normal range input. The `data-ui-slider` listener in `app.js` is an optional enhancement that updates `--ui-slider-fill` while dragging on WebKit — the no-JS flow shows the served value and remains fully operable, and Firefox fills natively.
+The slider is styled `input[type="range"]`; without the stylesheet it degrades to a normal range input. The `data-ui-slider` listener in `app.js` is an optional enhancement that updates `--ui-slider-fill` while dragging on WebKit. The no-JS flow shows the served value and remains fully operable, and Firefox fills natively.
 
 ## Accessibility
 
@@ -72,8 +72,8 @@ The slider is styled `input[type="range"]`; without the stylesheet it degrades t
 - Always pair the input with an `aria-label` (or a linked visible label), matching what is on screen.
 - Never rely on color alone: the handle position carries the value, and disabled state is announced by the platform.
 - The focus ring stays on the native input (`:focus-visible`), so keyboard users always see where the control is.
-- In forced-colors mode the track and handle repaint as `CanvasText`, disabled as `GrayText`, and the focus ring uses `Highlight`, so the value survives without color.
+- In forced-colors mode the track and handle repaint as `CanvasText`, disabled as `GrayText`, and the focus ring uses `Highlight`. The value survives without color.
 
 ## Keyboard
 
-The range input inherits native keyboard behavior: arrow keys step by `step`, Home/End jump to the edges, and Page Up/Page Down step by larger increments — no component JavaScript required.
+The range input inherits keyboard behavior: arrow keys step by `step`, Home/End jump to the edges, and Page Up/Page Down use larger increments. No component JavaScript required.

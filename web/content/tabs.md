@@ -1,12 +1,12 @@
 # Tabs
 
-Tabs organize groups of related content at the same level of hierarchy. Use tabs when a page holds several peer sections and people should switch between them — each tab is a real `<a href>` link to its own page or section, so deep-linking and no-JS navigation work for free. Gelium reimplements the Material 3 tab contract as server-rendered navigation links: there is no component JavaScript, no `role="tablist"` and no roving focus.
+Tabs organize groups of related content at the same level of hierarchy. Use tabs when a page holds several peer sections and people should switch between them. Each tab is a real `<a href>` link to its own page or section, so deep-linking and no-JS navigation work for free. Gelium reimplements the Material 3 tab contract as server-rendered navigation links: there is no component JavaScript, no `role="tablist"` and no roving focus.
 
 ## Guidance
 
 ### When to use
 
-Use tabs when a page holds several peer sections and people should switch between them — each tab is a real `<a href>` link to its own page or section, so deep-linking and no-JS navigation work for free.
+Use tabs when a page holds several peer sections and people should switch between them. Each tab is a real `<a href>` link to its own page or section, so deep-linking and no-JS navigation work for free.
 
 ### When not to use
 
@@ -21,7 +21,7 @@ Do not use tabs for a local mode toggle inside a single view — [Segmented butt
 ### Accessibility
 
 - The bar is a `<nav aria-label>` with `<ul>`/`<li>`/`<a>`, and the selected tab uses `aria-current="page"`.
-- No `role="tablist"`: the full tablist keyboard contract cannot be satisfied without JavaScript, so Gelium does not claim it — native link keyboard behavior is complete.
+- No `role="tablist"`: the full tablist keyboard contract cannot be satisfied without JavaScript, so Gelium does not claim it. Native link keyboard behavior is complete.
 - Icon-only tabs must carry an `aria-label`; icon and indicator are decorative and `aria-hidden`.
 - In forced-colors mode the indicator repaints as `CanvasText`, selected text becomes `Highlight`, and the focus ring becomes `Highlight`.
 
@@ -49,11 +49,11 @@ A tab bar is a `<nav>` wrapping a `<ul>` of `<li>` items, each containing an `<a
 - **Icon** — `ui-tab-icon` is a `24px` decorative slot; the visible label (or an `aria-label` on icon-only tabs) supplies the accessible name.
 - **Indicator** — `ui-tab-indicator` is the `3px` active indicator in `--ui-color-primary` (primary tabs) or `2px` (secondary tabs). It is hidden unless the tab is selected.
 - **Variant** — `ui-tab-primary` and `ui-tab-secondary` set the active colors: primary tabs use `--ui-color-primary` for the selected label/icon, secondary tabs use `--ui-color-fg`.
-- **Stacked** — primary tabs with both icon and label add `ui-tab-stacked`: the icon stacks above the label (`column`, gap `2px`) and the tab grows to `64px`, matching the Material `with-icon-and-label-text-container-height`.
+- **Stacked** — primary tabs with both icon and label add `ui-tab-stacked`: the icon stacks above the label (`column`, gap `2px`). The tab grows to `64px`, matching the Material `with-icon-and-label-text-container-height`.
 
 ## Variants
 
-Material defines two tab variants, and each supports icon-only, label-only, and icon+label content:
+Material defines two tab variants, and each supports icon-only, label-only, and icon+label content.
 
 - **Primary tabs** — placed at the top of the content pane. With an icon and label the content stacks vertically (`ui-tab-stacked`, `64px`); label-only and icon-only tabs stay `48px`.
 - **Secondary tabs** — used within a content area. The icon always renders inline with the label (row layout, `48px`).
@@ -70,7 +70,7 @@ The selected tab is decided by the server, so the bar always shows its state wit
 - **Active/pressed** — state layer at `--ui-state-pressed-opacity` (`.10`).
 - **Selected** — `aria-current="page"` turns the label/icon to the active color and shows the indicator.
 
-The state layer color follows the Material split: inactive tabs paint on-surface (`--ui-color-fg`), selected primary tabs paint primary (`--ui-color-primary`), selected secondary tabs keep on-surface.
+The state layer color follows the Material split: inactive tabs paint on-surface (`--ui-color-fg`), and selected primary tabs paint primary (`--ui-color-primary`). Selected secondary tabs keep on-surface.
 
 ## Selection is server-driven
 
@@ -80,14 +80,14 @@ Each tab is a real link to its own section. On this page the primary tabs link t
 
 - **Plain navigation semantics** — the bar is a `<nav aria-label>` with `<ul>`/`<li>`/`<a>`, and the selected tab uses `aria-current="page"`. This is the simplest semantics that satisfies accessibility for the link pattern.
 - **No `role="tablist"`** — the full tablist keyboard contract (roving tabindex, arrow-key focus, Home/End) cannot be satisfied without JavaScript, so Gelium does not claim it. Native link keyboard behavior (Tab to move, Enter to activate) is complete and announced correctly.
-- **No roving focus** — arrow-key roving focus would require a demonstrated platform gap; the roadmap only allows it when the gap is real, and for real navigation links there is none.
+- **No roving focus** — arrow-key roving focus would require a demonstrated platform gap. The roadmap only allows it when the gap is real, and for real navigation links there is none.
 - **Icon-only tabs** must carry an `aria-label`; icon and indicator are decorative and `aria-hidden`.
 - In forced-colors mode the indicator repaints as `CanvasText`, selected text becomes `Highlight`, and the focus ring becomes `Highlight`, so selection survives without color.
 
 ## How does keyboard navigation work?
 
-Because every tab is a real link, keyboard use is native: `Tab` moves between tabs, `Enter` activates the focused tab, and browser conventions (focus outline, current-page announcement) apply unchanged.
+Because every tab is a real link, keyboard use is native: `Tab` moves between tabs, and `Enter` activates the focused tab. Browser conventions (focus outline, current-page announcement) apply unchanged.
 
 ## Progressive enhancement
 
-There is no enhancement layer: the server-rendered link flow is the complete flow. HTMX (the progressive-enhancement library that swaps server-rendered fragments) panel swapping could be added later, but it is not required — the fallback already navigates normally with plain links.
+There is no enhancement layer: the server-rendered link flow is the complete flow. HTMX (the progressive-enhancement library that swaps server-rendered fragments) panel swapping could be added later. It is not required — the fallback already navigates normally with plain links.

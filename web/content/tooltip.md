@@ -1,12 +1,12 @@
 # Tooltip
 
-Tooltip is a short, contextual label that appears on hover or keyboard focus near a control. Use a tooltip when a control needs a clarification that should not permanently occupy the layout — icon buttons, abbreviated labels, unfamiliar terms. Gelium reimplements the Material 3 tooltip over **server-rendered HTML with pure CSS interaction**: the styled `.ui-tooltip` surface lives inside a `.ui-tooltip-host` wrapper and is revealed with the native `:hover` / `:focus-within` pseudo-classes. There is **no component JavaScript** — the show/hide is declarative CSS, works without JavaScript, and is keyboard-focus accessible.
+Tooltip is a short, contextual label that appears on hover or keyboard focus near a control. Use a tooltip when a control needs a clarification that should not permanently occupy the layout. Examples: icon buttons, abbreviated labels, unfamiliar terms. Gelium reimplements the Material 3 tooltip over **server-rendered HTML with pure CSS interaction**. The styled `.ui-tooltip` surface lives inside a `.ui-tooltip-host` wrapper and is revealed with the native `:hover` / `:focus-within` pseudo-classes. There is **no component JavaScript** — the show/hide is declarative CSS, works without JavaScript, and is keyboard-focus accessible.
 
 ## Guidance
 
 ### When to use
 
-Use a tooltip when a control needs a clarification that should not permanently occupy the layout — icon buttons, abbreviated labels, unfamiliar terms.
+Use a tooltip when a control needs a clarification that should not permanently occupy the layout. Examples: icon buttons, abbreviated labels, unfamiliar terms.
 
 ### When not to use
 
@@ -64,22 +64,22 @@ Show, hide and focus-reveal are pure CSS (`:hover` / `:focus-within`), so the wh
 Audited August 2026:
 
 - `:hover` and `:focus-within` — universally supported (Baseline).
-- Popover API (`popover`, `popovertarget`) — Baseline 2024, but popover surfaces are toggle- or script-opened and need the Interest Invokers API (the not-yet-standard mechanism that would open a popover on hover/focus via `interesttarget`/`interestaction`) to open on hover/focus, so they are not used here.
-- Interest Invokers (`interesttarget` / `interestaction`) — **not Baseline as of August 2026** (no caniuse/MDN/Chrome-Status support). The roadmap's preferred mechanism (a `popover` tooltip opened by `interestaction="show-popover"`) is therefore not viable without JavaScript, so Gelium uses the CSS hover/focus reveal instead — the roadmap's "accessible visible fallback".
-- CSS anchor positioning — Baseline 2026, but the tooltip is a small surface attached to its own host, so plain `position: absolute` inside the relative host covers below/above placement with broader support and no extra dependency.
+- Popover API (`popover`, `popovertarget`) — Baseline 2024, but popover surfaces are toggle- or script-opened. Opening one on hover/focus would need the Interest Invokers API (the not-yet-standard mechanism that opens a popover via `interesttarget`/`interestaction`), so they are not used.
+- Interest Invokers (`interesttarget` / `interestaction`) — **not Baseline as of August 2026** (no caniuse/MDN/Chrome-Status support). The roadmap's preferred mechanism (a `popover` tooltip opened by `interestaction="show-popover"`) is not viable without JavaScript. Gelium uses the CSS hover/focus reveal instead — the roadmap's "accessible visible fallback".
+- CSS anchor positioning — Baseline 2026, but the tooltip is a small surface attached to its own host. Plain `position: absolute` inside the relative host covers below/above placement with broader support and no extra dependency.
 - Native `title` — universal, but not styleable to Material anatomy and not reliably keyboard-revealed, so it is not used as the primary mechanism.
 
 ## Trust boundary
 
-The demo markup is static and trusted: `html/template` renders it verbatim, the inline SVG glyphs are trusted internal icons (`aria-hidden`, `focusable="false"`), and there is no user-supplied content.
+The demo markup is static and trusted: `html/template` renders it verbatim, and the inline SVG glyphs are trusted internal icons (`aria-hidden`, `focusable="false"`). There is no user-supplied content.
 
 ## Visual checklist
 
-- [ ] Inverse-surface (plain) / surface (rich) container with the right shape and padding
-- [ ] Plain and rich variants; rich subhead + supporting text + optional action link
-- [ ] Reveals on hover and on keyboard focus, hidden at rest
-- [ ] Below by default, above with the `ui-tooltip--top` modifier
-- [ ] Focus does not shift geometry; no layout shift
-- [ ] Trigger accessible name independent of the tooltip; `aria-describedby` wiring
-- [ ] Reduced motion disables the fade; forced-colors keeps the surface discernible
-- [ ] Light/dark, narrow/wide, RTL
+- [ ] Inverse-surface (plain) / surface (rich) container with the right shape and padding.
+- [ ] Plain and rich variants; rich subhead + supporting text + optional action link.
+- [ ] Reveals on hover and on keyboard focus, hidden at rest.
+- [ ] Below by default, above with the `ui-tooltip--top` modifier.
+- [ ] Focus does not shift geometry; no layout shift.
+- [ ] Trigger accessible name independent of the tooltip; `aria-describedby` wiring.
+- [ ] Reduced motion disables the fade; forced-colors keeps the surface discernible.
+- [ ] Light/dark, narrow/wide, RTL.

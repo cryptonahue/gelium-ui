@@ -1,16 +1,16 @@
 # Select
 
-Select is a dropdown picker built on the native [`<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) element with Material 3 field styling — the browser element stays the focusable, operable control. Use a select when people must choose one option from a known list and the choice submits through a normal `<form>`; the native element keeps the no-JS flow and keyboard behavior for free. No component JavaScript is required.
+Select is a dropdown picker built on the native [`<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) element with Material 3 field styling. The browser element stays the focusable, operable control. Use a select when people must choose one option from a known list and the choice submits through a normal `<form>`. The native element keeps the no-JS flow and keyboard behavior for free. No component JavaScript is required.
 
 ## Guidance
 
 ### When to use
 
-Use a select when people must choose one option from a known list — six or more options, or options with long labels — and the choice submits through a normal `<form>`.
+Use a select when people must choose one option from a known list. That means six or more options, or options with long labels. The choice submits through a normal `<form>`.
 
 ### When not to use
 
-Do not use a select when the options should stay visible and comparable — five or fewer choices belong in a [Radio](/components/radio) group. For independent multi-select, use [Checkboxes](/components/checkbox). When choosing should immediately perform an action instead of submitting a value, a [Menu](/components/menu) is the command surface.
+Do not use a select when the options should stay visible and comparable. Five or fewer choices belong in a [Radio](/components/radio) group. For independent multi-select, use [Checkboxes](/components/checkbox). When choosing should immediately perform an action instead of submitting a value, a [Menu](/components/menu) is the command surface.
 
 ### Usability
 
@@ -49,12 +49,12 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 
 ## States
 
-- **Normal** — a floating label sits centered until the field is focused or a value is chosen, then it floats to the top.
+- **Normal** — a floating label sits centered until the field is focused or a value is chosen. Then it floats to the top.
 - **Populated** — the label floats whenever a real option is selected (`:has(select option:checked:not([value=""]))`), even without focus.
 - **Disabled** — add `disabled` to the native element. The field dims its content and stops interaction.
 - **Error** — add `aria-invalid="true"` to the select (plus an error message in the form, beyond color). The outline and label turn to the error color.
 
-The label doubles as the placeholder. The first `<option value="" selected disabled>` keeps its visible picker text (for example `Choose a plan`) so the native popup row reads clearly, while the field paints that text `transparent` until a real option is chosen — the resting label is the only prompt in the closed field. The label floats once the field is focused or a real option is selected.
+The label doubles as the placeholder. The first `<option value="" selected disabled>` keeps its visible picker text (for example `Choose a plan`), so the native popup row reads clearly. The field paints that text `transparent` until a real option is chosen — the resting label is the only prompt in the closed field. The label floats once the field is focused or a real option is selected.
 
 ## Design tokens
 

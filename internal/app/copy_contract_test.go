@@ -1,10 +1,14 @@
 package app
 
 import (
+	"io/fs"
 	"net/http"
 	"net/url"
+	"regexp"
 	"strings"
 	"testing"
+
+	webassets "geliumui/web"
 )
 
 // Copy contract (content style guide, web/content/handbook-content-style.md):
@@ -84,4 +88,76 @@ func TestRecipeEmptyStatesCarryActionLanguage(t *testing.T) {
 			}
 		}
 	})
+}
+
+// componentContentSlugs mirrors web/content_name_that_ui_test.go: every served
+// component page under web/content. Handbook pages (handbook-*), the docs root
+// (index.md) and the design principles page (principles.md) are NOT components
+// and are excluded: the length contract applies to components only.
+var componentContentSlugs = []string{
+	"badge", "button", "card", "checkbox", "chips", "data-table", "dialog",
+	"divider", "elevation", "fab", "focus-ring", "icon", "icon-button", "list",
+	"menu", "navigation-bar", "navigation-drawer", "navigation-tab", "progress",
+	"radio", "segmented-button", "select", "slider", "switch", "tabs",
+	"text-field", "toast", "tooltip",
+}
+
+// sentenceSplitter splits prose on sentence-final punctuation followed by
+// whitespace, per the copy contract (content style guide §Paragraphs and
+// sentences: no sentence over 25 words).
+var sentenceSplitter = regexp.MustCompile(`[.!?]\s+`)
+
+// componentProse returns the prose sentences of a component page, with code
+// excluded: fenced code blocks are dropped, inline `code` spans are replaced
+// by a space (they inflate word counts), and table rows (lines starting with
+// "|") are skipped entirely.
+func componentProse(t *testing.T, slug string) []string {
+	t.Helper()
+	source, err := fs.ReadFile(webassets.Assets, "content/"+slug+".md")
+	if err != nil {
+		t.Fatalf("read content/%s.md: %v", slug, err)
+	}
+	var kept []string
+	inFence := false
+	for _, line := range strings.Split(string(source), "\n") {
+		trimmed := strings.TrimSpace(line)
+		if strings.HasPrefix(trimmed, "```") {
+			inFence = !inFence
+			continue
+		}
+		if inFence || strings.HasPrefix(trimmed, "|") {
+			continue
+		}
+		kept = append(kept, line)
+	}
+	doc := strings.Join(kept, "\n")
+	doc = regexp.MustCompile("`[^`]*`").ReplaceAllString(doc, " ")
+	var out []string
+	for _, part := range sentenceSplitter.Split(doc, -1) {
+		part = strings.TrimSpace(part)
+		if part != "" {
+			out = append(out, part)
+		}
+	}
+	return out
+}
+
+// TestComponentPagesKeepSentencesUnder25Words is the copy length contract:
+// every sentence in every served component page is at most 25 words, with 20
+// as the target (content style guide §Paragraphs and sentences). Readers scan
+// (NNG F-pattern); long sentences bury the answer, so the contract is
+// mechanical: split on [.!?] + whitespace, count words, fail on > 25.
+func TestComponentPagesKeepSentencesUnder25Words(t *testing.T) {
+	offenders := 0
+	for _, slug := range componentContentSlugs {
+		for _, sentence := range componentProse(t, slug) {
+			if n := len(strings.Fields(sentence)); n > 25 {
+				offenders++
+				t.Errorf("%s.md has a %d-word sentence (> 25): %q", slug, n, sentence)
+			}
+		}
+	}
+	if offenders > 0 {
+		t.Fatalf("found %d sentences over 25 words across component pages", offenders)
+	}
 }

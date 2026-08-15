@@ -1,12 +1,12 @@
 # Progress
 
-Progress is the native `progress` element decorated with the Material track and its indicator from the `--ui-progress-*` tokens — the real element stays in the document, so its value semantics, `aria-valuenow`/`aria-valuetext` exposure, and determinate/indeterminate behavior work unchanged. Use it when an operation is in flight: determinate when the task has a measurable duration, indeterminate when only activity is known.
+Progress is the native `progress` element decorated with the Material track and its indicator from the `--ui-progress-*` tokens. The real element stays in the document, so its value semantics, `aria-valuenow`/`aria-valuetext` exposure, and determinate/indeterminate behavior work unchanged. Use it when an operation is in flight: determinate when the task has a measurable duration, indeterminate when only activity is known.
 
 ## Guidance
 
 ### When to use
 
-Use progress when an operation is in flight: determinate when the task has a measurable duration, indeterminate when only activity is known.
+Use progress when an operation is in flight. Use determinate when the task has a measurable duration, indeterminate when only activity is known.
 
 ### When not to use
 
@@ -42,7 +42,7 @@ The component is a single decorated progress element inside a `.ui-progress` wra
 
 ## States
 
-Progress covers `determinate` (a `value`/`max` pair) and `indeterminate` (a `progress` without `value`). The browser exposes real progress to assistive tech and the platform paints the indeterminate animation; Gelium only re-skins the track so the motion stays the native one.
+Progress covers `determinate` (a `value`/`max` pair) and `indeterminate` (a `progress` without `value`). The browser exposes real progress to assistive tech and the platform paints the indeterminate animation. Gelium only re-skins the track so the motion stays the native one.
 
 ## Design tokens
 
