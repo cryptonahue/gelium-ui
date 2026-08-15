@@ -150,6 +150,7 @@ func buildSearchIndex(groups []docsNavGroup) template.JS {
 // and the sitemap so the destinations can never drift.
 var handbookNavLinks = []navLink{
 	{Path: "/docs/information-architecture", Label: "Information architecture"},
+	{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
 	{Path: "/docs/themes", Label: "Themes"},
 	{Path: "/docs/tokens", Label: "Tokens"},
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
@@ -315,6 +316,13 @@ See the [Documentation](/docs) index for foundation, actions, input, feedback, n
 // prompt that lets LLMs evaluate or improve the docs IA.
 func (s *server) docsInformationArchitecture(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPage(w, r, pageView{Title: "Information architecture"}, "content/handbook-information-architecture.md")
+}
+
+// docsChooseTheRightControl is GET /docs/choose-the-right-control — the
+// control-selection handbook page: the decision table and rules of thumb
+// for picking the right input component per situation.
+func (s *server) docsChooseTheRightControl(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Choose the right control"}, "content/handbook-choose-the-right-control.md")
 }
 
 // docsThemes is GET /docs/themes — the Themes handbook page: how themes work
