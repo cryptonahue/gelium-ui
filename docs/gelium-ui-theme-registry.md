@@ -13,14 +13,14 @@ Un theme es una **dirección visual codificada como tokens `--ui-*`**. NO es mar
 - Un `theme.css` por theme en `themes/<theme>/`, autocontenido (luz + dark), con selector raíz propio `.theme-<name>`.
 - `web/styles/app.css` importa CADA theme explícitamente (CSS no globbea); el build produce UN solo `web/static/app.css` embebido con todos los themes adentro (`//go:embed static/*` en `web/assets.go:8`).
 - Selección en runtime por clase en el documento raíz — `layout.html:2` es data-driven (`class="{{.ThemeClass}}"`, allowlist server-side en `themeClass()`, `internal/app/server.go`). Cambiar la clase cambia la dirección visual sin rebuild ni JS.
-- Dark: cada theme declara UNA rutina por esquema (luz + dark autocontenidos). La cobertura dark usa las dos rutas que exige la verificación (clase explícita `.theme-dark`/`.dark`/`[data-theme="dark"]` + `@media (prefers-color-scheme: dark)`); ambas rutas redefinen el mismo set, sin drift.
+- Dark: cada theme declara UNA rutina por esquema (luz + dark autocontenidos). La cobertura dark usa la **ruta de clase única** (`.theme-dark`/`.dark`/`[data-theme="dark"]`) — sin `@media (prefers-color-scheme: dark)` (unificación Phase A, sin drift).
 
 ## 2. Themes disponibles
 
 | Theme | Directorio | Tokens `--ui-*` | Light | Dark | Estado | Selector raíz |
 |---|---|---|---|---|---|---|
-| **theme-material** | `themes/theme-material/theme.css` | 269 definiciones (169 únicos) | `.theme-material` | `.theme-material.theme-dark` / `.dark` / `[data-theme="dark"]` + `@media (prefers-color-scheme: dark)` | **Implementado, default** | `.theme-material` |
-| **theme-basecoat** | `themes/theme-basecoat/theme.css` | 269 definiciones (167 únicos) | `.theme-basecoat` | `.theme-basecoat.theme-dark` / `.dark` / `[data-theme="dark"]` + `@media (prefers-color-scheme: dark)` | **Implementado (Phase I)** | `.theme-basecoat` |
+| **theme-material** | `themes/theme-material/theme.css` | 269 definiciones (169 únicos) | `.theme-material` | `.theme-material.theme-dark` / `.dark` / `[data-theme="dark"]` (clase única, sin media) | **Implementado, default** | `.theme-material` |
+| **theme-basecoat** | `themes/theme-basecoat/theme.css` | 269 definiciones (167 únicos) | `.theme-basecoat` | `.theme-basecoat.theme-dark` / `.dark` / `[data-theme="dark"]` (clase única, sin media) | **Implementado (Phase I)** | `.theme-basecoat` |
 
 ### Familias de tokens de theme-material (por tamaño)
 
@@ -78,7 +78,7 @@ El flujo operativo completo (inspección → token mapping → implementación �
 
 ## 5. Matriz theme × component × variant × state
 
-> Estado: **ejecutada** — `TestThemeMatrixCoversEveryAvailableTheme` (web) recorre por glob todos los themes en disco (theme-material + theme-basecoat) y verifica por componente: familia de tokens en light, cobertura dark en las dos rutas (clase + media), y estados cubiertos por `var(--ui-*)`. `TestBasecoatTheme*` (web) pin las familias mandatorias del scope Phase I. La tabla conserva el scope del contrato (Phase I): Button, Text field, Card, Badge, Dialog, Toast, Data table.
+> Estado: **ejecutada** — `TestThemeMatrixCoversEveryAvailableTheme` (web) recorre por glob todos los themes en disco (theme-material + theme-basecoat) y verifica por componente: familia de tokens en light, cobertura dark en la **ruta de clase única** (`.theme-dark`/`.dark`/`[data-theme="dark"]`, sin media query), y estados cubiertos por `var(--ui-*)`. `TestBasecoatTheme*` (web) pin las familias mandatorias del scope Phase I. La tabla conserva el scope del contrato (Phase I): Button, Text field, Card, Badge, Dialog, Toast, Data table.
 
 | Componente | Variantes | Estados a cubrir | Tokens en theme-material | theme-basecoat |
 |---|---|---|---|---|
