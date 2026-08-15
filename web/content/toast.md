@@ -2,6 +2,14 @@
 
 Toast is a Gelium-only component for transient, server-driven feedback. Use a toast when an action completes server-side and the result should be announced in place — a save confirmation, an error, a status change — without pushing users to another view.
 
+## Alternative names
+
+- Snackbar, notification, toast notification
+
+## Agent prompt
+
+Use Toast for transient, server-driven feedback: a save confirmation, an error, a status change — announced in place without pushing users to another view. Four variants share one anatomy (icon, message, optional Dismiss action); `error` uses `role="alert"` while the rest use `role="status"` inside an `aria-live="polite"` region, the server triggers it through an `HX-Trigger` header, and the timer pauses on hover and focus. Never report validation failures as toasts, and never use it for persistent or critical feedback — that belongs in an Inline alert or a Banner.
+
 ## What variants can a toast show and how is it dismissed?
 
 Four variants share one anatomy — an icon, a message, and an optional Dismiss action: `info`, `success`, `warning`, and `error`. The tone is conveyed by a decorative, aria-hidden icon and a semantic role that is never color alone: `error` uses `role="alert"` (assertive), while `info`, `success`, and `warning` use `role="status"` (polite). Messages are announced by the surrounding `aria-live="polite"` live region.

@@ -2,6 +2,14 @@
 
 Card is a Material container that groups related content into one visual unit. Use a card when related information or actions belong together on a surface people scan — a preview, a profile, a summary — and the group should read as one unit. The card itself stays a plain container: the semantic root is always a native element, chosen by what the card does.
 
+## Alternative names
+
+- Tile, container, panel, media card, info card
+
+## Agent prompt
+
+Use Card to group related content and actions into one visual unit people scan — previews, profiles, summaries. The `.ui-card` base is a plain container: the semantic root is always a native element chosen by what the card does — `<article>` for static content, `<a>` when the whole card navigates, `<button>` when it performs an action. Keep interactive cards on a real anchor or button so they stay focusable and operable without JavaScript; don't use a card for a single static layout region — that is a Panel.
+
 ## Anatomy
 
 The `.ui-card` base supplies layout and shape: a flex column, the theme corner radius `--ui-card-radius` (12 px), and the typescale body font. It never carries meaning by itself — content, headings, and actions inside the card do.
