@@ -10,6 +10,8 @@ import (
 	"strings"
 	"testing"
 
+	"github.com/yuin/goldmark"
+
 	webassets "geliumui/web"
 )
 
@@ -856,6 +858,195 @@ func extractJSONLD(t *testing.T, body string) string {
 		t.Fatal("ld+json script is not closed")
 	}
 	return body[start : start+end]
+}
+
+// visibleUpdatedDate returns the ISO date rendered on the visible provenance
+// line ("Updated <time>…</time>") of a component page, if present.
+func visibleUpdatedDate(t *testing.T, body string) string {
+	t.Helper()
+	m := regexp.MustCompile(`Updated <time[^>]*>([0-9]{4}-[0-9]{2}-[0-9]{2})</time>`).FindStringSubmatch(body)
+	if m == nil {
+		t.Fatal("body has no visible Updated date line")
+	}
+	return m[1]
+}
+
+// TestComponentPageRendersSoftwareApplicationAndDates proves every
+// /components/* page includes a SoftwareApplication node in its JSON-LD
+// @graph (name "Gelium UI", applicationCategory "DeveloperApplication",
+// softwareVersion from the single docsShellVersion source, operatingSystem
+// "Any", license "MIT" — GEO §14) and that the TechArticle
+// datePublished/dateModified equal the visible provenance line dates
+// (GEO §7).
+func TestComponentPageRendersSoftwareApplicationAndDates(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+
+	var graph struct {
+		Context string           `json:"@context"`
+		Graph   []map[string]any `json:"@graph"`
+	}
+	if err := json.Unmarshal([]byte(extractJSONLD(t, body)), &graph); err != nil {
+		t.Fatalf("parse JSON-LD: %v", err)
+	}
+	var appNode, articleNode map[string]any
+	for _, node := range graph.Graph {
+		switch node["@type"] {
+		case "SoftwareApplication":
+			appNode = node
+		case "TechArticle":
+			articleNode = node
+		}
+	}
+	if appNode == nil {
+		t.Fatal("JSON-LD @graph has no SoftwareApplication node")
+	}
+	for _, want := range []struct{ key, value string }{
+		{key: "name", value: "Gelium UI"},
+		{key: "applicationCategory", value: "DeveloperApplication"},
+		{key: "softwareVersion", value: docsShellVersion},
+		{key: "operatingSystem", value: "Any"},
+		{key: "license", value: "MIT"},
+	} {
+		if got, _ := appNode[want.key].(string); got != want.value {
+			t.Errorf("SoftwareApplication %s = %q, want %q", want.key, got, want.value)
+		}
+	}
+	if articleNode == nil {
+		t.Fatal("JSON-LD @graph has no TechArticle node")
+	}
+	published, _ := articleNode["datePublished"].(string)
+	modified, _ := articleNode["dateModified"].(string)
+	if published == "" || modified == "" {
+		t.Fatalf("TechArticle dates missing: datePublished=%q dateModified=%q", published, modified)
+	}
+	visible := visibleUpdatedDate(t, body)
+	if published != visible || modified != visible {
+		t.Errorf("TechArticle dates (%s, %s) must match the visible Updated line (%s)", published, modified, visible)
+	}
+}
+
+// TestErrorPagesCarryMetadata proves 404/500 pages populate Meta through
+// resolveMeta so every error page carries description, canonical, robots and
+// OG tags per the route contract, with the real status preserved (SEO §16).
+func TestErrorPagesCarryMetadata(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/does-not-exist", nil))
+
+	if res.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusNotFound)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<meta name="description" content="Gelium UI — open-code, server-rendered UI components with native HTML semantics.">`,
+		`<link rel="canonical" href="https://gelium-ui.example/does-not-exist">`,
+		`<meta name="robots" content="index, follow">`,
+		`<meta property="og:title" content="Page not found · Gelium UI">`,
+		`<meta property="og:url" content="https://gelium-ui.example/does-not-exist">`,
+		`<meta property="og:image" content="https://gelium-ui.example/og.png">`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("404 page is missing %q", contract)
+		}
+	}
+
+	// 500 path: renderErrorPage must populate the same head metadata through
+	// resolveMeta and preserve the internal-error status. A server is built
+	// directly (no natural HTTP route 500s) and the page-level failure path
+	// exercised with a real route identity.
+	templates := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	s := &server{templates: templates, markdown: goldmark.New(), assets: webassets.Assets}
+	res500 := httptest.NewRecorder()
+	s.renderErrorPage(res500, http.StatusInternalServerError, "Something went wrong", "boom", true, "/", "Back to home", "/recipes/ops-queue")
+	if res500.Code != http.StatusInternalServerError {
+		t.Fatalf("status = %d, want %d", res500.Code, http.StatusInternalServerError)
+	}
+	body500 := res500.Body.String()
+	for _, contract := range []string{
+		`<link rel="canonical" href="https://gelium-ui.example/recipes/ops-queue">`,
+		`<meta name="robots" content="index, follow">`,
+		`<meta property="og:title" content="Something went wrong · Gelium UI">`,
+	} {
+		if !strings.Contains(body500, contract) {
+			t.Errorf("500 page is missing %q", contract)
+		}
+	}
+}
+
+// TestComponentPageWithoutDateEntryOmitsDates proves a component route absent
+// from the date table emits no dates: the TechArticle carries no
+// datePublished/dateModified and the article shows no provenance line
+// (GEO §7 scenario 2). Unregistered /components/* paths fall back to the
+// styled 404 and must not fabricate a component identity or dates.
+func TestComponentPageWithoutDateEntryOmitsDates(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/ghost", nil))
+	if res.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusNotFound)
+	}
+	body := res.Body.String()
+	if strings.Contains(body, `"datePublished"`) || strings.Contains(body, `"dateModified"`) {
+		t.Error("route without date-table entry must not emit datePublished/dateModified")
+	}
+	if strings.Contains(body, "Updated") {
+		t.Error("route without date-table entry must not render a provenance line")
+	}
+
+	// The table lookup itself misses unknown slugs and hits known ones.
+	if _, ok := docDatesFor("ghost"); ok {
+		t.Error("docDatesFor(ghost) must report not found")
+	}
+	d, ok := docDatesFor("button")
+	if !ok {
+		t.Fatal("docDatesFor(button) must be found")
+	}
+	if d.Published != "2026-08-09" || d.Modified != "2026-08-09" {
+		t.Errorf("docDatesFor(button) = published %q modified %q, want 2026-08-09/2026-08-09", d.Published, d.Modified)
+	}
+}
+
+// TestResolveBaseURL proves the canonical origin resolves from BASE_URL at
+// startup: empty input falls back to the default const, a trailing slash is
+// trimmed, and every absolute URL family (canonical, og:url, JSON-LD item,
+// sitemap loc) derives from the resolved origin (SEO §2).
+func TestResolveBaseURL(t *testing.T) {
+	if got := resolveBaseURL(""); got != defaultBaseURL {
+		t.Errorf(`resolveBaseURL("") = %q, want %q`, got, defaultBaseURL)
+	}
+	if got := resolveBaseURL("https://docs.example.com/"); got != "https://docs.example.com" {
+		t.Errorf(`resolveBaseURL("https://docs.example.com/") = %q, want origin without trailing slash`, got)
+	}
+	if got := resolveBaseURL("https://docs.example.com"); got != "https://docs.example.com" {
+		t.Errorf(`resolveBaseURL("https://docs.example.com") = %q, want unchanged origin`, got)
+	}
+	if got := resolveBaseURL("https://docs.example.com///"); got != "https://docs.example.com" {
+		t.Errorf(`resolveBaseURL("https://docs.example.com///") = %q, want all trailing slashes trimmed`, got)
+	}
+
+	// With no BASE_URL in the environment, every absolute URL family derives
+	// from the resolved default origin rather than a hardcoded literal.
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<link rel="canonical" href="https://gelium-ui.example/components/button">`,
+		`<meta property="og:url" content="https://gelium-ui.example/components/button">`,
+		`"item":"https://gelium-ui.example/components/button"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("button page missing %q (must derive from resolved origin)", contract)
+		}
+	}
+	sm := httptest.NewRecorder()
+	New().ServeHTTP(sm, httptest.NewRequest(http.MethodGet, "/sitemap.xml", nil))
+	if !strings.Contains(sm.Body.String(), "<loc>https://gelium-ui.example/components/button</loc>") {
+		t.Error("sitemap loc must derive from the resolved origin")
+	}
 }
 
 // TestHomeRendersOGImageAndTwitterCard proves the home page ships the default

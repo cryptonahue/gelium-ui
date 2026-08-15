@@ -9,6 +9,7 @@ import (
 	"io/fs"
 	"net/http"
 	"net/url"
+	"os"
 	"path"
 	"strings"
 
@@ -377,9 +378,30 @@ type errorStateView struct {
 // embedded and self-hosted — so this is a documented placeholder origin
 // matching the SEO contract examples. Canonical URLs are built from it plus
 // the clean route path and never from the request Host, so metadata stays
-// stable across every deployment. Swap this single constant for the real
-// origin when a public domain exists.
-const siteBaseURL = "https://gelium-ui.example"
+// stable across every deployment. The origin is env-configurable through
+// BASE_URL at startup (SEO contract §2); defaultBaseURL is the shipped
+// placeholder. Swap the default for the real origin when a public domain
+// exists.
+const defaultBaseURL = "https://gelium-ui.example"
+
+// resolveBaseURL resolves the canonical origin from the BASE_URL environment
+// variable. Empty input falls back to defaultBaseURL; trailing slashes are
+// trimmed so canonical URLs never double-slash. Pure function — unit-testable
+// without env pollution in parallel tests.
+func resolveBaseURL(env string) string {
+	if env == "" {
+		return defaultBaseURL
+	}
+	return strings.TrimRight(env, "/")
+}
+
+// siteBaseURL is resolved once at startup so every absolute URL family
+// (canonical, og:url, og:image, JSON-LD, sitemap) derives from one origin.
+var siteBaseURL = resolveBaseURL(os.Getenv("BASE_URL"))
+
+// licenseURL is the link target of the article provenance license reference
+// (GEO §15). Design D5: the OSI MIT page — no /LICENSE route exists.
+const licenseURL = "https://opensource.org/licenses/MIT"
 
 const (
 	// homeDescription is the system description for the landing page.
@@ -413,8 +435,9 @@ type metaView struct {
 // ogImagePlaceholder is the default social image URL emitted as og:image on
 // every layout page. The actual PNG is not shipped yet — the placeholder origin
 // is documented in the SEO contract so the markup contract stays stable until
-// a real asset lands.
-const ogImagePlaceholder = siteBaseURL + "/og.png"
+// a real asset lands. It is a var (not const) because it derives from the
+// startup-resolved siteBaseURL.
+var ogImagePlaceholder = siteBaseURL + "/og.png"
 
 // jsonLDPublisher and webSiteLD are the home-page WebSite structured-data
 // types. They are marshaled with encoding/json so escaping and validity are
@@ -470,15 +493,31 @@ type jsonLDListItem struct {
 }
 
 // jsonLDArticle is the TechArticle/Article entity emitted on component pages
-// with the page headline and canonical URL, authored and published by the
-// Gelium UI organization entity.
+// with the page headline, canonical URL, and — when the date table has an
+// entry for the slug — ISO-8601 datePublished/dateModified that mirror the
+// visible provenance line (GEO §7). Authored and published by the Gelium UI
+// organization entity.
 type jsonLDArticle struct {
-	Type       string          `json:"@type"`
-	Headline   string          `json:"headline"`
-	URL        string          `json:"url"`
-	InLanguage string          `json:"inLanguage"`
-	Author     jsonLDPublisher `json:"author"`
-	Publisher  jsonLDPublisher `json:"publisher"`
+	Type          string          `json:"@type"`
+	Headline      string          `json:"headline"`
+	URL           string          `json:"url"`
+	InLanguage    string          `json:"inLanguage"`
+	DatePublished string          `json:"datePublished,omitempty"`
+	DateModified  string          `json:"dateModified,omitempty"`
+	Author        jsonLDPublisher `json:"author"`
+	Publisher     jsonLDPublisher `json:"publisher"`
+}
+
+// jsonLDSoftwareApplication is the SoftwareApplication entity emitted on every
+// /components/* page (GEO §14): name, category, the single-source
+// docsShellVersion, the operating system scope, and the MIT license.
+type jsonLDSoftwareApplication struct {
+	Type                string `json:"@type"`
+	Name                string `json:"name"`
+	ApplicationCategory string `json:"applicationCategory"`
+	SoftwareVersion     string `json:"softwareVersion"`
+	OperatingSystem     string `json:"operatingSystem"`
+	License             string `json:"license"`
 }
 
 // jsonLDGraph wraps the per-page entities in a single @graph document so the
@@ -490,11 +529,25 @@ type jsonLDGraph struct {
 
 // componentJSONLD builds the @graph structured data for a registered
 // /components/* page: the BreadcrumbList trail plus a TechArticle carrying the
-// page headline and canonical URL. Built with encoding/json so escaping and
-// validity are guaranteed (contract §12: no JSON by string concatenation).
+// page headline, canonical URL and (when present in the date table) the
+// published/modified dates, plus a SoftwareApplication entity describing the
+// library (GEO §7, §14). Built with encoding/json so escaping and validity are
+// guaranteed (contract §12: no JSON by string concatenation).
 func componentJSONLD(routePath string) template.JS {
 	label := componentLabel(routePath)
 	canonical := siteBaseURL + routePath
+	article := jsonLDArticle{
+		Type:       "TechArticle",
+		Headline:   label + " · Gelium UI",
+		URL:        canonical,
+		InLanguage: "en",
+		Author:     jsonLDPublisher{Type: "Organization", Name: "Gelium UI"},
+		Publisher:  jsonLDPublisher{Type: "Organization", Name: "Gelium UI"},
+	}
+	if dates, ok := docDatesFor(strings.TrimPrefix(routePath, "/components/")); ok {
+		article.DatePublished = dates.Published
+		article.DateModified = dates.Modified
+	}
 	graph := jsonLDGraph{
 		Context: "https://schema.org",
 		Graph: []any{
@@ -506,13 +559,14 @@ func componentJSONLD(routePath string) template.JS {
 					{Type: "ListItem", Position: 3, Name: label, Item: canonical},
 				},
 			},
-			jsonLDArticle{
-				Type:       "TechArticle",
-				Headline:   label + " · Gelium UI",
-				URL:        canonical,
-				InLanguage: "en",
-				Author:     jsonLDPublisher{Type: "Organization", Name: "Gelium UI"},
-				Publisher:  jsonLDPublisher{Type: "Organization", Name: "Gelium UI"},
+			article,
+			jsonLDSoftwareApplication{
+				Type:                "SoftwareApplication",
+				Name:                "Gelium UI",
+				ApplicationCategory: "DeveloperApplication",
+				SoftwareVersion:     docsShellVersion,
+				OperatingSystem:     "Any",
+				License:             "MIT",
 			},
 		},
 	}
@@ -643,11 +697,26 @@ func resolveMeta(data pageView, routePath string) metaView {
 	return meta
 }
 
+// provenanceView is the server-side provenance line rendered inside component
+// articles (GEO §8, §15): version, license link, source reference and the
+// ISO dates from the date table. One struct → one {{if .Provenance}} guard in
+// the layout; nil on non-component and error pages, so nothing is emitted.
+type provenanceView struct {
+	Version    string
+	LicenseURL string
+	Source     string
+	Published  string
+	Modified   string
+}
+
 type pageView struct {
 	Meta       metaView
 	Title      string
 	Content    template.HTML
 	ThemeClass string
+	// Provenance is the article provenance line (version, license, source,
+	// dates) rendered inside the article on component pages only.
+	Provenance *provenanceView
 	// DataTheme is the optional data-theme attribute on <html> (light|dark).
 	// Empty leaves OS prefers-color-scheme in control via theme CSS media.
 	DataTheme string
@@ -794,8 +863,9 @@ func (s *server) health(w http.ResponseWriter, r *http.Request) {
 // robotsTxt is the fixed robots.txt policy. The public docs site is fully
 // crawlable except the demo, example and recipe surfaces (noindex or form
 // flows), and the sitemap is advertised so crawlers discover every indexable
-// page in one hop (SEO contract §4).
-const robotsTxt = "User-agent: *\n" +
+// page in one hop (SEO contract §4). A var because the sitemap URL derives
+// from the startup-resolved siteBaseURL.
+var robotsTxt = "User-agent: *\n" +
 	"Allow: /\n" +
 	"Disallow: /demo/\n" +
 	"Disallow: /examples/\n" +
@@ -885,7 +955,8 @@ func methodNotAllowed(w http.ResponseWriter, r *http.Request) {
 
 // notFound serves the styled ERROR STATE page for unknown routes, replacing
 // the plain-text net/http default. It renders the full docs layout with the
-// Error slot set and the real 404 status.
+// Error slot set, the real 404 status, and route metadata resolved for the
+// requested path (SEO §16).
 func (s *server) notFound(w http.ResponseWriter, r *http.Request) {
 	s.renderErrorPage(w,
 		http.StatusNotFound,
@@ -894,14 +965,17 @@ func (s *server) notFound(w http.ResponseWriter, r *http.Request) {
 		true,
 		"/",
 		"Back to home",
+		r.URL.Path,
 	)
 }
 
 // renderErrorPage renders the full docs layout with the ERROR STATE slot set
 // and the real HTTP status. It is the page-level failure path for the 404
 // catch-all and resource 500s; the layout template is already parsed, so a
-// failed template exec still falls back to a minimal plain response.
-func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body string, retry bool, href, label string) {
+// failed template exec still falls back to a minimal plain response. Meta is
+// populated through resolveMeta for the failing routePath so error pages carry
+// description, canonical, robots and OG tags per the route contract (SEO §16).
+func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body string, retry bool, href, label, routePath string) {
 	var page bytes.Buffer
 	data := pageView{
 		Title:      title,
@@ -917,6 +991,7 @@ func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body 
 			Label:      label,
 		},
 	}
+	data.Meta = resolveMeta(data, routePath)
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
 		return
@@ -956,7 +1031,7 @@ func (s *server) renderMarkdownPage(w http.ResponseWriter, r *http.Request, data
 func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, r *http.Request, data pageView, contentPath string, status int) {
 	source, err := fs.ReadFile(s.assets, contentPath)
 	if err != nil {
-		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home")
+		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePathForContent(contentPath))
 		return
 	}
 	s.renderMarkdownStatus(w, r, data, string(source), routePathForContent(contentPath), status)
@@ -973,7 +1048,7 @@ func (s *server) renderMarkdown(w http.ResponseWriter, r *http.Request, data pag
 func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, data pageView, source, routePath string, status int) {
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
-		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home")
+		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
 		return
 	}
 
@@ -988,6 +1063,23 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 		} else {
 			data.Breadcrumb = defaultBreadcrumb(data.Title)
 		}
+	}
+	// Article provenance (GEO §8, §15): registered component pages render the
+	// version, MIT license link, source reference and (when dated) the
+	// published/modified ISO dates. The layout guards the whole line behind
+	// {{if .Provenance}}, so non-component pages emit nothing.
+	if _, ok := componentRouteLabel(routePath); ok {
+		slug := strings.TrimPrefix(routePath, "/components/")
+		provenance := &provenanceView{
+			Version:    docsShellVersion,
+			LicenseURL: licenseURL,
+			Source:     slug + ".md",
+		}
+		if dates, ok := docDatesFor(slug); ok {
+			provenance.Published = dates.Published
+			provenance.Modified = dates.Modified
+		}
+		data.Provenance = provenance
 	}
 	data.Meta = resolveMeta(data, routePath)
 	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
