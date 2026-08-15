@@ -33,7 +33,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 ### 1. Answer-first content
 
 - **Rule**: every component page opens with the answer. The first paragraph after the `#` heading is a 1–2 sentence, self-contained statement of what the component is and when to use it.
-- **Gelium UI today**: partially met — `button.md:3` and `data-table.md:3` already lead with a factual definition.
+- **Gelium UI today**: shipped — all 29 content files lead with an answer-first paragraph (enforced by `TestContentFilesLeadWithAnswerFirst`).
 - **Requirement**: the intro must not assume the heading; it must be readable in isolation as a direct answer to "What is X?".
 - **Verification**: first non-empty paragraph after the H1 contains the component name and the word "Gelium UI" or a stable system term.
 
@@ -49,7 +49,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 ### 3. Descriptive headings
 
 - **Rule**: headings work as questions/answers, not only as labels. Section headings are short questions or statement-answers that a generative engine can pair with the following block.
-- **Gelium UI today**: headings are descriptive but non-interrogative ("Anatomy", "States", "When to use it" — `data-table.md:5,34,46`).
+- **Gelium UI today**: shipped — high-value sections (sorting, no-JS flow, states, dismiss) use interrogative headings after the Phase E content pass.
 - **Requirement**: convert high-value sections to question form — `What is a data table?`, `When should I use a data table?`, `How does sorting work?`, `How does the no-JS flow work?`. Keep them short and factual; one question per heading; no chained interrogatives.
 - **Exemption**: structural sections (Accessibility, Design tokens, Keyboard) keep noun headings; they are reference sections, not FAQ candidates.
 
@@ -78,7 +78,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 - **Rule**: every content page carries `datePublished` and `dateModified`, visible in the article and in JSON-LD.
 - **Gelium UI today**: shipped — dates come from the Go metadata table keyed by slug (`internal/app/docs_dates.go`, contract option (b)); `componentJSONLD` emits `datePublished`/`dateModified` on the `TechArticle` and the layout renders the visible `Published`/`Updated` line in the article provenance, from the same values.
 - **Storage**: Markdown has no frontmatter today (goldmark default, `server.go:63`). The contract fixes the *fields*, not the storage; Phase E must choose between (a) minimal YAML frontmatter parsed in the handler, or (b) a Go metadata table keyed by slug (audit §6 proposal). Either way the rendered article and JSON-LD must emit the same values.
-- **Verification**: grep confirms no page renders dates today; post-implementation every component page must show an update date distinct from the layout boilerplate.
+- **Verification**: `TestComponentPageRendersSoftwareApplicationAndDates` enforces date emission; component pages show `Published`/`Updated` distinct from layout boilerplate.
 
 ### 8. Sources / provenance
 
@@ -92,7 +92,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 ### 9. Relations
 
 - **Rule**: pages declare their place in the hierarchy: breadcrumbs + related links.
-- **Gelium UI today**: no breadcrumb (`docs/gelium-ui-vocabulary.md:239-243` marks the gap); hierarchy exists only in the generated `/docs` index (`docs.go:9-78`).
+- **Gelium UI today**: shipped — breadcrumb partial + CSS + contract tests landed in the Phase F public-content work (`web/templates/breadcrumb.html`, consumed by component pages).
 - **Requirements**:
   - visual breadcrumb `Home → Docs → <Component>` on every component page (semantic `<nav aria-label="Breadcrumb">` → `<ol>` → `<li>` → `<a>`, zero JS);
   - related links where content already cross-references (`When to use it` sections);
