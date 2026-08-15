@@ -128,7 +128,7 @@ func marketingLanding() landingView {
 			},
 			{
 				Title: "Server contracts",
-				Body:  "GET with stable query params, POST + 303, 422 validation, and loom:toast for transient feedback — no parallel APIs.",
+				Body:  "GET with stable query params, POST + 303, 422 validation, and gelium:toast for transient feedback — no parallel APIs.",
 				CTA:   &buttonView{Label: "See a recipe", Variant: "outline", Href: "/recipes/admin-resource"},
 			},
 		},

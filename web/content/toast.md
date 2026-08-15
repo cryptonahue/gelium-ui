@@ -16,10 +16,10 @@ Four variants share one anatomy — an icon, a message, and an optional Dismiss 
 
 ## Server-driven wire contract
 
-The demo below posts to `/examples/toast/demo`. With HTMX, the response carries an `HX-Trigger` header that raises the `loom:toast` event:
+The demo below posts to `/examples/toast/demo`. With HTMX, the response carries an `HX-Trigger` header that raises the `gelium:toast` event:
 
 ```json
-{"loom:toast":{"type":"success","message":"Record updated"}}
+{"gelium:toast":{"type":"success","message":"Record updated"}}
 ```
 
 The local `app.js` listens for that event and displays an auto-dismissing toast in a fixed bottom region, pausing its timer on hover and focus so the message remains readable.

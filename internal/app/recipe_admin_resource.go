@@ -382,7 +382,7 @@ func (s *server) recipeAdminResourceDelete(w http.ResponseWriter, r *http.Reques
 
 // recipeAdminResourceRefresh completes a remote refresh for the recipe list.
 // With HTMX it returns the refresh form fragment and an HX-Trigger raising
-// loom:toast (transient result); without JavaScript it re-renders the full
+// gelium:toast (transient result); without JavaScript it re-renders the full
 // page with the list refreshed and a persistent inline toast, exactly like the
 // Data table refresh demo.
 func (s *server) recipeAdminResourceRefresh(w http.ResponseWriter, r *http.Request) {

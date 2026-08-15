@@ -245,7 +245,7 @@ func (s *server) recipePublicFeedReact(w http.ResponseWriter, r *http.Request) {
 }
 
 // recipePublicFeedRefresh completes a remote refresh for the feed. With HTMX it
-// returns the refresh form fragment and an HX-Trigger raising loom:toast;
+// returns the refresh form fragment and an HX-Trigger raising gelium:toast;
 // without JavaScript it re-renders the full page with the feed refreshed and a
 // persistent inline toast, exactly like the Data table refresh demo.
 func (s *server) recipePublicFeedRefresh(w http.ResponseWriter, r *http.Request) {

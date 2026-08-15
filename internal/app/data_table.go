@@ -382,7 +382,7 @@ func dataTableSelectionNotice(selection []string) string {
 // Without JavaScript it re-renders the full documentation page with the table
 // refreshed and a persistent inline toast plus a determinate progress bar; with
 // HTMX it returns only the refresh form fragment and an HX-Trigger that raises
-// the loom:toast event, which the local enhancement layer displays in the
+// the gelium:toast event, which the local enhancement layer displays in the
 // aria-live region. The progress element reuses the existing .ui-progress
 // primitive; the toast reuses .ui-toast. This mirrors the Toast demo flow.
 func (s *server) dataTableRefreshDemo(w http.ResponseWriter, r *http.Request) {

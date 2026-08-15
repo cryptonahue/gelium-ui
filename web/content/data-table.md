@@ -51,7 +51,7 @@ The selection column uses native checkboxes inside a real `<form method="get">`.
 
 ## Progressive enhancement
 
-The sort, filter and pagination links also carry `hx-get` targeting `#data-table-panel` with `outerHTML` swap, so with HTMX (the progressive-enhancement library that swaps server-rendered fragments) enabled only the table panel re-renders. The no-JS branch is always a real full-page GET — nothing depends on HTMX or JavaScript. The remote refresh demo completes a POST round-trip that re-renders the panel with a determinate `.ui-progress` bar and a `.ui-toast` notification; HTMX swaps just the refresh form and raises `loom:toast` into the live region.
+The sort, filter and pagination links also carry `hx-get` targeting `#data-table-panel` with `outerHTML` swap, so with HTMX (the progressive-enhancement library that swaps server-rendered fragments) enabled only the table panel re-renders. The no-JS branch is always a real full-page GET — nothing depends on HTMX or JavaScript. The remote refresh demo completes a POST round-trip that re-renders the panel with a determinate `.ui-progress` bar and a `.ui-toast` notification; HTMX swaps just the refresh form and raises `gelium:toast` into the live region.
 
 ## Accessibility
 

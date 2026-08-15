@@ -20,7 +20,7 @@ Keyboard focus uses an exterior 3 px `:focus-visible` outline with a 2 px offset
 
 ## Live regions and feedback
 
-Transient feedback renders inside the `#loom-toast-region` with `aria-live="polite"`; error toasts use `role="alert"`. Persistent validation errors render inline next to the field with `role="alert"` (error) or `role="status"` (other tones), and the 422 recovery keeps the user in context.
+Transient feedback renders inside the `#gelium-toast-region` with `aria-live="polite"`; error toasts use `role="alert"`. Persistent validation errors render inline next to the field with `role="alert"` (error) or `role="status"` (other tones), and the 422 recovery keeps the user in context.
 
 ## Reduced motion
 

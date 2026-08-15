@@ -16,7 +16,7 @@ Server-side field validation answers `422` with `X-Loom-Validation: true`. The r
 
 ## HX-Trigger toast feedback
 
-Transient feedback is server-driven: the response carries `HX-Trigger: {"loom:toast":{"type":"success","message":"…"}}`. The vocabulary is closed — `info | success | warning | error` — and `error` renders with `role="alert"` inside the `#loom-toast-region` live region. Without JavaScript the toast renders as a persistent inline region; with HTMX it auto-dismisses (4s/8s, pausable). [Toast](/components/toast) documents the full pattern.
+Transient feedback is server-driven: the response carries `HX-Trigger: {"gelium:toast":{"type":"success","message":"…"}}`. The vocabulary is closed — `info | success | warning | error` — and `error` renders with `role="alert"` inside the `#gelium-toast-region` live region. Without JavaScript the toast renders as a persistent inline region; with HTMX it auto-dismisses (4s/8s, pausable). [Toast](/components/toast) documents the full pattern.
 
 ## Contract rules
 
