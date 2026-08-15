@@ -66,7 +66,14 @@ A theme never changes markup, component anatomy, or server contracts — only to
 
 ### Material (default)
 
-Material is the default direction, built on Material 3 principles: tonal surfaces, rounded corners, and the full `--ui-*` vocabulary.
+Material is the default direction, built on **Material 3 (M3)**, Google's design system. Gelium UI takes from M3 the *role-based* approach to design, not a copy of its components:
+
+- **Color roles, not fixed palettes** — `primary`, `secondary`, `tertiary`, `surface`, `error`, and their foregrounds are semantic roles; the theme supplies the values. This is why the same component contract works under a tonal M3 palette and under Basecoat's near-black ink.
+- **Type scale** — M3's display/headline/title/body/label hierarchy maps directly onto Gelium's `--ui-type-*` steps.
+- **States** — hover, pressed, focus, disabled, and loading follow M3's state-layer model, expressed through `--ui-state-*` opacity tokens.
+- **Elevation and shape** — tonal surfaces, rounded corners, and elevation levels (`--ui-shadow-0..5`, `--ui-radius-*`) come from M3's system.
+
+Gelium implements M3 as **token values in `themes/theme-material/theme.css`** — components never hardcode a Material look. M3 defines the *visual direction*; the layer model keeps it swappable, which is exactly why Basecoat can live in the same bundle. (Compare this with Base UI below: M3 contributes aesthetics and roles; Base UI contributes headless *behavior* vocabulary — two different influences, both documented.)
 
 ### Basecoat
 
