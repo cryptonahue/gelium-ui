@@ -61,6 +61,10 @@ type landingRecipesView struct {
 type landingCTABandView struct {
 	Heading sectionHeadingView
 	CTA     buttonView
+	// SecondaryCTA is an optional secondary action rendered beside the primary
+	// (e.g. the GitHub source link). It is intentionally NOT chrome-rewritten:
+	// external hrefs must never carry ?theme= / ?scheme= query strings.
+	SecondaryCTA *buttonView
 }
 
 // marketingLanding builds the home page composition from Gelium primitives.
@@ -103,7 +107,8 @@ func marketingLanding() landingView {
 			Body:    "Gelium UI is an embeddable docs + component system, not an SPA runtime. Wire app.New() in Go, keep progressive enhancement optional, and dogfood every page against the real partials.",
 			CTA:     &buttonView{Label: "Open the docs shell", Variant: "primary", Href: "/docs"},
 			Media: template.HTML(
-				`<pre class="ui-landing-code" tabindex="0"><code>http.ListenAndServe(":8787", app.New())
+				`<pre class="ui-landing-code" tabindex="0"><code>// BASE_URL=https://your-domain.example  → canonical origin (og:url, sitemap)
+http.ListenAndServe(":8787", app.New())
 
 // Contracts (stable)
 // GET  + query   → list state in the URL
@@ -143,6 +148,11 @@ func marketingLanding() landingView {
 				Centered: true,
 			},
 			CTA: buttonView{Label: "Read the docs", Variant: "primary", Href: "/docs"},
+			SecondaryCTA: &buttonView{
+				Label:   "View source",
+				Variant: "secondary",
+				Href:    "https://github.com/cryptonahue/gelium-ui",
+			},
 		},
 	}
 }

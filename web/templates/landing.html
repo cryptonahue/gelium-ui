@@ -29,7 +29,9 @@
   {{if .CTABand}}
   <section class="ui-landing-cta-band" aria-label="Get started">
     {{template "section-heading" .CTABand.Heading}}
-    <div class="ui-landing-cta-band-action">{{template "button" .CTABand.CTA}}</div>
+    <div class="ui-landing-cta-band-action">
+      {{template "button" .CTABand.CTA}}{{if .CTABand.SecondaryCTA}}{{template "button" .CTABand.SecondaryCTA}}{{end}}
+    </div>
   </section>
   {{end}}
 </div>
