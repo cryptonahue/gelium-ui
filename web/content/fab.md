@@ -1,16 +1,16 @@
 # Floating action button (FAB)
 
-FAB (Floating Action Button) represents the most important action on a screen. Use a FAB when exactly one action dominates the view — compose, add, start — and it must stay reachable in the corner at every screen size. It is icon-anchored and uses a native `<button type="button">` for actions and an `<a href>` for navigation, exactly like Button. Extended FABs are wider to accommodate a visible text label.
+FAB (Floating Action Button) represents the most important action on a screen. Use a FAB when exactly one action dominates the view — compose, add, start. It must stay reachable in the corner at every screen size. It is icon-anchored and uses a native `<button type="button">` for actions and an `<a href>` for navigation, exactly like Button. Extended FABs are wider to accommodate a visible text label.
 
 ## Guidance
 
 ### When to use
 
-Use a FAB when exactly one action dominates the view — compose, add, start — and it must stay reachable in the corner at every screen size.
+Use a FAB when exactly one action dominates the view — compose, add, start. It must stay reachable in the corner at every screen size.
 
 ### When not to use
 
-Do not use a FAB when several actions share importance — a [Button](/components/button) or [Icon button](/components/icon-button) in the surface reads better. If the action is not the screen's primary task, it does not deserve a FAB.
+Do not use a FAB when several actions share importance. A [Button](/components/button) or [Icon button](/components/icon-button) in the surface reads better. If the action is not the screen's primary task, it does not deserve a FAB.
 
 ### Usability
 

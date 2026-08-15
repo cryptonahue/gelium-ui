@@ -10,7 +10,7 @@ Use icons when a control or a message needs a small, themeable graphic that ship
 
 ### When not to use
 
-Do not use an icon where text alone is clearer, and never make an icon the only signal: decorative icons must sit next to visible text, and meaningful icons must be named by visible text. Never build icon markup from user input — glyphs are trusted, server-resolved markup.
+Do not use an icon where text alone is clearer. Never make an icon the only signal: decorative icons must sit next to visible text, and meaningful icons must be named by visible text. Never build icon markup from user input — glyphs are trusted, server-resolved markup.
 
 ### Usability
 
@@ -27,7 +27,7 @@ Do not use an icon where text alone is clearer, and never make an icon the only 
 See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## The `.ui-icon` utility
 
-The shared `.ui-icon` class gives every icon consistent 24 px sizing, a fixed flex size, and a `currentColor` fill so the glyph matches surrounding text automatically.
+The shared `.ui-icon` class gives every icon consistent 24 px sizing, a fixed flex size, and a `currentColor` fill. The glyph matches surrounding text automatically.
 
 ## Accessibility contract
 

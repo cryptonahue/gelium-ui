@@ -1,12 +1,12 @@
 # Switch
 
-Switch is a native `input[type="checkbox"]` styled as the Material `52x32` track, its outline, and the sliding handle from the `--ui-switch-*` tokens — the real control stays the focusable, operable element. Use a switch when a setting is either on or off and should read as an immediate toggle — enabling a feature, dark mode, notifications — with the state submitting through a real `<form>`. Form semantics and assisted input work unchanged.
+Switch is a native `input[type="checkbox"]` styled as the Material `52x32` track, its outline, and the sliding handle from the `--ui-switch-*` tokens. The real control stays the focusable, operable element. Use a switch when a setting is either on or off and should read as an immediate toggle — enabling a feature, dark mode, notifications. The state submits through a real `<form>`. Form semantics and assisted input work unchanged.
 
 ## Guidance
 
 ### When to use
 
-Use a switch when a setting is either on or off and should read as an immediate toggle — enabling a feature, dark mode, notifications — with the state submitting through a real `<form>`.
+Use a switch when a setting is either on or off and should read as an immediate toggle. The state submits through a real `<form>`.
 
 ### When not to use
 
@@ -46,7 +46,7 @@ The label wraps the native checkbox plus two decorative overlay spans. Keep the 
 
 ## What states can a switch be in?
 
-The switch covers `checked`, `unchecked`, and `disabled` (both disabled states shown in the preview). Disabled follows the Material 3 split-opacity contract: the track drops to `--ui-switch-disabled-track-opacity` (`.12`) while the unchecked handle drops to `--ui-switch-disabled-handle-opacity` (`.38`); a disabled checked handle keeps full opacity and repaints through `--ui-switch-disabled-handle`.
+The switch covers `checked`, `unchecked`, and `disabled` (both disabled states shown in the preview). Disabled follows the Material 3 split-opacity contract: the track drops to `--ui-switch-disabled-track-opacity` (`.12`) while the unchecked handle drops to `--ui-switch-disabled-handle-opacity` (`.38`). A disabled checked handle keeps full opacity and repaints through `--ui-switch-disabled-handle`.
 
 ## Design Tokens
 
@@ -80,7 +80,7 @@ The switch is pure CSS over a native checkbox — there is no component JavaScri
 - The input must be nested inside its `label` (or `id`-linked) so the accessible name always matches what is on screen.
 - Never rely on color alone: checked state carries the sliding handle, and disabled state is announced by the platform.
 - The focus ring stays on the native input (`:focus-visible` on `input`), so keyboard users always see where the toggle is.
-- In forced-colors mode the track keeps a `CanvasText` boundary, the checked track and handle repaint as `ButtonText`, and the disabled track outline drops to `GrayText`, so the on/off state survives without color.
+- In forced-colors mode the track keeps a `CanvasText` boundary, the checked track and handle repaint as `ButtonText`, and the disabled outline drops to `GrayText`. The on/off state survives without color.
 
 ## Keyboard
 

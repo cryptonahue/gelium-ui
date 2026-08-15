@@ -1,16 +1,16 @@
 # List
 
-List is a continuous, vertical index of text and images. Use a list when people must scan, select, or navigate through a group of related rows — settings, actions, or collections. Gelium reimplements the Material 3 list over semantic HTML — the root is a real `<ul>`, `<ol>`, `<nav>`, or `<menu>`, and each item is a `<li>`. No component JavaScript: navigation items are real `<a href>` links, and selection items are native checkboxes in a real form.
+List is a continuous, vertical index of text and images. Use a list when people must scan, select, or navigate related rows — settings, actions, or collections. Gelium reimplements the Material 3 list over semantic HTML — the root is a real `<ul>`, `<ol>`, `<nav>`, or `<menu>`, and each item is a `<li>`. No component JavaScript: navigation items are real `<a href>` links, and selection items are native checkboxes in a real form.
 
 ## Guidance
 
 ### When to use
 
-Use a list when people must scan, select, or navigate through a group of related rows — settings, actions, or collections.
+Use a list when people must scan, select, or navigate related rows — settings, actions, or collections.
 
 ### When not to use
 
-Do not use a list for dense columnar data that needs sorting, filtering and pagination — a [Data table](/components/data-table) is built for that. For a single choice from many options, a [Select](/components/select) collapses the list; for a compact command menu anchored to a trigger, use a [Menu](/components/menu).
+Do not use a list for dense columnar data that needs sorting, filtering and pagination. A [Data table](/components/data-table) is built for that. For a single choice from many options, a [Select](/components/select) collapses the list; for a compact command menu anchored to a trigger, use a [Menu](/components/menu).
 
 ### Usability
 
@@ -58,7 +58,7 @@ The roadmap requires a list to distinguish navigation, selection, and static con
 
 ## States
 
-The list covers `rest`, `hover`, `focus-visible`, `active`/`pressed`, `selected` (the checked checkbox), and `disabled` (on individual items). Hover and active paint the Material state layer (`ui-list-item::before`) at the shared `--ui-state-*` opacities; focus rings land on the native link or checkbox so keyboard users always see the target. Disabled items drop to `38%` opacity and are non-interactive.
+The list covers `rest`, `hover`, `focus-visible`, `active`/`pressed`, `selected` (the checked checkbox), and `disabled` (on individual items). Hover and active paint the Material state layer (`ui-list-item::before`) at the shared `--ui-state-*` opacities. Focus rings land on the native link or checkbox, so keyboard users always see the target. Disabled items drop to `38%` opacity and are non-interactive.
 
 ## Design tokens
 
@@ -89,11 +89,11 @@ There is no list component JavaScript. Navigation and selection work with script
 
 - Keep the native elements: the `<ul>`/`<li>` carry list semantics, links are real anchors, checkboxes are native inputs with their names and values.
 - Wrap the selection checkbox in its `label` so the whole row is clickable and the accessible name always matches the on-screen text.
-- The state layer is decorative; state and selection are never communicated by color alone (hover changes the layer, selection flips the checkbox, focus shows a ring).
+- The state layer is decorative; state and selection are never communicated by color alone. Hover changes the layer, selection flips the checkbox, focus shows a ring.
 - Focus rings stay on the native link or checkbox (`:focus-visible`), so keyboard users always see where the row focus is.
 - Decorative SVGs are `aria-hidden` and `focusable="false"`; the visible text supplies the accessible name.
-- In forced-colors mode the container uses `Canvas`, text uses `CanvasText`, links keep `LinkText`, and disabled rows drop to `GrayText`, so content and interactivity survive without color.
+- In forced-colors mode the container uses `Canvas`, text uses `CanvasText`, links keep `LinkText`, and disabled rows drop to `GrayText`. Content and interactivity survive without color.
 
 ## Keyboard
 
-Because the interactive pieces are native, keyboard behavior comes for free: links activate with Enter, checkboxes toggle with Space, and tab order follows document order. There is no custom roving tabindex — the roadmap defers arrow-key list navigation until a platform gap is demonstrated.
+Because the interactive pieces are native, keyboard behavior comes for free: links activate with Enter, checkboxes toggle with Space. Tab order follows document order. There is no custom roving tabindex — the roadmap defers arrow-key list navigation until a platform gap is demonstrated.

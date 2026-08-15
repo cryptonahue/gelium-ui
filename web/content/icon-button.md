@@ -1,16 +1,16 @@
 # Icon button
 
-Icon button is a compact, single-tap action control built from a native HTML `<button>` (for actions) or `<a>` (for navigation). Use an icon button when a toolbar or surface needs a small action whose meaning is carried by a glyph plus an accessible name — edit, delete, refresh — and the tap target must stay touch-friendly. It renders a Material Web–compatible circular touch target with a trusted inline SVG glyph.
+Icon button is a compact, single-tap action control built from a native HTML `<button>` (for actions) or `<a>` (for navigation). Use an icon button when a toolbar or surface needs a small action carried by a glyph plus an accessible name — edit, delete, refresh. The tap target must stay touch-friendly. It renders a Material Web–compatible circular touch target with a trusted inline SVG glyph.
 
 ## Guidance
 
 ### When to use
 
-Use an icon button when a toolbar or surface needs a small action whose meaning is carried by a glyph plus an accessible name — edit, delete, refresh — and the tap target must stay touch-friendly.
+Use an icon button when a surface needs a small action carried by a glyph and an accessible name. The tap target must stay touch-friendly.
 
 ### When not to use
 
-Do not use an icon button when the action needs a visible label to be understood — a [Button](/components/button) with text is clearer. If several icon actions pile up on one surface, a [Menu](/components/menu) can hold them without crowding the toolbar.
+Do not use an icon button when the action needs a visible label to be understood. A [Button](/components/button) with text is clearer. If several icon actions pile up on one surface, a [Menu](/components/menu) can hold them without crowding the toolbar.
 
 ### Usability
 
@@ -20,7 +20,7 @@ Do not use an icon button when the action needs a visible label to be understood
 
 ### Accessibility
 
-- An icon button is never icon-only without a name: use the visible label, or supply an `aria-label` — the template refuses to emit an empty one.
+- An icon button is never icon-only without a name: use the visible label, or supply an `aria-label`. The template refuses to emit an empty one.
 - Keyboard focus uses an exterior 3 px `:focus-visible` outline with a 2 px offset.
 - Disabled and pressed states do not rely on color alone; forced-colors and reduced-motion themes are covered by the shared build.
 

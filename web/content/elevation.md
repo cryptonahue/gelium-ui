@@ -6,11 +6,11 @@ Elevation is a Gelium-only primitive for visual depth. Use it when an element mu
 
 ### When to use
 
-Use elevation when an element must sit above the surface it rests on — floating actions, menus, dialogs — without shipping images or per-instance shadows. Apply one of the six utility classes (`ui-elevation-0` through `ui-elevation-5`).
+Use elevation when an element must sit above the surface it rests on — floating actions, menus, dialogs. It ships no images or per-instance shadows. Apply one of the six utility classes (`ui-elevation-0` through `ui-elevation-5`).
 
 ### When not to use
 
-Do not elevate everything: depth should be earned by interactive or transient surfaces, and elevation must never be the sole carrier of meaning or state. Keep flat surfaces flat — over-elevation makes dialogs and menus compete instead of stand out.
+Do not elevate everything: depth should be earned by interactive or transient surfaces. Elevation must never be the sole carrier of meaning or state. Keep flat surfaces flat — over-elevation makes dialogs and menus compete instead of stand out.
 
 ### Usability
 

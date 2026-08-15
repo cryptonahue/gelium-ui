@@ -4,13 +4,13 @@
 > with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
-Navigation drawer is a Material 3 navigation drawer with two variants: a **modal** drawer that opens over a scrim and a **standard** (permanent) drawer embedded in the layout. Use a drawer when an app has more destinations than fit in a bottom bar and the navigation must stay server-rendered and no-JS. Gelium reimplements it over server-rendered HTML — the standard variant is a real `<nav>` in the layout, the modal variant is a native `<dialog>`, and every destination is a real `<a href>` whose active state is derived server-side from the current page (the roadmap's "navegación real con links"). No component JavaScript exists.
+Navigation drawer is a Material 3 navigation drawer with two variants: **modal**, which opens over a scrim, and **standard** (permanent), embedded in the layout. Use a drawer when an app has more destinations than fit in a bottom bar and the navigation must stay server-rendered and no-JS. Gelium reimplements it over server-rendered HTML: a real `<nav>` in the layout, a native `<dialog>` for the modal, and a real `<a href>` per destination. The active state is derived server-side from the current page (the roadmap's "navegación real con links"). No component JavaScript exists.
 
 ## Guidance
 
 ### When to use
 
-Use a navigation drawer when an app has more destinations than fit in a bottom bar and navigation must stay server-rendered and no-JS — the standard variant as a permanent rail in the layout, the modal variant over a scrim for temporary access.
+Use a navigation drawer when an app has more destinations than fit in a bottom bar. Navigation must stay server-rendered and no-JS. The standard variant is a permanent rail; the modal variant opens over a scrim for temporary access.
 
 ### When not to use
 
@@ -24,7 +24,7 @@ Do not use a drawer when three to five destinations suffice — a [Navigation ba
 
 ### Accessibility
 
-- The standard variant is a real `<nav>` landmark with native anchors; the modal variant is a native `<dialog>` — the browser manages the top layer, focus, and Escape.
+- The standard variant is a real `<nav>` landmark; the modal is a native `<dialog>`. The browser manages the top layer, focus, and Escape.
 - The selected destination carries `aria-current="page"`; state is never communicated by color alone.
 - The icon slot is `aria-hidden`; the label text supplies the name. Badges live inside the aria-hidden slot.
 - In forced-colors mode the active destination becomes `HighlightText` and the indicator pill is outlined with `Highlight`.
@@ -47,9 +47,7 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 </nav>
 ```
 
-- **Container** — `ui-navigation-drawer`, `360px` wide and full height on the
-  Material surface, shaped `corner-large-end` (rounded on the end side, so the
-  start edge sits flush against the screen).
+- **Container** — `ui-navigation-drawer`, `360px` wide and full height on the Material surface. It is shaped `corner-large-end` (rounded on the end side, so the start edge sits flush against the screen).
 - **List** — `ui-navigation-drawer-list`, a real `<ul>` of 56px-tall
   `ui-navigation-drawer-item` rows.
 - **Destination** — `ui-navigation-drawer-destination`, a real `<a href>`
@@ -68,11 +66,7 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 - **Standard** — the permanent drawer: a real `<nav>` embedded in the layout,
   always visible. This is the roadmap's "variante permanente como `<nav>` en
   layout". The active destination carries `aria-current="page"`.
-- **Modal** — the roadmap's "variante modal sobre `<dialog>`": a native
-  `<dialog class="ui-navigation-drawer ui-navigation-drawer--modal">` with a
-  scrim (its `::backdrop`), opened by a trigger button using the native invoker
-  command `command="show-modal"` + `commandfor` (the Invoker Commands API —
-  declarative `command`/`commandfor` dialog control). Native dialog behavior gives
+- **Modal** — the roadmap's "variante modal sobre `<dialog>`": a native `<dialog class="ui-navigation-drawer ui-navigation-drawer--modal">` with a scrim (`::backdrop`). A trigger button opens it with the native invoker command `command="show-modal"` + `commandfor` (the Invoker Commands API — declarative `command`/`commandfor` dialog control). Native dialog behavior gives
   the top layer, focus move into the drawer, and Escape-to-close for free.
   `closedby="any"` adds scrim (light) dismiss in supporting browsers only;
   the explicit Escape and focus behavior remain in compatible browsers.
@@ -80,40 +74,24 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 ## States
 
 `rest`, `hover`, `focus-visible`, `active`/`pressed`, and `selected` (the active
-destination). Hover, focus, and press paint the Material state layer (a
-full-bleed `::before` at the shared `--ui-state-*` opacities) and shift the
-inactive icon/label toward on-surface; the selected destination uses
-`on-secondary-container` for its state layer. `:focus-visible` shows the Gelium
+destination). Hover, focus, and press paint the Material state layer (a full-bleed `::before` at the shared `--ui-state-*` opacities) and shift the inactive icon/label toward on-surface. The selected destination uses `on-secondary-container` for its state layer. `:focus-visible` shows the Gelium
 focus ring. Because destinations are native links, keyboard activation and tab
 order come for free and focus never changes geometry.
 
 ## Accessibility
 
-- Keep the native elements: the standard variant is a real `<nav>` landmark,
-  `<ul>`/`<li>` carry list semantics, and destinations are real anchors, so the
-  accessible name is the visible label and activation is native. The modal
+- Keep the native elements: a real `<nav>` landmark, `<ul>`/`<li>` list semantics, and real anchors. The accessible name is the visible label and activation is native. The modal
   variant is a native `<dialog>`: the browser manages the top layer, focus, and
   Escape, and the drawer carries `aria-label`.
-- The selected destination carries `aria-current="page"`; state is never
-  communicated by color alone (the indicator pill is the selected marker, focus
-  shows a ring, the label weight changes).
+- The selected destination carries `aria-current="page"`; state is never communicated by color alone. The indicator pill marks selection, focus shows a ring, and the label weight changes.
 - The icon slot is `aria-hidden`; the label text supplies the name. Badges live
   inside the aria-hidden slot (decorative or a visual count only).
 - Decorative SVGs are `aria-hidden` and `focusable="false"`.
-- In forced-colors mode the drawer keeps a `CanvasText` boundary, the active
-  destination becomes `HighlightText`, and the indicator pill is outlined with
-  `Highlight` so selection survives without color.
+- In forced-colors mode the drawer keeps a `CanvasText` boundary, the active destination becomes `HighlightText`, and the indicator pill is outlined with `Highlight`. Selection survives without color.
 
 ## How does the drawer open and close without JavaScript?
 
-Navigation is plain HTTP: each destination is a real `<a href>` and clicking it
-navigates normally with scripting disabled; the active state is fixed at render
-time by the server. The modal drawer opens through the native invoker command
-`command="show-modal"` (declarative, no component JavaScript) exactly like the
-shipped Dialog component; in browsers without the Invoker Commands API (the
-native `command`/`commandfor` mechanism for declarative dialog control) the
-trigger does nothing, so consumers supporting them need a server-rendered
-fallback or adapter — the same documented gap as Dialog.
+Navigation is plain HTTP: each destination is a real `<a href>`, and clicking it navigates normally with scripting disabled. The active state is fixed at render time by the server. The modal drawer opens through the native invoker command `command="show-modal"` (declarative, no component JavaScript), exactly like the shipped Dialog component. In browsers without the Invoker Commands API (the native `command`/`commandfor` mechanism for declarative dialog control) the trigger does nothing. Consumers supporting them need a server-rendered fallback or adapter — the same documented gap as Dialog.
 
 ## HTMX
 
@@ -138,13 +116,7 @@ destinations are plain links.
 
 ## Compatibility
 
-The component uses only baseline CSS (`display:flex`, `position`, `opacity`,
-`::before`, logical properties) plus the modern `@starting-style` and
-`overlay`/`display` discrete transitions for modal motion — the same
-progressive-enhancement pattern as Dialog, where motion may be instant in
-browsers without them. The modal trigger relies on the native Invoker Commands
-API (`command`/`commandfor`, recent Baseline Low features, same as Dialog); the
-permanent variant needs nothing beyond baseline HTML.
+The component uses only baseline CSS (`display:flex`, `position`, `opacity`, `::before`, logical properties). Modern transitions cover modal motion. It follows the same progressive-enhancement pattern as Dialog, where motion may be instant in browsers without them. The modal trigger relies on the native Invoker Commands API (`command`/`commandfor`, recent Baseline Low features, same as Dialog). The permanent variant needs nothing beyond baseline HTML.
 
 ## Trust boundary
 

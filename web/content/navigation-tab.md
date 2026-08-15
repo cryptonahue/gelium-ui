@@ -4,17 +4,15 @@
 > with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
-Navigation tab is the individual destination of a navigation bar, reimplemented over server-rendered HTML. Use a navigation tab when a bar or rail needs a single selectable destination whose active state is decided by the server. The root is a real `<a href>` link — the roadmap's **"link semántico, no tab falso"** contract. There is no `role="tab"`, no `role="tablist"`, no roving focus and no component JavaScript: the active tab is derived server-side from the current page and marked with `aria-current="page"`.
+Navigation tab is the individual destination of a navigation bar, reimplemented over server-rendered HTML. Use a navigation tab when a bar or rail needs a single selectable destination. The server decides its active state. The root is a real `<a href>` link — the roadmap's **"link semántico, no tab falso"** contract. There is no `role="tab"`, no `role="tablist"`, no roving focus and no component JavaScript. The active tab is derived server-side from the current page and marked with `aria-current="page"`.
 
-Because the tab is the same destination contract the delivered navigation bar
-uses, the demo composes the existing `.ui-nav-bar` for its in-bar variant and
-reuses the existing `.ui-badge` for badge destinations — nothing is reinvented.
+Because the tab is the same destination contract the delivered navigation bar uses, the demo composes the existing `.ui-nav-bar` for its in-bar variant. It reuses the existing `.ui-badge` for badge destinations — nothing is reinvented.
 
 ## Guidance
 
 ### When to use
 
-Use a navigation tab when a bar or rail needs a single selectable destination whose active state is decided by the server.
+Use a navigation tab when a bar or rail needs a single selectable destination. The server decides its active state.
 
 ### When not to use
 
@@ -54,8 +52,7 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 - **Active indicator** — `ui-nav-tab-indicator`, the `32px` full-radius pill
   (`secondary-container` color) that fades in behind the icon of the selected
   tab.
-- **Glyph swap** — Material's active/inactive icon pair maps to two glyphs in
-  the icon slot, and only the active glyph is painted when the tab is selected.
+- **Glyph swap** — Material's active/inactive icon pair maps to two glyphs in the icon slot. Only the active glyph is painted when the tab is selected.
   When both slots carry the same glyph, Gelium renders a single copy (there is
   nothing to swap).
 - **Badge** — an optional badge reuses the existing `.ui-badge` primitive
@@ -66,12 +63,8 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 
 ## Variants
 
-- **Standard** — every tab shows its icon and label; the active tab additionally
-  shows the indicator pill, the active icon/label colors, and the prominent
-  `700` label weight.
-- **Hide inactive labels** — with the `ui-nav-tab--hide-inactive-label` modifier,
-  inactive tabs collapse to icon-only (`0` height, transparent label) while the
-  active tab keeps its label and indicator. This mirrors the upstream
+- **Standard** — every tab shows its icon and label. The active tab additionally shows the indicator pill, active colors, and the prominent `700` label weight.
+- **Hide inactive labels** — with the `ui-nav-tab--hide-inactive-label` modifier, inactive tabs collapse to icon-only (`0` height, transparent label). The active tab keeps its label and indicator. This mirrors the upstream
   `hideInactiveLabel` option.
 - **Badges** — a dot or count badge reuses `.ui-badge` on the icon slot.
 - **Inside the navigation bar** — the tabs composed into the delivered
@@ -80,9 +73,7 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 ## What states can a navigation tab be in?
 
 `rest`, `hover`, `focus-visible`, `active`/`pressed`, and `selected` (the active
-tab). Hover, focus, and press paint the Material state layer (a full-bleed
-`::before` at the shared `--ui-state-*` opacities) and shift the inactive icon
-toward on-surface; `:focus-visible` shows the Gelium focus ring. Because tabs are
+tab). Hover, focus, and press paint the Material state layer (a full-bleed `::before` at the shared `--ui-state-*` opacities) and shift the inactive icon toward on-surface. `:focus-visible` shows the Gelium focus ring. Because tabs are
 native links, keyboard activation and tab order come for free and focus never
 changes geometry.
 
@@ -90,9 +81,7 @@ changes geometry.
 
 - Keep the native element: each tab is a real anchor, so the accessible name is
   the visible label and activation is native. No fake-tab ARIA.
-- The selected tab carries `aria-current="page"`; state is never communicated by
-  color alone (the indicator pill is the selected marker, focus shows a ring,
-  the label weight changes).
+- The selected tab carries `aria-current="page"`; state is never communicated by color alone. The indicator pill marks selection, focus shows a ring, and the label weight changes.
 - The icon slot is `aria-hidden`; the label text supplies the name. In icon-only
   mode the label stays in the DOM (only visually collapsed), so assistive
   technology still reads every tab.
@@ -104,9 +93,7 @@ changes geometry.
 ## No-JS behavior
 
 Navigation is plain HTTP: each tab is a real `<a href>` and clicking it
-navigates normally with scripting disabled. The active state is fixed at render
-time by the server (the tab whose href matches the request path), so there is
-nothing for JavaScript to do.
+navigates normally with scripting disabled. The active state is fixed at render time by the server (the tab whose href matches the request path). There is nothing for JavaScript to do.
 
 ## Divergences from Material Web
 

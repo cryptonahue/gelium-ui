@@ -1,12 +1,12 @@
 # Checkbox
 
-Checkbox is a native `input[type="checkbox"]` painted with the Material box, its outline, and the checked chevron from the `--ui-checkbox-*` tokens — the real control stays the focusable, operable element. Use a checkbox when an option toggles independently or several options multiply across a list, and the selection must submit through a real `<form>`. Form semantics and assisted input work unchanged.
+Checkbox is a native `input[type="checkbox"]` painted with the Material box, outline, and checked chevron from the `--ui-checkbox-*` tokens. The real control stays the focusable, operable element. Use a checkbox when an option toggles independently or several options multiply across a list. The selection must submit through a real `<form>`. Form semantics and assisted input work unchanged.
 
 ## Guidance
 
 ### When to use
 
-Use a checkbox when an option toggles independently or several options multiply across a list, and the selection must submit through a real `<form>`.
+Use a checkbox when an option toggles independently or several options multiply across a list. The selection must submit through a real `<form>`.
 
 ### When not to use
 

@@ -1,16 +1,16 @@
 # Badge
 
-Badge is a compact marker that shows a dot, a count, or a short label on the error palette. Use a badge when a small piece of information — a count, a status dot, a short label — must sit on or near another element without taking over the row. It is never color-only: a badge mark must always carry or accompany visible text so the information survives without color.
+Badge is a compact marker that shows a dot, a count, or a short label on the error palette. Use a badge when a small piece of information — a count, status dot, or short label — must sit on or near another element. It stays compact and never takes over the row. It is never color-only: a badge mark must always carry or accompany visible text so the information survives without color.
 
 ## Guidance
 
 ### When to use
 
-Use a badge for compact supplementary information — a count, a status dot, or a short label — that must sit on or near another element without taking over the row. It earns its place when the adjacent element needs an at-a-glance signal that its surrounding text does not already carry.
+Use a badge for compact supplementary information — a count, status dot, or short label — beside another element. It should not take over the row. It earns its place when the adjacent element needs an at-a-glance signal that its surrounding text lacks.
 
 ### When not to use
 
-Never use a badge as the only signal: a badge mark is never color-only, and the meaning must always survive in visible text or an `sr-only` label. If the information is essential to the task, say it in the content itself instead of pinning a marker to it.
+Never use a badge as the only signal: a badge mark is never color-only. The meaning must always survive in visible text or an `sr-only` label. If the information is essential to the task, say it in the content itself instead of pinning a marker to it.
 
 ### Usability
 

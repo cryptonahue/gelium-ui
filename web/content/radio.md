@@ -1,12 +1,12 @@
 # Radio
 
-Radio is a native `input[type="radio"]` painted with the Material ring and the inner checked dot from the `--ui-radio-*` tokens — the real control stays the focusable, operable element. Use a radio group when exactly one option from a mutually exclusive set must be chosen, and the choice has to submit through a real `<form>`. Grouping, form semantics, and assisted input work unchanged.
+Radio is a native `input[type="radio"]` painted with the Material ring and the inner checked dot from the `--ui-radio-*` tokens. The real control stays the focusable, operable element. Use a radio group when exactly one option from a mutually exclusive set must be chosen. The choice must submit through a real `<form>`. Grouping, form semantics, and assisted input work unchanged.
 
 ## Guidance
 
 ### When to use
 
-Use a radio group when exactly one option from a mutually exclusive set must be chosen, and the choice has to submit through a real `<form>`.
+Use a radio group when exactly one option from a mutually exclusive set must be chosen. The choice must submit through a real `<form>`.
 
 ### When not to use
 
@@ -39,4 +39,4 @@ See [Choose the right control](/docs/choose-the-right-control) for the cross-com
 - The input must be nested inside its `label` (or `id`-linked) so the accessible name always matches what is on screen.
 - Group a related set with `fieldset` and `legend`: each radio stays a member of the same-named group, and the legend becomes the group's label.
 - Never rely on color alone: selected state carries the inner dot, errors carry `aria-invalid`, and disabled state is announced by the platform.
-- In forced-colors mode the ring keeps a `CanvasText` boundary, the selected dot stays on `CanvasText`, and the disabled dot drops to `GrayText`, so selection survives without color.
+- In forced-colors mode the ring keeps a `CanvasText` boundary, the selected dot stays on `CanvasText`, and the disabled dot drops to `GrayText`. Selection survives without color.
