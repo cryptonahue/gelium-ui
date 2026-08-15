@@ -14,6 +14,7 @@ import (
 	"strings"
 
 	"github.com/yuin/goldmark"
+	"github.com/yuin/goldmark/extension"
 
 	webassets "geliumui/web"
 )
@@ -800,7 +801,7 @@ func New() http.Handler {
 	templates := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
 	s := &server{
 		templates: templates,
-		markdown:  goldmark.New(),
+		markdown:  goldmark.New(goldmark.WithExtensions(extension.GFM)),
 		assets:    webassets.Assets,
 	}
 
