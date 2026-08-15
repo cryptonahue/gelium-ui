@@ -53,7 +53,7 @@
   --ui-color-surface: #f5f5f5;           /* --muted (neutral-100) */
   --ui-color-surface-container: #f5f5f5; /* --muted (code/raised chips) */
   --ui-color-fg: #0a0a0a;                /* --foreground (neutral-950) */
-  --ui-color-fg-muted: #737373;          /* --muted-foreground (neutral-500) */
+  --ui-color-fg-muted: #6d6d6d;          /* --muted-foreground (neutral-500 → AA-tuned: 4.75:1 on neutral-100 surface, WCAG AA body text) */
   --ui-color-primary: #171717;           /* --primary (neutral-900) */
   --ui-color-primary-fg: #fafafa;        /* --primary-foreground (neutral-50) */
   --ui-color-secondary: #f5f5f5;         /* --secondary (neutral-100) */

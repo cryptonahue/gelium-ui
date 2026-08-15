@@ -136,10 +136,22 @@
      override .docs-shell into a full-width two-pane frame (see docs-shell.css). */
   .docs-content,
   main.docs-shell.docs-content { width: min(68rem, calc(100% - 2rem)); margin: 4rem auto; }
-  .prose { max-width: 48rem; }
+  /* Prose measure and typography (readability contract): the docs text column
+     caps lines at 65ch — the classic typographic measure (65-75ch standard;
+     USWDS ~68ch, GOV.UK ~30em). ch is the correct unit for measure because it
+     scales with the rendered font, so the column always carries the same
+     character count. text-wrap: pretty avoids orphaned final lines;
+     hyphens: auto gives per-language hyphenation from <html lang>. */
+  .prose { max-width: 65ch; hyphens: auto; }
   .prose h1 { margin: 0 0 1rem; font: var(--ui-type-display-sm); letter-spacing: var(--ui-type-display-sm-letter-spacing); }
   .prose h2 { margin-top: 2.5rem; font: var(--ui-type-headline-sm); letter-spacing: var(--ui-type-headline-sm-letter-spacing); }
-  .prose p { color: var(--ui-color-fg-muted); line-height: 1.7; }
+  .prose p { color: var(--ui-color-fg-muted); line-height: 1.7; text-wrap: pretty; }
+  /* Balanced headings plus progressive leading trim: text-wrap: balance evens
+     heading line breaks (Baseline 2024). text-box-trim/text-box-edge trim the
+     visual leading around cap/alphabetic where supported (Chromium only for
+     now); unsupported browsers ignore the pair, so this is a pure
+     enhancement with today's layout as the fallback. */
+  .prose h1, .prose h2, .prose h3 { text-wrap: balance; text-box-trim: trim-both; text-box-edge: cap alphabetic; }
   .hero-action { margin-top: 2rem; }
 
   /* Landing hero: the home page presents Gelium UI above the fold with a
