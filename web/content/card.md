@@ -1,6 +1,6 @@
 # Card
 
-Card is a Material container that groups related content into one visual unit. The card itself stays a plain container: the semantic root is always a native element, chosen by what the card does.
+Card is a Material container that groups related content into one visual unit. Use a card when related information or actions belong together on a surface people scan — a preview, a profile, a summary — and the group should read as one unit. The card itself stays a plain container: the semantic root is always a native element, chosen by what the card does.
 
 ## Anatomy
 

@@ -4,13 +4,7 @@
 > with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
-A Material 3 navigation drawer with two variants: a **modal** drawer that opens
-over a scrim and a **standard** (permanent) drawer embedded in the layout.
-Gelium reimplements it over server-rendered HTML — the standard variant is a real
-`<nav>` in the layout, the modal variant is a native `<dialog>`, and every
-destination is a real `<a href>` whose active state is derived server-side from
-the current page (the roadmap's "navegación real con links"). No component
-JavaScript exists.
+Navigation drawer is a Material 3 navigation drawer with two variants: a **modal** drawer that opens over a scrim and a **standard** (permanent) drawer embedded in the layout. Use a drawer when an app has more destinations than fit in a bottom bar and the navigation must stay server-rendered and no-JS. Gelium reimplements it over server-rendered HTML — the standard variant is a real `<nav>` in the layout, the modal variant is a native `<dialog>`, and every destination is a real `<a href>` whose active state is derived server-side from the current page (the roadmap's "navegación real con links"). No component JavaScript exists.
 
 ## Anatomy
 
@@ -53,7 +47,8 @@ JavaScript exists.
 - **Modal** — the roadmap's "variante modal sobre `<dialog>`": a native
   `<dialog class="ui-navigation-drawer ui-navigation-drawer--modal">` with a
   scrim (its `::backdrop`), opened by a trigger button using the native invoker
-  command `command="show-modal"` + `commandfor`. Native dialog behavior gives
+  command `command="show-modal"` + `commandfor` (the Invoker Commands API —
+  declarative `command`/`commandfor` dialog control). Native dialog behavior gives
   the top layer, focus move into the drawer, and Escape-to-close for free.
   `closedby="any"` adds scrim (light) dismiss in supporting browsers only;
   the explicit Escape and focus behavior remain in compatible browsers.
@@ -85,13 +80,14 @@ order come for free and focus never changes geometry.
   destination becomes `HighlightText`, and the indicator pill is outlined with
   `Highlight` so selection survives without color.
 
-## No-JS behavior
+## How does the drawer open and close without JavaScript?
 
 Navigation is plain HTTP: each destination is a real `<a href>` and clicking it
 navigates normally with scripting disabled; the active state is fixed at render
 time by the server. The modal drawer opens through the native invoker command
 `command="show-modal"` (declarative, no component JavaScript) exactly like the
-shipped Dialog component; in browsers without the Invoker Commands API the
+shipped Dialog component; in browsers without the Invoker Commands API (the
+native `command`/`commandfor` mechanism for declarative dialog control) the
 trigger does nothing, so consumers supporting them need a server-rendered
 fallback or adapter — the same documented gap as Dialog.
 

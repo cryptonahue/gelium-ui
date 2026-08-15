@@ -1,6 +1,6 @@
 # Gelium UI
 
-Themeable, open-code UI components for server-rendered applications. Native HTML semantics, zero component JavaScript, and a Material 3 design system built with Tailwind CSS v4 and HTMX.
+Gelium UI is a themeable, open-code component library for server-rendered applications. Use it when you need native HTML semantics, zero component JavaScript, and a Material 3 design system — built with Tailwind CSS v4 and HTMX.
 
 ## The foundation
 

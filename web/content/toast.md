@@ -1,8 +1,8 @@
 # Toast
 
-Toast is a Gelium-only component for transient, server-driven feedback. An action completes server-side and announces the result without pushing users to another view.
+Toast is a Gelium-only component for transient, server-driven feedback. Use a toast when an action completes server-side and the result should be announced in place — a save confirmation, an error, a status change — without pushing users to another view.
 
-## Variants and semantics
+## What variants can a toast show and how is it dismissed?
 
 Four variants share one anatomy — an icon, a message, and an optional Dismiss action: `info`, `success`, `warning`, and `error`. The tone is conveyed by a decorative, aria-hidden icon and a semantic role that is never color alone: `error` uses `role="alert"` (assertive), while `info`, `success`, and `warning` use `role="status"` (polite). Messages are announced by the surrounding `aria-live="polite"` live region.
 

@@ -1,6 +1,6 @@
 # Icon
 
-Icon is the Gelium-only primitive for trusted inline SVG glyphs. All icons are resolved server-side as trusted `template.HTML` markup — icon markup must never be built from user input.
+Icon is the Gelium-only primitive for trusted inline SVG glyphs. Use icons when a control or a message needs a small, themeable graphic that ships with the server render. All icons are resolved server-side as trusted `template.HTML` markup — icon markup must never be built from user input.
 
 ## The `.ui-icon` utility
 
