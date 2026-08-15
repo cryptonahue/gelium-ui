@@ -807,8 +807,8 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 		}
 	}
 	// home + /docs + patterns + handbook pages + all components
-	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+9 {
-		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + patterns + handbook + all components)", got, len(componentRoutes())+9)
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+10 {
+		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + patterns + handbook + all components)", got, len(componentRoutes())+10)
 	}
 	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
 		if strings.Contains(body, excluded) {
