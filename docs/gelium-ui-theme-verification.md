@@ -94,6 +94,11 @@ editar tests:
    exactamente la familia o el color semántico faltante por componente y por ruta dark — es la checklist
    automatizada.
 
+**Evidencia de ejecución (Phase I close-out, 2026-08-14)**: la suite automatizable corre en cada `sdd-verify`
+(Phase C obs #1034, Phase H obs #1063) — `go test ./...` (733 runs), `go vet`, `npm run build`, smoke HTTP de
+las rutas con `?theme=basecoat`. **Pendiente explícito**: aceptación visual manual en browser (checklist §3,
+item 9) — no ejecutada en esta sesión; registrado aquí como evidencia honesta, no inventada.
+
 ## 5. Desincronizaciones conocidas y su guarda
 
 | Área | Guarda | Estado (Phase C) |

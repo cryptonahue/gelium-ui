@@ -43,9 +43,10 @@ Out of scope of the mapping (no Phase I consumer): `--popover-*` accents,
 ## 3. Light / dark
 
 Self-contained in `theme.css`: `.theme-basecoat` (light),
-`.theme-basecoat.theme-dark/.dark/[data-theme="dark"]` (explicit dark class) and
-`@media (prefers-color-scheme: dark)` (dark media) — a single routine per
-scheme, no duplication with drift. Dark colors are the Vega dark set (neutral
+`.theme-basecoat.theme-dark/.dark/[data-theme="dark"]` (explicit dark class) —
+a **single dark class route**, no `@media (prefers-color-scheme: dark)` block
+(Phase A unification; enforced by `TestBasecoatThemeCoversDarkInClassRoute`).
+Dark colors are the Vega dark set (neutral
 900 surfaces, light ink, white-10% borders).
 
 ## 4. Variants and states covered
