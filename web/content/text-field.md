@@ -2,6 +2,14 @@
 
 Text field is a single- or multi-line input built on native `<input>` and `<textarea>` elements. Use a text field when people must enter or edit free-form text — names, email addresses, search terms — and the value has to submit through a real `<form>`. Every visible label is explicitly associated through `for` and `id`, while helper and error messages use unique IDs referenced by `aria-describedby`.
 
+## Alternative names
+
+- Input, text input, form field, entry field
+
+## Agent prompt
+
+Use Text field when people must enter or edit free-form text — names, email addresses, search terms — and the value has to submit through a real `<form>`. It is built on native `<input>` and `<textarea>` elements; every visible label is associated through `for`/`id`, helper and error messages are referenced by `aria-describedby`, and server-side validation returns HTTP 422 with the submitted value preserved, `aria-invalid="true"` and the `X-Loom-Validation: true` header for the HTMX swap hook. Never build a custom text-entry widget: the native control is the contract, disabled keeps the native `disabled` attribute, and disabled takes precedence over error.
+
 ## Variants and states
 
 The dogfooded examples demonstrate outlined and filled variants, normal and helper text, a visibly labelled error that does not rely on color, disabled inputs (filled and outlined), a disabled textarea, and an editable textarea.

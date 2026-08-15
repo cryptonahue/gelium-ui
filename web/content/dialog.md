@@ -2,6 +2,14 @@
 
 Dialog is an open-code component for confirmations. Use a dialog when a decision needs explicit confirmation before an action completes — and the flow must work without JavaScript. Its base path is a **page variant**: the trigger is a real link to a server-rendered confirmation page, Confirm is a real form POST that redirects back, and Cancel is a link back. The flow works in every browser with **no component JavaScript** and no overlay markup.
 
+## Alternative names
+
+- Modal, modal dialog, confirmation dialog, alert dialog
+
+## Agent prompt
+
+Use Dialog for short, focused, reversible decisions that need explicit confirmation, and the flow must work without JavaScript. The base path is a page variant: the trigger is a real link to a server-rendered confirmation page, Confirm is a real form POST answered with a `303 See Other`, and Cancel is a link back; supporting browsers can opt into the native `<dialog>` modal through declarative invoker commands (`command`/`commandfor`). Never use a dialog for a long or deep flow — that belongs on a Page or in Steps — and never make the overlay the only path.
+
 ## Page variant (base)
 
 The trigger is an anchor styled as a button:
