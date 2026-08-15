@@ -82,24 +82,24 @@
       "page": "integer >= 1 (thread pagination, clamped)"
     },
     "mutation_contract": "POST_303",
-    "validation_contract": "422_X_LOOM_VALIDATION",
-    "transient_feedback": "LOOM_TOAST",
+    "validation_contract": "422_X_GELIUM_VALIDATION",
+    "transient_feedback": "GELIUM_TOAST",
     "post_only_paths": ["/inbox/{conversation_id}/refresh"],
     "fragment_swap": "#thread-panel",
     "notes": "GET /inbox/{conversation_id} renders the conversation page; POST /inbox/{conversation_id}/reply -> 303 with persistent banner success or 422 preserving the reply draft."
   },
   "no_js_flow": "Complete: the inbox list is reached by real GET links; reply is a native form POST + 303 with persistent success; 422 re-renders preserving the reply draft; refresh reloads with an inline toast; 404 renders error-state with retry.",
-  "htmx_enhancement": "hx-get swaps #thread-panel on refresh (fragment + HX-Trigger loom:toast). Reply remains POST + 303 (no hx-post).",
+  "htmx_enhancement": "hx-get swaps #thread-panel on refresh (fragment + HX-Trigger gelium:toast). Reply remains POST + 303 (no hx-post).",
   "responsive_behavior": "Single column, fluid max-width, no breakpoints; thread items full width; reply form wraps on narrow (flex-wrap); server-side pagination for long threads.",
   "theme_requirements": "Tokens --ui-* only; zero color literals; light/dark/forced-colors/reduced-motion by primitives.",
   "alternatives_rejected": [
     "Toast for validation: 422 contract, persistent never transient (R-FEEDBACK-02)",
     "Dialog for the full conversation: page = URL/back (R-OVERLAY-01)",
-    "WebSocket/live updates: no new contract; refresh is POST-only + loom:toast (P5)",
+    "WebSocket/live updates: no new contract; refresh is POST-only + gelium:toast (P5)",
     "Client-side optimistic UI: server-first, POST + 303 (R-NOJS-02)",
     "Board for triage: FIFO conversation flow, not multi-lane (R-DATA-03)"
   ],
-  "rationale": "Proves the Feed/thread composition (the existing WhatsApp chat pattern) under the protocol: reply as POST + 303, validation as 422, transient refresh via loom:toast, persistent success via banner. A new screen type that reuses only registry components.",
+  "rationale": "Proves the Feed/thread composition (the existing WhatsApp chat pattern) under the protocol: reply as POST + 303, validation as 422, transient refresh via gelium:toast, persistent success via banner. A new screen type that reuses only registry components.",
   "decision_rules": [
     "R-DATA-05", "R-OVERLAY-01", "R-FEEDBACK-01", "R-FEEDBACK-02", "R-FEEDBACK-03",
     "R-ACTION-01", "R-STATE-01", "R-STATE-02", "R-STATE-03", "R-STATE-04",

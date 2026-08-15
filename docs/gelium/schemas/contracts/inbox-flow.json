@@ -19,7 +19,7 @@
   "success_state": "The conversation re-rendered after a successful reply (POST + 303) with a persistent success banner.",
   "failure_recovery": "422 preserves the reply draft with inline alert + validation summary; unknown conversation renders error-state 404 with retry (R-ERROR-01/02).",
   "no_js_flow": "Complete: reply is a native POST form + 303; refresh reloads with an inline toast; the inbox list (planned screen) is reached by real links.",
-  "htmx_enhancement": "hx-get swaps #thread-panel on refresh (fragment + HX-Trigger loom:toast). Reply stays POST + 303 (no hx-post).",
+  "htmx_enhancement": "hx-get swaps #thread-panel on refresh (fragment + HX-Trigger gelium:toast). Reply stays POST + 303 (no hx-post).",
   "decision_rules": [
     "R-DATA-05", "R-FEEDBACK-01", "R-FEEDBACK-02", "R-FEEDBACK-03",
     "R-NOJS-01", "R-NOJS-02", "R-NOJS-03", "R-ERROR-01", "R-ERROR-02"

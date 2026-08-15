@@ -201,12 +201,12 @@
           "description": "Mutations are POST + 303 SeeOther (R-NOJS-02)."
         },
         "validation_contract": {
-          "enum": ["422_X_LOOM_VALIDATION"],
-          "description": "Validation is HTTP 422 + X-Loom-Validation: true (P5)."
+          "enum": ["422_X_GELIUM_VALIDATION"],
+          "description": "Validation is HTTP 422 + X-Gelium-Validation: true (P5)."
         },
         "transient_feedback": {
-          "enum": ["LOOM_TOAST"],
-          "description": "Transient feedback via HX-Trigger loom:toast only (R-FEEDBACK-03)."
+          "enum": ["GELIUM_TOAST"],
+          "description": "Transient feedback via HX-Trigger gelium:toast only (R-FEEDBACK-03)."
         },
         "post_only_paths": {
           "type": "array",
