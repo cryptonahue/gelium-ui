@@ -10,6 +10,30 @@ Because the tab is the same destination contract the delivered navigation bar
 uses, the demo composes the existing `.ui-nav-bar` for its in-bar variant and
 reuses the existing `.ui-badge` for badge destinations — nothing is reinvented.
 
+## Guidance
+
+### When to use
+
+Use a navigation tab when a bar or rail needs a single selectable destination whose active state is decided by the server.
+
+### When not to use
+
+Do not use navigation tabs for content switching inside one view — that is [Tabs](/components/tabs). A navigation tab is a destination, not a view mode; for a local mode toggle, use [Segmented buttons](/components/segmented-button).
+
+### Usability
+
+- The root is a real `<a href>` link — no `role="tab"`, no `role="tablist"`, no roving focus.
+- The active tab is derived server-side from the current page and marked with `aria-current="page"`.
+- The `ui-nav-tab--hide-inactive-label` modifier collapses inactive tabs to icon-only; badges reuse `.ui-badge`.
+
+### Accessibility
+
+- Each tab is a real anchor: the accessible name is the visible label and activation is native — no fake-tab ARIA.
+- The selected tab carries `aria-current="page"`; state is never communicated by color alone.
+- The icon slot is `aria-hidden`; the label text supplies the name. In icon-only mode the label stays in the DOM.
+- In forced-colors mode the active tab becomes `HighlightText` and the indicator pill is outlined with `Highlight`.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 ```html

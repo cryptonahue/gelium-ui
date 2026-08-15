@@ -2,12 +2,26 @@
 
 Select is a dropdown picker built on the native [`<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) element with Material 3 field styling — the browser element stays the focusable, operable control. Use a select when people must choose one option from a known list and the choice submits through a normal `<form>`; the native element keeps the no-JS flow and keyboard behavior for free. No component JavaScript is required.
 
-## Usage
+## Guidance
+
+### When to use
+
+Use a select when people must choose one option from a known list — six or more options, or options with long labels — and the choice submits through a normal `<form>`.
+
+### When not to use
+
+Do not use a select when the options should stay visible and comparable — five or fewer choices belong in a [Radio](/components/radio) group. For independent multi-select, use [Checkboxes](/components/checkbox). When choosing should immediately perform an action instead of submitting a value, a [Menu](/components/menu) is the command surface.
+
+### Usability
+
+- Wrap with `ui-select-filled` or `ui-select-outlined` to pick the variant.
+- The first `<option value="" selected disabled>` is a placeholder: it keeps visible picker text while the field paints it transparent until a real option is chosen.
+- The label doubles as the placeholder and floats once the field is focused or a real option is selected.
 
 ```html
 <div class="ui-select ui-select-filled">
   <select id="plan" name="plan">
-<option value="" selected disabled>Choose a plan</option>
+    <option value="" selected disabled>Choose a plan</option>
     <option value="standard">Standard</option>
     <option value="priority">Priority</option>
   </select>
@@ -20,8 +34,14 @@ Select is a dropdown picker built on the native [`<select>`](https://developer.m
 </div>
 ```
 
-Wrap with `ui-select-filled` or `ui-select-outlined` to pick the variant.
+### Accessibility
 
+- The visible `<label class="ui-select-label" for="...">` is a real label that focuses the select.
+- The native element carries name/value semantics for form submission and assistive technology.
+- Focus is announced with the shared `--ui-focus-thickness` outline; error state is announced via `aria-invalid` plus visible error text, never color alone.
+- A picker's placeholder option is `disabled` so assistive tech and users never confuse it with a real selection.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Variants
 
 - **Filled** (`ui-select-filled`) — surface-container-highest background, top-only 4px radius, and a bottom active indicator. Focus turns the indicator to the primary color.

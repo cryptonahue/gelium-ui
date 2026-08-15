@@ -2,6 +2,30 @@
 
 Data table is a server-rendered Material 3 table for displaying dense, sortable, filterable, paginated data. Gelium reimplements it over native HTML table semantics — a real `<table>` with `<thead>`, `<tbody>`, `<th scope="col">`, and `<caption>`. There is no component JavaScript: sort, filter and pagination are real GET requests answered by the server, and row selection uses native checkboxes in a real form. Use a data table when dense, columnar data benefits from server-side sort, filter and pagination.
 
+## Guidance
+
+### When to use
+
+Use a data table for dense, columnar data that benefits from server-side sort, filter and pagination — especially when the dataset lives remotely and no-JS behavior must stay first-class.
+
+### When not to use
+
+For simpler lists of items, prefer the [List](/components/list) component. If the data has no sorting, filtering or pagination needs, plain markup or a list reads better than a table surface.
+
+### Usability
+
+- Keep the native structure: a real `<table>` with `<thead>`, `<th scope="col">`, and a `<caption>` naming the slice.
+- Sort, filter and pagination are real GET requests, so the no-JS flow is a normal full-page reload.
+- Row selection uses native checkboxes in a real form; the header checkbox submits `selection=all`.
+
+### Accessibility
+
+- Keep the native elements: `<table>`, `<caption>`, `<th scope="col">`, native checkboxes.
+- Sort state is never communicated by arrow alone: the active header also exposes `aria-sort` on the `<th>`.
+- The caption gives the table an accessible name that also describes the current slice.
+- The state layer is decorative; row selection is always reflected in the native checkbox.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 The root `ui-data-table` container paints the surface with a `1px` outline and the container radius. Inside it the `table.ui-data-table-table` holds a `caption`, a `thead` of `th.ui-data-table-cell` headers, and a `tbody` of `tr.ui-data-table-row` rows. The pagination footer (`nav.ui-data-table-pagination`) sits under the table inside the same container.
@@ -80,10 +104,6 @@ The `--ui-data-table-*` tokens are declared scoped to the root so the primitive 
 | `--ui-data-table-hover-opacity` | Row hover state layer opacity |
 | `--ui-data-table-checkbox-size` | Row checkbox edge (`18px`) |
 | `--ui-data-table-sort-icon-size` | Header sort glyph edge (`18px`) |
-
-## When to use it
-
-Use a data table for dense, columnar data that benefits from server-side sort, filter and pagination — especially when the dataset lives remotely and no-JS behavior must stay first-class. For simpler lists of items, prefer the [List](/components/list) component.
 
 ## Keyboard
 

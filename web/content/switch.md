@@ -2,6 +2,30 @@
 
 Switch is a native `input[type="checkbox"]` styled as the Material `52x32` track, its outline, and the sliding handle from the `--ui-switch-*` tokens — the real control stays the focusable, operable element. Use a switch when a setting is either on or off and should read as an immediate toggle — enabling a feature, dark mode, notifications — with the state submitting through a real `<form>`. Form semantics and assisted input work unchanged.
 
+## Guidance
+
+### When to use
+
+Use a switch when a setting is either on or off and should read as an immediate toggle — enabling a feature, dark mode, notifications — with the state submitting through a real `<form>`.
+
+### When not to use
+
+Do not use a switch for a group of related options that submit together — [Checkboxes](/components/checkbox) are for multi-select. When the choice is one of several mutually exclusive modes, a [Radio](/components/radio) group reads better than a row of switches.
+
+### Usability
+
+- Keep the order `input`, `track`, `handle`, `label` exactly — the CSS uses both the adjacent and general sibling selectors to paint states.
+- A switch is for one independent setting that takes effect immediately; it is not a submit-required form control.
+- The track and handle spans are decorative and `aria-hidden`; put the accessible name in the label.
+
+### Accessibility
+
+- Keep the native element: the checkbox keeps its role, name, value, checked state, and keyboard behavior at no cost.
+- The input must be nested inside its `label` (or `id`-linked) so the accessible name always matches what is on screen.
+- Never rely on color alone: checked state carries the sliding handle, and disabled state is announced by the platform.
+- In forced-colors mode the checked track and handle repaint as `ButtonText` and the disabled track outline drops to `GrayText`.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 The label wraps the native checkbox plus two decorative overlay spans. Keep the order `input`, `track`, `handle`, `label` exactly — the CSS uses both the adjacent (`+`) and general (`~`) sibling selectors to paint states.
@@ -23,10 +47,6 @@ The label wraps the native checkbox plus two decorative overlay spans. Keep the 
 ## What states can a switch be in?
 
 The switch covers `checked`, `unchecked`, and `disabled` (both disabled states shown in the preview). Disabled follows the Material 3 split-opacity contract: the track drops to `--ui-switch-disabled-track-opacity` (`.12`) while the unchecked handle drops to `--ui-switch-disabled-handle-opacity` (`.38`); a disabled checked handle keeps full opacity and repaints through `--ui-switch-disabled-handle`.
-
-## When to use it
-
-Use a switch when an option toggles between two states — typically an instant setting such as enabling a feature or a mode. For a single independent toggle it overlaps with a checkbox; the switch is the Material 3 recommendation for a setting that reads as "on" or "off".
 
 ## Design Tokens
 

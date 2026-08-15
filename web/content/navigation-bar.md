@@ -6,6 +6,30 @@
 
 Navigation bar is a Material 3 bottom navigation bar: a fixed-height `80px` container that holds three to five equal destinations, one of which is the active page. Use a navigation bar when an app's primary destinations must stay one tap away at the bottom of a phone-sized viewport. Gelium reimplements it over server-rendered HTML — the root is a real `<nav>`, the destinations are real `<a href>` links (the roadmap's "navegación real con links"), and the active destination is derived server-side from the current page, never from JavaScript. No component JavaScript exists.
 
+## Guidance
+
+### When to use
+
+Use a navigation bar when an app's primary destinations must stay one tap away at the bottom of a phone-sized viewport — three to five equal destinations, one of which is the active page.
+
+### When not to use
+
+Do not use a navigation bar when more destinations exist than fit in a bottom bar — a [Navigation drawer](/components/navigation-drawer) scales better. On desktop-sized layouts, prefer a sidebar or top-level navigation instead of a bottom bar.
+
+### Usability
+
+- Keep the bar to three to five destinations; the active one is derived server-side from the current page.
+- The root is a real `<nav>` with real `<a href>` destinations; the active destination carries `aria-current="page"`.
+- The `ui-nav-bar--hide-inactive-labels` modifier collapses inactive destinations to icon-only.
+
+### Accessibility
+
+- Keep the native elements: `<nav>` carries the landmark, `<ul>`/`<li>` carry list semantics, and destinations are real anchors.
+- The selected destination carries `aria-current="page"`; state is never communicated by color alone.
+- The icon slot is `aria-hidden`; the label text supplies the name. In icon-only mode the label stays in the DOM.
+- In forced-colors mode the active destination becomes `HighlightText` and the indicator pill is outlined with `Highlight`.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 ```html

@@ -2,6 +2,30 @@
 
 Tabs organize groups of related content at the same level of hierarchy. Use tabs when a page holds several peer sections and people should switch between them — each tab is a real `<a href>` link to its own page or section, so deep-linking and no-JS navigation work for free. Gelium reimplements the Material 3 tab contract as server-rendered navigation links: there is no component JavaScript, no `role="tablist"` and no roving focus.
 
+## Guidance
+
+### When to use
+
+Use tabs when a page holds several peer sections and people should switch between them — each tab is a real `<a href>` link to its own page or section, so deep-linking and no-JS navigation work for free.
+
+### When not to use
+
+Do not use tabs for a local mode toggle inside a single view — [Segmented buttons](/components/segmented-button) fit that better. For hierarchical navigation between pages, use a [Navigation bar](/components/navigation-bar), a [Navigation drawer](/components/navigation-drawer), or plain links instead.
+
+### Usability
+
+- Use the same variant for every tab in a bar, and never mix primary and secondary tabs in one bar.
+- Primary tabs with both icon and label add `ui-tab-stacked` (the icon stacks above the label, 64 px); secondary tabs keep a 48 px row.
+- The selected tab is decided by the server; clicking a tab is a normal GET navigation that re-renders the page.
+
+### Accessibility
+
+- The bar is a `<nav aria-label>` with `<ul>`/`<li>`/`<a>`, and the selected tab uses `aria-current="page"`.
+- No `role="tablist"`: the full tablist keyboard contract cannot be satisfied without JavaScript, so Gelium does not claim it — native link keyboard behavior is complete.
+- Icon-only tabs must carry an `aria-label`; icon and indicator are decorative and `aria-hidden`.
+- In forced-colors mode the indicator repaints as `CanvasText`, selected text becomes `Highlight`, and the focus ring becomes `Highlight`.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 A tab bar is a `<nav>` wrapping a `<ul>` of `<li>` items, each containing an `<a class="ui-tab">`. The anchor carries the icon (optional), the label (optional), and the active indicator. Keep the order `icon`, `label`, `indicator` exactly.

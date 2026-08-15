@@ -2,6 +2,30 @@
 
 Chips are compact interactive elements that represent a choice, an attribute, or an action. Use chips when people enter information, make selections, filter content, or trigger actions in a tight space — each of the four upstream variants (assist, filter, input, and suggestion) keeps native server-rendered semantics with no component JavaScript, instead of one generic `div`.
 
+## Guidance
+
+### When to use
+
+Use chips when people enter information, make selections, filter content, or trigger actions in a tight space — each of the four variants keeps native server-rendered semantics with no component JavaScript.
+
+### When not to use
+
+Do not use chips for a long or formal list of options — a [Checkbox](/components/checkbox) group or a [Select](/components/select) scales better for data entry. For a single dominant action, prefer a [Button](/components/button); chips earn their place when space is tight and the action is lightweight.
+
+### Usability
+
+- Assist chips are real buttons/links for discrete actions; filter chips are native checkboxes; input chips carry a trailing remove action; suggestion chips present clickable suggestions.
+- Filter chips must work without JavaScript: the checkbox inside the `label` submits with the surrounding form.
+- Input-chip removal is a no-JS server round-trip (`POST`); the server re-renders with a `role="status"` notice.
+
+### Accessibility
+
+- Never use a plain `div` for an interactive chip — assist/suggestion are buttons or links, filter is a checkbox, input uses a button for removal.
+- Assist chips with only an icon carry their accessible name in `aria-label`; otherwise the visible label is the name.
+- The filter checkbox keeps its native name, checked state, and keyboard behavior; visual overlays are `aria-hidden`.
+- The remove button exposes its accessible name via `aria-label`; its icon is decorative and `aria-hidden`.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Types
 
 - **Assist** — a `<a href>` or `<button type="button">` that triggers a discrete action, such as adding an event to a calendar.

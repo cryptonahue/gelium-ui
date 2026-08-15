@@ -2,6 +2,30 @@
 
 Dialog is an open-code component for confirmations. Use a dialog when a decision needs explicit confirmation before an action completes — and the flow must work without JavaScript. Its base path is a **page variant**: the trigger is a real link to a server-rendered confirmation page, Confirm is a real form POST that redirects back, and Cancel is a link back. The flow works in every browser with **no component JavaScript** and no overlay markup.
 
+## Guidance
+
+### When to use
+
+Use a dialog when a decision needs explicit confirmation before an action completes — and the flow must work without JavaScript. The base path is a server-rendered page variant; supporting browsers can opt into the native `<dialog>` modal.
+
+### When not to use
+
+Do not use a dialog for a long or deep flow — that belongs on a page or in steps. Never make the overlay the only path: the no-JS page variant must always exist. For transient feedback after an action completes, use a [Toast](/components/toast); for persistent inline messages, use an inline alert or a [Card](/components/card).
+
+### Usability
+
+- The trigger is a real link styled as a button; Confirm is a real form POST answered with a `303 See Other`; Cancel is a link back.
+- The modal is an opt-in enhancement via native invoker commands (`command`/`commandfor`) for supporting browsers.
+- Keep the headline and description short — a dialog is for a decision, not a tutorial.
+
+### Accessibility
+
+- The page variant needs no focus trap, overlay or Escape contract — navigation and form submission are platform behavior.
+- The modal is a native `<dialog>`: the browser manages the top layer, focus, and Escape; wire `aria-labelledby` and `aria-describedby`.
+- Under `prefers-reduced-motion: reduce`, dialog, content, and backdrop transitions are disabled.
+- In forced colors, the dialog keeps a visible 2 px system-color boundary.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Alternative names
 
 - Modal, modal dialog, confirmation dialog, alert dialog

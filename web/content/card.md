@@ -2,6 +2,29 @@
 
 Card is a Material container that groups related content into one visual unit. Use a card when related information or actions belong together on a surface people scan — a preview, a profile, a summary — and the group should read as one unit. The card itself stays a plain container: the semantic root is always a native element, chosen by what the card does.
 
+## Guidance
+
+### When to use
+
+Use a card to group related content and actions into one visual unit people scan — a preview, a profile, a summary — when the group should read as one unit.
+
+### When not to use
+
+Do not use a card for a single static layout region — that is a Panel. Do not wrap a simple click-to-open list of items in cards: a [List](/components/list) of links or a [Data table](/components/data-table) scans better for repeated rows. When the whole card navigates or acts, keep a real `<a>` or `<button>` root.
+
+### Usability
+
+- Pick one variant class on the same element: elevated (floats), filled (high emphasis), or outlined (quietest grouping).
+- Choose the semantic root by what the card does: `<article>` for static content, `<a>` when it navigates, `<button>` when it performs an action.
+- Keep interactive cards on a real anchor or button so they stay focusable and operable without JavaScript.
+
+### Accessibility
+
+- A card is a grouping container, never the sole carrier of meaning.
+- Interactive cards must keep a real anchor or button root; their visible text provides the accessible name.
+- In forced-colors mode the card keeps a `CanvasText` boundary so the grouping survives when color is removed.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Alternative names
 
 - Tile, container, panel, media card, info card
