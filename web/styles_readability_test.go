@@ -179,3 +179,21 @@ func TestBreadcrumbClearsPageTitle(t *testing.T) {
 		t.Errorf("breadcrumb nav must have margin-bottom: 1rem, got rule: %s", rule)
 	}
 }
+
+// TestProseTablesRender is the GFM-tables contract: markdown tables in the
+// prose must be styled as real tables (borders, header emphasis, mobile
+// scroll) — they were previously unstyled after GFM was enabled.
+func TestProseTablesRender(t *testing.T) {
+	css := readSourceStyle(t, "base.css")
+	table := cssBlock(t, css, ".prose table")
+	if !strings.Contains(table, "border-collapse: collapse") {
+		t.Errorf(".prose table must collapse borders, got block: %s", table)
+	}
+	cells := cssBlock(t, css, ".prose th, .prose td")
+	if !strings.Contains(cells, "border-bottom: 1px solid var(--ui-color-border)") {
+		t.Errorf(".prose th/td must carry a token border, got block: %s", cells)
+	}
+	if !strings.Contains(cells, "padding: .5rem .75rem") {
+		t.Errorf(".prose th/td must pad cells, got block: %s", cells)
+	}
+}
