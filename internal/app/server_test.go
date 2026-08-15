@@ -1312,8 +1312,8 @@ func TestLayoutUsesHxBoostForInternalNavigation(t *testing.T) {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
 	}
 	body := res.Body.String()
-	if !strings.Contains(body, `<body hx-boost="true">`) {
-		t.Errorf("layout must boost the body for SPA-style navigation, got: %s", firstLineContaining(body, "<body"))
+	if !strings.Contains(body, `hx-boost:inherited="true"`) {
+		t.Errorf("layout must inherit boost for SPA-style navigation, got: %s", firstLineContaining(body, "<body"))
 	}
 }
 
