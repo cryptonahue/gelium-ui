@@ -1300,3 +1300,28 @@ func TestThemeQueryParamSelectsTheme(t *testing.T) {
 		})
 	}
 }
+
+// TestLayoutUsesHxBoostForInternalNavigation pins the SPA-style navigation
+// contract: the document body carries hx-boost so internal links navigate
+// via AJAX (htmx swaps the body, URL and title update via pushState), which
+// removes the full-page reload that made docs navigation feel rough.
+func TestLayoutUsesHxBoostForInternalNavigation(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/docs/tokens", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	if !strings.Contains(body, `<body hx-boost="true">`) {
+		t.Errorf("layout must boost the body for SPA-style navigation, got: %s", firstLineContaining(body, "<body"))
+	}
+}
+
+func firstLineContaining(haystack, needle string) string {
+	for _, line := range strings.Split(haystack, "\n") {
+		if strings.Contains(line, needle) {
+			return line
+		}
+	}
+	return ""
+}
