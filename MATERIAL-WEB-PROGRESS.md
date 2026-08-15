@@ -1,6 +1,6 @@
-# Auditoría Material Web → Loom UI
+# Auditoría Material Web → Gelium UI
 
-> Snapshot técnico y funcional para decidir qué convertir a Loom UI. Esta auditoría no implementa componentes.
+> Snapshot técnico y funcional para decidir qué convertir a Gelium UI. Esta auditoría no implementa componentes.
 
 ## 1. Snapshot de fuentes
 
@@ -28,10 +28,10 @@ No se contaron `.git`, `node_modules`, `dist` ni otros artefactos generados como
 
 ## 2. Inspiraciones y atribución
 
-- **Material Web** (`material-components/material-web`, Apache-2.0): fuente de inventario, tokens, variantes, comportamiento, accesibilidad, demos y tests. Loom reescribirá la implementación para HTML semántico, Tailwind y HTMX.
-- **Basecoat UI**: referencia de componentes open-code, Tailwind, JavaScript mínimo y portabilidad entre backends. Loom no es un fork oficial.
+- **Material Web** (`material-components/material-web`, Apache-2.0): fuente de inventario, tokens, variantes, comportamiento, accesibilidad, demos y tests. Gelium reescribirá la implementación para HTML semántico, Tailwind y HTMX.
+- **Basecoat UI**: referencia de componentes open-code, Tailwind, JavaScript mínimo y portabilidad entre backends. Gelium no es un fork oficial.
 - **shadcn/ui**: referencia para registry, componentes copiables y ownership del código por el proyecto consumidor.
-- **shadcn-templ**: referencia para distribución/presets, sin atar Loom a Go ni a `templ`.
+- **shadcn-templ**: referencia para distribución/presets, sin atar Gelium a Go ni a `templ`.
 - **HTMX**: referencia para interacción server-driven, history, validación, fragmentos, `HX-Trigger`, SSE y WebSockets.
 
 Antes de copiar texto, CSS o valores del port local debe resolverse procedencia/licencia: upstream declara Apache-2.0, mientras el árbol sin historial `material-tailwind/package.json` declara MIT.
@@ -49,11 +49,11 @@ Antes de copiar texto, CSS o valores del port local debe resolverse procedencia/
 | Fork `tokens/` | 60 | 49 | 2 | 6 | API estable antigua | `material-web-tailwind/tokens/_index.scss` |
 | Fork `tokens/v0_192/` | 95 | 84 | 2 | 6 | Contenido igual a upstream `versions/v0_192` | `material-web-tailwind/tokens/v0_192/_index.scss` |
 
-`tokens/versions/README.md` advierte explícitamente que todo el árbol versionado puede introducir breaking changes en releases minor/patch y recomienda consumir `@material/web/tokens`. Loom usará la API pública root de este commit como fuente; `versions/v0_192` queda sólo como snapshot fijado por Loom para trazabilidad y `latest` no se seguirá automáticamente.
+`tokens/versions/README.md` advierte explícitamente que todo el árbol versionado puede introducir breaking changes en releases minor/patch y recomienda consumir `@material/web/tokens`. Gelium usará la API pública root de este commit como fuente; `versions/v0_192` queda sólo como snapshot fijado por Gelium para trazabilidad y `latest` no se seguirá automáticamente.
 
 ### Familias foundation
 
-| Familia | Qué existe | Decisión Loom | Evidencia |
+| Familia | Qué existe | Decisión Gelium | Evidencia |
 |---|---|---|---|
 | Color | Palette/reference, roles system, light/dark, surfaces y contraste; `latest` agrega fixed roles y medium/high contrast | Exponer contrato semántico `--ui-color-*`; el theme Material mapea roles Material; mantener pares `on-*` atómicos | `material-web-upstream/tokens/_md-ref-palette.scss`; `tokens/_md-sys-color.scss`; `tokens/versions/latest/sass/_md-sys-color*.scss`; `docs/theming/color.md` |
 | Typography | Typeface brand/plain y 15 roles: display/headline/title/body/label × small/medium/large | Mapear family, size, line-height, weight y tracking; diferir ejes de variable fonts | `tokens/_md-ref-typeface.scss`; `tokens/_md-sys-typescale.scss`; `typography/_typescale.scss`; `docs/theming/typography.md` |
@@ -115,9 +115,9 @@ Leyenda de fuentes:
 - `CSS`: CSS local observado, sin prueba reproducible de build ni equivalencia funcional.
 - `Parcial`: material relacionado, pero no componente equivalente completo.
 - `No`: no se encontró implementación correspondiente.
-- Todos comienzan en `NOT_STARTED` para Loom.
+- Todos comienzan en `NOT_STARTED` para Gelium.
 
-| Componente | Categoría | Upstream | Fork | Material Tailwind | Variantes | Estados / accesibilidad | JS local / HTMX pattern | Prioridad | Loom status | Evidencia |
+| Componente | Categoría | Upstream | Fork | Material Tailwind | Variantes | Estados / accesibilidad | JS local / HTMX pattern | Prioridad | Gelium status | Evidencia |
 |---|---|---|---|---|---|---|---|---|---|---|
 | Button | Core | Sí | Sí | CSS | elevated, filled, tonal, outlined, text; icon | disabled, focus-visible, loading a definir; button/link semantics | Sin JS para visual; submit/action HTMX | P0 | NOT_STARTED | `material-web-upstream/button/{elevated,filled,filled-tonal,outlined,text}-button.ts`; `button/*_test.ts`; `docs/components/button.md`; `material-tailwind/src/components/button/button.css` |
 | Checkbox | Core | Sí | Sí | CSS | checked, unchecked, indeterminate | disabled, focus, form association, label y mixed state | HTML nativo; validación/submit HTMX | P1 | NOT_STARTED | `material-web-upstream/checkbox/checkbox.ts`; `checkbox/checkbox_test.ts`; `docs/components/checkbox.md`; `material-tailwind/src/components/input/checkbox/checkbox.css` |
@@ -156,7 +156,7 @@ Notas:
 
 - La documentación estable vive en `material-web-upstream/docs/components/`; labs tiene cobertura desigual.
 - `field` es una primitive interna de text field/select, no un control de formulario completo por sí solo.
-- El toast del vertical slice no tiene componente core equivalente: usar snackbar como referencia de tokens/feedback y `material-tailwind/src/components/feedback/snackbar/snackbar.css`, pero diseñar contrato Loom propio con `HX-Trigger`.
+- El toast del vertical slice no tiene componente core equivalente: usar snackbar como referencia de tokens/feedback y `material-tailwind/src/components/feedback/snackbar/snackbar.css`, pero diseñar contrato Gelium propio con `HX-Trigger`.
 
 ### Campos obligatorios complementarios y evidencia literal
 
@@ -171,7 +171,7 @@ Esta tabla completa explícitamente tokens, complejidad, documentación/tests y 
 | Divider | divider color/thickness | Baja | `material-web-upstream/docs/components/divider.md`; `material-web-upstream/divider/divider_test.ts` | `material-web-upstream/divider/divider.ts`; `material-web-tailwind/divider/divider.ts`; `material-web-tailwind/material-tailwind/src/components/layout/divider/divider.css`; `material-web-upstream/tokens/_md-comp-divider.scss` |
 | Elevation | system/component elevation | Baja | `material-web-upstream/docs/components/elevation.md`; `material-web-upstream/elevation/elevation_test.ts` | `material-web-upstream/elevation/elevation.ts`; `material-web-tailwind/elevation/elevation.ts`; `material-web-tailwind/material-tailwind/src/utilities/elevation.css`; `material-web-upstream/tokens/_md-sys-elevation.scss` |
 | FAB | standard/branded FAB | Baja | `material-web-upstream/docs/components/fab.md`; `material-web-upstream/fab/fab_test.ts` | `material-web-upstream/fab/fab.ts`; `material-web-tailwind/fab/fab.ts`; `material-web-tailwind/material-tailwind/src/components/layout/fab/fab.css`; `material-web-upstream/tokens/_md-comp-fab.scss` |
-| Field | filled/outlined field | Media; sólo referencia, no componente Loom independiente | `material-web-upstream/docs/components/text-field.md`; `material-web-upstream/field/filled-field_test.ts` | `material-web-upstream/field/filled-field.ts`; `material-web-tailwind/field/filled-field.ts`; `material-web-tailwind/material-tailwind/src/components/input/textfield/textfield.css`; `material-web-upstream/tokens/_md-comp-filled-field.scss` |
+| Field | filled/outlined field | Media; sólo referencia, no componente Gelium independiente | `material-web-upstream/docs/components/text-field.md`; `material-web-upstream/field/filled-field_test.ts` | `material-web-upstream/field/filled-field.ts`; `material-web-tailwind/field/filled-field.ts`; `material-web-tailwind/material-tailwind/src/components/input/textfield/textfield.css`; `material-web-upstream/tokens/_md-comp-filled-field.scss` |
 | Focus ring | focus ring + focus indicator | Media | `material-web-upstream/docs/components/focus-ring.md`; `material-web-upstream/focus/internal/focus-ring_test.ts` | `material-web-upstream/focus/internal/focus-ring.ts`; `material-web-tailwind/focus/internal/focus-ring.ts`; `material-web-tailwind/material-tailwind/src/utilities/focus-ring.css`; `material-web-upstream/tokens/_md-comp-focus-ring.scss` |
 | Icon | icon size/color | Baja | `material-web-upstream/docs/components/icon.md`; `material-web-upstream/icon/icon_test.ts` | `material-web-upstream/icon/icon.ts`; `material-web-tailwind/icon/icon.ts`; port CSS exacto: `UNKNOWN`; `material-web-upstream/tokens/_md-comp-icon.scss` |
 | Icon button | standard/filled/tonal/outlined | Media | `material-web-upstream/docs/components/icon-button.md`; `material-web-upstream/iconbutton/icon-button_test.ts` | `material-web-upstream/iconbutton/icon-button.ts`; `material-web-tailwind/iconbutton/icon-button.ts`; port CSS exacto: `UNKNOWN`; `material-web-upstream/tokens/_md-comp-icon-button.scss` |
@@ -203,7 +203,7 @@ Esta tabla completa explícitamente tokens, complejidad, documentación/tests y 
 2. Upstream reorganiza v0.192 bajo `tokens/versions/v0_192` y agrega `tokens/versions/latest`; el fork conserva `tokens/v0_192`.
 3. Upstream agrega `labs/aria` y `labs/gb`; el fork carece de ambos.
 4. `form-submitter` pasa de `internal/controller/` en el fork a `labs/behaviors/` upstream.
-5. Upstream reescribe `internal/events/dispatch-hooks.ts` y amplía sus tests; es lógica de Custom Elements, no core Loom.
+5. Upstream reescribe `internal/events/dispatch-hooks.ts` y amplía sus tests; es lógica de Custom Elements, no core Gelium.
 6. Upstream 2.5.0 agrega pipeline separado para `labs/gb`, metadatos Sass y `custom-elements.json`; fork 2.3.0 no tiene `build:manifest` ni el campo `customElements`.
 7. El fork tracked no contiene Tailwind. El port CSS es un árbol aparte, untracked y sin procedencia Git verificable.
 
@@ -236,13 +236,13 @@ Evidencia: `material-tailwind/package.json`, `src/**`, `docs/**`, `PROJECT-STATU
 - `AttachableController`, ElementInternals polyfills y controllers ligados al lifecycle de Web Components.
 - Event dispatch hooks internos.
 - La state machine completa de ripple dentro del core.
-- Sass generators/validators como pipeline principal de Loom.
+- Sass generators/validators como pipeline principal de Gelium.
 - Los 177 component tokens de `latest` dentro de `@theme`.
 - Claims de compatibilidad, WCAG o completitud sin tests.
 
-## 8. Traducción conceptual a Loom
+## 8. Traducción conceptual a Gelium
 
-| Material Web | Loom UI |
+| Material Web | Gelium UI |
 |---|---|
 | Custom Element | HTML semántico + clases/atributos |
 | Lit property | atributo HTML, input nativo o estado server-side |
@@ -255,7 +255,7 @@ Evidencia: `material-tailwind/package.json`, `src/**`, `docs/**`, `PROJECT-STATU
 
 HTMX no sustituye comportamiento estrictamente local como focus trap, medición/posicionamiento de popup, Escape o pointer-origin ripple. Ese comportamiento debe usar primitivas nativas o módulos JS pequeños y explícitos.
 
-## 9. Matriz de progreso Loom
+## 9. Matriz de progreso Gelium
 
 Estados permitidos:
 
@@ -276,7 +276,7 @@ Estado actual:
 | Button | NOT_STARTED | Contrato P0; icon slot con SVG inline, sin depender del sistema Icon P2 |
 | Form/Input | NOT_STARTED | Text field nativo P0 + HTTP 422; `field/` queda sólo como referencia |
 | Dialog | NOT_STARTED | `<dialog>` nativo + contrato P0 de focus/lifecycle definido abajo |
-| Toast | NOT_STARTED | Componente Loom-only P0 + `HX-Trigger`; snackbar sólo referencia visual |
+| Toast | NOT_STARTED | Componente Gelium-only P0 + `HX-Trigger`; snackbar sólo referencia visual |
 | Go/docs app | NOT_STARTED | Estructura y build reproducible |
 | SQLite/SSE demo | NOT_STARTED | MVP visual/HTMX validado |
 | Registry/CLI/themes extra | NOT_STARTED | Vertical slice y realtime validados |
@@ -292,9 +292,9 @@ Este slice valida tokens, variantes, estados, labels/errors, requests HTMX, HTTP
 ### Contrato mínimo
 
 - **Button:** primary, secondary, outline, disabled, loading, focus e icon slot. El icono P0 será SVG inline aportado por el consumidor, con `aria-hidden` cuando sea decorativo; el catálogo/sistema Icon sigue P2.
-- **Form/Input:** un único componente Loom `Text field` sobre `<input>`/`<textarea>` nativos, con label, helper, error, disabled, validación server-side y respuesta 422. `field/` se usa como referencia Material, no como paquete independiente. Loom instalará un listener global `htmx:beforeSwap`: cuando `event.detail.xhr.status === 422`, asignará `event.detail.shouldSwap = true` y `event.detail.isError = false`; así el fragmento de error se intercambia en el target normal sin convertir 422 en un falso éxito HTTP.
+- **Form/Input:** un único componente Gelium `Text field` sobre `<input>`/`<textarea>` nativos, con label, helper, error, disabled, validación server-side y respuesta 422. `field/` se usa como referencia Material, no como paquete independiente. Gelium instalará un listener global `htmx:beforeSwap`: cuando `event.detail.xhr.status === 422`, asignará `event.detail.shouldSwap = true` y `event.detail.isError = false`; así el fragmento de error se intercambia en el target normal sin convertir 422 en un falso éxito HTTP.
 - **Dialog:** `<dialog>` nativo, apertura con `hx-get`, fragmento Go, `showModal()`, Escape/cierre, foco inicial, restore al trigger, responsive y nombre/descripción ARIA. El comportamiento local forma parte del componente Dialog P0; Focus ring P1 no es una dependencia.
-- **Toast:** componente propio de Loom; nombre de evento exacto `loom:toast`. El servidor responderá, por ejemplo, `HX-Trigger: {"loom:toast":{"type":"success","message":"Guardado"}}`; un listener global `document.body.addEventListener('loom:toast', handler)` leerá `event.detail.type/message` y renderizará la región `aria-live`. Incluye success/error/warning y auto-dismiss pausable. Snackbar Material sólo inspira tokens/visual.
+- **Toast:** componente propio de Gelium; nombre de evento exacto `loom:toast`. El servidor responderá, por ejemplo, `HX-Trigger: {"loom:toast":{"type":"success","message":"Guardado"}}`; un listener global `document.body.addEventListener('loom:toast', handler)` leerá `event.detail.type/message` y renderizará la región `aria-live`. Incluye success/error/warning y auto-dismiss pausable. Snackbar Material sólo inspira tokens/visual.
 
 ### Tokens fijados para este slice
 
@@ -302,8 +302,8 @@ Fuente: API pública root `material-web-upstream/tokens/` del commit `23b638c1d2
 
 - system: color, typescale, shape, elevation y state;
 - component: text/filled/outlined button, filled/outlined text field y dialog;
-- Loom-only: focus ring semántico y toast (`--ui-toast-*`), sin copiar un componente inexistente;
-- adopción selectiva de 34.0.21 para V1: únicamente `thickness: 3px` y `outer-offset: 2px` para un outline exterior nativo; se omite `inner-offset: -3px` porque Loom no dibujará el focus ring inward;
+- Gelium-only: focus ring semántico y toast (`--ui-toast-*`), sin copiar un componente inexistente;
+- adopción selectiva de 34.0.21 para V1: únicamente `thickness: 3px` y `outer-offset: 2px` para un outline exterior nativo; se omite `inner-offset: -3px` porque Gelium no dibujará el focus ring inward;
 - diferidos: fixed roles, contrast schemes, emphasized type, variable-font axes, radii increased, springs y familias expresivas por tamaño.
 
 Evidencia literal: `material-web-upstream/tokens/_md-sys-color.scss`, `_md-sys-typescale.scss`, `_md-sys-shape.scss`, `_md-sys-elevation.scss`, `_md-sys-state.scss`, `_md-comp-text-button.scss`, `_md-comp-filled-button.scss`, `_md-comp-outlined-button.scss`, `_md-comp-filled-text-field.scss`, `_md-comp-outlined-text-field.scss`, `_md-comp-dialog.scss` y `material-web-upstream/tokens/versions/latest/sass/_md-sys-state-focus-indicator.scss`.
@@ -325,7 +325,7 @@ Evidencia literal: `material-web-upstream/tokens/_md-sys-color.scss`, `_md-sys-t
 Estructura objetivo posterior a la aprobación de la auditoría:
 
 ```text
-cmd/loom/
+cmd/gelium/
 internal/
 web/
 ├── templates/
@@ -355,7 +355,7 @@ Después del vertical slice:
 
 ## 13. Próximos pasos priorizados
 
-1. Revisar este informe; la verificación automática ya confirmó que sólo cambió este archivo dentro de Loom UI.
+1. Revisar este informe; la verificación automática ya confirmó que sólo cambió este archivo dentro de Gelium UI.
 2. Aprobar las decisiones ya explicitadas para icon slot, Text field, dialog/focus, toast y source de tokens. La procedencia del port CSS no bloquea: V1 se reimplementa desde evidencia upstream y no copia ese CSS.
 3. Fijar la API pública `tokens/` del commit auditado; usar `versions/v0_192` sólo para trazabilidad y adoptar de 34.0.21 únicamente focus 3px/2px en V1.
 4. Definir tokens semánticos y `theme-material`.
@@ -396,7 +396,7 @@ Después del vertical slice:
 - Un subagente de componentes encontró un bloqueo de acceso read-only al port local; el agente principal completó y contrastó la matriz mediante inventarios locales read-only y rutas verificadas.
 - No se emitieron operaciones de escritura sobre código tracked de `material-web-upstream` o `material-web-tailwind`; ambos estados tracked quedaron sin cambios.
 - `material-tailwind/` es un árbol untracked y no se capturó un manifiesto interno pre-run: Git sólo prueba que siguió apareciendo como una entrada untracked, no que cada byte interno permaneciera idéntico. Los tres scripts Node auditados fueron ejecutados como checks, pero esta auditoría no afirma un hash pre/post del árbol interno.
-- Documento actualizado: `D:\repos\loom-ui\MATERIAL-WEB-PROGRESS.md`.
+- Documento actualizado: `D:\repos\gelium-ui\MATERIAL-WEB-PROGRESS.md`.
 
 ### Comandos y comprobaciones realmente ejecutados
 
@@ -427,7 +427,7 @@ git branch --show-current
 git log -1 --format=%H%n%cI%n%s
 git ls-files | wc -l
 
-# cwd: D:\repos\loom-ui
+# cwd: D:\repos\gelium-ui
 date --iso-8601=seconds
 
 # cwd: D:\repos\material-web-tailwind\material-tailwind
@@ -560,7 +560,7 @@ Las lecturas de archivos, búsquedas y patches se hicieron mediante herramientas
 
 ### Prueba de aislamiento
 
-`D:\repos\loom-ui` no es un repositorio Git, por lo que se capturó un manifiesto SHA-256 antes de escribir:
+`D:\repos\gelium-ui` no es un repositorio Git, por lo que se capturó un manifiesto SHA-256 antes de escribir:
 
 | Archivo | SHA-256 inicial | Resultado final |
 |---|---|---|

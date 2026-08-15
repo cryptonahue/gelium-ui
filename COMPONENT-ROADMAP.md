@@ -287,7 +287,7 @@ Theme/foundations
 - archivos nuevos exclusivos del componente;
 - reviews read-only.
 
-### No seguro hoy sobre `D:\repos\loom-ui`
+### No seguro hoy sobre `D:\repos\gelium-ui`
 
 - dos agentes editando `server.go`, `server_test.go` o `styles_contract_test.go`;
 - dos agentes editando `web/styles/app.css` o el theme;
@@ -350,5 +350,5 @@ Estos elementos son infraestructura; no deben contarse como componentes terminad
 - Prompt de auditoría: `PROMPT-MATERIAL-WEB-INVENTORY.md` — read-only.
 - Upstream: `D:\repos\material-web-upstream` — read-only.
 - Fork de referencia: `D:\repos\material-web-tailwind` — read-only.
-- Estado real actual: código, tests y docs en `D:\repos\loom-ui`.
+- Estado real actual: código, tests y docs en `D:\repos\gelium-ui`.
 - Prompt operativo de workers: `AI-COMPONENT-IMPLEMENTER-PROMPT.md`.
