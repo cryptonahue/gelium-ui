@@ -1,10 +1,13 @@
-document.addEventListener("htmx:beforeSwap", function (event) {
+document.addEventListener("htmx:before:swap", function (event) {
+  var detail = event.detail || {};
+  var response = detail.ctx && detail.ctx.response;
   if (
-    event.detail.xhr.status === 422 &&
-    event.detail.xhr.getResponseHeader("X-Gelium-Validation") === "true"
+    response &&
+    response.status === 422 &&
+    response.headers.get("X-Gelium-Validation") === "true"
   ) {
-    event.detail.shouldSwap = true;
-    event.detail.isError = false;
+    detail.shouldSwap = true;
+    detail.isError = false;
   }
 });
 
@@ -78,9 +81,9 @@ document.addEventListener("htmx:beforeSwap", function (event) {
       form.addEventListener("change", function () { this.submit(); });
     }
   }
-  function syncDocument(responseText) {
-    if (!responseText) return;
-    var parsed = new DOMParser().parseFromString(responseText, "text/html");
+  function syncDocument(responseBody) {
+    if (!responseBody) return;
+    var parsed = new DOMParser().parseFromString(responseBody, "text/html");
     var source = parsed.documentElement, target = document.documentElement;
     if (!source) return;
     target.className = source.className;
@@ -93,15 +96,10 @@ document.addEventListener("htmx:beforeSwap", function (event) {
     if (source && source.closest && source.closest("a[href^='#']")) return;
     lastScrollY = window.scrollY || document.documentElement.scrollTop || 0;
   });
-  document.addEventListener("htmx:beforeSwap", function (event) {
-    if (event.detail && event.detail.xhr && event.detail.ctx && event.detail.ctx.target === document.body) {
-      event.detail._geliumHtml = event.detail.xhr.responseText || "";
-    }
-  });
   function afterSwap(event) {
     var detail = event.detail || {};
     if (detail.ctx && detail.ctx.target === document.body) {
-      syncDocument(detail._geliumHtml || (detail.xhr && detail.xhr.responseText));
+      syncDocument(detail.ctx.text);
       var main = document.getElementById("main-content");
       if (main) { main.setAttribute("tabindex", "-1"); main.focus({ preventScroll: true }); }
       if (lastScrollY > 0) window.scrollTo(0, lastScrollY);

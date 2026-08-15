@@ -143,7 +143,7 @@ func TestTextFieldDocsExplainHTTP422AndHTMXSwapContract(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/text-field", nil))
 	body := res.Body.String()
-	for _, contract := range []string{"HTTP 422", "X-Gelium-Validation", "htmx:beforeSwap", "shouldSwap", "isError", "outerHTML", "without JavaScript", "complete documentation page"} {
+	for _, contract := range []string{"HTTP 422", "X-Gelium-Validation", "htmx:before:swap", "shouldSwap", "isError", "outerHTML", "without JavaScript", "complete documentation page"} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("text field docs are missing 422/HTMX explanation %q", contract)
 		}
@@ -378,7 +378,8 @@ func TestTextFieldFormAndLocalScriptImplementHTMX422SwapContract(t *testing.T) {
 	}
 	js := asset.Body.String()
 	for _, contract := range []string{
-		`htmx:beforeSwap`,
+		`htmx:before:swap`,
+		`ctx.response`,
 		`shouldSwap = true`,
 		`isError = false`,
 	} {
@@ -386,7 +387,7 @@ func TestTextFieldFormAndLocalScriptImplementHTMX422SwapContract(t *testing.T) {
 			t.Errorf("app.js is missing 422 hook contract %q", contract)
 		}
 	}
-	validation422 := regexp.MustCompile(`status\s*===\s*422\s*&&\s*event\.detail\.xhr\.getResponseHeader\("X-Gelium-Validation"\)\s*===\s*"true"`)
+	validation422 := regexp.MustCompile(`response\.status\s*===\s*422\s*&&\s*response\.headers\.get\("X-Gelium-Validation"\)\s*===\s*"true"`)
 	if !validation422.MatchString(js) {
 		t.Error("app.js must only swap a 422 when X-Gelium-Validation is true")
 	}

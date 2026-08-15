@@ -12,7 +12,7 @@ Mutations move state with a plain form POST and a `303 See Other` redirect — n
 
 ## 422 validation
 
-Server-side field validation answers `422` with `X-Gelium-Validation: true`. The response re-renders the form preserving the submitted value, marking each field `aria-invalid` and associating the message via `aria-describedby`. Without JavaScript the full page re-renders; with HTMX the local `app.js` hook swaps only the 422 fragment (`htmx:beforeSwap`). Validation never fires a toast — errors stay tied to their context. [Text field](/components/text-field) and [Select](/components/select) demonstrate the contract, and the [Dialog](/components/dialog) form flows use it too.
+Server-side field validation answers `422` with `X-Gelium-Validation: true`. The response re-renders the form preserving the submitted value, marking each field `aria-invalid` and associating the message via `aria-describedby`. Without JavaScript the full page re-renders; with HTMX the local `app.js` hook swaps only the 422 fragment (`htmx:before:swap`, using `event.detail.ctx.response`). Validation never fires a toast — errors stay tied to their context. [Text field](/components/text-field) and [Select](/components/select) demonstrate the contract, and the [Dialog](/components/dialog) form flows use it too.
 
 ## HX-Trigger toast feedback
 
