@@ -156,6 +156,7 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
 	{Path: "/docs/accessibility", Label: "Accessibility"},
 	{Path: "/docs/principles", Label: "Design principles"},
+	{Path: "/docs/acknowledgments", Label: "Acknowledgments"},
 }
 
 // docsSections groups the component library into logical categories for the
@@ -357,4 +358,12 @@ func (s *server) docsAccessibility(w http.ResponseWriter, r *http.Request) {
 // enforce them.
 func (s *server) docsPrinciples(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPage(w, r, pageView{Title: "Design principles"}, "content/principles.md")
+}
+
+// docsAcknowledgments is GET /docs/acknowledgments — the Acknowledgments page:
+// an honest record of the design systems and component libraries that
+// inspired Gelium UI, what was taken from each, and how it was adapted to the
+// Gelium model (server-rendered, 0-JS, token-driven).
+func (s *server) docsAcknowledgments(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Acknowledgments"}, "content/handbook-acknowledgments.md")
 }
