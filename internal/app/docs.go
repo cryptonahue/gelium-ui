@@ -69,21 +69,25 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 		}
 	}
 
-	groups := make([]docsNavGroup, 0, 4+len(docsSections))
+	groups := make([]docsNavGroup, 0, 5+len(docsSections))
 	groups = append(groups, docsNavGroup{
 		Title: "Getting started",
 		Links: []docsNavLink{link("/docs", "Documentation")},
 	})
+	// Handbook is the concept layer: it sits at position 2, right after
+	// Getting started and BEFORE the component reference sections, so
+	// onboarding precedes lookup (Information architecture handbook page).
+	handbook := make([]docsNavLink, 0, len(handbookNavLinks))
+	for _, l := range handbookNavLinks {
+		handbook = append(handbook, link(l.Path, l.Label))
+	}
+	groups = append(groups, docsNavGroup{Title: "Handbook", Links: handbook})
 	for _, section := range docsSections {
 		links := make([]docsNavLink, 0, len(section.Links))
 		for _, l := range section.Links {
 			links = append(links, link(l.Path, l.Label))
 		}
 		groups = append(groups, docsNavGroup{Title: section.Title, Links: links})
-	}
-	handbook := make([]docsNavLink, 0, len(handbookNavLinks))
-	for _, l := range handbookNavLinks {
-		handbook = append(handbook, link(l.Path, l.Label))
 	}
 	groups = append(groups,
 		docsNavGroup{
@@ -98,7 +102,6 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 				link("/recipes/public-feed", "Public Feed"),
 			},
 		},
-		docsNavGroup{Title: "Handbook", Links: handbook},
 	)
 
 	return docsNavView{
@@ -108,10 +111,12 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 	}
 }
 
-// handbookNavLinks is the Gelium Handbook IA: the four handbook sections plus
-// the Design Principles page. It drives the sidebar group, the /docs hub
-// section, and the sitemap so the destinations can never drift.
+// handbookNavLinks is the Gelium Handbook IA: the concept pages that explain
+// how the library works, ordered first-to-read first. It drives the sidebar
+// group (position 2, before the component reference), the /docs hub section,
+// and the sitemap so the destinations can never drift.
 var handbookNavLinks = []navLink{
+	{Path: "/docs/information-architecture", Label: "Information architecture"},
 	{Path: "/docs/themes", Label: "Themes"},
 	{Path: "/docs/tokens", Label: "Tokens"},
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
@@ -224,7 +229,13 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	md += "# Documentation\n\n"
-	md += "The Gelium UI component library, organized by category. Every page is dogfooded: it renders the real component it documents.\n\n"
+	md += "The Gelium UI documentation, ordered concept before reference: the Handbook explains how the library works, then the component reference is organized by category. Every page is dogfooded: it renders the real component it documents.\n\n"
+	md += "## Handbook\n\n"
+	md += "How Gelium UI works: information architecture, themes, tokens, server contracts, accessibility, and the principles behind the library.\n\n"
+	for _, link := range handbookNavLinks {
+		md += "- [" + link.Label + "](" + link.Path + ")\n"
+	}
+	md += "\n"
 	for _, section := range docsSections {
 		md += "## " + section.Title + "\n\n"
 		md += section.Intro + "\n\n"
@@ -232,11 +243,6 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 			md += "- [" + link.Label + "](" + link.Path + ")\n"
 		}
 		md += "\n"
-	}
-	md += "## Handbook\n\n"
-	md += "How Gelium UI works: themes, tokens, server contracts, accessibility, and the principles behind the library.\n\n"
-	for _, link := range handbookNavLinks {
-		md += "- [" + link.Label + "](" + link.Path + ")\n"
 	}
 	md += "\n## Demos\n\n"
 	md += "- [WhatsApp manager](/demo/whatsapp) — a complete chat application built with the library.\n"
@@ -268,6 +274,14 @@ Full screens composed from library primitives live under Recipes:
 See the [Documentation](/docs) index for foundation, actions, input, feedback, navigation, and data primitives.
 `
 	s.renderMarkdown(w, r, pageView{Title: "Patterns"}, md, "/docs/patterns")
+}
+
+// docsInformationArchitecture is GET /docs/information-architecture — the
+// Information architecture handbook page: the concept-before-reference
+// hierarchy rule, the criteria for adding a group or page, and the agent
+// prompt that lets LLMs evaluate or improve the docs IA.
+func (s *server) docsInformationArchitecture(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Information architecture"}, "content/handbook-information-architecture.md")
 }
 
 // docsThemes is GET /docs/themes — the Themes handbook page: how themes work
