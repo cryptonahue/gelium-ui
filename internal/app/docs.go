@@ -1,6 +1,8 @@
 package app
 
 import (
+	"encoding/json"
+	"html/template"
 	"io/fs"
 	"net/http"
 	"strings"
@@ -24,12 +26,16 @@ type docsNavGroup struct {
 }
 
 // docsNavView is the shell chrome model: grouped IA plus honest topbar slots.
-// Version aligns with the static asset query (?v=0.4.0). SearchDisabled is
-// always true in this change — placeholder only, no live corpus search.
+// Version aligns with the static asset query (?v=0.4.0). SearchIndex is the
+// JSON index of every nav destination ({title, href, group}) that search.js
+// filters client-side; ThemeSlug/Scheme let the search form preserve the
+// current chrome on its 0-JS GET fallback.
 type docsNavView struct {
-	Groups         []docsNavGroup
-	Version        string
-	SearchDisabled bool
+	Groups      []docsNavGroup
+	Version     string
+	SearchIndex template.JS // JSON [{title,href,group}] of the whole nav model
+	ThemeSlug   string      // current ?theme= slug (search form hidden input)
+	Scheme      string      // current ?scheme= value (search form hidden input)
 }
 
 // docsShellVersion is the static version badge shown in the docs topbar.
@@ -105,10 +111,37 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 	)
 
 	return docsNavView{
-		Groups:         groups,
-		Version:        docsShellVersion,
-		SearchDisabled: true,
+		Groups:      groups,
+		Version:     docsShellVersion,
+		SearchIndex: buildSearchIndex(groups),
+		ThemeSlug:   themeSlug,
+		Scheme:      scheme,
 	}
+}
+
+// searchIndexEntry is one destination in the client-side docs search index.
+type searchIndexEntry struct {
+	Title string `json:"title"`
+	Href  string `json:"href"`
+	Group string `json:"group"`
+}
+
+// buildSearchIndex flattens the nav model into the JSON index search.js
+// filters: every sidebar destination with its group label. Href carries the
+// same chrome query as the sidebar links, so search navigation preserves the
+// selected theme and light/dark scheme.
+func buildSearchIndex(groups []docsNavGroup) template.JS {
+	entries := make([]searchIndexEntry, 0, 64)
+	for _, g := range groups {
+		for _, l := range g.Links {
+			entries = append(entries, searchIndexEntry{Title: l.Label, Href: l.Href, Group: g.Title})
+		}
+	}
+	b, err := json.Marshal(entries)
+	if err != nil {
+		return template.JS("[]")
+	}
+	return template.JS(b)
 }
 
 // handbookNavLinks is the Gelium Handbook IA: the concept pages that explain

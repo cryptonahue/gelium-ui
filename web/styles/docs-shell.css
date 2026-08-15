@@ -85,6 +85,68 @@
     margin-inline-start: 0;
   }
 
+  /* Docs search: live GET form (0-JS) whose results dropdown is enhanced by
+     search.js. No display rule on the list so the [hidden] attribute stays
+     effective until JavaScript populates it. */
+  .docs-topbar-search {
+    position: relative;
+  }
+  .docs-search-results {
+    position: absolute;
+    top: 100%;
+    inset-inline-start: 0;
+    inset-inline-end: 0;
+    z-index: 10;
+    margin: .25rem 0 0;
+    padding: .25rem;
+    list-style: none;
+    max-height: 18rem;
+    overflow-y: auto;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-md);
+    background: var(--ui-color-surface-container, var(--ui-color-surface));
+    box-shadow: var(--ui-shadow-1, none);
+  }
+  .docs-search-results li a {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: .75rem;
+    padding: .375rem .5rem;
+    border-radius: var(--ui-radius-sm);
+    color: var(--ui-color-fg);
+    font: var(--ui-type-body-md);
+    text-decoration: none;
+  }
+  .docs-search-results li a:hover,
+  .docs-search-results li a:focus-visible {
+    background: color-mix(in oklab, var(--ui-color-fg) 8%, transparent);
+  }
+  .docs-search-result-group {
+    flex: none;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-sm);
+  }
+
+  /* External repository link in the docs topbar. Never chrome-rewritten: the
+     href is a static template literal, so ?theme= / ?scheme= can't leak. */
+  .docs-topbar-github {
+    display: inline-flex;
+    align-items: center;
+    gap: .375rem;
+    flex: none;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-md);
+    letter-spacing: var(--ui-type-label-md-letter-spacing);
+    text-decoration: none;
+  }
+  .docs-topbar-github:hover {
+    color: var(--ui-color-fg);
+  }
+  .docs-topbar-github-icon {
+    flex: none;
+  }
+
   /* Mobile: details/summary disclosure with the same nav model. */
   .docs-nav-mobile {
     display: block;
