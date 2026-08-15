@@ -1,6 +1,6 @@
 # Divider
 
-Divider is a thin line that groups or separates related content. It is a native `hr` element styled with the `ui-divider` class, so it needs no component JavaScript at all.
+Divider is a thin line that groups or separates related content. Use a divider when adjacent content needs a visual separation that is not a container boundary — between list rows, toolbar groups, or stacked sections. It is a native `hr` element styled with the `ui-divider` class, so it needs no component JavaScript at all.
 
 ## Anatomy
 

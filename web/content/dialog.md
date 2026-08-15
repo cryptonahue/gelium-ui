@@ -1,6 +1,6 @@
 # Dialog
 
-Dialog is an open-code component for confirmations. Its base path is a **page variant**: the trigger is a real link to a server-rendered confirmation page, Confirm is a real form POST that redirects back, and Cancel is a link back. The flow works in every browser with **no component JavaScript** and no overlay markup.
+Dialog is an open-code component for confirmations. Use a dialog when a decision needs explicit confirmation before an action completes — and the flow must work without JavaScript. Its base path is a **page variant**: the trigger is a real link to a server-rendered confirmation page, Confirm is a real form POST that redirects back, and Cancel is a link back. The flow works in every browser with **no component JavaScript** and no overlay markup.
 
 ## Page variant (base)
 
@@ -10,9 +10,9 @@ The trigger is an anchor styled as a button:
 <a class="ui-button ui-button-primary" href="/components/dialog/confirm">Open confirmation dialog</a>
 ```
 
-`/components/dialog/confirm` renders the same headline and description inline as normal page content. Confirm submits a real form POST answered with a `303 See Other` back to the docs page, which shows the result in a persistent inline alert; Cancel is a link back. This is the "page/detail variant" of the Dialog contract: no overlay, no focus trap, no Escape contract — navigation and form submission are platform behavior that works in every browser, including browsers without Invoker Commands support.
+`/components/dialog/confirm` renders the same headline and description inline as normal page content. Confirm submits a real form POST answered with a `303 See Other` back to the docs page, which shows the result in a persistent inline alert; Cancel is a link back. This is the "page/detail variant" of the Dialog contract: no overlay, no focus trap, no Escape contract — navigation and form submission are platform behavior that works in every browser, including browsers without Invoker Commands support (Invoker Commands is the native `command`/`commandfor` API that opens and closes dialogs declaratively).
 
-## Modal variant (opt-in enhancement)
+## How does the modal variant handle dismiss and Escape?
 
 Consumers that target **supporting browsers** can use the native `<dialog>` modal with declarative invoker commands instead:
 

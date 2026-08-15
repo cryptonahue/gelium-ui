@@ -1,6 +1,6 @@
 # Focus ring
 
-Focus ring is the Gelium-wide keyboard focus contract. Every focusable element keeps a visible indicator thanks to a broad `:focus-visible` rule, while `.ui-focus-ring` is the explicit utility for custom focusable elements that are not native controls.
+Focus ring is the Gelium-wide keyboard focus contract. Use it when a custom control needs a visible keyboard indicator — every focusable element keeps a visible indicator thanks to a broad `:focus-visible` rule, while `.ui-focus-ring` is the explicit utility for custom focusable elements that are not native controls.
 
 ## The shared contract
 

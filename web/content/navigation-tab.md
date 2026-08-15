@@ -4,12 +4,7 @@
 > with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
-A Material 3 navigation tab: the individual destination of a navigation bar,
-reimplemented over server-rendered HTML. The root is a real `<a href>` link —
-the roadmap's **"link semántico, no tab falso"** contract. There is no
-`role="tab"`, no `role="tablist"`, no roving focus and no component JavaScript:
-the active tab is derived server-side from the current page and marked with
-`aria-current="page"`.
+Navigation tab is the individual destination of a navigation bar, reimplemented over server-rendered HTML. Use a navigation tab when a bar or rail needs a single selectable destination whose active state is decided by the server. The root is a real `<a href>` link — the roadmap's **"link semántico, no tab falso"** contract. There is no `role="tab"`, no `role="tablist"`, no roving focus and no component JavaScript: the active tab is derived server-side from the current page and marked with `aria-current="page"`.
 
 Because the tab is the same destination contract the delivered navigation bar
 uses, the demo composes the existing `.ui-nav-bar` for its in-bar variant and
@@ -58,7 +53,7 @@ reuses the existing `.ui-badge` for badge destinations — nothing is reinvented
 - **Inside the navigation bar** — the tabs composed into the delivered
   `.ui-nav-bar`, proving the shared destination contract.
 
-## States
+## What states can a navigation tab be in?
 
 `rest`, `hover`, `focus-visible`, `active`/`pressed`, and `selected` (the active
 tab). Hover, focus, and press paint the Material state layer (a full-bleed
