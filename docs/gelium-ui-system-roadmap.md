@@ -270,9 +270,9 @@ Implementar **solo el mecanismo mínimo**:
 
 **DoD**: cambiar la clase del theme cambia la dirección visual sin rebuild ni JS; ambos themes coexisten en el bundle; tests verdes.
 
-### Phase I — Basecoat
+### Phase I — Basecoat ✅ DONE (2026-08-14)
 
-Implementar después de las fases anteriores:
+> Shipped en commit histórico `094b82d` (pre-SDD) + unificación dark `3233efb`; cierre en PR #19: docs dark-route corregidos + evidencia de smoke honesta.
 
 ```text
 Button
@@ -298,7 +298,9 @@ Data table
 
 **DoD**: matriz theme × component × variant × state ejecutada con Material y Basecoat; tests theme-agnósticos pasando; smoke completo; aceptación visual manual.
 
-### Phase J — Registry
+### Phase J — Registry ✅ DONE (2026-08-14)
+
+> Todos los registries existen y derivan del código real (component `~40`, pattern `41`, theme `2`, dependency metadata, agent prompts `4`, screen composition). Cierre en PR: guard de sync `TestComponentRegistrySyncsWithTemplates` + `TestRegistryReferencedFilesExist` + rows stale corregidas. `/registry.json` queda documentado-pendiente (sin consumidor, expansión post-A-J).
 
 Dejar para el final:
 

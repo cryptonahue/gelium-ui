@@ -91,7 +91,7 @@ core (tokens --ui-* + base.css + tokens.css)
 | **Callout** | sin consumidor directo en recipes Phase G (informativo) |
 | **Tokens core (`tokens.css`)** | TODO: cada componente y theme lee `--ui-*` |
 | **theme-material** | TODO: es el theme default activo |
-| **theme-basecoat** | (pendiente Phase I) solo tras cerrar gaps del core |
+| **theme-basecoat** | **Implementado (Phase I)** — theme completo, light + dark clase única, en bundle |
 
 ## 5. Grafo visual (recipes)
 
@@ -144,7 +144,7 @@ Se evaluó exponer el component registry como JSON servido por el handler (`GET 
   ```
 - Fuente única: un slice Go en `internal/app/registry.go` que **sea la misma data** que renderiza el markdown (o un generador markdown→JSON en build, como `scripts/` ya hace con copy-htmx). Regla: nunca dos listas manuales de componentes en el repo.
 - Tests: `TestRegistryJSON` (shape, ids únicos, categorías cerradas) + `GET /registry.json` en `postOnlyPaths()`? NO — GET es idempotente y no muta; no entra a `postOnlyPaths()`. Ruta en `sitemap`? NO — `robots: noindex` (es tooling, no página).
-- **Candidato de implementación**: Phase J.5 o un slice de tooling separado; requiere aprobar la fuente única de verdad antes de escribir una línea.
+- **Candidato de implementación**: post-A-J (expansión opcional; no hay consumidor); requiere aprobar la fuente única de verdad antes de escribir una línea.
 
 ---
 
