@@ -1114,6 +1114,10 @@ func TestContentFilesLeadWithAnswerFirst(t *testing.T) {
 		"text-field", "checkbox", "radio", "switch", "select", "slider",
 		"progress", "segmented-button", "menu", "chips", "tabs", "list",
 		"data-table",
+		// Chunk B (PR3): display, navigation and atoms.
+		"badge", "button", "card", "dialog", "divider", "elevation", "fab",
+		"focus-ring", "icon", "icon-button", "toast", "tooltip",
+		"navigation-bar", "navigation-drawer", "navigation-tab", "index",
 	}
 	for _, slug := range slugs {
 		t.Run(slug, func(t *testing.T) {
@@ -1126,7 +1130,9 @@ func TestContentFilesLeadWithAnswerFirst(t *testing.T) {
 				t.Errorf("answer-first intro is only %d chars (want ≥40): %q", len(para), para)
 			}
 			name := strings.ReplaceAll(slug, "-", " ")
-			if !strings.Contains(strings.ToLower(para), name) {
+			// index.md is the landing page, not a component — there is no
+			// component name to match, only the answer-first intro itself.
+			if slug != "index" && !strings.Contains(strings.ToLower(para), name) {
 				t.Errorf("answer-first intro must name the component %q: %q", name, para)
 			}
 			if !answerFirstIntroSignal.MatchString(para) {

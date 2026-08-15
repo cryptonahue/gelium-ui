@@ -4,12 +4,7 @@
 > with a stability warning; Gelium mirrors that status. The contract may change
 > without a major version bump.
 
-A Material 3 bottom navigation bar: a fixed-height `80px` container that holds
-three to five equal destinations, one of which is the active page. Gelium
-reimplements it over server-rendered HTML — the root is a real `<nav>`, the
-destinations are real `<a href>` links (the roadmap's "navegación real con
-links"), and the active destination is derived server-side from the current
-page, never from JavaScript. No component JavaScript exists.
+Navigation bar is a Material 3 bottom navigation bar: a fixed-height `80px` container that holds three to five equal destinations, one of which is the active page. Use a navigation bar when an app's primary destinations must stay one tap away at the bottom of a phone-sized viewport. Gelium reimplements it over server-rendered HTML — the root is a real `<nav>`, the destinations are real `<a href>` links (the roadmap's "navegación real con links"), and the active destination is derived server-side from the current page, never from JavaScript. No component JavaScript exists.
 
 ## Anatomy
 

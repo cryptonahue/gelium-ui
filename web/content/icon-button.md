@@ -1,6 +1,6 @@
 # Icon button
 
-Icon button is a compact, single-tap action control built from a native HTML `<button>` (for actions) or `<a>` (for navigation). It renders a Material Web–compatible circular touch target with a trusted inline SVG glyph.
+Icon button is a compact, single-tap action control built from a native HTML `<button>` (for actions) or `<a>` (for navigation). Use an icon button when a toolbar or surface needs a small action whose meaning is carried by a glyph plus an accessible name — edit, delete, refresh — and the tap target must stay touch-friendly. It renders a Material Web–compatible circular touch target with a trusted inline SVG glyph.
 
 ## Variants
 

@@ -1,6 +1,6 @@
 # Badge
 
-Badge is a compact marker that shows a dot, a count, or a short label on the error palette. It is never color-only: a badge mark must always carry or accompany visible text so the information survives without color.
+Badge is a compact marker that shows a dot, a count, or a short label on the error palette. Use a badge when a small piece of information — a count, a status dot, a short label — must sit on or near another element without taking over the row. It is never color-only: a badge mark must always carry or accompany visible text so the information survives without color.
 
 ## Anatomy
 
