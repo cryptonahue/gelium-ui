@@ -81,14 +81,23 @@ func TestPilotPagesRenderExamplesSections(t *testing.T) {
 					t.Errorf("%s Examples code blocks are missing the real partial invocation %q", slug, want)
 				}
 			}
-			// Base UI order: Examples come after the article prose (Agent
-			// prompt when present) and before the API reference, which is
-			// the last section of the article.
-			if i := strings.Index(body, "<h2>Agent prompt</h2>"); i >= 0 && strings.Index(body, "<h2>Examples</h2>") < i {
-				t.Errorf("%s must place '## Examples' after '## Agent prompt'", slug)
+			// Base UI order: Examples and API reference come AFTER the
+			// intro but BEFORE the Guidance block — show the component,
+			// then the rules (owner decision). Guidance (when present)
+			// must appear after both sections.
+			ex := strings.Index(body, "<h2>Examples</h2>")
+			api := strings.Index(body, "<h2>API reference</h2>")
+			if ex < 0 || api < 0 {
+				t.Fatalf("%s must render Examples and API reference sections", slug)
 			}
-			if api := strings.Index(body, "<h2>API reference</h2>"); api < 0 || strings.Index(body, "</article>") < api {
-				t.Errorf("%s must place '## API reference' at the end of the article", slug)
+			if ex > api {
+				t.Errorf("%s must place '## Examples' before '## API reference'", slug)
+			}
+			if g := strings.Index(body, "<h2>Guidance</h2>"); g >= 0 && g < ex {
+				t.Errorf("%s must place '## Guidance' after '## Examples' (show the component, then the rules)", slug)
+			}
+			if strings.Index(body, "</article>") < api {
+				t.Errorf("%s must place '## API reference' inside the article", slug)
 			}
 		})
 	}

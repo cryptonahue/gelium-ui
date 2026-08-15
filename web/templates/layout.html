@@ -65,7 +65,7 @@
         <thead><tr><th scope="col">Prop</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
         <tbody>{{range .APIRef.Rows}}<tr><th scope="row"><code>{{.Prop}}</code></th><td><code>{{.Type}}</code></td><td>{{.Default}}</td><td>{{.Description}}</td></tr>{{end}}</tbody>
       </table>
-    </div>{{end}}</article>
+    </div>{{end}}{{.ContentRest}}</article>
     {{if .CTA}}<div class="hero-action">{{template "button" .CTA}}</div>{{end}}
     {{if .Buttons}}<section class="component-preview" aria-label="Button examples">{{range .Buttons}}{{template "button" .}}{{end}}</section>{{end}}
     {{if .TextFields}}<section class="component-preview text-field-preview" aria-label="Text field examples">{{range .TextFields}}{{template "text-field" .}}{{end}}</section>{{end}}
