@@ -453,7 +453,7 @@ type recipeFieldError struct {
 func validateRecipeResourceForm(name, status, date string) []recipeFieldError {
 	var errs []recipeFieldError
 	if name == "" {
-		errs = append(errs, recipeFieldError{Field: "name", Message: "Name is required.", Href: "#recipe-ar-name-error"})
+		errs = append(errs, recipeFieldError{Field: "name", Message: "Enter the project name.", Href: "#recipe-ar-name-error"})
 	}
 	validStatus := false
 	for _, st := range dataTableStatuses {
@@ -463,10 +463,10 @@ func validateRecipeResourceForm(name, status, date string) []recipeFieldError {
 		}
 	}
 	if !validStatus {
-		errs = append(errs, recipeFieldError{Field: "status", Message: "Choose a valid status.", Href: "#recipe-ar-status-error"})
+		errs = append(errs, recipeFieldError{Field: "status", Message: "Choose a status from the list.", Href: "#recipe-ar-status-error"})
 	}
 	if date == "" {
-		errs = append(errs, recipeFieldError{Field: "date", Message: "Date is required.", Href: "#recipe-ar-date-error"})
+		errs = append(errs, recipeFieldError{Field: "date", Message: "Enter the project date.", Href: "#recipe-ar-date-error"})
 	} else if _, err := time.Parse("2006-01-02", date); err != nil {
 		errs = append(errs, recipeFieldError{Field: "date", Message: "Date must use the YYYY-MM-DD format.", Href: "#recipe-ar-date-error"})
 	}

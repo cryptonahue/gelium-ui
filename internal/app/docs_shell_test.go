@@ -259,6 +259,7 @@ func TestDocsShellSidebarPreservesTheme(t *testing.T) {
 		"/docs/server-contracts",
 		"/docs/accessibility",
 		"/docs/principles",
+		"/docs/content-style",
 		"/recipes/admin-resource",
 	} {
 		want := `class="ui-list-item-link" href="` + path + `?theme=basecoat"`
@@ -399,6 +400,7 @@ func TestDocsShellPathsStableNoRedirect(t *testing.T) {
 		"/docs/server-contracts",
 		"/docs/accessibility",
 		"/docs/principles",
+		"/docs/content-style",
 		"/components/button",
 		"/components/data-table",
 	} {
@@ -431,6 +433,7 @@ func TestDocsShellFooterAndJSONLDRegressions(t *testing.T) {
 		`<a href="/docs/information-architecture">Information architecture</a>`,
 		`<a href="/docs/themes">Themes</a>`,
 		`<a href="/docs/principles">Design principles</a>`,
+		`<a href="/docs/content-style">Content style</a>`,
 		`<a href="/recipes/admin-resource">Admin Resource</a>`,
 		`"@type":"BreadcrumbList"`,
 		`"@type":"TechArticle"`,
@@ -672,6 +675,7 @@ func TestDefaultFooter(t *testing.T) {
 		"/docs/server-contracts",
 		"/docs/accessibility",
 		"/docs/principles",
+		"/docs/content-style",
 		"/recipes/admin-resource",
 		"/recipes/ops-queue",
 		"/recipes/public-feed",

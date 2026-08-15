@@ -226,8 +226,8 @@ func TestRecipeAdminResourceCreateValidation422(t *testing.T) {
 	body := res.Body.String()
 	for _, contract := range []string{
 		`class="ui-validation-summary" role="alert"`,
-		`href="#recipe-ar-name-error">Name is required.</a>`,
-		`href="#recipe-ar-status-error">Choose a valid status.</a>`,
+		`href="#recipe-ar-name-error">Enter the project name.</a>`,
+		`href="#recipe-ar-status-error">Choose a status from the list.</a>`,
 		`href="#recipe-ar-date-error">Date must use the YYYY-MM-DD format.</a>`,
 		`class="ui-inline-alert ui-inline-alert--error"`,
 		`id="recipe-ar-name-error" role="alert"`,
@@ -330,7 +330,7 @@ func TestRecipeAdminResourceEditValidation422(t *testing.T) {
 	body := res.Body.String()
 	for _, contract := range []string{
 		`class="ui-validation-summary" role="alert"`,
-		`href="#recipe-ar-name-error">Name is required.</a>`,
+		`href="#recipe-ar-name-error">Enter the project name.</a>`,
 		`value="Alicia R."`,
 	} {
 		if !strings.Contains(body, contract) {

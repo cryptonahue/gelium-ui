@@ -27,6 +27,7 @@ var handbookRoutes = []handbookRoute{
 	{path: "/docs/server-contracts", label: "Server contracts", h1: "Server contracts", contract: "HX-Trigger"},
 	{path: "/docs/accessibility", label: "Accessibility", h1: "Accessibility", contract: "forced-colors"},
 	{path: "/docs/principles", label: "Design principles", h1: "Design principles", contract: "Native semantics first"},
+	{path: "/docs/content-style", label: "Content style", h1: "Content style", contract: "plain English"},
 	{path: "/docs/acknowledgments", label: "Acknowledgments", h1: "Acknowledgments", contract: "inspired by, not a copy"},
 }
 
