@@ -85,7 +85,7 @@ func (s *server) validateTextField(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if status == http.StatusUnprocessableEntity {
-		w.Header().Set("X-Loom-Validation", "true")
+		w.Header().Set("X-Gelium-Validation", "true")
 	}
 	w.WriteHeader(status)
 	_, _ = w.Write(rendered.Bytes())

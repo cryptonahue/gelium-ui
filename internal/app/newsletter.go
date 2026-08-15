@@ -8,7 +8,7 @@ import (
 
 // newsletterView is the server-driven view model for the NEWSLETTER public
 // content pattern (Phase F): a zero-JS subscription form. The server owns the
-// whole contract — POST + 422 (X-Loom-Validation) with an inline alert on an
+// whole contract — POST + 422 (X-Gelium-Validation) with an inline alert on an
 // invalid email, persistent success view on a valid one — so the aside never
 // mutates state client-side. Action is the POST target; Error and Success are
 // mutually exclusive, and Success replaces the form entirely.
@@ -51,7 +51,7 @@ The newsletter is a **zero-JS** subscription form: the server owns the whole
 contract, so there is nothing to script client-side.
 
 - **POST + 422** — an invalid email is rejected with status 422 and the
-  ` + "`X-Loom-Validation: true`" + ` header, re-rendering the aside with an
+  ` + "`X-Gelium-Validation: true`" + ` header, re-rendering the aside with an
   inline alert and the submitted value preserved.
 - **POST → 200 success** — a valid email replaces the form with a persistent
   ` + "`role=\"status\"`" + ` confirmation.
@@ -115,7 +115,7 @@ func (s *server) newsletterSubscribe(w http.ResponseWriter, r *http.Request) {
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	if status == http.StatusUnprocessableEntity {
-		w.Header().Set("X-Loom-Validation", "true")
+		w.Header().Set("X-Gelium-Validation", "true")
 	}
 	w.WriteHeader(status)
 	_, _ = w.Write(rendered.Bytes())

@@ -101,7 +101,7 @@ func (s *server) selectMenu(w http.ResponseWriter, r *http.Request) {
 	// native select field. A 422 carries the validation header plus the
 	// visible error; a success returns the field with the new selection.
 	if status == http.StatusUnprocessableEntity {
-		w.Header().Set("X-Loom-Validation", "true")
+		w.Header().Set("X-Gelium-Validation", "true")
 	}
 
 	var rendered bytes.Buffer

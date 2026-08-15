@@ -1,7 +1,7 @@
 document.addEventListener("htmx:beforeSwap", function (event) {
   if (
     event.detail.xhr.status === 422 &&
-    event.detail.xhr.getResponseHeader("X-Loom-Validation") === "true"
+    event.detail.xhr.getResponseHeader("X-Gelium-Validation") === "true"
   ) {
     event.detail.shouldSwap = true;
     event.detail.isError = false;

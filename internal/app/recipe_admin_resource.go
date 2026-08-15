@@ -413,12 +413,12 @@ func (s *server) recipeAdminResourceRefresh(w http.ResponseWriter, r *http.Reque
 }
 
 // recipeAdminResourceFormInvalid re-renders a create/edit form with the 422
-// validation contract: the X-Loom-Validation header, the inline alert, the
+// validation contract: the X-Gelium-Validation header, the inline alert, the
 // validation summary (real links to each field error) and per-field errors.
 func (s *server) recipeAdminResourceFormInvalid(w http.ResponseWriter, r *http.Request, mode, id, name, status, date, owner string, errs []recipeFieldError) {
 	view := newRecipeAdminResourceFormView(mode, id, name, status, date, owner, errs)
 	applyRequestTheme(r, view)
-	w.Header().Set("X-Loom-Validation", "true")
+	w.Header().Set("X-Gelium-Validation", "true")
 	s.renderRecipeTemplate(w, http.StatusUnprocessableEntity, "recipe-admin-resource-form", view)
 }
 
