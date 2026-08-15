@@ -423,7 +423,7 @@ func (s *server) recipeAdminResourceFormInvalid(w http.ResponseWriter, r *http.R
 }
 
 func (s *server) recipeAdminResourceNotFound(w http.ResponseWriter, title, body string) {
-	s.renderErrorPage(w, http.StatusNotFound, title, body, true, "/recipes/admin-resource", "Back to projects")
+	s.renderErrorPage(w, http.StatusNotFound, title, body, true, "/recipes/admin-resource", "Back to projects", "/recipes/admin-resource")
 }
 
 // parseRecipeResourceForm reads and trims the shared form fields.
