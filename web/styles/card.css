@@ -25,6 +25,38 @@
   .ui-card:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset); }
   .ui-card-title { margin: 0 0 var(--ui-space-1); font: var(--ui-type-headline-sm); }
   .ui-card-action { margin-top: var(--ui-space-4); }
+  /* Public slots (Phase F): media, tag and meta are OPTIONAL and data-driven —
+     the template only emits their wrappers when the data is present. Media is
+     structural geometry: literal 16/9 aspect-ratio (never tokenized, same rule
+     as Video and Feature Card) with cover-fill. The tag is a pill badge that
+     reuses the --ui-badge-* color pair and always carries label text (never
+     color-only). Meta is an eyebrow line spaced with --ui-space-*. */
+  .ui-card-media {
+    aspect-ratio: 16 / 9;
+    overflow: hidden;
+    background: var(--ui-color-surface-container);
+  }
+  .ui-card-media img,
+  .ui-card-media video {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+  }
+  .ui-card-tag {
+    align-self: flex-start;
+    margin-bottom: var(--ui-space-2);
+    padding: var(--ui-space-1) var(--ui-space-2);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-badge-container);
+    color: var(--ui-badge-fg);
+    font: var(--ui-type-label-sm);
+  }
+  .ui-card-meta {
+    margin: 0 0 var(--ui-space-1);
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-md);
+  }
   .card-demo-grid {
     display: grid;
     grid-template-columns: repeat(auto-fit, minmax(14rem, 1fr));

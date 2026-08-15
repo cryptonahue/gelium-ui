@@ -1,3 +1,11 @@
+{{define "card"}}<article class="ui-card {{if .Variant}}ui-card-{{.Variant}}{{else}}ui-card-elevated{{end}}">
+  {{if .Media}}<div class="ui-card-media">{{.Media}}</div>{{end}}
+  {{if .Tag}}<span class="ui-card-tag">{{.Tag}}</span>{{end}}
+  {{if .Meta}}<p class="ui-card-meta">{{.Meta}}</p>{{end}}
+  {{if .Title}}<h2 class="ui-card-title">{{.Title}}</h2>{{end}}
+  {{if .Body}}<p class="ui-card-body">{{.Body}}</p>{{end}}
+  {{if .CTA}}<div class="ui-card-action">{{template "button" .CTA}}</div>{{end}}
+</article>{{end}}
 {{define "card-demo"}}
 <ol class="card-demo-grid">
   <li>
