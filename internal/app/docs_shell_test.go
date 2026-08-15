@@ -251,6 +251,7 @@ func TestDocsShellSidebarPreservesTheme(t *testing.T) {
 		"/components/fab",
 		"/docs",
 		"/docs/patterns",
+		"/docs/information-architecture",
 		"/docs/themes",
 		"/docs/tokens",
 		"/docs/server-contracts",
@@ -381,6 +382,7 @@ func TestDocsShellPathsStableNoRedirect(t *testing.T) {
 	for _, path := range []string{
 		"/docs",
 		"/docs/patterns",
+		"/docs/information-architecture",
 		"/docs/themes",
 		"/docs/tokens",
 		"/docs/server-contracts",
@@ -415,6 +417,7 @@ func TestDocsShellFooterAndJSONLDRegressions(t *testing.T) {
 		`class="ui-footer-heading">Recipes</summary>`,
 		`class="ui-footer-heading">Handbook</summary>`,
 		`<a href="/docs/patterns">Patterns</a>`,
+		`<a href="/docs/information-architecture">Information architecture</a>`,
 		`<a href="/docs/themes">Themes</a>`,
 		`<a href="/docs/principles">Design principles</a>`,
 		`<a href="/recipes/admin-resource">Admin Resource</a>`,
@@ -647,6 +650,7 @@ func TestDefaultFooter(t *testing.T) {
 	// Patterns, recipes, and handbook pages stay in lockstep with the nav model.
 	for _, path := range []string{
 		"/docs/patterns",
+		"/docs/information-architecture",
 		"/docs/themes",
 		"/docs/tokens",
 		"/docs/server-contracts",
