@@ -9,7 +9,7 @@ Copiar el siguiente prompt en la IA/coding agent que vaya a realizar la primera 
 Estás trabajando en el proyecto `Gelium UI`, ubicado en:
 
 ```text
-D:\repos\loom-ui
+D:\repos\gelium-ui
 ```
 
 El objetivo de esta tarea es producir la **primera auditoría técnica y funcional de Material Web** para decidir qué convertir a Gelium UI.
@@ -67,7 +67,7 @@ Material Web y Basecoat UI son referencias/inspiraciones. Gelium UI no es un for
 
 No modifiques código de `material-web-upstream`, `material-web-tailwind` ni `material-tailwind`.
 
-En esta fase sólo analiza y escribe el informe dentro de `D:\repos\loom-ui`.
+En esta fase sólo analiza y escribe el informe dentro de `D:\repos\gelium-ui`.
 
 No inventes estados, componentes, versiones, tests o resultados de build. Si algo no se puede confirmar, márcalo como `UNKNOWN` y explica cómo verificarlo.
 
@@ -201,7 +201,7 @@ Si la plataforma no permite subagentes, simula estas tres fases en orden, conser
 Actualiza o crea:
 
 ```text
-D:\repos\loom-ui\MATERIAL-WEB-PROGRESS.md
+D:\repos\gelium-ui\MATERIAL-WEB-PROGRESS.md
 ```
 
 Con estas secciones:

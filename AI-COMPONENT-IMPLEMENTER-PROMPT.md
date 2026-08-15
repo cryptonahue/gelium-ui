@@ -41,13 +41,13 @@ CRITERIOS ESPECÍFICOS DE ACEPTACIÓN: {{ACCEPTANCE_CRITERIA}}
 MATRIZ DE NAVEGADORES SOPORTADA: {{SUPPORTED_BROWSER_MATRIX}}
 FECHA/SNAPSHOT BASELINE WEB: {{WEB_BASELINE_SNAPSHOT_DATE}}
 
-REPOSITORIO CANÓNICO: D:\repos\loom-ui
+REPOSITORIO CANÓNICO: D:\repos\gelium-ui
 MATERIAL WEB UPSTREAM: D:\repos\material-web-upstream
 FORK DE REFERENCIA: D:\repos\material-web-tailwind
 UPSTREAM SNAPSHOT ID PROVISTO POR COORDINADOR: {{UPSTREAM_SNAPSHOT_ID}}
 UPSTREAM MANIFEST/HASH PROVISTO: {{UPSTREAM_MANIFEST_OR_HASH}}
-ROADMAP: D:\repos\loom-ui\COMPONENT-ROADMAP.md
-AUDITORÍA HISTÓRICA: D:\repos\loom-ui\MATERIAL-WEB-PROGRESS.md
+ROADMAP: D:\repos\gelium-ui\COMPONENT-ROADMAP.md
+AUDITORÍA HISTÓRICA: D:\repos\gelium-ui\MATERIAL-WEB-PROGRESS.md
 
 MODO ASIGNADO: {{SHARED_HANDOFF | ISOLATED_PHYSICAL_WORKSPACE | EXCLUSIVE_INTEGRATION}}
 WORKSPACE AUTORIZADO: {{AUTHORIZED_WORKSPACE_PATH}}
@@ -173,7 +173,7 @@ Si `:8788` está ocupado por un proceso que no iniciaste:
 #### `ISOLATED_PHYSICAL_WORKSPACE`
 
 - Trabaja únicamente en `WORKSPACE AUTORIZADO`.
-- No escribas en `D:\repos\loom-ui`.
+- No escribas en `D:\repos\gelium-ui`.
 - Builds, tests y `:8788` ocurren en la copia aislada.
 - No copies automáticamente resultados al canónico.
 - Entrega manifest completo y patches reproducibles.
@@ -658,7 +658,7 @@ FECHA/SNAPSHOT BASELINE WEB: {{COORDINATOR_MUST_DEFINE}}
 UPSTREAM SNAPSHOT ID PROVISTO POR COORDINADOR: {{COORDINATOR_MUST_DEFINE}}
 UPSTREAM MANIFEST/HASH PROVISTO: {{COORDINATOR_MUST_DEFINE}}
 MODO ASIGNADO: SHARED_HANDOFF
-WORKSPACE AUTORIZADO: D:\repos\loom-ui
+WORKSPACE AUTORIZADO: D:\repos\gelium-ui
 WORKER ID: checkbox-worker-01
 RESERVA ID: checkbox-exclusive-files-only
 PATHS POSEÍDOS: web/templates/checkbox.html, web/content/checkbox.md
@@ -669,4 +669,4 @@ NUEVA VERSIÓN DE ASSETS PROPUESTA: integrator-owned
 
 ## Nota de coordinación
 
-Mientras Gelium no complete la Wave P del roadmap, asignar dos componentes a dos IAs NO significa permitir dos escritores sobre `D:\repos\loom-ui`. Los workers preparan contratos/artifacts en paralelo; un integrador único incorpora cada lane de forma serial.
+Mientras Gelium no complete la Wave P del roadmap, asignar dos componentes a dos IAs NO significa permitir dos escritores sobre `D:\repos\gelium-ui`. Los workers preparan contratos/artifacts en paralelo; un integrador único incorpora cada lane de forma serial.
