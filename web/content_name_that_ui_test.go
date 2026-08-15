@@ -99,6 +99,22 @@ func subsectionBody(doc, heading string) string {
 	return strings.TrimSpace(rest[:end])
 }
 
+// guidanceSection returns the text between the "## Guidance" heading and the
+// next "## " heading, or "" when the section is absent. Unlike sectionBody it
+// does not fatal: the Guidance contract test wants per-page errors, not a
+// test abort on the first missing section.
+func guidanceSection(doc string) string {
+	start := strings.Index(doc, "## Guidance")
+	if start < 0 {
+		return ""
+	}
+	rest := doc[start+len("## Guidance"):]
+	if end := strings.Index(rest, "\n## "); end >= 0 {
+		return strings.TrimSpace(rest[:end])
+	}
+	return strings.TrimSpace(rest)
+}
+
 // bulletCount counts markdown "- " bullet lines inside a block.
 func bulletCount(block string) int {
 	n := 0
@@ -218,7 +234,7 @@ func TestServedComponentPagesCarryNameThatUISections(t *testing.T) {
 func TestComponentPagesCarryGuidanceSections(t *testing.T) {
 	for _, slug := range componentContentSlugs {
 		doc := repositoryFile(t, "web", "content", slug+".md")
-		guidance := subsectionBody(doc, "## Guidance")
+		guidance := guidanceSection(doc)
 		if guidance == "" {
 			t.Errorf("%s.md is missing '## Guidance'", slug)
 			continue

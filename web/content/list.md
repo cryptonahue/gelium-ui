@@ -2,6 +2,30 @@
 
 List is a continuous, vertical index of text and images. Use a list when people must scan, select, or navigate through a group of related rows — settings, actions, or collections. Gelium reimplements the Material 3 list over semantic HTML — the root is a real `<ul>`, `<ol>`, `<nav>`, or `<menu>`, and each item is a `<li>`. No component JavaScript: navigation items are real `<a href>` links, and selection items are native checkboxes in a real form.
 
+## Guidance
+
+### When to use
+
+Use a list when people must scan, select, or navigate through a group of related rows — settings, actions, or collections.
+
+### When not to use
+
+Do not use a list for dense columnar data that needs sorting, filtering and pagination — a [Data table](/components/data-table) is built for that. For a single choice from many options, a [Select](/components/select) collapses the list; for a compact command menu anchored to a trigger, use a [Menu](/components/menu).
+
+### Usability
+
+- Navigation items wrap a real link (`<li>` → `<a href>`); selection items wrap a native checkbox in a `label`.
+- Row heights are 56 px (one-line), 72 px (two-line), and 88 px (three-line) via the modifiers.
+- Selection submits with a normal form — no JavaScript required for multi-select.
+
+### Accessibility
+
+- Keep the native elements: the `<ul>`/`<li>` carry list semantics, links are real anchors, checkboxes are native inputs.
+- Wrap the selection checkbox in its `label` so the whole row is clickable and the accessible name matches the on-screen text.
+- The state layer is decorative; state and selection are never communicated by color alone.
+- Focus rings stay on the native link or checkbox (`:focus-visible`).
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 The root carries the `ui-list` class and paints the container surface. Each `ui-list-item` is a flex row with up to three slots: an optional leading element, the text content, and an optional trailing element.
@@ -35,10 +59,6 @@ The roadmap requires a list to distinguish navigation, selection, and static con
 ## States
 
 The list covers `rest`, `hover`, `focus-visible`, `active`/`pressed`, `selected` (the checked checkbox), and `disabled` (on individual items). Hover and active paint the Material state layer (`ui-list-item::before`) at the shared `--ui-state-*` opacities; focus rings land on the native link or checkbox so keyboard users always see the target. Disabled items drop to `38%` opacity and are non-interactive.
-
-## When to use it
-
-Use a list for continuous vertical content — settings, menus of actions, or collections — where each row is a discrete unit. Prefer a navigation list (real links) for site/app navigation, and a selection list (native checkboxes in a form) when the user must pick several items.
 
 ## Design tokens
 

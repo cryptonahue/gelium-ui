@@ -6,6 +6,30 @@ Segmented buttons show a set of related options or actions in one mutually exclu
 
 Segmented buttons display a set of options or actions in a single, mutually exclusive row. Gelium reimplements the Material 3 outlined segmented button set over **server-rendered HTML with native form semantics**: single-select groups use `input[type="radio"]`, multi-select groups use `input[type="checkbox"]`, and non-selection actions use `button[type="button"]`. Selection state is derived from the native `:checked` pseudo-class (the CSS selector that matches a checked native input) — there is **no component JavaScript** and the checked values submit through a normal `<form>`.
 
+## Guidance
+
+### When to use
+
+Use segmented buttons when a small set of related options or actions belongs together in one mutually exclusive row — transport mode, formatting toggles — and selection must submit through a real `<form>` with no component JavaScript.
+
+### When not to use
+
+Do not use segmented buttons for more than a handful of options — a [Radio](/components/radio) group or a [Select](/components/select) scales better. For switching between whole views or pages, prefer [Tabs](/components/tabs).
+
+### Usability
+
+- Single-select sets use `input[type="radio"]`; multi-select sets use `input[type="checkbox"]`; action sets use `button[type="button"]`.
+- Selection state derives from the native `:checked` pseudo-class, so checked values submit through a normal form.
+- A segment can be icon-only, label-only, or icon + label; icon-only segments need an `aria-label` on the input.
+
+### Accessibility
+
+- Native controls: radios and checkboxes keep their role, name, checked state, and keyboard behavior at no cost.
+- The `legend` is visually hidden with a standard clip pattern — still in the accessibility tree, never rendered.
+- Never color-only: the selected state always carries the checkmark, disabled is announced by the platform.
+- Decorative glyphs are `aria-hidden`; the visible label (or the input's `aria-label`) supplies the accessible name.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 - **Set** — `ui-segmented-button-set`, the pill container (40px high, full corner radius, 1px outline). For selection sets the root is a `<fieldset>` with a visually hidden `<legend>` that names the group; for action sets the root is an accessible `role="group"` with an `aria-label` (the roadmap's "fieldset o grupo accesible").

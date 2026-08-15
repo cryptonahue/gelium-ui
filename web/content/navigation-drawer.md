@@ -6,6 +6,30 @@
 
 Navigation drawer is a Material 3 navigation drawer with two variants: a **modal** drawer that opens over a scrim and a **standard** (permanent) drawer embedded in the layout. Use a drawer when an app has more destinations than fit in a bottom bar and the navigation must stay server-rendered and no-JS. Gelium reimplements it over server-rendered HTML — the standard variant is a real `<nav>` in the layout, the modal variant is a native `<dialog>`, and every destination is a real `<a href>` whose active state is derived server-side from the current page (the roadmap's "navegación real con links"). No component JavaScript exists.
 
+## Guidance
+
+### When to use
+
+Use a navigation drawer when an app has more destinations than fit in a bottom bar and navigation must stay server-rendered and no-JS — the standard variant as a permanent rail in the layout, the modal variant over a scrim for temporary access.
+
+### When not to use
+
+Do not use a drawer when three to five destinations suffice — a [Navigation bar](/components/navigation-bar) keeps them one tap away. Do not make modal navigation the only path: the standard variant (or another real link surface) must exist.
+
+### Usability
+
+- Standard is a permanent real `<nav>` embedded in the layout; modal is a native `<dialog>` with a scrim.
+- Every destination is a real `<a href>`; the active one is derived server-side and carries `aria-current="page"`.
+- Badges reuse the existing `.ui-badge` primitive, anchored to the icon's top-end corner.
+
+### Accessibility
+
+- The standard variant is a real `<nav>` landmark with native anchors; the modal variant is a native `<dialog>` — the browser manages the top layer, focus, and Escape.
+- The selected destination carries `aria-current="page"`; state is never communicated by color alone.
+- The icon slot is `aria-hidden`; the label text supplies the name. Badges live inside the aria-hidden slot.
+- In forced-colors mode the active destination becomes `HighlightText` and the indicator pill is outlined with `Highlight`.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 ```html

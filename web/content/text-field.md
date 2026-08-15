@@ -2,6 +2,30 @@
 
 Text field is a single- or multi-line input built on native `<input>` and `<textarea>` elements. Use a text field when people must enter or edit free-form text — names, email addresses, search terms — and the value has to submit through a real `<form>`. Every visible label is explicitly associated through `for` and `id`, while helper and error messages use unique IDs referenced by `aria-describedby`.
 
+## Guidance
+
+### When to use
+
+Use a text field when people must enter or edit free-form text — names, email addresses, search terms — and the value has to submit through a real `<form>`.
+
+### When not to use
+
+Do not use a text field when a constrained choice is faster: one option from a known list belongs in a [Select](/components/select) or [Radio](/components/radio) group, and an approximate magnitude belongs in a [Slider](/components/slider). For short, predefined answers, [Chips](/components/chips) can replace typing.
+
+### Usability
+
+- Single-line inputs use `<input>`; longer answers use the multi-line `<textarea>`.
+- Every visible label is explicitly associated through `for` and `id`; helper and error messages use unique IDs referenced by `aria-describedby`.
+- Server-side validation returns HTTP 422 with the submitted value preserved and `aria-invalid="true"` on the field.
+
+### Accessibility
+
+- The native `<input>`/`<textarea>` keeps its role, name, value, and keyboard behavior at no cost.
+- Every visible label is explicitly associated through `for` and `id`, matching what is on screen.
+- Errors are announced via `aria-invalid` plus visible error text — never color alone.
+- Disabled keeps the native `disabled` attribute and takes precedence over error.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Alternative names
 
 - Input, text input, form field, entry field

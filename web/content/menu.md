@@ -2,6 +2,30 @@
 
 Menus show a list of choices on a temporary surface anchored to a trigger. Use a menu when an action needs a compact set of options that should not clutter the page, and the open/close flow must work without JavaScript. Gelium reimplements the Material 3 menu over **server-rendered HTML with the native Popover API** (the browser's declarative popup mechanism): the menu surface is a `[popover]` element opened and closed declaratively by a real trigger button through `popovertarget` / `popovertargetaction`, positioned with CSS anchor positioning when the browser supports it. There is **no component JavaScript** — the trigger, the top-layer open/close, light dismiss and Escape are all platform-native.
 
+## Guidance
+
+### When to use
+
+Use a menu when an action needs a compact set of options that should not clutter the page, and the open/close flow must work without JavaScript.
+
+### When not to use
+
+Do not use a menu when the choice is data entry — a form value belongs in a [Radio](/components/radio) group or a [Select](/components/select), not in a command menu. For a permanent, always-visible set of choices, prefer [Tabs](/components/tabs) or [Segmented buttons](/components/segmented-button).
+
+### Usability
+
+- Action items are real `<button type="button">` elements; navigation items are real `<a href>` links.
+- Selection rows wrap a native checkbox (multi-select) or radio (single-select) in a `<label>` inside a real form.
+- The surface opens declaratively via `popovertarget`; light dismiss and Escape are platform-native.
+
+### Accessibility
+
+- The trigger is a real `<button>` with `aria-haspopup="menu"`; `popovertarget` gives the popover its implicit `aria-expanded`/`aria-details` relationship.
+- Items are native links/buttons/checkboxes/radios — role, name, keyboard and disabled behavior come from the platform.
+- The surface is a `<ul>` so item rows keep list semantics; the divider is `role="separator"`.
+- Focus ring uses `:focus-visible`; decorative icons are `aria-hidden`; disabled never relies on color alone.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 - **Surface** — `ui-menu`, the elevated container (container color, `--ui-radius-xs` shape, `--ui-shadow-2` elevation, 8px block padding). On the open anatomy demo the surface is a `<ul>` so the items keep native list semantics.

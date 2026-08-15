@@ -2,6 +2,30 @@
 
 Slider is a native `input[type="range"]` painted with the Material track, its active fill, and the handle from the `--ui-slider-*` tokens — the real control stays the focusable, operable element. Use a slider when a single value sits on a continuous or discrete ordered range — volume, brightness, a price cap — and approximate precision is acceptable. Form semantics, keyboard input, and assisted input work unchanged.
 
+## Guidance
+
+### When to use
+
+Use a slider when a single value sits on a continuous or discrete ordered range — volume, brightness, a price cap — and approximate precision is acceptable.
+
+### When not to use
+
+Do not use a slider when exact values matter — price, dates, account numbers: a [Text field](/components/text-field) is accurate where the user cannot aim precisely. For a small set of discrete labelled options, a [Select](/components/select) or [Radio](/components/radio) group is usually clearer.
+
+### Usability
+
+- Put the visual `--ui-slider-fill` percentage on the `.ui-slider` wrapper and keep the native range input inside it.
+- Always pair the input with an `aria-label` (or a linked visible label) matching what is on screen.
+- Arrow keys step by `step`, Home/End jump to the edges, and Page Up/Page Down step by larger increments — natively.
+
+### Accessibility
+
+- Keep the native element: the range input keeps its role, value, min/max, keyboard behavior, and accessible name at no cost.
+- Never rely on color alone: the handle position carries the value, and disabled state is announced by the platform.
+- The focus ring stays on the native input (`:focus-visible`), so keyboard users always see where the control is.
+- In forced-colors mode the track and handle repaint as `CanvasText` and the focus ring uses `Highlight`.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 The component is a single decorated range input. Put the visual `--ui-slider-fill` percentage on the `.ui-slider` wrapper and keep the input inside it.
@@ -20,10 +44,6 @@ The component is a single decorated range input. Put the visual `--ui-slider-fil
 ## What states can a slider be in?
 
 The slider covers `unselected` (value at minimum), `populated` (an intermediate value), and `disabled`. Disabled follows the Material contract: the track and handle repaint through `--ui-slider-disabled` at `--ui-slider-disabled-opacity` (`.38`) and interaction stops.
-
-## When to use it
-
-Use a slider to pick a single value from a continuous or a discrete ordered range — volume, brightness, or a price cap. For a small set of discrete labelled options a `select` or radio group is usually clearer. This component covers the **single-value** form; a dual range select is deferred.
 
 ## Design tokens
 

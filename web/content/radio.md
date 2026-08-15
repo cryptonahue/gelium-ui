@@ -2,16 +2,36 @@
 
 Radio is a native `input[type="radio"]` painted with the Material ring and the inner checked dot from the `--ui-radio-*` tokens — the real control stays the focusable, operable element. Use a radio group when exactly one option from a mutually exclusive set must be chosen, and the choice has to submit through a real `<form>`. Grouping, form semantics, and assisted input work unchanged.
 
+## Guidance
+
+### When to use
+
+Use a radio group when exactly one option from a mutually exclusive set must be chosen, and the choice has to submit through a real `<form>`.
+
+### When not to use
+
+Never use radios for independent yes/no options — that is a [Checkbox](/components/checkbox). When the set has more than five options or the labels carry a lot of text, a [Select](/components/select) collapses the list. When choosing should immediately perform an action instead of submitting a value, a [Menu](/components/menu) is the command surface.
+
+### Usability
+
+- Group radios by sharing the same `name` so the browser enforces the single-select rule.
+- Wrap each input and its text in a `label` so clicking the text selects the ring.
+- Prefill deliberately — a deliberate selection or an explicit "None" — rather than defaulting to the first option silently.
+
+### Accessibility
+
+- Keep the native element: the radio keeps its role, name, value, checked state, and keyboard behavior at no cost.
+- The input must be nested inside its `label` (or `id`-linked) so the accessible name always matches what is on screen.
+- Group a related set with `fieldset` and `legend`: the legend becomes the group's label.
+- Never rely on color alone: selected state carries the inner dot, errors carry `aria-invalid`, and disabled state is announced by the platform.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 - **Input** — the native `ui-radio` radio, `20px` in diameter (`--ui-radio-size`) with a fully round radius (`--ui-radio-radius`) and a `--ui-radio-outline-width` border in `--ui-radio-outline`. It keeps `appearance: none` only for styling; keyboard focus, the accessibility tree, and form submission are unaffected.
 - **Mark** — `ui-radio-mark`, a `span` that sits over the ring and paints the `10px` inner dot in `--ui-radio-checked` when the input is selected.
 - **Label** — `ui-radio-label`, the visible text paired with the ring. Put the accessible name here and wrap both in a `label` so clicking the text selects the input.
 - **Error** — set `aria-invalid="true"` on the input to switch the ring to `--ui-field-error`.
-
-## When to use it
-
-Use a radio group when exactly one option from a mutually exclusive set must be chosen — never for independent yes/no options (that is a checkbox). Group radios by sharing the same `name` so the browser enforces the single-select rule. The label is never color-only: an error is always a visible ring change plus the surrounding form message.
 
 ## Accessibility
 

@@ -2,6 +2,29 @@
 
 Divider is a thin line that groups or separates related content. Use a divider when adjacent content needs a visual separation that is not a container boundary — between list rows, toolbar groups, or stacked sections. It is a native `hr` element styled with the `ui-divider` class, so it needs no component JavaScript at all.
 
+## Guidance
+
+### When to use
+
+Use a divider when adjacent content needs a visual separation that is not a container boundary — between list rows, toolbar groups, or stacked sections.
+
+### When not to use
+
+Do not divide everything: spacing alone is often enough, and over-dividing adds noise. If the groups are truly distinct surfaces, a [Card](/components/card) or a container boundary communicates the separation better than a line.
+
+### Usability
+
+- A plain `<hr class="ui-divider">` spans the full width of its container.
+- Use the inset modifiers to shorten the line: `ui-divider-inset`, `ui-divider-inset-start`, `ui-divider-inset-end`.
+- The inset distance is exactly `1rem` with logical properties, so it mirrors correctly in right-to-left layouts.
+
+### Accessibility
+
+- A divider is decorative by default: it does not announce anything to assistive technology.
+- When the line represents a real thematic or section break, add `role="separator"` manually.
+- In forced-colors mode the divider keeps a `CanvasText` paint so the grouping stays visible without color.
+
+See [Choose the right control](/docs/choose-the-right-control) for the cross-component decision.
 ## Anatomy
 
 The visible line uses the theme tokens:
