@@ -1,14 +1,18 @@
-{{/* Theme direction switcher (docs chrome). Product labels (Material, Basecoat,
-     future shadcn-like presets) — never internal CSS class names. Each option is
-     a real GET link to the same path with ?theme=<slug>; 0 JS. */}}
+{{/* Theme direction switcher (docs chrome). Native <select> in a 0-JS GET
+     form: selecting an option and submitting produces ?theme=<slug> on the
+     SAME URL (no action attribute), exactly like the old ?theme= links. The
+     hidden scheme input preserves the current light/dark selection, which a
+     GET form would otherwise drop. JS enhancement (app.js): onchange submits
+     and hides the submit button; with no JS the button still works. */}}
 {{define "theme-switcher"}}
-<nav class="ui-theme-switcher" aria-label="{{or .Label "Theme"}}">
-  <span class="ui-theme-switcher-label" id="theme-switcher-label">{{or .Label "Theme"}}</span>
-  <span class="ui-theme-switcher-options" role="list" aria-labelledby="theme-switcher-label">
+<form class="ui-theme-switcher" method="get" data-chrome-form role="group" aria-label="{{or .Label "Theme"}}">
+  <label class="ui-theme-switcher-label" for="theme-switcher-select">{{or .Label "Theme"}}</label>
+  <select id="theme-switcher-select" name="theme" class="ui-theme-switcher-select">
     {{range .Options}}
-    <a role="listitem" class="ui-theme-switcher-option{{if .Current}} is-current{{end}}" href="{{.Href}}"{{if .Current}} aria-current="true"{{end}}>{{.Label}}</a>
+    <option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>
     {{end}}
-  </span>
-</nav>
+  </select>
+  {{if .Scheme}}<input type="hidden" name="scheme" value="{{.Scheme}}">{{end}}
+  <button type="submit" class="ui-theme-switcher-submit">Apply</button>
+</form>
 {{end}}
-
