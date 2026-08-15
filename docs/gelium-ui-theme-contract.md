@@ -37,11 +37,11 @@ Reglas del theme:
 
 ## 2. Mecanismo (acordado — Phase H)
 
-- **Bundle de todos los themes + selección en runtime por clase/attr en el documento raíz** (`<html>` o `<body>`).
+- **Bundle de todos los themes + selección en runtime por clase/attr en el documento raíz** (`<html>`, ver decisión de placement abajo).
 - Un `theme.css` por theme en `themes/<theme>/`, autocontenido (luz + dark), con selector raíz propio `.theme-<name>`.
 - `web/styles/app.css` importa CADA theme explícitamente (CSS no globbea): un solo `web/static/app.css` embebido, todos los themes adentro.
 - Selección data-driven desde template/server: `<html class="theme-material">` deja de estar hardcodeado (`layout.html:2`).
-- **Mecanismo mínimo (Phase H)**: `<body class="theme-material">` / `<body class="theme-basecoat">`; selección desde el servidor o documento raíz. **Sin runtime JavaScript de selección de themes.**
+- **Mecanismo mínimo (Phase H)**: clase de theme en el **documento raíz** `<html class="theme-material">` / `<html class="theme-basecoat">` (+ `data-theme` opcional); selección desde el servidor o documento raíz. **Sin runtime JavaScript de selección de themes.** *Decisión de placement (Phase H): el literal del roadmap `<body class="...">` NO se adopta — `html` ES el documento raíz según el propio roadmap («documento raíz»); mover la clase a `body` churnearía ~10 tests por cero ganancia funcional.*
 - NO: archivos `themes/<theme>/<componente>.css` (el contrato es token-only; los componentes son únicos).
 - La variable de build `THEME=basecoat npm run build` es una optimización opcional de footprint, no el mecanismo base.
 - Dark: **una sola rutina por theme** (eliminar la duplicación clase + media query actual con drift, `theme.css:203-299`); decidir `light-dark()` vs clase única al implementar.
