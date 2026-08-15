@@ -52,7 +52,20 @@
     {{if .Error}}{{template "error-state" .Error}}{{else if .Landing}}{{template "landing" .Landing}}{{else if .Blog}}{{template "blog" .Blog}}{{else}}<article class="prose">{{if .Provenance}}<p class="article-provenance">
       {{if .Provenance.Published}}Published <time datetime="{{.Provenance.Published}}">{{.Provenance.Published}}</time>{{end}}{{if .Provenance.Modified}} · Updated <time datetime="{{.Provenance.Modified}}">{{.Provenance.Modified}}</time>{{end}}
       {{if .Provenance.Version}} · v{{.Provenance.Version}}{{end}}{{if .Provenance.LicenseURL}} · <a href="{{.Provenance.LicenseURL}}" rel="license">MIT License</a>{{end}}{{if .Provenance.Source}} · Source: {{.Provenance.Source}}{{end}}
-    </p>{{end}}{{.Content}}</article>
+    </p>{{end}}{{.Content}}{{if .Examples}}<h2>Examples</h2>{{range .Examples}}
+    <section class="example-block">
+      <h3>{{.Name}}</h3>
+      <p>{{.Desc}}</p>
+      <div class="component-preview" aria-label="{{.Name}} example">{{.Demo}}</div>
+      <pre><code>{{.Code}}</code></pre>
+    </section>{{end}}{{end}}{{if .APIRef}}<h2>API reference</h2>
+    <div class="api-ref-table-wrap">
+      <table class="api-ref-table">
+        <caption>{{.APIRef.Component}} props</caption>
+        <thead><tr><th scope="col">Prop</th><th scope="col">Type</th><th scope="col">Default</th><th scope="col">Description</th></tr></thead>
+        <tbody>{{range .APIRef.Rows}}<tr><th scope="row"><code>{{.Prop}}</code></th><td><code>{{.Type}}</code></td><td>{{.Default}}</td><td>{{.Description}}</td></tr>{{end}}</tbody>
+      </table>
+    </div>{{end}}</article>
     {{if .CTA}}<div class="hero-action">{{template "button" .CTA}}</div>{{end}}
     {{if .Buttons}}<section class="component-preview" aria-label="Button examples">{{range .Buttons}}{{template "button" .}}{{end}}</section>{{end}}
     {{if .TextFields}}<section class="component-preview text-field-preview" aria-label="Text field examples">{{range .TextFields}}{{template "text-field" .}}{{end}}</section>{{end}}

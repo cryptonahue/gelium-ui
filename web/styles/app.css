@@ -12,6 +12,7 @@
 @import "../../themes/theme-material/theme.css";
 @import "../../themes/theme-basecoat/theme.css";
 @import "./base.css";
+@import "./examples.css";
 @import "./docs-shell.css";
 @import "./button.css";
 @import "./text-field.css";

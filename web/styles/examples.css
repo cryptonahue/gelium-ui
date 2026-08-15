@@ -1,0 +1,45 @@
+@layer components {
+  /* Pilot "Examples + code + API reference" pattern (Base UI style): each
+     example is a live demo block followed by the real Go template
+     invocation that produced it; the API reference is a semantic table
+     styled with the shared tokens. Pilot pages only — the sections render
+     nothing on non-pilot pages, and these classes are never used elsewhere. */
+  .example-block { margin-top: 2rem; }
+  .example-block h3 { margin-bottom: .5rem; }
+  .example-block .component-preview { margin-top: 1rem; }
+  .example-block pre {
+    margin-top: 1rem;
+    padding: 1rem 1.25rem;
+    overflow-x: auto;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-sm);
+    background: var(--ui-color-surface-container);
+    color: var(--ui-color-fg);
+    font-family: var(--ui-font-mono, ui-monospace, monospace);
+    font-size: .875rem;
+    line-height: 1.6;
+  }
+  .api-ref-table-wrap { margin-top: 1rem; overflow-x: auto; }
+  .api-ref-table {
+    width: 100%;
+    border-collapse: collapse;
+    font-size: .9em;
+  }
+  .api-ref-table caption {
+    margin-bottom: .5rem;
+    text-align: left;
+    color: var(--ui-color-fg-muted);
+    font: var(--ui-type-label-md);
+    letter-spacing: var(--ui-type-label-md-letter-spacing);
+  }
+  .api-ref-table th,
+  .api-ref-table td {
+    padding: .5rem .75rem;
+    border-bottom: 1px solid var(--ui-color-border);
+    text-align: left;
+    vertical-align: top;
+  }
+  .api-ref-table thead th { font-weight: 600; }
+  .api-ref-table tbody th { font-weight: 500; }
+  .api-ref-table code { font-size: .875em; }
+}
