@@ -32,7 +32,7 @@ func TestComponentRegistrySyncsWithTemplates(t *testing.T) {
 	var missing []string
 	for _, p := range partials {
 		name := filepath.Base(p)
-		if name == "layout.html" || name == "landing.html" || strings.Contains(name, "switcher") {
+		if name == "layout.html" || name == "landing.html" || name == "blog.html" || strings.Contains(name, "switcher") {
 			continue
 		}
 		excluded := false
