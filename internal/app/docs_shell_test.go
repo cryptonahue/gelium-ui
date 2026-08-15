@@ -165,13 +165,17 @@ func TestDocsShellColorSchemeSwitcher(t *testing.T) {
 		if !strings.Contains(body, `aria-label="Appearance"`) {
 			t.Error("docs topbar must expose Appearance (scheme) switcher")
 		}
-		if !strings.Contains(body, `>Dark<`) || !strings.Contains(body, `>Light<`) {
-			t.Error("scheme switcher must offer Light and Dark labels")
+		// Native switch: checkbox with role=switch, checked → ?scheme=dark.
+		if !strings.Contains(body, `<input type="checkbox" role="switch" name="scheme" value="dark" checked`) {
+			t.Error("scheme switch must render checked under ?scheme=dark")
 		}
-		// Dark option is current.
-		if !strings.Contains(body, `href="/components/button?scheme=dark"`) &&
-			!strings.Contains(body, `scheme=dark`) {
-			t.Error("scheme switcher must link with scheme=dark")
+		// Unchecked state maps to ?scheme=light via the hidden twin after the
+		// checkbox (first value wins server-side: dark when checked, light when not).
+		if !strings.Contains(body, `<input type="hidden" name="scheme" value="light">`) {
+			t.Error("scheme switch must carry the hidden light twin for the unchecked state")
+		}
+		if !strings.Contains(body, `name="scheme"`) {
+			t.Error("scheme switch must submit name=scheme")
 		}
 	})
 
@@ -347,20 +351,29 @@ func TestDocsShellChromeActivePeersAndIA(t *testing.T) {
 		}
 	})
 
-	t.Run("theme links only theme query on path", func(t *testing.T) {
-		// Extra query params must be stripped from switcher hrefs.
+	t.Run("theme select only theme query on path", func(t *testing.T) {
+		// Extra query params must be stripped from the chrome form: the select
+		// emits only name=theme (values produce the same ?theme= URLs as the
+		// old link list), plus a hidden scheme only when one is set.
 		body := getOKBody(t, "/components/button?foo=bar&theme=material")
-		for _, slug := range []string{"material", "basecoat"} {
-			want := `href="/components/button?theme=` + slug + `"`
-			if !strings.Contains(body, want) {
-				t.Errorf("topbar theme switcher missing exact href %q", want)
+		if !strings.Contains(body, `<form class="ui-theme-switcher" method="get"`) {
+			t.Error("topbar theme switcher must be a GET form")
+		}
+		for _, opt := range []string{`<option value="material"`, `<option value="basecoat"`} {
+			if !strings.Contains(body, opt) {
+				t.Errorf("topbar theme select missing option %q", opt)
 			}
 		}
-		// Must not re-emit non-theme query state into chrome links.
-		if strings.Contains(body, `theme=material&foo=`) ||
-			strings.Contains(body, `foo=bar&theme=`) ||
-			strings.Contains(body, `?foo=bar`) {
-			t.Error("theme switcher must not preserve non-theme query params")
+		if !strings.Contains(body, `value="material" selected`) {
+			t.Error("current theme must be selected in the native select")
+		}
+		// Must not re-emit non-theme query state into the chrome form.
+		if strings.Contains(body, `name="foo"`) || strings.Contains(body, "?foo=bar") {
+			t.Error("theme form must not preserve non-theme query params")
+		}
+		// The old link-list switcher is gone.
+		if strings.Contains(body, "ui-theme-switcher-option") {
+			t.Error("theme switcher must no longer render link-list options")
 		}
 	})
 
