@@ -159,6 +159,7 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/content-style", Label: "Content style"},
 	{Path: "/docs/acknowledgments", Label: "Acknowledgments"},
 	{Path: "/docs/changelog", Label: "Changelog"},
+	{Path: "/docs/roadmap", Label: "Roadmap"},
 }
 
 // docsSections groups the component library into logical categories for the
@@ -382,4 +383,11 @@ func (s *server) docsAcknowledgments(w http.ResponseWriter, r *http.Request) {
 // process documented per version, mirrored from the repository CHANGELOG.md.
 func (s *server) docsChangelog(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPage(w, r, pageView{Title: "Changelog"}, "content/handbook-changelog.md")
+}
+
+// docsRoadmap is GET /docs/roadmap — the public Roadmap page: phases A-J
+// shipped with contract tests, docs/DX status, and the post-A-J next list,
+// mirrored from the internal system roadmap.
+func (s *server) docsRoadmap(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{Title: "Roadmap"}, "content/handbook-roadmap.md")
 }

@@ -806,6 +806,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/content-style", s.docsContentStyle)
 	mux.HandleFunc("GET /docs/acknowledgments", s.docsAcknowledgments)
 	mux.HandleFunc("GET /docs/changelog", s.docsChangelog)
+	mux.HandleFunc("GET /docs/roadmap", s.docsRoadmap)
 	for _, r := range componentRoutes() {
 		r := r
 		mux.HandleFunc("GET "+r.Path, func(w http.ResponseWriter, req *http.Request) {
