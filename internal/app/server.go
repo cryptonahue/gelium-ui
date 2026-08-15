@@ -714,6 +714,10 @@ type pageView struct {
 	Meta       metaView
 	Title      string
 	Content    template.HTML
+	// ContentRest is the tail of a pilot component page's markdown (from
+	// "## Guidance" onward), rendered AFTER the server-injected Examples and
+	// API reference sections. Empty on non-pilot pages.
+	ContentRest template.HTML
 	ThemeClass string
 	// Provenance is the article provenance line (version, license, source,
 	// dates) rendered inside the article on component pages only.
@@ -1112,7 +1116,35 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 		data.Provenance = provenance
 	}
 	data.Meta = resolveMeta(data, routePath)
-	data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
+	// Pilot pages split their markdown so Examples + API reference sit
+	// between the intro and the Guidance block (Base UI order: show the
+	// component, then the rules). The split happens at "## Guidance": the
+	// intro (answer-first lead) renders first, then the server-rendered
+	// Examples/API sections, then the rest (Guidance onward) closes the
+	// article. Non-pilot pages keep the whole source in Content.
+	if len(data.Examples) > 0 {
+		rest := ""
+		if idx := strings.Index(source, "## Guidance"); idx >= 0 {
+			rest = source[idx:]
+			source = source[:idx]
+		}
+		var introHTML bytes.Buffer
+		if err := s.markdown.Convert([]byte(source), &introHTML); err != nil {
+			s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
+			return
+		}
+		var restHTML bytes.Buffer
+		if rest != "" {
+			if err := s.markdown.Convert([]byte(rest), &restHTML); err != nil {
+				s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
+				return
+			}
+		}
+		data.Content = template.HTML(introHTML.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
+		data.ContentRest = template.HTML(restHTML.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
+	} else {
+		data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
+	}
 	// Pilot Examples sections render their live demos at the choke point:
 	// every page that carries Examples (the three pilot components) gets the
 	// demos executed through the real component partials before layout, so
