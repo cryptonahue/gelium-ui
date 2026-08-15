@@ -795,6 +795,10 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs", s.docsIndex)
 	mux.HandleFunc("GET /docs/patterns", s.docsPatterns)
 	mux.HandleFunc("GET /docs/themes", s.docsThemes)
+	mux.HandleFunc("GET /docs/tokens", s.docsTokens)
+	mux.HandleFunc("GET /docs/server-contracts", s.docsServerContracts)
+	mux.HandleFunc("GET /docs/accessibility", s.docsAccessibility)
+	mux.HandleFunc("GET /docs/principles", s.docsPrinciples)
 	for _, r := range componentRoutes() {
 		r := r
 		mux.HandleFunc("GET "+r.Path, func(w http.ResponseWriter, req *http.Request) {
@@ -897,7 +901,10 @@ type urlset struct {
 // sitemap can never drift from the library (contract §5). Demo, example and
 // recipe surfaces are excluded (noindex or form flows).
 func sitemapPaths() []string {
-	paths := []string{"/", "/docs", "/docs/patterns", "/docs/themes"}
+	paths := []string{"/", "/docs", "/docs/patterns"}
+	for _, l := range handbookNavLinks {
+		paths = append(paths, l.Path)
+	}
 	for _, r := range componentRoutes() {
 		paths = append(paths, r.Path)
 	}
