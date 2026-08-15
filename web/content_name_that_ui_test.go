@@ -7,6 +7,12 @@ package web
 //     style) and "Prompt para agentes" (a paste-into-your-agent prompt).
 //  2. Every served component page listed here must open with the two new
 //     English sections — "## Alternative names" and "## Agent prompt".
+//  3. Every served component page must carry the normalized usage-guidance
+//     block — "## Guidance" with the four subsections "When to use" /
+//     "When not to use" / "Usability" / "Accessibility" — so the docs always
+//     answer "saber qué componente usar en cada situación". The seven input
+//     controls must additionally cross-link the "Choose the right control"
+//     decision page.
 //
 // The sections exist to make the Gelium vocabulary and the served component
 // docs usable by AI coding agents (namethatui.com pattern: alternate names +
@@ -72,6 +78,54 @@ func sectionBody(t *testing.T, doc, heading string) string {
 		return strings.TrimSpace(rest)
 	}
 	return strings.TrimSpace(rest[:end])
+}
+
+// subsectionBody returns the text between a "### " heading and the next
+// heading of the same or higher level ("### " or "## "), or "" when the
+// heading is absent.
+func subsectionBody(doc, heading string) string {
+	start := strings.Index(doc, heading)
+	if start < 0 {
+		return ""
+	}
+	rest := doc[start+len(heading):]
+	end := len(rest)
+	if i := strings.Index(rest, "\n## "); i >= 0 && i < end {
+		end = i
+	}
+	if i := strings.Index(rest, "\n### "); i >= 0 && i < end {
+		end = i
+	}
+	return strings.TrimSpace(rest[:end])
+}
+
+// bulletCount counts markdown "- " bullet lines inside a block.
+func bulletCount(block string) int {
+	n := 0
+	for _, line := range strings.Split(block, "\n") {
+		if strings.HasPrefix(strings.TrimSpace(line), "- ") {
+			n++
+		}
+	}
+	return n
+}
+
+// componentContentSlugs lists every served component page under web/content.
+// Handbook pages (handbook-*), the docs root (index.md) and the design
+// principles page (principles.md) are NOT components and are deliberately
+// excluded: the Guidance contract applies to components only.
+var componentContentSlugs = []string{
+	"badge", "button", "card", "checkbox", "chips", "data-table", "dialog",
+	"divider", "elevation", "fab", "focus-ring", "icon", "icon-button", "list",
+	"menu", "navigation-bar", "navigation-drawer", "navigation-tab", "progress",
+	"radio", "segmented-button", "select", "slider", "switch", "tabs",
+	"text-field", "toast", "tooltip",
+}
+
+// guidanceLinkSlugs are the input controls that must cross-link the
+// "Choose the right control" decision page from their Guidance section.
+var guidanceLinkSlugs = []string{
+	"radio", "select", "checkbox", "switch", "slider", "text-field", "menu",
 }
 
 func TestVocabularyStatePatternsCarryNameThatUIFields(t *testing.T) {
@@ -148,6 +202,62 @@ func TestServedComponentPagesCarryNameThatUISections(t *testing.T) {
 			if wordCount(body) < 20 {
 				t.Errorf("%s.md '## Agent prompt' body is too short (want >= 20 words, got %d)", slug, wordCount(body))
 			}
+		}
+	}
+}
+
+// TestComponentPagesCarryGuidanceSections proves every served component page
+// carries the normalized usage-guidance block: "## Guidance" with the four
+// subsections "### When to use", "### When not to use", "### Usability" and
+// "### Accessibility" in that order, each with real content. The block answers
+// "saber qué componente usar en cada situación": the right conditions, the
+// alternative components (linked), practical usage bullets, and accessibility
+// bullets. The block sits right after the answer-first intro — before any
+// "## Alternative names" — so the usage story opens the page. The seven input
+// controls must also cross-link the "Choose the right control" decision page.
+func TestComponentPagesCarryGuidanceSections(t *testing.T) {
+	for _, slug := range componentContentSlugs {
+		doc := repositoryFile(t, "web", "content", slug+".md")
+		guidance := subsectionBody(doc, "## Guidance")
+		if guidance == "" {
+			t.Errorf("%s.md is missing '## Guidance'", slug)
+			continue
+		}
+		order := []string{"### When to use", "### When not to use", "### Usability", "### Accessibility"}
+		last := -1
+		for _, heading := range order {
+			idx := strings.Index(guidance, heading)
+			if idx < 0 {
+				t.Errorf("%s.md Guidance is missing %q", slug, heading)
+				continue
+			}
+			if idx < last {
+				t.Errorf("%s.md Guidance subsections are out of order: %q must follow the previous subsection", slug, heading)
+			}
+			last = idx
+		}
+		if whenToUse := subsectionBody(guidance, "### When to use"); wordCount(whenToUse) < 5 {
+			t.Errorf("%s.md 'When to use' is empty or trivial (want >= 5 words, got %d)", slug, wordCount(whenToUse))
+		}
+		if whenNot := subsectionBody(guidance, "### When not to use"); wordCount(whenNot) < 5 {
+			t.Errorf("%s.md 'When not to use' is empty or trivial (want >= 5 words, got %d)", slug, wordCount(whenNot))
+		}
+		if usability := subsectionBody(guidance, "### Usability"); bulletCount(usability) < 2 {
+			t.Errorf("%s.md 'Usability' needs at least 2 bullets (got %d)", slug, bulletCount(usability))
+		}
+		if a11y := subsectionBody(guidance, "### Accessibility"); bulletCount(a11y) < 2 {
+			t.Errorf("%s.md 'Accessibility' needs at least 2 bullets (got %d)", slug, bulletCount(a11y))
+		}
+		// The Guidance block opens the usage story: it comes after the
+		// answer-first intro and before any "## Alternative names" section.
+		if alt := strings.Index(doc, "## Alternative names"); alt >= 0 && strings.Index(doc, "## Guidance") > alt {
+			t.Errorf("%s.md must place '## Guidance' before '## Alternative names'", slug)
+		}
+	}
+	for _, slug := range guidanceLinkSlugs {
+		doc := repositoryFile(t, "web", "content", slug+".md")
+		if !strings.Contains(doc, "choose-the-right-control") {
+			t.Errorf("%s.md must link the 'Choose the right control' decision page from its Guidance", slug)
 		}
 	}
 }
