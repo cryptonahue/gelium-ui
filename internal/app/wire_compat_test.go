@@ -12,7 +12,7 @@ import (
 	"testing"
 )
 
-func TestWireCompatValidationHeaderStaysXLoomValidation(t *testing.T) {
+func TestWireCompatValidationHeaderStaysXGeliumValidation(t *testing.T) {
 	req := httptest.NewRequest(http.MethodPost, "/examples/text-field/validate", strings.NewReader("name=+++++"))
 	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
 	req.Header.Set("HX-Request", "true")
@@ -22,8 +22,8 @@ func TestWireCompatValidationHeaderStaysXLoomValidation(t *testing.T) {
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if got := res.Header().Get("X-Loom-Validation"); got != "true" {
-		t.Errorf("frozen X-Loom-Validation header = %q, want \"true\"", got)
+	if got := res.Header().Get("X-Gelium-Validation"); got != "true" {
+		t.Errorf("X-Gelium-Validation header = %q, want \"true\"", got)
 	}
 }
 

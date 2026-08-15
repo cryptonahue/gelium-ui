@@ -157,11 +157,11 @@ func TestToastDemoHXEmptyMessageRejects422WithoutTrigger(t *testing.T) {
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if got := res.Header().Get("X-Loom-Validation"); got != "true" {
-		t.Errorf("X-Loom-Validation = %q, want true", got)
+	if got := res.Header().Get("X-Gelium-Validation"); got != "true" {
+		t.Errorf("X-Gelium-Validation = %q, want true", got)
 	}
 	if got := res.Header().Get("HX-Trigger"); got != "" {
-		t.Errorf("validation failure must not raise loom:toast, got %q", got)
+		t.Errorf("validation failure must not raise gelium:toast, got %q", got)
 	}
 	body := res.Body.String()
 	if !strings.Contains(body, "Message is required") {

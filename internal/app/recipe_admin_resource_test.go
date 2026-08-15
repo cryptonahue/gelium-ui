@@ -206,7 +206,7 @@ func TestRecipeAdminResourceNewForm(t *testing.T) {
 }
 
 // TestRecipeAdminResourceCreateValidation422 proves the create failure uses the
-// 422 contract: the X-Loom-Validation header, the inline alert, the validation
+// 422 contract: the X-Gelium-Validation header, the inline alert, the validation
 // summary linking to each field error and the preserved submitted values.
 func TestRecipeAdminResourceCreateValidation422(t *testing.T) {
 	resetRecipeResourceStore()
@@ -220,8 +220,8 @@ func TestRecipeAdminResourceCreateValidation422(t *testing.T) {
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if res.Header().Get("X-Loom-Validation") != "true" {
-		t.Errorf("X-Loom-Validation = %q, want true", res.Header().Get("X-Loom-Validation"))
+	if res.Header().Get("X-Gelium-Validation") != "true" {
+		t.Errorf("X-Gelium-Validation = %q, want true", res.Header().Get("X-Gelium-Validation"))
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
@@ -324,8 +324,8 @@ func TestRecipeAdminResourceEditValidation422(t *testing.T) {
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if res.Header().Get("X-Loom-Validation") != "true" {
-		t.Errorf("X-Loom-Validation = %q, want true", res.Header().Get("X-Loom-Validation"))
+	if res.Header().Get("X-Gelium-Validation") != "true" {
+		t.Errorf("X-Gelium-Validation = %q, want true", res.Header().Get("X-Gelium-Validation"))
 	}
 	body := res.Body.String()
 	for _, contract := range []string{

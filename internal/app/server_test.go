@@ -125,7 +125,7 @@ func TestStaticBuildArtifactsAreServedFromEmbeddedFilesystem(t *testing.T) {
 	}{
 		{path: "/static/app.css", contentType: "text/css; charset=utf-8", contract: ".ui-button"},
 		{path: "/static/htmx.min.js", contentType: "text/javascript; charset=utf-8", contract: "htmx"},
-		{path: "/static/app.js", contentType: "text/javascript; charset=utf-8", contract: "X-Loom-Validation"},
+		{path: "/static/app.js", contentType: "text/javascript; charset=utf-8", contract: "X-Gelium-Validation"},
 	}
 
 	for _, tt := range tests {

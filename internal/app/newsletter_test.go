@@ -49,8 +49,8 @@ func TestNewsletterPOSTInvalidEmailWithoutHXRejectsWith422FullPage(t *testing.T)
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
 	// The fragment-only validation header belongs to the HX branch only.
-	if got := res.Header().Get("X-Loom-Validation"); got != "" {
-		t.Errorf("non-HX X-Loom-Validation = %q, want no fragment-only validation header", got)
+	if got := res.Header().Get("X-Gelium-Validation"); got != "" {
+		t.Errorf("non-HX X-Gelium-Validation = %q, want no fragment-only validation header", got)
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
@@ -108,8 +108,8 @@ func TestNewsletterPOSTInvalidEmailWithHXReturnsFragmentAndHeader(t *testing.T) 
 	if res.Code != http.StatusUnprocessableEntity {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusUnprocessableEntity)
 	}
-	if got := res.Header().Get("X-Loom-Validation"); got != "true" {
-		t.Errorf("X-Loom-Validation = %q, want %q", got, "true")
+	if got := res.Header().Get("X-Gelium-Validation"); got != "true" {
+		t.Errorf("X-Gelium-Validation = %q, want %q", got, "true")
 	}
 	body := res.Body.String()
 	if strings.Contains(body, `<!doctype html>`) || strings.Contains(body, `<title>`) {
