@@ -1,6 +1,6 @@
 # Data table
 
-Data table is a server-rendered Material 3 table for displaying dense, sortable, filterable, paginated data. Gelium reimplements it over native HTML table semantics — a real `<table>` with `<thead>`, `<tbody>`, `<th scope="col">`, and `<caption>`. There is no component JavaScript: sort, filter and pagination are real GET requests answered by the server, and row selection uses native checkboxes in a real form.
+Data table is a server-rendered Material 3 table for displaying dense, sortable, filterable, paginated data. Gelium reimplements it over native HTML table semantics — a real `<table>` with `<thead>`, `<tbody>`, `<th scope="col">`, and `<caption>`. There is no component JavaScript: sort, filter and pagination are real GET requests answered by the server, and row selection uses native checkboxes in a real form. Use a data table when dense, columnar data benefits from server-side sort, filter and pagination.
 
 ## Anatomy
 
@@ -31,7 +31,7 @@ The root `ui-data-table` container paints the surface with a `1px` outline and t
 - **Rows** — `ui-data-table-row` with the Material hover state layer; selected rows flip the native checkbox and tint the row container.
 - **Footer** — `ui-data-table-pagination` with previous/next and numbered page links, plus a `caption` summarizing the slice.
 
-## Server-side sort, filter and pagination
+## How do sort, filter and pagination work?
 
 Everything is a real GET request against `/components/data-table`, so the no-JS flow is a normal full-page reload:
 
@@ -46,12 +46,12 @@ The selection column uses native checkboxes inside a real `<form method="get">`.
 ## States
 
 - **Sortable header** — rest, hover (label and glyph brighten), `focus-visible` (focus ring).
-- **Row** — rest, hover (state layer), selected (`ui-data-table-row--selected` + native `:checked`), and focus that lands on the native checkbox.
+- **Row** — rest, hover (state layer), selected (`ui-data-table-row--selected` + native `:checked`, the CSS pseudo-class matching a checked native input), and focus that lands on the native checkbox.
 - **Disabled** — not part of the table contract; individual controls keep their own disabled semantics.
 
 ## Progressive enhancement
 
-The sort, filter and pagination links also carry `hx-get` targeting `#data-table-panel` with `outerHTML` swap, so with HTMX enabled only the table panel re-renders. The no-JS branch is always a real full-page GET — nothing depends on HTMX or JavaScript. The remote refresh demo completes a POST round-trip that re-renders the panel with a determinate `.ui-progress` bar and a `.ui-toast` notification; HTMX swaps just the refresh form and raises `loom:toast` into the live region.
+The sort, filter and pagination links also carry `hx-get` targeting `#data-table-panel` with `outerHTML` swap, so with HTMX (the progressive-enhancement library that swaps server-rendered fragments) enabled only the table panel re-renders. The no-JS branch is always a real full-page GET — nothing depends on HTMX or JavaScript. The remote refresh demo completes a POST round-trip that re-renders the panel with a determinate `.ui-progress` bar and a `.ui-toast` notification; HTMX swaps just the refresh form and raises `loom:toast` into the live region.
 
 ## Accessibility
 

@@ -1,6 +1,6 @@
 # Menu
 
-Menus display a list of choices on a temporary surface. Gelium reimplements the Material 3 menu over **server-rendered HTML with the native Popover API**: the menu surface is a `[popover]` element opened and closed declaratively by a real trigger button through `popovertarget` / `popovertargetaction`, positioned with CSS anchor positioning when the browser supports it. There is **no component JavaScript** — the trigger, the top-layer open/close, light dismiss and Escape are all platform-native.
+Menus show a list of choices on a temporary surface anchored to a trigger. Use a menu when an action needs a compact set of options that should not clutter the page, and the open/close flow must work without JavaScript. Gelium reimplements the Material 3 menu over **server-rendered HTML with the native Popover API** (the browser's declarative popup mechanism): the menu surface is a `[popover]` element opened and closed declaratively by a real trigger button through `popovertarget` / `popovertargetaction`, positioned with CSS anchor positioning when the browser supports it. There is **no component JavaScript** — the trigger, the top-layer open/close, light dismiss and Escape are all platform-native.
 
 ## Anatomy
 
@@ -9,7 +9,7 @@ Menus display a list of choices on a temporary surface. Gelium reimplements the 
 - **Label** — `ui-menu-item-label`, the body-large text that supplies the accessible name.
 - **Leading icon** — `ui-menu-item-icon`, the optional 24px decorative glyph (reuses the Icon contract: trusted inline SVG, `aria-hidden`, `focusable="false"`).
 - **Divider** — `ui-menu-divider`, a 1px `role="separator"` break between groups.
-- **Selection** — `ui-menu-item--select` rows wrap a native `<input type="checkbox">` or `<input type="radio">` in a `<label>`, exactly like the List and Segmented button components, so the selected state derives from `:checked` with no JavaScript.
+- **Selection** — `ui-menu-item--select` rows wrap a native `<input type="checkbox">` or `<input type="radio">` in a `<label>`, exactly like the List and Segmented button components, so the selected state derives from `:checked` (the CSS pseudo-class matching a checked native input) with no JavaScript.
 
 ## Variants and states
 
@@ -26,7 +26,7 @@ Menus display a list of choices on a temporary surface. Gelium reimplements the 
 - The surface is a `<ul>` so item rows keep list semantics; the divider is `role="separator"`.
 - Focus ring uses `:focus-visible`; decorative icons are `aria-hidden`; disabled never relies on color alone.
 
-## No-JS behavior
+## How does the menu open and close without JavaScript?
 
 The whole flow works with JavaScript disabled: the trigger button opens the popover declaratively (`popovertarget`), navigation items are real links that navigate, action items are real buttons, and the selection menu is a real `<form method="get" action="/components/menu">` whose checked values submit through a normal round-trip. Light dismiss (outside click) and Escape close the surface natively. There is no CSS-only imitation: the same markup is a real navigation or form.
 

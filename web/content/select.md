@@ -1,6 +1,6 @@
 # Select
 
-The Select component wraps a native [`<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) with Material 3 field styling. The browser element stays the focusable, operable control — Gelium only paints the field surface. No component JavaScript is required.
+Select is a dropdown picker built on the native [`<select>`](https://developer.mozilla.org/en-US/docs/Web/HTML/Element/select) element with Material 3 field styling — the browser element stays the focusable, operable control. Use a select when people must choose one option from a known list and the choice submits through a normal `<form>`; the native element keeps the no-JS flow and keyboard behavior for free. No component JavaScript is required.
 
 ## Usage
 
@@ -57,7 +57,7 @@ Field anatomy reuses the `--ui-field-*` palette tokens shared with [Text field](
 | `--ui-select-list-bg` | Native options popup background |
 | `--ui-select-list-fg` | Native options popup text |
 
-## Progressive enhancement
+## Does select work without JavaScript?
 
 The control is the native `<select>`: keyboard navigation, form submission, and the options popup are browser behavior — zero component JavaScript. The floating label and field surface are pure CSS. In forced-colors mode the select keeps visible `CanvasText` / `GrayText` / `Mark` boundaries and gives the popup `FieldText` contrast.
 
