@@ -27,6 +27,9 @@
   --ui-color-primary-fg: #ffffff;
   --ui-color-secondary: #e0e0e0;
   --ui-color-secondary-fg: #1c1c1c;
+  /* Code highlighting string color: WCAG AA on surface-container #ececec
+     (checked 2026-08-15). */
+  --ui-color-code-string: #2f6b4f;
   --ui-color-border: #cfcfcf;
   --ui-color-border-strong: #7a7a7a;
   --ui-color-danger: #cc3a3a;
