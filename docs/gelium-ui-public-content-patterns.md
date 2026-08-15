@@ -16,7 +16,7 @@
 | 2 | **Billboard/Hero** | ✅ | 2 | `hero.html`/`hero.css` + `styles_hero_test.go`; composición: `h1` `--ui-type-display-lg` + subtitle + CTA(s) (Button) + media de fondo opcional con scrim |
 | 3 | **Breadcrumb** | ✅ | 1 | `breadcrumb.html`/`breadcrumb.css` + `styles_breadcrumb_test.go`; markup canónico P1; GEO §9/§14 |
 | 4 | **Callout** | ✅ | — | `callout.html`/`callout.css` (Phase D); naming resuelto (tip box) |
-| 5 | **Card (slots públicos)** | ◐ pendiente | 2 | Extender `card.html` con media (`aspect-ratio`), tag (`--ui-badge`), meta, CTA (`--ui-card-action`) |
+| 5 | **Card (slots públicos)** | ✅ | 2 | Primitiva `{{define "card"}}` en `card.html`: slots opcionales media (`aspect-ratio` literal 16/9, `object-fit: cover`), tag (pill `--ui-badge`), meta (`--ui-space-*`), CTA (`--ui-card-action` + Button); `card-demo` sin cambios; + `styles_card_test.go` |
 | 6 | **CTA Link** | ✅ (formalizado = Button link) | 1 | `button.html:6` variante `Href` → `<a class="ui-button">`; **no componente propio**; reusado por Empty state/Banner/Callout/Hero/Feature Card/Split |
 | 7 | **Feature Card** | ✅ | 2 | `feature-card.html`/`feature-card.css` + `styles_feature_card_test.go`; composición Card + media + CTA Link (no primitiva); sin variante horizontal (deprecada upstream) |
 | 8 | **Footer** | ✅ | 3 | `footer.html`/`footer.css` + slot en `layout.html` + `pageView.Footer`/`defaultFooter()` en `server.go`; `<details>/<summary>`; bloqueante Phase G |
@@ -27,11 +27,11 @@
 | 13 | **Split** | ✅ | 2 | `split.html`/`split.css` + `styles_split_test.go`; grid 2 col (`.ui-split` + `.ui-split-body` + `.ui-split-media`); stack en narrow; bidi RTL automático |
 | 14 | **Video** | ✅ | 1 | Contenedor responsive: `video.html`/`video.css`; `aspect-ratio` literal 16:9 (no se tokeniza); `<video controls>` nativo |
 
-**Resumen**: 13 de 14 ✅ (todo Phase F implementado; Card slots queda como ◐ de extensión) + 1 pendiente (Card slots). Esta entrega añade los 5 restantes: **Billboard/Hero, Feature Card, Language Switcher, Newsletter, Split** + formaliza **CTA Link** (Button link, sin componente propio).
+**Resumen**: 14 de 14 ✅ — Phase F completo. Esta entrega añade los 5 restantes (**Billboard/Hero, Feature Card, Language Switcher, Newsletter, Split**) + formaliza **CTA Link** (Button link, sin componente propio) + cierra **Card slots públicos** (primitiva `{{define "card"}}` con media/tag/meta/CTA opcionales).
 
 ---
 
-## 2. Orden de implementación (estado: completa excepto Card slots)
+## 2. Orden de implementación (estado: completa)
 
 ### Tier 1 — 100% estáticos, cero server contract
 
@@ -43,7 +43,7 @@
 
 ### Tier 2 — composiciones de existentes
 
-6. **Card → slots públicos** ◐ — **único pendiente**: media (`aspect-ratio`), tag (`--ui-badge`), meta, CTA (`--ui-card-action`). No bloquea Feature Card (que declara su propia geometría media).
+6. **Card → slots públicos** ✅ — primitiva `{{define "card"}}` en `card.html` (Phase F): slots opcionales media (`aspect-ratio` literal, nunca tokenizado), tag (pill `--ui-badge`), meta, CTA (`--ui-card-action`); `card-demo` sin cambios.
 7. **Feature Card** ✅ — `feature-card.html` + `feature-card.css`: composición Card + CTA Link (CSS mínimo, solo media aspect + spacing).
 8. **Split** ✅ — `split.html` + `split.css`: grid 2 col (body + media), stack en narrow, bidi RTL automático.
 9. **Hero/Billboard** ✅ — `hero.html` + `hero.css`: composición display `h1` + subtitle + CTA(s) + media de fondo; formaliza el `h1` de landing.
@@ -69,14 +69,14 @@
 | **Language Switcher = GET navigation form**: `method="get"` + `<select name="lang">` + submit visible; el cambio de idioma es navegación (server responde 303 a la URL localizada), nunca POST. Cero auto-submit JS. | ✅ |
 | **Newsletter = POST + 422** con el header real del código **`X-Loom-Validation: true`** (el header real es `X-Loom-Validation`; ver `screen-recipes-audit.md:17`). Error reusa `inline-alert--error`; success = texto `role="status"` persistente. | ✅ |
 | **CTA Link = Button link** — no se crea componente propio; `{{template "button" .CTA}}` con `Href` es la forma canónica. | ✅ |
-| **Card slots públicos** — único pendiente de Phase F (extensión de `card.html`, no bloquea los 5 entregados). | ◐ |
+| **Card slots públicos** — cerrado: primitiva `{{define "card"}}` con slots media/tag/meta/CTA opcionales (data-driven, `{{if}}` guards); demo sin cambios. | ✅ |
 
 ---
 
 ## 3. Reglas
 
 - **Zero-JS end-to-end**: Footer → `<details>/<summary>`; Language Switcher → GET form con submit visible; Newsletter → POST + 422 (HTMX solo como enhancement: `hx-post` + swap del fragmento del aside).
-- **No-tokenizar**: `aspect-ratio` (Video, Feature Card media), breakpoints y z-index NO se convierten en tokens públicos (geometría estructural, no escala de theme).
+- **No-tokenizar**: `aspect-ratio` (Video, Feature Card media, Card media), breakpoints y z-index NO se convierten en tokens públicos (geometría estructural, no escala de theme).
 - **Naming**: secciones NO son theme; no portar grid `mzp-*` ni naming `mzp-*`; Feature Card horizontal descartada; el "Hero" de Protocol no se llama Callout.
 - **Convención de partials Phase D**: `web/templates/<x>.html` (`{{define "x"}}`) + `web/styles/<x>.css` (`@layer components`, tokens scoped en root, forced-colors) + `@import` en `app.css` + `web/styles_<x>_test.go` + `sourceAppCSS` + `npm run build` regenera `static/app.css`.
 

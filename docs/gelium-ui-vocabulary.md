@@ -477,6 +477,8 @@ Regla: **ningún término entregado exige JS para el flujo principal.**
 7. **Select vs Select menu vs Combobox** → Select nativo; Select menu = listbox en dialog; Combobox = gap con filtrado.
 8. **Steps vs Pagination** → Steps es proceso con validación por paso; Pagination es navegación de un set.
 9. **Queue vs List two-line** → Queue añade orden operativo + estado + acción de avance.
+10. **Callout vs Hero** → el "Callout" de Protocol (hero full-width) queda cubierto por `ui-hero` (Hero Phase F); el Callout Gelium (Phase D) es el tip box `<aside>` ignorable. Naming cerrado, no crear un tercer componente.
+11. **Notification Bar ≈ Banner** → alias documental del Banner Gelium (`banner.html`, Phase D); variantes sticky/scripted diferidas; no es patrón nuevo.
 
 ---
 
