@@ -16,6 +16,9 @@
   --ui-color-primary-fg: #ffffff;
   --ui-color-secondary: #e8def8;
   --ui-color-secondary-fg: #1d192b;
+  /* Code highlighting string color (M3 tertiary 40): WCAG AA 5.6:1 on
+     surface-container #f3edf7 (checked 2026-08-15). */
+  --ui-color-code-string: #47654f;
   --ui-color-border: #cac4d0;
   --ui-color-border-strong: #79747e;
   --ui-color-danger: #b3261e;
@@ -296,6 +299,9 @@
   --ui-color-primary-fg: #381e72;
   --ui-color-secondary: #4a4458;
   --ui-color-secondary-fg: #e8def8;
+  /* Code highlighting string color (M3 tertiary 80): WCAG AA 7.8:1 on
+     surface-container #2b2930 (checked 2026-08-15). */
+  --ui-color-code-string: #90cda2;
   --ui-color-border: #49454f;
   --ui-color-border-strong: #938f99;
   --ui-color-danger: #f2b8b5;

@@ -58,6 +58,9 @@
   --ui-color-primary-fg: #fafafa;        /* --primary-foreground (neutral-50) */
   --ui-color-secondary: #f5f5f5;         /* --secondary (neutral-100) */
   --ui-color-secondary-fg: #171717;      /* --secondary-foreground (neutral-900) */
+  /* Code highlighting string color (teal-700): WCAG AA 5.0:1 on
+     surface-container #f5f5f5 (checked 2026-08-15). */
+  --ui-color-code-string: #0f766e;
   --ui-color-border: #e5e5e5;            /* --border (neutral-200) */
   --ui-color-border-strong: #a3a3a3;     /* neutral-400: stronger than border */
   --ui-color-danger: #b91c1c;            /* destructive red-700 (AA solid) */
@@ -364,6 +367,9 @@
   --ui-color-fg-muted: #a3a3a3;          /* --muted-foreground (neutral-400) */
   --ui-color-primary: #e5e5e5;           /* --primary (neutral-200) */
   --ui-color-primary-fg: #171717;        /* --primary-foreground (neutral-900) */
+  /* Code highlighting string color (teal-400): WCAG AA 8.1:1 on
+     surface-container #262626 (checked 2026-08-15). */
+  --ui-color-code-string: #2dd4bf;
   --ui-color-secondary: #262626;         /* --secondary (neutral-800) */
   --ui-color-secondary-fg: #fafafa;      /* --secondary-foreground (neutral-50) */
   --ui-color-border: rgb(255 255 255 / .10); /* --border (white 10%) */

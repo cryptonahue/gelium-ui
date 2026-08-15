@@ -85,6 +85,39 @@ func TestProseColorUsesFgMutedToken(t *testing.T) {
 	}
 }
 
+// TestCodeHighlightingContrastMeetsWcagAA enforces the code-block AA
+// contract: chroma string color (--ui-color-code-string) on the code block
+// background (--ui-color-surface-container) must reach >= 4.5:1 in every
+// served color context and both routes. Guards the regression where
+// --ui-color-secondary (a surface token) was used as the string color,
+// failing at 1.0-1.1:1 in light themes.
+func TestCodeHighlightingContrastMeetsWcagAA(t *testing.T) {
+	type context struct {
+		name string
+		css  string
+	}
+	contexts := []context{{name: "core", css: readSourceStyle(t, "tokens.css")}}
+	for _, theme := range availableThemes(t) {
+		contexts = append(contexts, context{name: "theme-" + theme, css: themeCSS(t, theme)})
+	}
+	for _, ctx := range contexts {
+		for _, dark := range []bool{false, true} {
+			route := "light"
+			if dark {
+				route = "dark"
+			}
+			t.Run(ctx.name+"/"+route, func(t *testing.T) {
+				str := tokenHex(t, ctx.css, "--ui-color-code-string", dark)
+				bg := tokenHex(t, ctx.css, "--ui-color-surface-container", dark)
+				ratio := contrastRatio(t, str, bg)
+				if ratio < 4.5 {
+					t.Errorf("code string %s on surface-container %s = %.2f:1, want >= 4.5:1 (WCAG AA body text)", str, bg, ratio)
+				}
+			})
+		}
+	}
+}
+
 // TestProseContrastMeetsWcagAA enforces the prose AA contract: in every
 // served color context — core defaults plus each theme on disk, light and
 // dark routes — --ui-color-fg-muted on --ui-color-surface must reach
