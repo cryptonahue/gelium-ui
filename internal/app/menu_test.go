@@ -3,6 +3,7 @@ package app
 import (
 	"net/http"
 	"net/http/httptest"
+	"regexp"
 	"strings"
 	"testing"
 )
@@ -44,10 +45,19 @@ func TestMenuPopoverTriggersDeclareExpandedState(t *testing.T) {
 		t.Fatalf("menu docs status = %d, want %d", res.Code, http.StatusOK)
 	}
 	body := res.Body.String()
-	if got := strings.Count(body, `aria-expanded="false"`); got != 3 {
-		t.Errorf("popover triggers with aria-expanded = %d, want 3 (Actions, Navigate, Select)", got)
+	// Scope to the popover triggers themselves: the docs chrome now also emits
+	// aria-expanded (search input), so a body-wide count would over-count.
+	// Each trigger must pair its own aria-haspopup with aria-expanded (G8).
+	triggers := regexp.MustCompile(`class="ui-button ui-button-secondary menu-demo-trigger"[^>]*popovertarget="[^"]+"[^>]*>`).FindAllString(body, -1)
+	if len(triggers) != 3 {
+		t.Fatalf("menu popover triggers = %d, want 3 (Actions, Navigate, Select)", len(triggers))
 	}
-	if strings.Count(body, `aria-haspopup="menu"`) != strings.Count(body, `aria-expanded="false"`) {
+	for i, tag := range triggers {
+		if !strings.Contains(tag, `aria-haspopup="menu"`) || !strings.Contains(tag, `aria-expanded="false"`) {
+			t.Errorf("trigger %d must pair aria-haspopup with aria-expanded=false (G8): %s", i, tag)
+		}
+	}
+	if strings.Count(body, `aria-haspopup="menu"`) != len(triggers) {
 		t.Error("every aria-haspopup trigger must pair with aria-expanded (G8)")
 	}
 }

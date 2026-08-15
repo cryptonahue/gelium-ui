@@ -44,10 +44,10 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 					`ui-divider`,
 					`>0.4.0<`,
 					`Gelium UI`,
-					`disabled`,
+					`type="search"`,
 					`aria-label="Theme"`,
 					`aria-label="Appearance"`,
-				} {
+					} {
 					if !strings.Contains(body, contract) {
 						t.Errorf("%s missing shell contract %q", tt.path, contract)
 					}
@@ -94,18 +94,16 @@ func TestDocsStubRoutesAndShellChrome(t *testing.T) {
 				`<main id="main-content"`,
 				`href="#main-content"`,
 				`type="search"`,
-				`disabled`,
+				`name="q"`,
 			} {
 				if !strings.Contains(body, contract) {
 					t.Errorf("%s missing contract %q", path, contract)
 				}
 			}
-			// Search must not be a live submitting corpus form.
-			if strings.Contains(body, `action=`) && strings.Contains(body, `type="search"`) {
-				// Only fail if the search control sits inside a form with action.
-				if strings.Contains(body, `<form`) && strings.Contains(body, `type="search"`) {
-					t.Errorf("%s must not wrap search in a live form submit", path)
-				}
+			// Search is a live GET form to the /docs hub: 0-JS Enter submits
+			// /docs?q=<term>; with JS, search.js filters the nav index client-side.
+			if !strings.Contains(body, `<form class="docs-topbar-search" method="get" action="/docs" role="search">`) {
+				t.Errorf("%s must wrap search in a live GET form to /docs", path)
 			}
 		})
 	}
@@ -504,13 +502,18 @@ func TestUsesDocsShell(t *testing.T) {
 }
 
 func TestDocsNavFor(t *testing.T) {
-	t.Run("topbar slots and five IA blocks", func(t *testing.T) {
+	t.Run("topbar slots and IA blocks", func(t *testing.T) {
 		nav := docsNavFor("/docs", "", "")
 		if nav.Version != "0.4.0" {
 			t.Errorf("Version = %q, want %q", nav.Version, "0.4.0")
 		}
-		if !nav.SearchDisabled {
-			t.Error("SearchDisabled must be true for honest placeholder search")
+		// The nav model drives client-side search: a JSON index of every
+		// destination is emitted so search.js can filter without a server.
+		if nav.SearchIndex == "" || !strings.Contains(string(nav.SearchIndex), `"title":"Documentation"`) {
+			t.Error("SearchIndex must be a non-empty JSON index including the Documentation hub")
+		}
+		if nav.ThemeSlug != "" || nav.Scheme != "" {
+			t.Errorf("ThemeSlug/Scheme = %q/%q, want empty without chrome query", nav.ThemeSlug, nav.Scheme)
 		}
 
 		titles := docsNavGroupTitles(nav)
