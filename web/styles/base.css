@@ -220,6 +220,13 @@
   .prose thead th { font-weight: 600; border-bottom-width: 2px; }
   .prose table code { background: none; padding: 0; font-size: .9em; }
   @media (max-width: 48rem) { .prose table { display: block; overflow-x: auto; } }
+  /* Demo preview surface: flex-wrap composition with an internal horizontal
+     overflow safety net. Children get min-width: 0 so intrinsic min widths
+     (wide tables, chat demos, chip rows) can shrink instead of pushing the
+     page; anything that still over-ages dies inside this container's own
+     scrollbar — never by masking the page body (overflow-x: hidden on body is
+     forbidden: it hides content loss instead of containing it). The margin
+     stays symmetric (2rem 0). */
   .component-preview {
     display: flex;
     flex-wrap: wrap;
@@ -227,10 +234,14 @@
     gap: 1rem;
     margin: 2rem 0;
     padding: 2rem;
+    overflow-x: auto;
     border: 1px solid var(--ui-color-border);
     border-radius: var(--ui-radius-lg);
     background: var(--ui-color-surface);
     box-shadow: var(--ui-shadow-1);
+  }
+  .component-preview > * {
+    min-width: 0;
   }
   .text-field-preview {
     display: grid;

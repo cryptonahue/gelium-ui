@@ -51,6 +51,7 @@
   }
   .demo-wa-search {
     flex: 1;
+    min-width: 0;
     max-width: 28rem;
     margin-inline: auto;
   }
@@ -544,6 +545,25 @@
 
 @media (prefers-reduced-motion: reduce) {
   .demo-wa-bubble, .demo-wa-window, .demo-wa-typing-dots span { animation: none; transition: none; }
+}
+
+@media (max-width: 48rem) {
+  /* Layer 2 mobile containment: the three-pane chat app stacks instead of
+     squeezing panes side by side. The 16rem sidebar minimum relaxes so the
+     sidebar takes a full line and the chat pane its own line; the appbar
+     search (min-width: 0 on the base rule) shrinks instead of pushing brand
+     or actions off-page; the chat-head window block yields to its container.
+     Stacking + internal scroll containers only — never page-level overflow
+     masking (body overflow-x: hidden is forbidden). */
+  .demo-wa-layout { flex-wrap: wrap; }
+  .demo-wa-sidebar {
+    flex: 1 1 100%;
+    width: 100%;
+    min-width: 0;
+  }
+  .demo-wa-chat { flex: 1 1 100%; }
+  .demo-wa-chat-head-window { min-width: 0; }
+  .demo-wa-window-bar { width: min(12rem, 100%); }
 }
 
 @media (forced-colors: active) {

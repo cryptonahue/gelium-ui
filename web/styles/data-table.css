@@ -39,6 +39,15 @@
     text-align: start;
   }
 
+  /* Wide-table containment (Layer 2 mobile contract): the scroll wrapper sits
+     between the bordered container and the <table> so nowrap label cells
+     scroll inside the panel instead of pushing the page. Page-level overflow
+     masking (overflow-x: hidden on body) is forbidden; this internal scroll
+     container is the containment mechanism. */
+  .ui-data-table-scroll {
+    overflow-x: auto;
+  }
+
   .ui-data-table-caption {
     padding: var(--ui-data-table-cell-padding);
     color: var(--ui-data-table-header-color);
