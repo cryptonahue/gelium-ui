@@ -9,6 +9,7 @@ type iconDemo struct {
 	DecorativeSVG template.HTML
 	NamedSVG      template.HTML
 	Existing      []template.HTML
+	Material      []template.HTML
 }
 
 const saveIconSVG template.HTML = `<svg aria-hidden="true" focusable="false" class="ui-icon" viewBox="0 0 24 24" width="18" height="18" fill="currentColor"><path d="M17 3H5a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2V7l-4-4Zm-5 16a3 3 0 1 1 0-6 3 3 0 0 1 0 6Zm3-10H5V5h10v4Z"></path></svg>` // #nosec G203 -- trusted, internal decorative icon markup.
@@ -37,6 +38,25 @@ func (s *server) iconDocs(w http.ResponseWriter, r *http.Request) {
 				toastIcons["warning"],
 				toastIcons["error"],
 			},
+			Material: materialIconSVGs(),
 		},
 	}, "content/icon.md")
+}
+
+// materialIconSVGs returns the curated Material Symbols set in stable order
+// (the same order as scripts/copy-icons.mjs ICONS) for the Icon page demo.
+func materialIconSVGs() []template.HTML {
+	order := []string{
+		"add", "arrow_back", "arrow_downward", "arrow_forward", "arrow_upward",
+		"check", "chevron_left", "chevron_right", "close", "delete", "edit",
+		"error", "home", "info", "menu", "more_vert", "refresh", "save",
+		"search", "settings", "warning",
+	}
+	out := make([]template.HTML, 0, len(order))
+	for _, name := range order {
+		if glyph, ok := iconSVGs[name]; ok {
+			out = append(out, glyph)
+		}
+	}
+	return out
 }

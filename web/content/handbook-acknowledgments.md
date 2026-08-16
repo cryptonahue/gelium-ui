@@ -17,6 +17,7 @@ Every library stands on the shoulders of the systems its authors have read, used
 | [Naive UI](https://naiveui.com) | Demos-then-API docs pattern | Component pages lead with a live preview before the API contract | MIT |
 | [Name That UI](https://namethatui.com) | Alternate names plus agent prompts | "Alternative names" and "Agent prompt" sections make the docs usable by AI coding agents | See project site |
 | [Material Web](https://github.com/material-components/material-web) | Token inventory reference | `--ui-*` token families audited against Material Web's public token families; an original mapping, not a port | See project site |
+| [Material Symbols](https://github.com/google/material-design-icons) | Icon glyph vocabulary | Curated set of 21 trusted server-resolved inline SVGs (see the [Icon](/components/icon) page), themeable via `currentColor`, embedded in the binary | Apache-2.0 |
 | [shadcn/ui and templ](https://ui.shadcn.com) | Distribution presets as a reference | Component source ships as copyable, themeable primitives over semantic tokens, rendered server-side | See project sites |
 
 ## License notes

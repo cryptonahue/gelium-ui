@@ -3,5 +3,6 @@
   <span class="icon-demo-token">{{.DecorativeSVG}}<span>Decorative icon</span></span>
   <span class="icon-demo-token">{{.NamedSVG}}<span>Named by visible text</span></span>
   {{range .Existing}}<span class="icon-demo-token">{{.}}<span>Existing icon</span></span>{{end}}
+  {{range .Material}}<span class="icon-demo-token">{{.}}</span>{{end}}
 </div>
 {{end}}
