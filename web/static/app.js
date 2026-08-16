@@ -11,6 +11,15 @@ document.addEventListener("htmx:before:swap", function (event) {
   }
 });
 
+// Same-document view transitions (progressive enhancement): htmx 4 runs
+// boosted navigations through document.startViewTransition when the config
+// flag is set. Same-document VT is NOT auto-disabled under
+// prefers-reduced-motion (unlike the cross-document at-rule), so the guard
+// below is required (WCAG 2.3.3). No cross-document at-rule: automatic
+// cross-document navigation is still flag-gated in Firefox, so VT stays
+// same-document only.
+if (document.startViewTransition && !window.matchMedia("(prefers-reduced-motion: reduce)").matches) { htmx.config.transitions = true; }
+
 (function () {
   "use strict";
 

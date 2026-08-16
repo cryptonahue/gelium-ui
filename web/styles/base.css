@@ -10,6 +10,22 @@
     letter-spacing: var(--ui-type-body-md-letter-spacing);
   }
   a { color: inherit; }
+  /* Same-document view transitions (progressive enhancement, gated in app.js):
+     default cross-fade for the root snapshot, slightly tighter than the UA
+     default. No cross-document at-rule: automatic cross-document navigation
+     is still flag-gated in Firefox, so VT stays same-document only. The
+     app.js startViewTransition guard already keeps animations off under
+     prefers-reduced-motion; the media block is the CSS-side belt. */
+  ::view-transition-old(root),
+  ::view-transition-new(root) {
+    animation-duration: 180ms;
+  }
+  @media (prefers-reduced-motion: reduce) {
+    ::view-transition-old(root),
+    ::view-transition-new(root) {
+      animation: none;
+    }
+  }
 }
 
 @layer components {
