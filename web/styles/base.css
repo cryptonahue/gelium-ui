@@ -67,6 +67,20 @@
     cursor: pointer;
   }
 
+  /* Inline chrome icons: decorative SVG in currentColor, no icon library. The
+     scheme icons are a sun/moon pair toggled by the server-driven .theme-dark
+     class on the document root (pure cascade, no JS). */
+  .ui-theme-switcher-icon,
+  .ui-scheme-icon {
+    width: 1.125rem;
+    height: 1.125rem;
+    color: var(--ui-color-fg-muted);
+    flex: none;
+  }
+  .ui-scheme-icon-moon { display: none; }
+  .theme-dark .ui-scheme-icon-sun { display: none; }
+  .theme-dark .ui-scheme-icon-moon { display: inline-block; }
+
   /* Light/Dark switch (docs chrome): native checkbox styled as a pill switch.
      State is server-driven (checked → ?scheme=dark); no JS required. */
   .ui-scheme-switch {

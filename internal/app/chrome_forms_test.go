@@ -133,6 +133,24 @@ func TestChromeFormsAlwaysCarryPreserveInputs(t *testing.T) {
 	}
 }
 
+// TestChromeIconsAreInlineSvgWithoutLibrary proves the chrome icons are plain
+// inline SVG (no icon-library asset, no network dependency) and decorative:
+// aria-hidden + focusable=false. The scheme form carries the sun/moon pair so
+// CSS toggles which one is visible from the server-driven .theme-dark class.
+func TestChromeIconsAreInlineSvgWithoutLibrary(t *testing.T) {
+	body := getOKBody(t, "/docs?theme=basecoat&scheme=dark")
+	for _, contract := range []string{
+		`<svg class="ui-scheme-icon ui-scheme-icon-sun"`,
+		`<svg class="ui-scheme-icon ui-scheme-icon-moon"`,
+		`<svg class="ui-theme-switcher-icon"`,
+		`aria-hidden="true" focusable="false"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("chrome icons are missing contract %q", contract)
+		}
+	}
+}
+
 // TestChromeFormsCarryOptimisticContracts proves the chrome forms opt out of
 // the inherited body morph and emit the server-authority class mapping for the
 // optimistic preview: hx-swap="none" on both, and data-class on each theme
