@@ -102,6 +102,7 @@ document.addEventListener("htmx:before:swap", function (event) {
       if (next) root.classList.add(next);
       keepPreservedState("theme", theme.value);
     }
+    refreshChromeHrefs();
   }
   // keepPreservedState keeps the OTHER chrome form's hidden preserve input in
   // sync. With hx-swap=none the body never re-renders, so the theme form's
@@ -113,6 +114,38 @@ document.addEventListener("htmx:before:swap", function (event) {
     var target = name === "scheme" ? (select && select.closest("form")) : (checkbox && checkbox.closest("form"));
     var hidden = target && target.querySelector('input[type="hidden"][name="' + name + '"]');
     if (hidden) hidden.value = value;
+  }
+  // refreshChromeHrefs rewrites every docs-shell chrome href (sidebar,
+  // topbar, breadcrumb, prev/next) with the current theme/scheme query.
+  // The optimistic toggle submits with hx-swap=none, so the body never
+  // re-renders and the server-rendered hrefs from the ORIGINAL load would
+  // otherwise stay stale: the next sidebar click would navigate without
+  // ?scheme=dark and the server would render light, silently undoing the
+  // optimistic toggle. This mirrors server-side chromeHref so navigation
+  // preserves direction + light/dark without waiting for a re-render.
+  function refreshChromeHrefs() {
+    var root = document.documentElement;
+    var query = "";
+    var params = [];
+    var themeSlug = "";
+    var scheme = "";
+    if (root.classList.contains("theme-dark")) scheme = "dark";
+    else if (root.hasAttribute("data-theme") && root.getAttribute("data-theme") === "light") scheme = "light";
+    var themeForm = document.querySelector('form[data-chrome-form] select[name="theme"]');
+    if (themeForm && themeForm.value) themeSlug = themeForm.value;
+    if (scheme) params.push("scheme=" + scheme);
+    if (themeSlug) params.push("theme=" + themeSlug);
+    if (params.length) query = "?" + params.join("&");
+    var links = document.querySelectorAll(
+      ".docs-sidebar a[href], .docs-topbar a[href], .ui-breadcrumb a[href], .docs-prev-next a[href]"
+    );
+    for (var i = 0; i < links.length; i++) {
+      var a = links[i];
+      var href = a.getAttribute("href");
+      if (!href || href.charAt(0) !== "/") continue;
+      if (href.indexOf("?") >= 0) href = href.slice(0, href.indexOf("?"));
+      a.setAttribute("href", href + query);
+    }
   }
   function initChrome(root) {
     var forms = (root || document).querySelectorAll("form[data-chrome-form]");
