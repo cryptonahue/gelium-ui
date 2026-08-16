@@ -179,6 +179,7 @@ type skeletonView struct {
 type recipeFeedView struct {
 	Meta         metaView
 	ThemeClass   string
+	DataTheme    string
 	Title        string
 	Description  string
 	ViewValue    string
@@ -221,7 +222,7 @@ type recipeFeedItemView struct {
 func (s *server) recipePublicFeedList(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	view := newRecipeFeedView(q.Get("view"), q.Get("page"), feedDemoStore.takeToast())
-	applyRequestTheme(r, view)
+	applyRequestChrome(r, view)
 
 	if strings.EqualFold(r.Header.Get("HX-Request"), "true") {
 		s.renderRecipeTemplate(w, http.StatusOK, "recipe-public-feed-panel", view)
@@ -256,7 +257,7 @@ func (s *server) recipePublicFeedRefresh(w http.ResponseWriter, r *http.Request)
 	isHX := strings.EqualFold(r.Header.Get("HX-Request"), "true")
 
 	view := newRecipeFeedView("", "", feedDemoStore.takeToast())
-	applyRequestTheme(r, view)
+	applyRequestChrome(r, view)
 	view.Refreshed = true
 
 	if isHX {
@@ -356,18 +357,18 @@ func newRecipeFeedView(viewParam, page string, flash *toastView) *recipeFeedView
 	)
 
 	return &recipeFeedView{
-		Meta:         meta,
-		ThemeClass:   themeClass(""),
-		Title:        "Latest activity",
-		Description:  "The Public/Social Feed screen recipe: a server-rendered activity feed composed from Card, Avatar, Badge, Tabs, Skeleton, Empty state, Button and Toast.",
-		ViewValue:    viewValue,
-		Views:        views,
-		Items:        rows,
-		Caption:      fmt.Sprintf("%d posts · page %d of %d", total, pageNum, totalPages),
-		Pagination:   pagination,
-		EmptyState:   recipeFeedEmptyState(viewValue),
-		Skeleton:     &skeletonView{Avatar: true, Label: "Loading the feed", Lines: []int{1, 2, 3}},
-		FlashToast:   flash,
+		Meta:        meta,
+		ThemeClass:  themeClass(""),
+		Title:       "Latest activity",
+		Description: "The Public/Social Feed screen recipe: a server-rendered activity feed composed from Card, Avatar, Badge, Tabs, Skeleton, Empty state, Button and Toast.",
+		ViewValue:   viewValue,
+		Views:       views,
+		Items:       rows,
+		Caption:     fmt.Sprintf("%d posts · page %d of %d", total, pageNum, totalPages),
+		Pagination:  pagination,
+		EmptyState:  recipeFeedEmptyState(viewValue),
+		Skeleton:    &skeletonView{Avatar: true, Label: "Loading the feed", Lines: []int{1, 2, 3}},
+		FlashToast:  flash,
 	}
 }
 
