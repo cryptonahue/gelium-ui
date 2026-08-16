@@ -53,10 +53,10 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 	for _, contract := range []string{
 		"htmx:before:swap", // server-authority reconciliation runs pre-swap
 		"applyOptimisticChrome",
-		"requestSubmit", // fires submit so htmx intercepts (form.submit() = native reload)
+		"requestSubmit",      // fires submit so htmx intercepts (form.submit() = native reload)
 		"keepPreservedState", // keeps the other form's hidden input in sync
 		"refreshChromeHrefs", // rewrites chrome hrefs so sidebar clicks keep ?scheme= after an optimistic toggle
-		"initOnThisPage", // On-this-page scrollspy (progressive enhancement)
+		"initOnThisPage",     // On-this-page scrollspy (progressive enhancement)
 		"IntersectionObserver",
 		"data-class",
 		"theme-dark",
@@ -64,6 +64,41 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 	} {
 		if !strings.Contains(app, contract) {
 			t.Errorf("app.js is missing the optimistic chrome contract %q", contract)
+		}
+	}
+}
+
+// TestLayer3RuntimeProgressiveEnhancementContract pins the Layer 3
+// (mobile/runtime) contracts that live in embedded assets: same-document
+// view transitions are an OPT-IN progressive enhancement — activated only
+// when the browser supports document.startViewTransition AND the user has
+// not requested reduced motion (WCAG 2.3.3). Unlike the cross-document
+// at-rule, same-document VT is not auto-gated by prefers-reduced-motion, so
+// the JS guard is the enforcement point. Layout carries the safe-area
+// viewport (GOV.UK pattern) and a named mobile-nav disclosure.
+func TestLayer3RuntimeProgressiveEnhancementContract(t *testing.T) {
+	app := readAsset(t, "static/app.js")
+	for _, contract := range []string{
+		"document.startViewTransition",
+		"htmx.config.transitions",
+		"matchMedia",
+		"prefers-reduced-motion: reduce",
+	} {
+		if !strings.Contains(app, contract) {
+			t.Errorf("app.js is missing the view-transition activation contract %q", contract)
+		}
+	}
+	if !strings.Contains(app, "!window.matchMedia") {
+		t.Error("app.js must gate same-document view transitions on reduced motion (same-document VT is not auto-disabled)")
+	}
+
+	layout := readAsset(t, "templates/layout.html")
+	for _, contract := range []string{
+		`viewport-fit=cover`,
+		`aria-label="Open navigation menu"`,
+	} {
+		if !strings.Contains(layout, contract) {
+			t.Errorf("layout.html is missing the mobile/safe-area contract %q", contract)
 		}
 	}
 }
