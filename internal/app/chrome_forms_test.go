@@ -17,8 +17,8 @@ func TestChromeFormViewModels(t *testing.T) {
 			t.Errorf("Label = %q, want Theme", sw.Label)
 		}
 		want := []themeOptionView{
-			{Label: "Material", Value: "material", Selected: true},
-			{Label: "Basecoat", Value: "basecoat", Selected: false},
+			{Label: "Material", Value: "material", Class: "theme-material", Selected: true},
+			{Label: "Basecoat", Value: "basecoat", Class: "theme-basecoat", Selected: false},
 		}
 		if len(sw.Options) != len(want) {
 			t.Fatalf("options = %d, want %d", len(sw.Options), len(want))
@@ -115,5 +115,24 @@ func TestChromeFormsRenderSubmitButtons(t *testing.T) {
 	body := getOKBody(t, "/docs")
 	if got := strings.Count(body, `<button type="submit" class="ui-theme-switcher-submit">`); got != 2 {
 		t.Errorf("chrome submit buttons = %d, want 2 (theme + scheme forms)", got)
+	}
+}
+
+// TestChromeFormsCarryOptimisticContracts proves the chrome forms opt out of
+// the inherited body morph and emit the server-authority class mapping for the
+// optimistic preview: hx-swap="none" on both, and data-class on each theme
+// option mirroring the allowlisted themeDirection.Class from the catalog.
+func TestChromeFormsCarryOptimisticContracts(t *testing.T) {
+	body := getOKBody(t, "/docs?theme=basecoat&scheme=dark")
+	if got := strings.Count(body, `data-chrome-form hx-swap="none"`); got != 2 {
+		t.Errorf("chrome forms with hx-swap=none = %d, want 2", got)
+	}
+	for _, contract := range []string{
+		`<option value="material" data-class="theme-material"`,
+		`<option value="basecoat" data-class="theme-basecoat"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("theme select is missing option contract %q", contract)
+		}
 	}
 }

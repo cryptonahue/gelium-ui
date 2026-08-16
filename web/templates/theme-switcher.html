@@ -5,11 +5,11 @@
      GET form would otherwise drop. JS enhancement (app.js): onchange submits
      and hides the submit button; with no JS the button still works. */}}
 {{define "theme-switcher"}}
-<form class="ui-theme-switcher" method="get" data-chrome-form role="group" aria-label="{{or .Label "Theme"}}">
+<form class="ui-theme-switcher" method="get" data-chrome-form hx-swap="none" role="group" aria-label="{{or .Label "Theme"}}">
   <label class="ui-theme-switcher-label" for="theme-switcher-select">{{or .Label "Theme"}}</label>
   <select id="theme-switcher-select" name="theme" class="ui-theme-switcher-select">
     {{range .Options}}
-    <option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>
+    <option value="{{.Value}}" data-class="{{.Class}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>
     {{end}}
   </select>
   {{if .Scheme}}<input type="hidden" name="scheme" value="{{.Scheme}}">{{end}}

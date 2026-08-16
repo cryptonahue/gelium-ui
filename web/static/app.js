@@ -71,6 +71,36 @@ document.addEventListener("htmx:before:swap", function (event) {
 
 (function () {
   "use strict";
+  // applyOptimisticChrome previews the server-driven theme/scheme state on
+  // <html> the instant the control changes. The server remains the authority:
+  // the boosted form still submits the GET, and htmx:before:swap reconciles
+  // class/data-theme from the server response. Without JS the native form
+  // submit applies the same state on a full page load.
+  function applyOptimisticChrome(form) {
+    var root = document.documentElement;
+    var scheme = form.querySelector('input[type="checkbox"][name="scheme"]');
+    if (scheme) {
+      if (scheme.checked) {
+        root.classList.add("theme-dark");
+        root.setAttribute("data-theme", "dark");
+      } else {
+        root.classList.remove("theme-dark");
+        root.setAttribute("data-theme", "light");
+      }
+      return;
+    }
+    var theme = form.querySelector('select[name="theme"]');
+    if (theme) {
+      var next = null;
+      for (var i = 0; i < theme.options.length; i++) {
+        var cls = theme.options[i].getAttribute("data-class");
+        if (!cls) continue;
+        if (i === theme.selectedIndex) next = cls;
+        root.classList.remove(cls);
+      }
+      if (next) root.classList.add(next);
+    }
+  }
   function initChrome(root) {
     var forms = (root || document).querySelectorAll("form[data-chrome-form]");
     for (var i = 0; i < forms.length; i++) {
@@ -78,7 +108,10 @@ document.addEventListener("htmx:before:swap", function (event) {
       if (form.getAttribute("data-gelium-initialized")) continue;
       form.setAttribute("data-gelium-initialized", "true");
       var submit = form.querySelector('button[type="submit"]'); if (submit) submit.hidden = true;
-      form.addEventListener("change", function () { this.submit(); });
+      form.addEventListener("change", function () {
+        applyOptimisticChrome(form);
+        this.submit();
+      });
     }
   }
   function syncDocument(responseBody) {
@@ -91,6 +124,12 @@ document.addEventListener("htmx:before:swap", function (event) {
     else target.removeAttribute("data-theme");
   }
   var lastScrollY = 0;
+  document.addEventListener("htmx:before:swap", function (event) {
+    var ctx = event.detail && event.detail.ctx;
+    if (ctx && ctx.target === document.body && ctx.text) {
+      syncDocument(ctx.text);
+    }
+  });
   document.addEventListener("htmx:before:request", function (event) {
     var source = event.detail && event.detail.elt;
     if (source && source.closest && source.closest("a[href^='#']")) return;
@@ -99,7 +138,6 @@ document.addEventListener("htmx:before:swap", function (event) {
   function afterSwap(event) {
     var detail = event.detail || {};
     if (detail.ctx && detail.ctx.target === document.body) {
-      syncDocument(detail.ctx.text);
       var main = document.getElementById("main-content");
       if (main) { main.setAttribute("tabindex", "-1"); main.focus({ preventScroll: true }); }
       if (lastScrollY > 0) window.scrollTo(0, lastScrollY);
