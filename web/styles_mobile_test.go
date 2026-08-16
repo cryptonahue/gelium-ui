@@ -130,3 +130,39 @@ func TestMobileTokensReachCompiledBundle(t *testing.T) {
 		}
 	}
 }
+
+// TestReducedMotionGlobalRuleInBaseCSS proves the global reduced-motion
+// safety net lives in base.css: under prefers-reduced-motion: reduce every
+// animation and transition is killed with !important, so motion that slips
+// past the per-component neutralizations cannot play for users who asked for
+// less motion. The universal selector keeps the rule cheap and future-proof.
+func TestReducedMotionGlobalRuleInBaseCSS(t *testing.T) {
+	css, err := sourceStyles.ReadFile("styles/base.css")
+	if err != nil {
+		t.Fatalf("read base.css: %v", err)
+	}
+	compact := regexp.MustCompile(`\s+`).ReplaceAllString(string(css), " ")
+	const want = "@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }"
+	if !strings.Contains(compact, want) {
+		t.Errorf("base.css must append the global reduced-motion rule: %s", want)
+	}
+}
+
+// TestReducedMotionGlobalRuleReachesCompiledBundle proves npm run build
+// carries the global safety net into web/static/app.css. The minifier strips
+// whitespace and may reorder the killed properties, so the compiled rule is
+// matched order-independently on the universal selector.
+func TestReducedMotionGlobalRuleReachesCompiledBundle(t *testing.T) {
+	compiled, err := Assets.ReadFile("static/app.css")
+	if err != nil {
+		t.Fatalf("read compiled bundle: %v", err)
+	}
+	compact := regexp.MustCompile(`\s+`).ReplaceAllString(string(compiled), " ")
+	// RE2 has no lookaheads; the two regexes match the same universal rule
+	// whichever property order the minifier produced.
+	transition := regexp.MustCompile(`\*\{[^}]*transition:none!important[^}]*\}`)
+	animation := regexp.MustCompile(`\*\{[^}]*animation:none!important[^}]*\}`)
+	if !transition.MatchString(compact) || !animation.MatchString(compact) {
+		t.Error("compiled static/app.css must carry the global *{transition/animation:none!important} rule (regenerate with npm run build)")
+	}
+}
