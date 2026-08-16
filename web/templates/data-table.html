@@ -33,7 +33,8 @@
 
 {{define "data-table-panel"}}
 <div class="ui-data-table" id="data-table-panel">
-  <table class="ui-data-table-table">
+  <div class="ui-data-table-scroll">
+    <table class="ui-data-table-table">
     <caption class="ui-data-table-caption">{{.Caption}}</caption>
     <thead>
       <tr>
@@ -70,7 +71,8 @@
       </tr>
       {{end}}
     </tbody>
-  </table>
+    </table>
+  </div>
   <nav class="ui-data-table-pagination" aria-label="Table pages">
     {{if .HasPrev}}<a class="ui-data-table-page" href="{{.PrevHref}}" hx-get="{{.PrevHref}}" hx-target="#data-table-panel" hx-swap="outerHTML">Previous</a>{{else}}<span class="ui-data-table-page ui-data-table-page--disabled" aria-disabled="true">Previous</span>{{end}}
     {{range .PageLinks}}{{if .Current}}<span class="ui-data-table-page ui-data-table-page--current" aria-current="page">{{.Num}}</span>{{else}}<a class="ui-data-table-page" href="{{.Href}}" hx-get="{{.Href}}" hx-target="#data-table-panel" hx-swap="outerHTML">{{.Num}}</a>{{end}}{{end}}
