@@ -22,7 +22,14 @@
     gap: 1rem;
     flex-wrap: wrap;
     min-height: var(--docs-topbar-height);
-    padding: .75rem clamp(1rem, 3vw, 1.5rem);
+    /* Safe areas (GOV.UK viewport-fit=cover pattern): the sticky topbar pads
+       into the device insets so controls never sit under a notch/home
+       indicator. max() keeps the fluid clamp on supported screens; env() is
+       0 on desktop, so the padding is unchanged there. */
+    padding-top: max(.75rem, env(safe-area-inset-top));
+    padding-right: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-right));
+    padding-bottom: .75rem;
+    padding-left: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-left));
     background: var(--ui-color-surface);
     box-shadow: var(--ui-shadow-1);
   }
@@ -184,8 +191,13 @@
   }
   .docs-nav-mobile nav {
     margin-top: .75rem;
-    max-height: min(70vh, 32rem);
-    overflow: auto;
+    /* dvh, never vh: on mobile browsers 100vh overflows the visible viewport,
+       so an open menu could bury its last links under the fold. The cap
+       subtracts the disclosure chrome (summary row + padding + margin) so the
+       open pane fits entirely on screen and scrolls internally (Base UI
+       SideNavViewport / GOV.UK hidden-toggle pattern). */
+    max-height: calc(100dvh - var(--docs-topbar-height) - 4rem);
+    overflow-y: auto;
   }
 
   .docs-shell-body {
