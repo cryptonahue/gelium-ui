@@ -32,7 +32,7 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 		t.Fatal("embedded runtime is not the official HTMX 4.0.0-beta6 build")
 	}
 	app := readAsset(t, "static/app.js")
-	for _, legacy := range []string{"htmx:beforeSwap", "htmx:beforeRequest", "htmx:afterSwap", "htmx:responseError", "htmx:sendError", "event.detail.xhr", "responseText", "getResponseHeader"} {
+	for _, legacy := range []string{"htmx:beforeSwap", "htmx:beforeRequest", "htmx:afterSwap", "htmx:responseError", "htmx:sendError", "event.detail.xhr", "responseText", "getResponseHeader", "this.submit();"} {
 		if strings.Contains(app, legacy) {
 			t.Errorf("app.js must not use the HTMX 2 API %q", legacy)
 		}
@@ -53,6 +53,7 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 	for _, contract := range []string{
 		"htmx:before:swap", // server-authority reconciliation runs pre-swap
 		"applyOptimisticChrome",
+		"requestSubmit", // fires submit so htmx intercepts (form.submit() = native reload)
 		"data-class",
 		"theme-dark",
 		"data-theme",
