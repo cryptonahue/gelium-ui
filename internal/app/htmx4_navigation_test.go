@@ -32,12 +32,12 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 		t.Fatal("embedded runtime is not the official HTMX 4.0.0-beta6 build")
 	}
 	app := readAsset(t, "static/app.js")
-	for _, legacy := range []string{"htmx:beforeSwap", "event.detail.xhr", "responseText", "getResponseHeader"} {
+	for _, legacy := range []string{"htmx:beforeSwap", "htmx:beforeRequest", "htmx:afterSwap", "htmx:responseError", "htmx:sendError", "event.detail.xhr", "responseText", "getResponseHeader"} {
 		if strings.Contains(app, legacy) {
 			t.Errorf("app.js must not use the HTMX 2 API %q", legacy)
 		}
 	}
-	for _, contract := range []string{"htmx:before:swap", "ctx.response", "ctx.text", "X-Gelium-Validation", "shouldSwap = true", "isError = false"} {
+	for _, contract := range []string{"htmx:before:swap", "htmx:before:request", "htmx:after:swap", "htmx:response:error", "ctx.response", "ctx.text", "X-Gelium-Validation", "shouldSwap = true", "isError = false"} {
 		if !strings.Contains(app, contract) {
 			t.Errorf("app.js is missing the HTMX 4 response contract %q", contract)
 		}

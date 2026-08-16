@@ -53,8 +53,8 @@ document.addEventListener("htmx:before:swap", function (event) {
   }
   document.addEventListener("gelium:toast", function (event) { var d = event.detail || {}; if (d.message) showToast(d.type, d.message); });
   var TRANSPORT_ERROR = "We couldn't reach the server. Try again.";
-  document.addEventListener("htmx:responseError", function () { showToast("error", TRANSPORT_ERROR); });
-  document.addEventListener("htmx:sendError", function () { showToast("error", TRANSPORT_ERROR); });
+  document.addEventListener("htmx:response:error", function () { showToast("error", TRANSPORT_ERROR); });
+  document.addEventListener("htmx:error", function () { showToast("error", TRANSPORT_ERROR); });
 })();
 
 (function () {
@@ -91,7 +91,7 @@ document.addEventListener("htmx:before:swap", function (event) {
     else target.removeAttribute("data-theme");
   }
   var lastScrollY = 0;
-  document.addEventListener("htmx:beforeRequest", function (event) {
+  document.addEventListener("htmx:before:request", function (event) {
     var source = event.detail && event.detail.elt;
     if (source && source.closest && source.closest("a[href^='#']")) return;
     lastScrollY = window.scrollY || document.documentElement.scrollTop || 0;
