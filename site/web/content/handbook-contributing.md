@@ -18,21 +18,21 @@ go mod download
 npm run build
 ```
 
-`npm run build` compiles `web/styles/app.css` with Tailwind CSS 4 into `web/static/app.css` and copies `htmx.min.js` from the npm dependency into `web/static/`. The final files in `web/static/` are build artifacts and are embedded in the Go binary.
+`npm run build` compiles `site/web/styles/app.css` with Tailwind CSS 4 into `site/web/static/app.css` and copies `htmx.min.js` from the npm dependency into `site/web/static/`. The final files in `site/web/static/` are build artifacts and are embedded in the Go binary.
 
 ## Running the checks
 
 Every contribution must pass the same gates the project enforces:
 
 ```bash
-go test ./internal/... ./web/...
-go vet ./internal/... ./web/...
+go test ./internal/... ./site/...
+go vet ./internal/... ./site/...
 npm run build
 git diff --check
 gofmt -l .
 ```
 
-The contract tests in `internal/app/*_test.go` and `web/styles_*_test.go` are not optional decoration: they pin observable behavior (semantics, aria attributes, tokens, copy, server contracts). Do not weaken a test to make it pass — if a contract changed legitimately, rescope the test and say so in the pull request.
+The contract tests in `internal/app/*_test.go` and `site/web/styles_*_test.go` are not optional decoration: they pin observable behavior (semantics, aria attributes, tokens, copy, server contracts). Do not weaken a test to make it pass — if a contract changed legitimately, rescope the test and say so in the pull request.
 
 ## Commit conventions
 
