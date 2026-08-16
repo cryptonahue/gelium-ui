@@ -744,6 +744,11 @@ type prevNextView struct {
 type pageView struct {
 	Meta    metaView
 	Title   string
+	// H1 is the leading level-1 heading of a component page, rendered as its
+	// own block so the live demo can sit between the title and the body
+	// (Base UI/Naive UI order: show the component, then the rules). Empty on
+	// pages whose markdown does not lead with an H1 (handbook, hub, landing).
+	H1 template.HTML
 	Content template.HTML
 	// ContentRest is the tail of a pilot component page's markdown (from
 	// "## Guidance" onward), rendered AFTER the server-injected Examples and
@@ -1184,11 +1189,42 @@ func (s *server) buildTOC(source string) []tocEntry {
 	return toc
 }
 
+// splitLeadingH1 extracts the first level-1 heading (a line starting with
+// "# ") from an embedded markdown source and converts it to its own HTML
+// block, returning the remaining markdown plus the H1 markup. Pages whose
+// markdown does not lead with an H1 (handbook, hub, landing, blog) return the
+// source unchanged with an empty H1. The split happens on the markdown line
+// so goldmark's auto-heading-id still applies to the rendered H1.
+func splitLeadingH1(source string) (rest, h1 string) {
+	lines := strings.SplitN(source, "\n", 2)
+	first := strings.TrimSpace(lines[0])
+	if !strings.HasPrefix(first, "# ") {
+		return source, ""
+	}
+	var buf bytes.Buffer
+	if err := (goldmark.New(goldmark.WithParserOptions(parser.WithAutoHeadingID()))).Convert([]byte(first), &buf); err != nil {
+		return source, ""
+	}
+	rest = ""
+	if len(lines) == 2 {
+		rest = lines[1]
+	}
+	return rest, buf.String()
+}
+
 func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, data pageView, source, routePath string, status int) {
+	// Demo-first: split the leading H1 out of the markdown so the layout can
+	// render title → live demo → body (Base UI/Naive UI order: show the
+	// component, then the rules). Non-component pages (no leading H1) keep
+	// the whole source in Content as before.
+	source, h1 := splitLeadingH1(source)
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
 		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
 		return
+	}
+	if h1 != "" {
+		data.H1 = template.HTML(h1) // #nosec G203 -- the H1 is parsed from trusted embedded markdown.
 	}
 	// On this page: server-built TOC from the FULL source (before the pilot
 	// split), so the rail covers the whole article.

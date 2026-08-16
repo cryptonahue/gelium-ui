@@ -731,6 +731,49 @@ func TestNavLinksDerivedFromDocsSections(t *testing.T) {
 	}
 }
 
+// TestComponentPageDemoFirst proves the demo-first layout contract: a
+// component page renders title → live demo → body. The live demo preview
+// must sit between the H1 and the first prose paragraph (Base UI/Naive UI
+// order: show the component, then the rules).
+func TestComponentPageDemoFirst(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+
+	h1 := strings.Index(body, ">Button</h1>")
+	if h1 < 0 {
+		t.Fatal("button page must render <h1>Button</h1>")
+	}
+	demo := strings.Index(body, `aria-label="Button examples"`)
+	if demo < 0 {
+		t.Fatal("button page must render the live demo preview")
+	}
+	// The first prose paragraph after the H1 is the lead sentence of the
+	// markdown body ("Use buttons when..." in button.md).
+	prose := strings.Index(body, "<p>")
+	if h1 > demo {
+		t.Errorf("demo must come after the H1 (h1 idx %d, demo idx %d)", h1, demo)
+	}
+	if demo > prose {
+		t.Errorf("demo must come before the body prose (demo idx %d, prose idx %d)", demo, prose)
+	}
+	// A handbook page (no live demo) must not regress: H1 then prose directly.
+	res2 := httptest.NewRecorder()
+	New().ServeHTTP(res2, httptest.NewRequest(http.MethodGet, "/docs/themes", nil))
+	if res2.Code != http.StatusOK {
+		t.Fatalf("handbook status = %d, want %d", res2.Code, http.StatusOK)
+	}
+	body2 := res2.Body.String()
+	h1Themes := strings.Index(body2, ">Themes</h1>")
+	proseThemes := strings.Index(body2, "<p>")
+	if h1Themes < 0 || proseThemes < 0 || h1Themes > proseThemes {
+		t.Errorf("handbook page must keep H1 before prose (h1 idx %d, prose idx %d)", h1Themes, proseThemes)
+	}
+}
+
 func docsNavGroupTitles(nav docsNavView) []string {
 	titles := make([]string, 0, len(nav.Groups))
 	for _, g := range nav.Groups {

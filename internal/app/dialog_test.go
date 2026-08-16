@@ -23,7 +23,15 @@ func TestDialogDocsRouteDogfoodsPageVariantTriggerLink(t *testing.T) {
 			t.Errorf("dialog docs are missing %q", contract)
 		}
 	}
-	preview := body[strings.Index(body, `aria-label="Dialog example"`):]
+	previewStart := strings.Index(body, `aria-label="Dialog example"`)
+	if previewStart < 0 {
+		t.Fatal("dialog preview section not found")
+	}
+	previewEnd := strings.Index(body[previewStart:], "</section>")
+	if previewEnd < 0 {
+		t.Fatal("dialog preview section never closes")
+	}
+	preview := body[previewStart : previewStart+previewEnd]
 	for _, forbidden := range []string{`command=`, `commandfor=`, `closedby=`, `<dialog`, `ui-dialog-`} {
 		if strings.Contains(preview, forbidden) {
 			t.Errorf("dialog preview must not ship inert command-based controls: %q", forbidden)

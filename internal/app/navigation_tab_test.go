@@ -181,6 +181,11 @@ func TestNavTabDocsRouteDogfoodsLinkSemantics(t *testing.T) {
 		t.Fatal("navigation-tab demo preview section not found")
 	}
 	preview := body[start:]
+	previewEnd := strings.Index(preview, "</section>")
+	if previewEnd < 0 {
+		t.Fatal("navigation-tab demo preview section never closes")
+	}
+	preview = preview[:previewEnd]
 	for _, forbidden := range []string{
 		`role="tab"`,
 		`role="tablist"`,
