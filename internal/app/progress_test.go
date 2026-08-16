@@ -16,7 +16,7 @@ func TestProgressDocsRouteDogfoodsNativeProgressStates(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Progress</h1>`,
+		`>Progress</h1>`,
 		`href="/components/progress"`,
 		`aria-label="Progress examples"`,
 		`<progress`,

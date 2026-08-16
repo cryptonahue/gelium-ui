@@ -16,7 +16,7 @@ func TestCheckboxDocsRouteDogfoodsStates(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Checkbox</h1>`,
+		`>Checkbox</h1>`,
 		`href="/components/checkbox"`,
 		`aria-label="Checkbox examples"`,
 		`type="checkbox"`,

@@ -35,7 +35,7 @@ func TestBlogIndexListsPosts(t *testing.T) {
 	if !strings.Contains(body, `class="ui-blog-main"`) {
 		t.Error("blog index must render the blog frame (ui-blog-main)")
 	}
-	if !strings.Contains(body, "<h1>Gelium blog</h1>") {
+	if !strings.Contains(body, ">Gelium blog</h1>") {
 		t.Error("blog index must render <h1>Gelium blog</h1>")
 	}
 	if !strings.Contains(body, `class="ui-card ui-card-outlined ui-blog-card"`) {
@@ -75,7 +75,7 @@ func TestBlogPostsRender(t *testing.T) {
 			if got := strings.Count(body, "<h1"); got != 1 {
 				t.Errorf("post page h1 count = %d, want 1", got)
 			}
-			if !strings.Contains(body, "<h1>"+p.Title+"</h1>") {
+			if !strings.Contains(body, ">"+p.Title+"</h1>") {
 				t.Errorf("post page must render <h1>%s</h1>", p.Title)
 			}
 			if !strings.Contains(body, `class="prose ui-blog-post"`) {

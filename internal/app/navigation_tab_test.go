@@ -156,7 +156,7 @@ func TestNavTabDocsRouteDogfoodsLinkSemantics(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Navigation tab</h1>`,
+		`>Navigation tab</h1>`,
 		`href="/components/navigation-tab"`,
 		`aria-label="Navigation tab examples"`,
 		`class="ui-nav-tab"`,

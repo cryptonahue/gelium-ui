@@ -37,12 +37,12 @@ var pilotAPIRefProps = map[string][]string{
 // examplesSection returns the rendered body between the "## Examples" and
 // "## API reference" headings ("" when Examples is absent).
 func examplesSection(body string) string {
-	start := strings.Index(body, "<h2>Examples</h2>")
+	start := strings.Index(body, ">Examples</h2>")
 	if start < 0 {
 		return ""
 	}
 	rest := body[start:]
-	if end := strings.Index(rest, "<h2>API reference</h2>"); end >= 0 {
+	if end := strings.Index(rest, ">API reference</h2>"); end >= 0 {
 		return rest[:end]
 	}
 	return rest
@@ -85,15 +85,15 @@ func TestPilotPagesRenderExamplesSections(t *testing.T) {
 			// intro but BEFORE the Guidance block — show the component,
 			// then the rules (owner decision). Guidance (when present)
 			// must appear after both sections.
-			ex := strings.Index(body, "<h2>Examples</h2>")
-			api := strings.Index(body, "<h2>API reference</h2>")
+			ex := strings.Index(body, ">Examples</h2>")
+			api := strings.Index(body, ">API reference</h2>")
 			if ex < 0 || api < 0 {
 				t.Fatalf("%s must render Examples and API reference sections", slug)
 			}
 			if ex > api {
 				t.Errorf("%s must place '## Examples' before '## API reference'", slug)
 			}
-			if g := strings.Index(body, "<h2>Guidance</h2>"); g >= 0 && g < ex {
+			if g := strings.Index(body, ">Guidance</h2>"); g >= 0 && g < ex {
 				t.Errorf("%s must place '## Guidance' after '## Examples' (show the component, then the rules)", slug)
 			}
 			if strings.Index(body, "</article>") < api {
@@ -111,7 +111,7 @@ func TestPilotPagesRenderAPIRefTables(t *testing.T) {
 		t.Run(slug, func(t *testing.T) {
 			body := getOKBody(t, "/components/"+slug)
 
-			if !strings.Contains(body, "<h2>API reference</h2>") {
+			if !strings.Contains(body, ">API reference</h2>") {
 				t.Fatalf("%s page is missing the '## API reference' section", slug)
 			}
 			if !strings.Contains(body, `class="api-ref-table"`) {
@@ -140,8 +140,8 @@ func TestNonPilotPagesOmitExamplesAndAPIRef(t *testing.T) {
 		t.Run(slug, func(t *testing.T) {
 			body := getOKBody(t, "/components/"+slug)
 			for _, gone := range []string{
-				"<h2>Examples</h2>",
-				"<h2>API reference</h2>",
+				">Examples</h2>",
+				">API reference</h2>",
 				`class="example-block"`,
 				`class="api-ref-table"`,
 			} {

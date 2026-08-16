@@ -161,7 +161,7 @@ func TestButtonDocsRenderEveryVariantAndAccessibleState(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Button</h1>`,
+		`>Button</h1>`,
 		`class="ui-button ui-button-primary"`,
 		`class="ui-button ui-button-secondary"`,
 		`class="ui-button ui-button-outline"`,

@@ -150,6 +150,48 @@ func buildSearchIndex(groups []docsNavGroup) template.JS {
 	return template.JS(b)
 }
 
+// orderedDocsNav is the flat, ordered IA shared by the sidebar AND the
+// previous/next pagination: Getting started, Handbook, component sections,
+// Patterns, Recipes. One model, two renderings — they can never drift.
+func orderedDocsNav() []navLink {
+	links := make([]navLink, 0, 48)
+	links = append(links, navLink{Path: "/docs", Label: "Documentation"})
+	links = append(links, handbookNavLinks...)
+	for _, section := range docsSections {
+		links = append(links, section.Links...)
+	}
+	links = append(links, navLink{Path: "/docs/patterns", Label: "Patterns"})
+	links = append(links,
+		navLink{Path: "/recipes/admin-resource", Label: "Admin Resource"},
+		navLink{Path: "/recipes/ops-queue", Label: "Ops Queue"},
+		navLink{Path: "/recipes/public-feed", Label: "Public Feed"},
+	)
+	return links
+}
+
+// prevNextFor returns the previous/next destinations around activePath in the
+// flat IA order (GOV.UK pattern). Both hrefs carry the allowlisted chrome
+// query so pagination never silently resets theme/scheme. nil on the first
+// page (no previous) or the last page (no next); nil entirely when activePath
+// is not part of the ordered IA.
+func prevNextFor(activePath, themeSlug, scheme string) *prevNextView {
+	ordered := orderedDocsNav()
+	for i, l := range ordered {
+		if l.Path != activePath {
+			continue
+		}
+		pn := &prevNextView{}
+		if i > 0 {
+			pn.Prev = &prevNextLink{Href: chromeHref(ordered[i-1].Path, themeSlug, scheme), Label: ordered[i-1].Label}
+		}
+		if i < len(ordered)-1 {
+			pn.Next = &prevNextLink{Href: chromeHref(ordered[i+1].Path, themeSlug, scheme), Label: ordered[i+1].Label}
+		}
+		return pn
+	}
+	return nil
+}
+
 // handbookNavLinks is the Gelium Handbook IA: the concept pages that explain
 // how the library works, ordered first-to-read first. It drives the sidebar
 // group (position 2, before the component reference), the /docs hub section,
@@ -325,48 +367,48 @@ See the [Documentation](/docs) index for foundation, actions, input, feedback, n
 // hierarchy rule, the criteria for adding a group or page, and the agent
 // prompt that lets LLMs evaluate or improve the docs IA.
 func (s *server) docsInformationArchitecture(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Information architecture"}, "content/handbook-information-architecture.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Information architecture"}, "content/handbook-information-architecture.md", "/docs/information-architecture")
 }
 
 // docsChooseTheRightControl is GET /docs/choose-the-right-control — the
 // control-selection handbook page: the decision table and rules of thumb
 // for picking the right input component per situation.
 func (s *server) docsChooseTheRightControl(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Choose the right control"}, "content/handbook-choose-the-right-control.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Choose the right control"}, "content/handbook-choose-the-right-control.md", "/docs/choose-the-right-control")
 }
 
 // docsThemes is GET /docs/themes — the Themes handbook page: how themes work
 // over one markup surface, the Material default and Basecoat direction, and
 // the 0-JS ?theme=/class selection routes hosted in the docs topbar.
 func (s *server) docsThemes(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Themes"}, "content/handbook-themes.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Themes"}, "content/handbook-themes.md", "/docs/themes")
 }
 
 // docsTokens is GET /docs/tokens — the Tokens handbook page: the --ui-* token
 // vocabulary, core families, theme-owned values, and naming conventions.
 func (s *server) docsTokens(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Tokens"}, "content/handbook-tokens.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Tokens"}, "content/handbook-tokens.md", "/docs/tokens")
 }
 
 // docsServerContracts is GET /docs/server-contracts — the server contract
 // handbook page: GET+query state, POST+303 mutations, 422 validation, and
 // HX-Trigger toast feedback.
 func (s *server) docsServerContracts(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Server contracts"}, "content/handbook-server-contracts.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Server contracts"}, "content/handbook-server-contracts.md", "/docs/server-contracts")
 }
 
 // docsAccessibility is GET /docs/accessibility — the accessibility handbook
 // page: native semantics, accessible names, states, focus, live regions,
 // reduced motion, forced colors, contrast, and RTL.
 func (s *server) docsAccessibility(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Accessibility"}, "content/handbook-accessibility.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Accessibility"}, "content/handbook-accessibility.md", "/docs/accessibility")
 }
 
 // docsPrinciples is GET /docs/principles — the Design Principles page: the
 // four foundation principles with what/why/example each, plus how tests
 // enforce them.
 func (s *server) docsPrinciples(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Design principles"}, "content/principles.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Design principles"}, "content/principles.md", "/docs/principles")
 }
 
 // docsContentStyle is GET /docs/content-style — the Content style handbook
@@ -374,7 +416,7 @@ func (s *server) docsPrinciples(w http.ResponseWriter, r *http.Request) {
 // states, banners, docs), with the action-pattern rules and the copy contract
 // tests that enforce them.
 func (s *server) docsContentStyle(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Content style"}, "content/handbook-content-style.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Content style"}, "content/handbook-content-style.md", "/docs/content-style")
 }
 
 // docsAcknowledgments is GET /docs/acknowledgments — the Acknowledgments page:
@@ -382,18 +424,18 @@ func (s *server) docsContentStyle(w http.ResponseWriter, r *http.Request) {
 // inspired Gelium UI, what was taken from each, and how it was adapted to the
 // Gelium model (server-rendered, 0-JS, token-driven).
 func (s *server) docsAcknowledgments(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Acknowledgments"}, "content/handbook-acknowledgments.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Acknowledgments"}, "content/handbook-acknowledgments.md", "/docs/acknowledgments")
 }
 
 // docsChangelog is GET /docs/changelog — the Changelog page: the full project
 // process documented per version, mirrored from the repository CHANGELOG.md.
 func (s *server) docsChangelog(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Changelog"}, "content/handbook-changelog.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Changelog"}, "content/handbook-changelog.md", "/docs/changelog")
 }
 
 // docsRoadmap is GET /docs/roadmap — the public Roadmap page: phases A-J
 // shipped with contract tests, docs/DX status, and the post-A-J next list,
 // mirrored from the internal system roadmap.
 func (s *server) docsRoadmap(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{Title: "Roadmap"}, "content/handbook-roadmap.md")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Roadmap"}, "content/handbook-roadmap.md", "/docs/roadmap")
 }

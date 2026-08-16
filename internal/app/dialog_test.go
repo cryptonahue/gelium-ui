@@ -15,7 +15,7 @@ func TestDialogDocsRouteDogfoodsPageVariantTriggerLink(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<title>Dialog · Gelium UI</title>`, `<h1>Dialog</h1>`, `href="/components/dialog"`,
+		`<title>Dialog · Gelium UI</title>`, `>Dialog</h1>`, `href="/components/dialog"`,
 		`<a class="ui-button ui-button-primary" href="/components/dialog/confirm">`,
 		`<span>Open confirmation dialog</span></a>`,
 	} {
@@ -39,7 +39,7 @@ func TestDialogConfirmRouteRendersInlineAction(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<title>Dialog · Gelium UI</title>`, `<h1>Dialog</h1>`,
+		`<title>Dialog · Gelium UI</title>`, `>Dialog</h1>`,
 		`class="ui-dialog-page"`,
 		`id="confirm-dialog-title"`, `id="confirm-dialog-description"`,
 		`<form method="post" action="/components/dialog/confirm"`,

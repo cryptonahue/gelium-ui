@@ -16,7 +16,7 @@ func TestSliderDocsRouteDogfoodsNativeRangeAndStates(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Slider</h1>`,
+		`>Slider</h1>`,
 		`href="/components/slider"`,
 		`aria-label="Slider examples"`,
 		`type="range"`,

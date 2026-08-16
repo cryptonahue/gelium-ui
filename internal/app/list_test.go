@@ -16,7 +16,7 @@ func TestListDocsRouteDogfoodsListSemantics(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>List</h1>`,
+		`>List</h1>`,
 		`href="/components/list"`,
 		`aria-label="List examples"`,
 		`class="ui-list"`,

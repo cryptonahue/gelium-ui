@@ -16,7 +16,7 @@ func TestFocusRingDocsRouteDogfoodsSharedFocusVisibleContract(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Focus ring</h1>`,
+		`>Focus ring</h1>`,
 		`href="/components/focus-ring"`,
 		`aria-label="Focus ring example"`,
 		`class="focus-demo-grid"`,

@@ -16,7 +16,7 @@ func TestCardDocsRouteDogfoodsSemanticRootNodes(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Card</h1>`,
+		`>Card</h1>`,
 		`href="/components/card"`,
 		`aria-label="Card examples"`,
 		`<article class="ui-card ui-card-elevated"`,

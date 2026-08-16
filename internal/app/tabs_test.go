@@ -16,7 +16,7 @@ func TestTabsDocsRouteServesBothVariantsAndSelectedState(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Tabs</h1>`,
+		`>Tabs</h1>`,
 		`href="/components/tabs"`,
 		`aria-label="Tabs examples"`,
 		`class="ui-tab ui-tab-primary"`,

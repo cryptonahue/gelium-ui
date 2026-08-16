@@ -240,6 +240,48 @@
     margin: .75rem var(--ui-space-4, 1rem);
   }
 
+  /* On this page: sticky right rail with the article's h2/h3 TOC. Hidden on
+     narrow screens (standard pattern across reference docs sites); the
+     anchors still work without JS. Scrollspy (app.js) only adds is-current. */
+  .docs-on-this-page {
+    display: none;
+  }
+
+  /* Previous/next pagination (GOV.UK pattern) below the article. */
+  .docs-prev-next {
+    display: flex;
+    gap: 1rem;
+    margin-top: 3rem;
+    padding-top: 1.5rem;
+    border-top: 1px solid var(--ui-color-border);
+  }
+  .docs-prev-next-link {
+    flex: 1 1 0;
+    display: flex;
+    flex-direction: column;
+    gap: .25rem;
+    min-width: 0;
+    color: var(--ui-color-fg);
+    text-decoration: none;
+  }
+  .docs-prev-next-link--next {
+    align-items: flex-end;
+    text-align: end;
+  }
+  .docs-prev-next-link--empty {
+    pointer-events: none;
+  }
+  .docs-prev-next-direction {
+    font: var(--ui-type-label-sm);
+    letter-spacing: var(--ui-type-label-sm-letter-spacing);
+    color: var(--ui-color-fg-muted);
+  }
+  .docs-prev-next-label {
+    font: var(--ui-type-label-lg);
+    letter-spacing: var(--ui-type-label-lg-letter-spacing);
+    color: var(--ui-color-primary);
+  }
+
   @media (min-width: 48rem) {
     .docs-nav-mobile {
       display: none;
@@ -258,6 +300,51 @@
     }
     .docs-shell-main {
       padding-block-start: 2rem;
+    }
+  }
+
+  @media (min-width: 64rem) {
+    .docs-on-this-page {
+      display: block;
+      flex: 0 0 14rem;
+      width: 14rem;
+      position: sticky;
+      top: var(--docs-topbar-height);
+      max-height: calc(100vh - var(--docs-topbar-height));
+      overflow: auto;
+      padding: 1.5rem 1rem 2rem .75rem;
+      border-inline-start: 1px solid var(--ui-color-border);
+      font: var(--ui-type-body-sm);
+      letter-spacing: var(--ui-type-body-sm-letter-spacing);
+    }
+    .docs-on-this-page-title {
+      margin: 0 0 .5rem;
+      font: var(--ui-type-label-md);
+      letter-spacing: var(--ui-type-label-md-letter-spacing);
+      color: var(--ui-color-fg-muted);
+    }
+    .docs-on-this-page-list {
+      margin: 0;
+      padding: 0;
+      list-style: none;
+    }
+    .docs-on-this-page-item--nested {
+      padding-inline-start: .75rem;
+    }
+    .docs-on-this-page-link {
+      display: block;
+      padding: .25rem 0;
+      color: var(--ui-color-fg-muted);
+      text-decoration: none;
+    }
+    .docs-on-this-page-link:hover,
+    .docs-on-this-page-link:focus-visible {
+      color: var(--ui-color-fg);
+    }
+    .docs-on-this-page-link.is-current,
+    .docs-on-this-page-link[aria-current="true"] {
+      color: var(--ui-color-primary);
+      font-weight: 600;
     }
   }
 }

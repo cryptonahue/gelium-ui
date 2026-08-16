@@ -16,7 +16,7 @@ func TestChipsDocsRouteDogfoodsVariants(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Chips</h1>`,
+		`>Chips</h1>`,
 		`href="/components/chips"`,
 		`aria-label="Chips examples"`,
 	} {

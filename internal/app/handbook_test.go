@@ -45,7 +45,7 @@ func TestHandbookPagesRender(t *testing.T) {
 				t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
 			}
 			body := res.Body.String()
-			if !strings.Contains(body, "<h1>"+hb.h1+"</h1>") {
+			if !strings.Contains(body, ">"+hb.h1+"</h1>") {
 				t.Errorf("page must render <h1>%s</h1>", hb.h1)
 			}
 			if !strings.Contains(body, hb.contract) {
@@ -137,8 +137,8 @@ func TestHandbookGroupPrecedesComponentSections(t *testing.T) {
 
 	t.Run("hub render order", func(t *testing.T) {
 		body := getOKBody(t, "/docs")
-		handbook := strings.Index(body, "<h2>Handbook</h2>")
-		foundation := strings.Index(body, "<h2>Foundation</h2>")
+		handbook := strings.Index(body, ">Handbook</h2>")
+		foundation := strings.Index(body, ">Foundation</h2>")
 		if handbook < 0 || foundation < 0 {
 			t.Fatalf("docs hub must render Handbook and Foundation sections (idxs %d, %d)", handbook, foundation)
 		}
@@ -174,7 +174,7 @@ func TestDocsIndexListsHandbook(t *testing.T) {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
 	}
 	body := res.Body.String()
-	if !strings.Contains(body, "<h2>Handbook</h2>") {
+	if !strings.Contains(body, ">Handbook</h2>") {
 		t.Error("docs hub must include a Handbook section")
 	}
 	for _, hb := range handbookRoutes {

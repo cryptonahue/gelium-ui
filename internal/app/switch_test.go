@@ -16,7 +16,7 @@ func TestSwitchDocsRouteDogfoodsStates(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Switch</h1>`,
+		`>Switch</h1>`,
 		`href="/components/switch"`,
 		`aria-label="Switch examples"`,
 		`type="checkbox"`,

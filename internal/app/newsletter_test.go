@@ -17,7 +17,7 @@ func TestNewsletterExampleGETRendersZeroJSFormNoindex(t *testing.T) {
 	body := res.Body.String()
 	for _, contract := range []string{
 		`<!doctype html>`,
-		`<h1>Newsletter example</h1>`,
+		`>Newsletter example</h1>`,
 		`<meta name="robots" content="noindex, nofollow">`,
 		`<aside class="ui-newsletter" aria-labelledby="newsletter-title">`,
 		`<h2 id="newsletter-title" class="ui-newsletter-title">Stay in the loop</h2>`,

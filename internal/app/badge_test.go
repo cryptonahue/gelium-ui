@@ -16,7 +16,7 @@ func TestBadgeDocsRouteDogfoodsDotAndCountStates(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Badge</h1>`,
+		`>Badge</h1>`,
 		`href="/components/badge"`,
 		`aria-label="Badge examples"`,
 		`class="ui-badge"`,

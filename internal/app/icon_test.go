@@ -16,7 +16,7 @@ func TestIconDocsRouteDogfoodsTrustedSVGContracts(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Icon</h1>`,
+		`>Icon</h1>`,
 		`href="/components/icon"`,
 		`aria-label="Icon examples"`,
 		`class="ui-icon"`,
