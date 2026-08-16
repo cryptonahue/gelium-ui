@@ -1,0 +1,238 @@
+@import "tailwindcss";
+@import "./tokens.css";
+/*
+ * Theme bundle (Phase H mechanism): one explicit @import per theme. CSS does
+ * not glob, so every theme ships as themes/<name>/theme.css with its own root
+ * selector (.theme-<name>, light + dark self-contained) and is listed here.
+ * Selection happens at runtime by class on the document root
+ * ({{.ThemeClass}}, allowlisted server-side): no JS, no rebuild, the tokens
+ * resolve by cascade. Add a new theme in two steps — import it here, then
+ * allowlist its class in themeClass() (internal/app/server.go).
+ */
+@import "../../../themes/theme-material/theme.css";
+@import "../../../themes/theme-basecoat/theme.css";
+@import "./base.css";
+@import "./examples.css";
+@import "./docs-shell.css";
+@import "./button.css";
+@import "./text-field.css";
+@import "./dialog.css";
+@import "./toast.css";
+@import "./focus-ring.css";
+@import "./elevation.css";
+@import "./icon.css";
+@import "./divider.css";
+@import "./card.css";
+@import "./badge.css";
+@import "./avatar.css";
+@import "./checkbox.css";
+@import "./radio.css";
+@import "./switch.css";
+@import "./select.css";
+@import "./slider.css";
+@import "./progress.css";
+@import "./icon-button.css";
+@import "./fab.css";
+@import "./list.css";
+@import "./chips.css";
+@import "./tabs.css";
+@import "./navigation-bar.css";
+@import "./navigation-tab.css";
+@import "./segmented-button.css";
+@import "./menu.css";
+@import "./navigation-drawer.css";
+@import "./data-table.css";
+@import "./pagination.css";
+@import "./banner.css";
+@import "./callout.css";
+@import "./empty-state.css";
+@import "./error-state.css";
+@import "./inline-alert.css";
+@import "./skeleton.css";
+@import "./tooltip.css";
+@import "./validation-summary.css";
+@import "./breadcrumb.css";
+@import "./footer.css";
+@import "./section-heading.css";
+@import "./video.css";
+@import "./feature-card.css";
+@import "./hero.css";
+@import "./language-switcher.css";
+@import "./newsletter.css";
+@import "./split.css";
+@import "./landing.css";
+@import "./blog.css";
+@import "./demo-whatsapp.css";
+@import "./recipe-admin-resource.css";
+@import "./recipe-ops-queue.css";
+@import "./recipe-public-feed.css";
+
+@source "../templates";
+@source "../content";
+
+@theme inline {
+  --color-canvas: var(--ui-color-canvas);
+  --color-surface: var(--ui-color-surface);
+  --color-fg: var(--ui-color-fg);
+  --color-primary: var(--ui-color-primary);
+  --color-primary-fg: var(--ui-color-primary-fg);
+  --color-border: var(--ui-color-border);
+  --font-sans: var(--ui-font-sans);
+  --radius-md: var(--ui-radius-md);
+  --shadow-elevation-1: var(--ui-shadow-1);
+}
+
+@keyframes ui-spin { to { transform: rotate(360deg); } }
+
+@media (prefers-reduced-motion: reduce) {
+  .ui-button { transition: none; }
+  .ui-button-spinner { animation: none; }
+  .ui-text-field-control { transition: none; }
+  .ui-text-field-control > label { transition: none; }
+  .ui-text-field input, .ui-text-field textarea { transition: none; }
+  .ui-dialog, .ui-dialog::backdrop, .ui-dialog-headline, .ui-dialog-content, .ui-dialog-actions { transition: none; }
+  .ui-toast-region .ui-toast { transition: none; }
+  .ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 { transition: none; }
+  .ui-switch input[type="checkbox"], .ui-switch-track, .ui-switch-handle { transition: none; }
+  .ui-select select, .ui-select-label, .ui-select-caret { transition: none; }
+  .ui-slider input[type="range"]::-webkit-slider-thumb,
+  .ui-slider input[type="range"]::-moz-range-thumb { transition: none; }
+  .ui-progress progress { transition: none; }
+  .ui-fab { transition: none; }
+  .ui-list .ui-list-item::before, .ui-list-item::before, .ui-list-item-link, .ui-list-item-label { transition: none; }
+}
+
+@media (forced-colors: active) {
+  .ui-button { border: 1px solid ButtonText; }
+  .ui-button:focus-visible { outline-color: Highlight; }
+  .ui-text-field-outlined .ui-text-field-control,
+  .ui-text-field-filled .ui-text-field-control {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: Highlight;
+    box-shadow: inset 0 0 0 2px Highlight;
+  }
+  .ui-text-field-filled .ui-text-field-control:focus-within {
+    border-bottom-color: Highlight;
+    box-shadow: inset 0 -2px 0 Highlight;
+  }
+  .ui-text-field input,
+  .ui-text-field textarea {
+    color: FieldText;
+    forced-color-adjust: auto;
+  }
+  .ui-text-field-error .ui-text-field-control { border-color: Mark; }
+  .ui-text-field-error.ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: Mark;
+    box-shadow: inset 0 0 0 2px Mark;
+  }
+  .ui-text-field-error.ui-text-field-filled .ui-text-field-control:focus-within {
+    border-bottom-color: Mark;
+    box-shadow: inset 0 -2px 0 Mark;
+  }
+  .ui-text-field-error .ui-text-field-control > label,
+  .ui-text-field-error .ui-text-field-message,
+  .ui-text-field-error-icon { color: Mark; }
+  .ui-text-field-disabled .ui-text-field-control {
+    border-color: GrayText;
+    box-shadow: none;
+  }
+  .ui-text-field-disabled .ui-text-field-control > label,
+  .ui-text-field-disabled input,
+  .ui-text-field-disabled textarea,
+  .ui-text-field-disabled .ui-text-field-message,
+  .ui-text-field-disabled .ui-text-field-error-icon {
+    color: GrayText;
+    opacity: 1;
+  }
+  .ui-dialog { border: 2px solid WindowText; }
+  .ui-dialog-page { border: 2px solid WindowText; }
+  .ui-toast { border: 1px solid CanvasText; forced-color-adjust: auto; }
+  .ui-toast-message { color: CanvasText; forced-color-adjust: auto; }
+  .ui-toast-icon-info, .ui-toast-icon-success, .ui-toast-icon-warning, .ui-toast-icon-error { color: CanvasText; }
+  .ui-toast-action { color: Highlight; }
+  .ui-toast-action:focus-visible { outline-color: Highlight; }
+  :focus-visible, .ui-focus-ring:focus-visible { outline-color: Highlight; }
+  .ui-elevation-0, .ui-elevation-1, .ui-elevation-2, .ui-elevation-3, .ui-elevation-4, .ui-elevation-5 { box-shadow: none; }
+  .ui-divider { background: CanvasText; }
+  .ui-card { border: 1px solid CanvasText; }
+  .ui-badge { border: 1px solid CanvasText; }
+  .ui-fab { border: 1px solid CanvasText; }
+  .ui-fab:focus-visible { outline-color: Highlight; }
+  .ui-checkbox input[type="checkbox"] {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  input:checked + .ui-checkbox-mark { opacity: 1; }
+  .ui-checkbox-mark::after { border-color: Canvas; }
+  .ui-checkbox input:checked { background: CanvasText; }
+  .ui-checkbox input:disabled { opacity: 1; color: GrayText; }
+  .ui-radio input[type="radio"] {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  input:checked + .ui-radio-mark { opacity: 1; }
+  .ui-radio input:checked + .ui-radio-mark::after { background: CanvasText; }
+  .ui-radio input:disabled + .ui-radio-mark::after { background: GrayText; }
+  .ui-radio input:disabled { opacity: 1; }
+  .ui-switch .ui-switch-track,
+  .ui-switch input[type="checkbox"] {
+    border-color: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-switch input:checked + .ui-switch-track { background: ButtonText; }
+  .ui-switch input:checked ~ .ui-switch-handle { background: ButtonText; }
+  .ui-switch input:disabled + .ui-switch-track { border-color: GrayText; }
+  .ui-switch input:disabled:not(:checked) ~ .ui-switch-handle { opacity: 1; }
+  .ui-select select {
+    border-color: CanvasText;
+    color: FieldText;
+    forced-color-adjust: auto;
+  }
+  .ui-select select:disabled {
+    border-color: GrayText;
+    color: GrayText;
+    opacity: 1;
+  }
+  .ui-select select[aria-invalid="true"] {
+    border-color: Mark;
+    color: FieldText;
+  }
+  .ui-select select[aria-invalid="true"] ~ .ui-select-label,
+  .ui-select select[aria-invalid="true"] ~ .ui-select-caret { color: Mark; }
+  .ui-select-error { color: Mark; }
+  .ui-slider input[type="range"]::-webkit-slider-runnable-track,
+  .ui-slider input[type="range"]::-webkit-slider-thumb,
+  .ui-slider input[type="range"]::-moz-range-track,
+  .ui-slider input[type="range"]::-moz-range-progress,
+  .ui-slider input[type="range"]::-moz-range-thumb {
+    background: CanvasText;
+    forced-color-adjust: auto;
+  }
+  .ui-slider input[type="range"]:disabled::-webkit-slider-runnable-track,
+  .ui-slider input[type="range"]:disabled::-webkit-slider-thumb,
+  .ui-slider input[type="range"]:disabled::-moz-range-track,
+  .ui-slider input[type="range"]:disabled::-moz-range-progress,
+  .ui-slider input[type="range"]:disabled::-moz-range-thumb {
+    background: GrayText;
+  }
+  .ui-slider input[type="range"]:focus-visible { outline-color: Highlight; }
+  .ui-progress progress {
+    forced-color-adjust: auto;
+    color: CanvasText;
+  }
+  .ui-progress progress::-webkit-progress-bar { background: Canvas; }
+  .ui-progress progress::-webkit-progress-value { background: CanvasText; }
+  .ui-progress progress::-moz-progress-bar { background: CanvasText; }
+  .ui-progress progress:indeterminate::-webkit-progress-bar { background: CanvasText; }
+  .ui-progress progress:indeterminate::-moz-progress-bar { background: CanvasText; }
+  .ui-list { background: Canvas; }
+  .ui-list-item { color: CanvasText; forced-color-adjust: auto; }
+  .ui-list-item::before { background: CanvasText; }
+  .ui-list-item-link { color: LinkText; }
+  .ui-list-item-link:focus-visible { outline-color: Highlight; }
+  .ui-list-item-label input[type="checkbox"] { forced-color-adjust: auto; }
+  .ui-list-item-label:has(input:disabled) { color: GrayText; opacity: 1; }
+}
