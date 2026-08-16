@@ -169,6 +169,7 @@ func (s *recipeQueueStore) takeBanner() *bannerView {
 type recipeOpsQueueView struct {
 	Meta          metaView
 	ThemeClass    string
+	DataTheme     string
 	Title         string
 	Description   string
 	FilterAction  string
@@ -213,7 +214,7 @@ type recipeQueueItemView struct {
 func (s *server) recipeOpsQueueList(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
 	view := newRecipeOpsQueueView(q.Get("status"), q.Get("kind"), q.Get("page"), queueDemoStore.takeBanner())
-	applyRequestTheme(r, view)
+	applyRequestChrome(r, view)
 
 	if strings.EqualFold(r.Header.Get("HX-Request"), "true") {
 		s.renderRecipeTemplate(w, http.StatusOK, "recipe-ops-queue-panel", view)
@@ -268,7 +269,7 @@ func (s *server) recipeOpsQueueRefresh(w http.ResponseWriter, r *http.Request) {
 	isHX := strings.EqualFold(r.Header.Get("HX-Request"), "true")
 
 	view := newRecipeOpsQueueView("", "", "", queueDemoStore.takeBanner())
-	applyRequestTheme(r, view)
+	applyRequestChrome(r, view)
 	view.Refreshed = true
 
 	if isHX {

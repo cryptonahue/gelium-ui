@@ -5,7 +5,7 @@
      list (sort/filter/page/refresh) without inventing new contracts. */}}
 
 {{define "recipe-admin-resource-list"}}<!doctype html>
-<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -133,7 +133,7 @@
 {{end}}
 
 {{define "recipe-admin-resource-form"}}<!doctype html>
-<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -191,7 +191,7 @@
 </html>{{end}}
 
 {{define "recipe-admin-resource-confirm"}}<!doctype html>
-<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">

@@ -8,7 +8,7 @@
      documented server-rendered Skeleton placeholder. */}}
 
 {{define "recipe-public-feed"}}<!doctype html>
-<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
