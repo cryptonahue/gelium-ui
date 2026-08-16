@@ -225,7 +225,7 @@
     flex-wrap: wrap;
     align-items: center;
     gap: 1rem;
-    margin-top: 2rem;
+    margin: 2rem 0;
     padding: 2rem;
     border: 1px solid var(--ui-color-border);
     border-radius: var(--ui-radius-lg);
