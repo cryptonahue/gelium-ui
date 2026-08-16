@@ -188,16 +188,19 @@ func TestBlogPostsKeepSentencesUnder25Words(t *testing.T) {
 	}
 }
 
-// TestBlogTopbarLinkStaysClean proves the docs topbar Blog link is a static
-// internal href: it must not carry the chrome query string under ?theme= /
-// ?scheme= (the same cleanliness rule as the external GitHub link).
-func TestBlogTopbarLinkStaysClean(t *testing.T) {
+// TestBlogTopbarLinkKeepsChromeQuery proves the docs topbar Blog link carries
+// the allowlisted chrome query under ?theme=/?scheme=, so boosted navigation
+// from the docs shell never silently resets direction or light/dark (owner
+// decision 2026-08-15: the blog is a separate space but honors the chrome on
+// direct navigation). It stays plain when no theme/scheme is selected.
+func TestBlogTopbarLinkKeepsChromeQuery(t *testing.T) {
 	body := getOKBody(t, "/components/button?theme=basecoat&scheme=dark")
-	if !strings.Contains(body, `class="docs-topbar-blog" href="/blog"`) {
-		t.Error("docs topbar must render a Blog link to /blog")
+	if !strings.Contains(body, `class="docs-topbar-blog" href="/blog?scheme=dark&amp;theme=basecoat"`) {
+		t.Error("docs topbar Blog link must carry the chrome query under ?theme=/?scheme=")
 	}
-	if strings.Contains(body, `href="/blog?`) {
-		t.Error("topbar Blog href must not carry the chrome query string")
+	plain := getOKBody(t, "/components/button")
+	if !strings.Contains(plain, `class="docs-topbar-blog" href="/blog"`) {
+		t.Error("docs topbar Blog link must stay plain without theme/scheme")
 	}
 	// The blog space itself still honors the chrome query on its own pages.
 	blog := getOKBody(t, "/blog?theme=basecoat")

@@ -283,6 +283,30 @@ func TestDocsShellSidebarPreservesTheme(t *testing.T) {
 	}
 }
 
+// TestDocsTopbarLinksCarryChromeQuery proves the brand, blog and changelog
+// links keep the selected theme/scheme. With hx-boost, a plain href would
+// navigate without ?theme=&scheme= and the server would silently render the
+// default theme (material/light). The GitHub link stays external.
+func TestDocsTopbarLinksCarryChromeQuery(t *testing.T) {
+	body := getOKBody(t, "/docs?theme=basecoat&scheme=dark")
+	for _, contract := range []string{
+		`href="/?scheme=dark&amp;theme=basecoat"`,
+		`href="/blog?scheme=dark&amp;theme=basecoat"`,
+		`href="/docs/changelog?scheme=dark&amp;theme=basecoat"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("topbar link missing chrome query %q", contract)
+		}
+	}
+	plain := getOKBody(t, "/docs")
+	if !strings.Contains(plain, `href="/blog"`) {
+		t.Error("topbar blog link must stay plain when no theme/scheme is selected")
+	}
+	if !strings.Contains(plain, `href="https://github.com/cryptonahue/gelium-ui"`) {
+		t.Error("topbar GitHub link must remain external and unboosted")
+	}
+}
+
 // TestDocsShellChromeActivePeersAndIA (task 3.1) proves exact active-route peers,
 // full docsSections IA labels, theme switcher ?theme=-only links, and root class
 // for ?theme=basecoat on shell pages.

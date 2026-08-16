@@ -36,6 +36,11 @@ type docsNavView struct {
 	SearchIndex template.JS // JSON [{title,href,group}] of the whole nav model
 	ThemeSlug   string      // current ?theme= slug (search form hidden input)
 	Scheme      string      // current ?scheme= value (search form hidden input)
+	// ChromeQuery is the allowlisted ?theme=&scheme= suffix for topbar links
+	// that are NOT sidebar destinations (brand, blog, changelog). Without it
+	// boosted navigation from those links silently drops the selected
+	// theme/scheme and the server renders the default.
+	ChromeQuery string
 }
 
 // docsShellVersion is the static version badge shown in the docs topbar.
@@ -116,6 +121,7 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 		SearchIndex: buildSearchIndex(groups),
 		ThemeSlug:   themeSlug,
 		Scheme:      scheme,
+		ChromeQuery: chromeQuery(themeSlug, scheme),
 	}
 }
 
