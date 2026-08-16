@@ -158,13 +158,20 @@
   /* Do not show the remove UI when the input chip is disabled. */
   .ui-chip-input:disabled .ui-chip-remove { display: none; }
 
-  /* Demo preview composition. */
+  /* Demo preview composition. Chips wrap (flex-wrap on the row) instead of
+     scrolling; the grid/group chain carries min-width: 0 so the preview can
+     shrink it and rows actually wrap instead of pushing the page. */
   .chips-demo-grid {
     display: grid;
     gap: 1.5rem;
     width: 100%;
+    min-width: 0;
   }
-  .chips-demo-group { display: grid; gap: .5rem; }
+  .chips-demo-group {
+    display: grid;
+    gap: .5rem;
+    min-width: 0;
+  }
   .chips-demo-heading {
     margin: 0;
     color: var(--ui-color-fg-muted);
