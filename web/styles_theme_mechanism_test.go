@@ -121,6 +121,27 @@ func compactCSS(t *testing.T, css string) string {
 	return regexp.MustCompile(`\s+`).ReplaceAllString(css, "")
 }
 
+// TestSchemeIconsToggleFromThemeDarkClass proves the sun/moon icon pair is
+// driven by the server-side .theme-dark class on the document root — pure
+// cascade: light shows sun, dark hides sun and shows moon. No JS, no icon
+// library, and the toggle survives forced-colors because icons use
+// currentColor. The bundle must contain the rules minified.
+func TestSchemeIconsToggleFromThemeDarkClass(t *testing.T) {
+	compiled := compactCSS(t, compiledAppCSS(t))
+	// compactCSS strips whitespace INCLUDING the descendant combinator space,
+	// so the minified .theme-dark .ui-scheme-icon-* matches compacted as
+	// .theme-dark.ui-scheme-icon-*. lightningcss also merges the two
+	// display:none rules into ONE combined selector.
+	for _, contract := range []string{
+		".ui-scheme-icon-moon,.theme-dark.ui-scheme-icon-sun{display:none}",
+		".theme-dark.ui-scheme-icon-moon{display:inline-block}",
+	} {
+		if !strings.Contains(compiled, contract) {
+			t.Errorf("compiled bundle is missing icon contract %q", contract)
+		}
+	}
+}
+
 // TestThemeAppliesFromStaticDocumentOnly proves the document-root-only
 // contract (Phase H close-out): a static HTML document carrying
 // class="theme-<name>" on the document root and linking only the served bundle
