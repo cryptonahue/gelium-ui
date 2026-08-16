@@ -12,7 +12,7 @@
     <option value="{{.Value}}" data-class="{{.Class}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>
     {{end}}
   </select>
-  {{if .Scheme}}<input type="hidden" name="scheme" value="{{.Scheme}}">{{end}}
+  <input type="hidden" name="scheme" value="{{.Scheme}}">
   <button type="submit" class="ui-theme-switcher-submit">Apply</button>
 </form>
 {{end}}

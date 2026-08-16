@@ -118,6 +118,21 @@ func TestChromeFormsRenderSubmitButtons(t *testing.T) {
 	}
 }
 
+// TestChromeFormsAlwaysCarryPreserveInputs proves both chrome forms render
+// their cross-parameter hidden preserve input ALWAYS (even empty). With
+// hx-swap=none the body never re-renders, so a conditional input would stay
+// stale after an optimistic toggle and the next submission would silently
+// forget the other parameter (theme form forgetting scheme, or vice versa).
+func TestChromeFormsAlwaysCarryPreserveInputs(t *testing.T) {
+	body := getOKBody(t, "/docs")
+	if !strings.Contains(body, `<input type="hidden" name="scheme" value="">`) {
+		t.Error("theme form must always render its hidden scheme preserve input (empty value allowed)")
+	}
+	if !strings.Contains(body, `<input type="hidden" name="theme" value="">`) {
+		t.Error("scheme form must always render its hidden theme preserve input (empty value allowed)")
+	}
+}
+
 // TestChromeFormsCarryOptimisticContracts proves the chrome forms opt out of
 // the inherited body morph and emit the server-authority class mapping for the
 // optimistic preview: hx-swap="none" on both, and data-class on each theme
