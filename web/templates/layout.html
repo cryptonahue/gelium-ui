@@ -2,7 +2,7 @@
 <html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
 <head>
   <meta charset="utf-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
   <title>{{.Title}} · Gelium UI</title>
   {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
   {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
@@ -27,7 +27,7 @@
   <div class="docs-shell">
     {{template "docs-topbar" .}}
     <details class="docs-nav-mobile">
-      <summary>Menu</summary>
+      <summary aria-label="Open navigation menu">Menu</summary>
       <nav aria-label="Docs">{{template "docs-sidebar" .DocsNav}}</nav>
     </details>
     <div class="docs-shell-body">
