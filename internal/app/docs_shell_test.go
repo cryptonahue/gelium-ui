@@ -42,7 +42,7 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 					`ui-list`,
 					`ui-list-item-link`,
 					`ui-divider`,
-					`>0.4.0<`,
+					`>0.5.0<`,
 					`Gelium UI`,
 					`type="search"`,
 					`aria-label="Theme"`,
@@ -531,8 +531,8 @@ func TestUsesDocsShell(t *testing.T) {
 func TestDocsNavFor(t *testing.T) {
 	t.Run("topbar slots and IA blocks", func(t *testing.T) {
 		nav := docsNavFor("/docs", "", "")
-		if nav.Version != "0.4.0" {
-			t.Errorf("Version = %q, want %q", nav.Version, "0.4.0")
+		if nav.Version != "0.5.0" {
+			t.Errorf("Version = %q, want %q", nav.Version, "0.5.0")
 		}
 		// The nav model drives client-side search: a JSON index of every
 		// destination is emitted so search.js can filter without a server.

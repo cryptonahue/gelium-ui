@@ -2,7 +2,7 @@
 
 > Themeable, open-code UI components for Tailwind CSS and HTMX.
 
-Current release: **v0.4.0**, adding a Gelium-only Toast component for server-driven, transient feedback — an accessible `aria-live` region, an HTMX `gelium:toast` trigger contract, a complete no-JS inline fallback, and a minimal framework-free auto-dismiss enhancement.
+Current release: **v0.5.0**, moving the docs shell to HTMX 4 (namespaced events, innerMorph, optimistic theme/scheme toggling with server authority), adding an on-this-page rail and GOV.UK-style prev/next pagination, fixing dark mode across standalone recipes, and unifying the reading column to a single centered 65ch measure.
 
 Este primer vertical slice es una aplicación de documentación server-rendered en Go. Usa HTML semántico, componentes copiables, un theme Material basado en tokens propios `--ui-*`, Tailwind CSS 4 y HTMX servido localmente.
 

@@ -4,6 +4,37 @@ Todas las cambios notables del proyecto Gelium UI se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/) y el proyecto usa [Semantic Versioning](https://semver.org/).
 
+## [0.5.0] — 2026-08-16
+
+### Added
+- **On this page rail** (`/docs/*`): TOC server-side que lee los IDs reales del AST de goldmark (`parser.WithAutoHeadingID`), h2/h3 anidados, sticky ≥64rem, oculto en mobile. Cero duplicación de algoritmo.
+- **Prev/Next pagination**: patrón GOV.UK, mismo modelo `orderedDocsNav` que el sidebar; sin Previous en la primera página / sin Next en la última; honra theme/scheme.
+- **Sidebar current**: la entrada activa queda marcada al navegar.
+- **Toggle optimista de theme/scheme**: la clase/`data-theme` se aplica al instante (CSS de ambos temas ya en bundle), round-trip igual para persistir, `hx-swap="none"` + `requestSubmit`, reconciliación con el server en `htmx:before:swap` (antes del pintado). Sin JS = submit clásico.
+- **Iconos inline SVG** en los switchers de theme y scheme.
+- **Contenido centrado**: columna única `min(65ch,100%)` con `margin-inline:auto` para artículo, migas de pan y prev/next (migas/banner movidos dentro de `main`).
+
+### Changed
+- **HTMX 2.0.10 → 4.0.0-beta6**: eventos namespaced (`htmx:before:swap`, `htmx:before:request`, `htmx:response:error`, `htmx:error`), `ctx.response`/`ctx.text` en lugar de `xhr`, `hx-boost:inherited` + `innerMorph` + `morph-afterswap.js`.
+- **Sincronización de chrome en `before:swap`** (antes `after:swap`): elimina el flash de un frame al navegar entre dark/light.
+- **`staticAsset`**: sirve cualquier asset del embed con Content-Type por extensión (la allowlist de 3 archivos eliminada).
+- **Cache-busting a `?v=0.5.0`** en todos los assets.
+- **Recipes standalone** ahora aplican theme+scheme (`applyRequestChrome` + `data-theme`) — el sidebar ya no cambia dark→light.
+- **Topbar (brand/Blog/changelog)**: conserva el chrome query con orden scheme-first (`?scheme=dark&theme=basecoat`).
+
+### Fixed
+- `search.js` y `morph-afterswap.js` daban 404 + MIME text/plain rechazado (allowlist hardcodeada; search.js nunca se sirvió en `main`).
+- 3 listeners legacy de htmx 2 (`htmx:beforeRequest`, `htmx:responseError`, `htmx:sendError`) rompían scroll save y toasts de error.
+- 11 handlers de handbook usaban rutas de contenido (`/components/handbook-*`) en vez de `/docs/*` — sidebar current y Prev/Next daban nil.
+
+### Enforced (nuevos tests de contrato)
+- `htmx4_navigation_test.go`: lista de API htmx 2 obsoleta rechazada, contratos `htmx:before:swap`/`ctx.response`/`ctx.text`, cache-busting 0.5.0.
+- `on_this_page_test.go`: rail y Prev/Next en páginas servidas.
+- `recipe_chrome_test.go`: recipes honran `?scheme=`.
+- `styles_on_this_page_test.go`: contrato `margin:0auto` (compactCSS).
+- `docs_shell_test.go`: `TestProduceSameChromeURLs`, hrefs con `&amp;`.
+- `server_test.go`: tabla estática con `search.js`/`morph-afterswap.js`.
+
 ## [0.4.0] — 2026-08-15
 
 ### Added
@@ -72,6 +103,7 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/) y el p
 - **Contratos de acceso y verificación** (Phases A-D): native semantics, focus rings, aria-* en toda la superficie.
 - **Docs shell**: navegación, sidebar, breadcrumbs, búsqueda (deshabilitada), theme/scheme switchers.
 
+[0.5.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.4.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.3.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.2.0]: https://github.com/cryptonahue/gelium-ui/releases

@@ -44,7 +44,7 @@ type docsNavView struct {
 }
 
 // docsShellVersion is the static version badge shown in the docs topbar.
-const docsShellVersion = "0.4.0"
+const docsShellVersion = "0.5.0"
 
 // usesDocsShell reports whether path should render the two-pane docs chrome.
 // Home, recipes, and demos stay on the legacy site-header layout.

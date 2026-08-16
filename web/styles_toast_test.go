@@ -6,20 +6,20 @@ import (
 	"testing"
 )
 
-func TestToastReleaseDocsAndPackageVersionStayCoherent(t *testing.T) {
+func TestReleaseDocsAndPackageVersionStayCoherent(t *testing.T) {
 	packageJSON := repositoryFile(t, "package.json")
 	readme := repositoryFile(t, "README.md")
-	docs := repositoryFile(t, "web", "content", "toast.md")
-	if !strings.Contains(packageJSON, `"version": "0.4.0"`) {
-		t.Error("package version must identify the Toast release as 0.4.0")
+	toastDocs := repositoryFile(t, "web", "content", "toast.md")
+	if !strings.Contains(packageJSON, `"version": "0.5.0"`) {
+		t.Error("package version must identify the 0.5.0 release")
 	}
-	for _, contract := range []string{"/components/toast", "v0.4.0", "gelium:toast", "no-JS"} {
+	for _, contract := range []string{"v0.5.0", "HTMX 4", "on-this-page rail", "prev/next pagination", "/components/toast", "gelium:toast", "sin JS"} {
 		if !strings.Contains(readme, contract) {
-			t.Errorf("README is missing Toast release contract %q", contract)
+			t.Errorf("README is missing release contract %q", contract)
 		}
 	}
 	for _, contract := range []string{"role=\"alert\"", "role=\"status\"", "aria-live", "HX-Trigger", "prefers-reduced-motion", "forced-colors"} {
-		if !strings.Contains(docs, contract) {
+		if !strings.Contains(toastDocs, contract) {
 			t.Errorf("Toast documentation is missing %q", contract)
 		}
 	}
