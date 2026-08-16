@@ -13,7 +13,7 @@ import (
 
 	"github.com/yuin/goldmark"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 func openingTagWithID(t *testing.T, body, element, id string) string {

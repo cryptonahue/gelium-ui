@@ -8,7 +8,7 @@ import (
 	"testing"
 	"time"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 // blogPostContracts is a per-slug content marker that makes each post page

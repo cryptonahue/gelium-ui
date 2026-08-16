@@ -6,7 +6,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 // renderPartial executes one recipe/primitive partial from the same embedded

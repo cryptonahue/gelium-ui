@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 // renderFab renders a single FAB from the real dogfooded template so the test

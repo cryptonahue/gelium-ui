@@ -5,7 +5,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 // pilotComponentSlugs is the pilot set for the Base UI "Examples + code +

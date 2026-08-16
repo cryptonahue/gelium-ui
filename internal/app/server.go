@@ -23,7 +23,7 @@ import (
 	"github.com/yuin/goldmark/parser"
 	"github.com/yuin/goldmark/text"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 // defaultThemeClass is the theme applied when none is requested. The value must

@@ -4,7 +4,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 func TestHTMX4NavigationContract(t *testing.T) {

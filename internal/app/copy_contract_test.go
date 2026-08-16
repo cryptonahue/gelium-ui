@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 // Copy contract (content style guide, web/content/handbook-content-style.md):

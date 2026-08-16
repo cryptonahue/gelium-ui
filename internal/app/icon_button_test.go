@@ -8,7 +8,7 @@ import (
 	"strings"
 	"testing"
 
-	webassets "geliumui/web"
+	webassets "geliumui/site/web"
 )
 
 func renderIconButton(t *testing.T, view iconButtonView) string {
