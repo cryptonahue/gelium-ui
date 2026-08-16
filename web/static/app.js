@@ -137,7 +137,7 @@ document.addEventListener("htmx:before:swap", function (event) {
     if (themeSlug) params.push("theme=" + themeSlug);
     if (params.length) query = "?" + params.join("&");
     var links = document.querySelectorAll(
-      ".docs-sidebar a[href], .docs-topbar a[href], .ui-breadcrumb a[href], .docs-prev-next a[href]"
+      ".docs-nav-list a[href], .docs-nav-mobile a[href], .docs-topbar a[href], .ui-breadcrumb a[href], .docs-prev-next a[href]"
     );
     for (var i = 0; i < links.length; i++) {
       var a = links[i];
