@@ -16,9 +16,9 @@ func TestSelectDocsRouteDogfoodsNativeVariantsAndStates(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Select</h1>`,
+		`>Select</h1>`,
 		`href="/components/select"`,
-		`<h2>Examples</h2>`,
+		`>Examples</h2>`,
 		`class="example-block"`,
 		`<select`,
 		`ui-select-filled`,
@@ -51,7 +51,7 @@ func TestSelectMenuDocsRouteDogfoodsNativeSelectField(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h2>Examples</h2>`,
+		`>Examples</h2>`,
 		`class="ui-select ui-select-filled"`,
 		`<select id="select-menu" name="value">`,
 		`<option value="standard">Standard</option>`,

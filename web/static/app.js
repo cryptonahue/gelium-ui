@@ -165,3 +165,37 @@ document.addEventListener("htmx:before:swap", function (event) {
   });
   document.addEventListener("DOMContentLoaded", function () { initChrome(document); });
 })();
+
+(function () {
+  "use strict";
+  // On-this-page scrollspy (progressive enhancement): highlights the rail
+  // section currently in view. The rail itself is a plain anchor list that
+  // works without JS; this only toggles is-current/aria-current.
+  function initOnThisPage() {
+    var rail = document.querySelector(".docs-on-this-page");
+    if (!rail || rail.getAttribute("data-gelium-spy")) return;
+    if (!("IntersectionObserver" in window)) return;
+    var links = rail.querySelectorAll('a[href^="#"]');
+    if (!links.length) return;
+    rail.setAttribute("data-gelium-spy", "true");
+    var sections = [];
+    links.forEach(function (link) {
+      var target = document.getElementById(link.getAttribute("href").slice(1));
+      if (target) sections.push({ link: link, target: target });
+    });
+    var observer = new IntersectionObserver(function (entries) {
+      entries.forEach(function (entry) {
+        if (!entry.isIntersecting) return;
+        sections.forEach(function (s) {
+          var active = s.target === entry.target;
+          s.link.classList.toggle("is-current", active);
+          if (active) s.link.setAttribute("aria-current", "true");
+          else s.link.removeAttribute("aria-current");
+        });
+      });
+    }, { rootMargin: "-20% 0px -60% 0px", threshold: 0 });
+    sections.forEach(function (s) { observer.observe(s.target); });
+  }
+  document.addEventListener("DOMContentLoaded", initOnThisPage);
+  document.addEventListener("htmx:after:swap", initOnThisPage);
+})();

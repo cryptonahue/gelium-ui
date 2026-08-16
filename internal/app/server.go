@@ -17,8 +17,11 @@ import (
 
 	"github.com/alecthomas/chroma/v2/formatters/html"
 	"github.com/yuin/goldmark"
-	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark-highlighting/v2"
+	"github.com/yuin/goldmark/ast"
+	"github.com/yuin/goldmark/extension"
+	"github.com/yuin/goldmark/parser"
+	"github.com/yuin/goldmark/text"
 
 	webassets "geliumui/web"
 )
@@ -717,15 +720,36 @@ type provenanceView struct {
 	Modified   string
 }
 
+// tocEntry is one "On this page" section: the goldmark auto heading ID plus
+// the heading text. Level 2 is top-level, level 3 nests under it.
+type tocEntry struct {
+	ID    string
+	Text  string
+	Level int
+}
+
+// prevNextLink is one pagination destination (GOV.UK previous/next pattern).
+type prevNextLink struct {
+	Href  string
+	Label string
+}
+
+// prevNextView is the previous/next pagination; Prev or Next is nil on the
+// first/last IA boundary so the template renders a spacer.
+type prevNextView struct {
+	Prev *prevNextLink
+	Next *prevNextLink
+}
+
 type pageView struct {
-	Meta       metaView
-	Title      string
-	Content    template.HTML
+	Meta    metaView
+	Title   string
+	Content template.HTML
 	// ContentRest is the tail of a pilot component page's markdown (from
 	// "## Guidance" onward), rendered AFTER the server-injected Examples and
 	// API reference sections. Empty on non-pilot pages.
 	ContentRest template.HTML
-	ThemeClass string
+	ThemeClass  string
 	// Provenance is the article provenance line (version, license, source,
 	// dates) rendered inside the article on component pages only.
 	Provenance *provenanceView
@@ -735,6 +759,14 @@ type pageView struct {
 	Nav       []navLink
 	// DocsNav enables the two-pane docs shell when non-nil (docs + components).
 	DocsNav *docsNavView
+	// OnThisPage is the server-built TOC of the rendered article (h2/h3 with
+	// goldmark auto heading IDs). Rendered as the sticky right rail on shell
+	// routes; empty on pages without headings.
+	OnThisPage []tocEntry
+	// PrevNext is the previous/next pagination across the docs IA (GOV.UK
+	// pattern), derived from the SAME ordered model as the sidebar. nil on
+	// non-shell routes and on first/last IA boundaries.
+	PrevNext *prevNextView
 	// ThemeSwitcher is the native-select ?theme= chrome (0-JS GET form). On
 	// shell routes it lives in the topbar; on legacy header routes it may sit
 	// in the site-header.
@@ -746,10 +778,10 @@ type pageView struct {
 	Landing *landingView
 	// Blog enables the blog space (index + posts). When non-nil, layout
 	// renders the blog template — a separate surface from the docs shell.
-	Blog                 *blogView
-	Banner               *bannerView
-	Breadcrumb           *breadcrumbView
-	Footer               *footerView
+	Blog       *blogView
+	Banner     *bannerView
+	Breadcrumb *breadcrumbView
+	Footer     *footerView
 	// Examples renders the pilot "## Examples" section (Base UI pattern):
 	// live demos rendered through the real component partials, each paired
 	// with the actual Go template invocation that produced it. Nil on
@@ -757,8 +789,8 @@ type pageView struct {
 	Examples []exampleBlock
 	// APIRef renders the pilot "## API reference" table from the component's
 	// real view-struct fields. Nil on non-pilot pages.
-	APIRef  *apiRefView
-	Error   *errorStateView
+	APIRef               *apiRefView
+	Error                *errorStateView
 	InlineAlert          *inlineAlertView
 	CTA                  *buttonView
 	Buttons              []buttonView
@@ -807,7 +839,7 @@ func New() http.Handler {
 	templates := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
 	s := &server{
 		templates: templates,
-		markdown:  goldmark.New(
+		markdown: goldmark.New(
 			goldmark.WithExtensions(
 				extension.GFM,
 				highlighting.NewHighlighting(
@@ -815,8 +847,12 @@ func New() http.Handler {
 					highlighting.WithFormatOptions(html.WithClasses(true)),
 				),
 			),
+			// Auto heading IDs power the "On this page" rail anchors. The IDs
+			// land on the heading nodes during parsing, so the TOC builder
+			// reads them from the AST instead of duplicating the algorithm.
+			goldmark.WithParserOptions(parser.WithAutoHeadingID()),
 		),
-		assets:    webassets.Assets,
+		assets: webassets.Assets,
 	}
 
 	mux := http.NewServeMux()
@@ -1094,6 +1130,19 @@ func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, r *http.Request
 	s.renderMarkdownStatus(w, r, data, string(source), routePathForContent(contentPath), status)
 }
 
+// renderMarkdownPageAt renders an embedded markdown file under an explicit
+// PUBLIC route path. Content-only docs pages (handbook) must pass the real
+// /docs/* path: the derived /components/* path would break sidebar current
+// marking and previous/next pagination (both key off the IA route).
+func (s *server) renderMarkdownPageAt(w http.ResponseWriter, r *http.Request, data pageView, contentPath, routePath string) {
+	source, err := fs.ReadFile(s.assets, contentPath)
+	if err != nil {
+		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePath)
+		return
+	}
+	s.renderMarkdownStatus(w, r, data, string(source), routePath, http.StatusOK)
+}
+
 // renderMarkdown converts an in-memory Markdown string and renders it into the
 // docs layout. Used by pages that build their content programmatically (the
 // /docs index) as well as by pages served from embedded files. routePath is
@@ -1102,12 +1151,46 @@ func (s *server) renderMarkdown(w http.ResponseWriter, r *http.Request, data pag
 	s.renderMarkdownStatus(w, r, data, source, routePath, http.StatusOK)
 }
 
+// buildTOC walks the markdown AST of source and collects the h2/h3 headings
+// with their auto-generated ids (parser.WithAutoHeadingID). The rail links
+// point at those anchors; ids are read from the heading nodes, so the TOC can
+// never drift from the rendered output.
+func (s *server) buildTOC(source string) []tocEntry {
+	sourceBytes := []byte(source)
+	doc := s.markdown.Parser().Parse(text.NewReader(sourceBytes))
+	toc := make([]tocEntry, 0, 8)
+	_ = ast.Walk(doc, func(n ast.Node, entering bool) (ast.WalkStatus, error) {
+		if !entering {
+			return ast.WalkContinue, nil
+		}
+		h, ok := n.(*ast.Heading)
+		if !ok || (h.Level != 2 && h.Level != 3) {
+			return ast.WalkContinue, nil
+		}
+		var id string
+		if v, ok := h.AttributeString("id"); ok {
+			if b, ok := v.([]byte); ok {
+				id = string(b)
+			}
+		}
+		if id == "" {
+			return ast.WalkContinue, nil
+		}
+		toc = append(toc, tocEntry{ID: id, Text: string(h.Text(sourceBytes)), Level: h.Level})
+		return ast.WalkContinue, nil
+	})
+	return toc
+}
+
 func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, data pageView, source, routePath string, status int) {
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
 		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
 		return
 	}
+	// On this page: server-built TOC from the FULL source (before the pilot
+	// split), so the rail covers the whole article.
+	data.OnThisPage = s.buildTOC(source)
 
 	var page bytes.Buffer
 	data.Nav = navLinks()
@@ -1163,7 +1246,7 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 				return
 			}
 		}
-		data.Content = template.HTML(introHTML.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
+		data.Content = template.HTML(introHTML.String())    // #nosec G203 -- markdown is trusted (embedded or generated).
 		data.ContentRest = template.HTML(restHTML.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
 	} else {
 		data.Content = template.HTML(rendered.String()) // #nosec G203 -- markdown is trusted (embedded or generated).
@@ -1201,6 +1284,9 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 		data.DocsNav = &nav
 		data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass, themeSlug, scheme)
 		data.SchemeSwitcher = schemeSwitcherFor(r, themeSlug, scheme)
+		if pn := prevNextFor(routePath, themeSlug, scheme); pn != nil {
+			data.PrevNext = pn
+		}
 		if data.Breadcrumb != nil {
 			data.Breadcrumb = breadcrumbWithChrome(data.Breadcrumb, themeSlug, scheme)
 		}

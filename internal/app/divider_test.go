@@ -16,7 +16,7 @@ func TestDividerDocsRouteDogfoodsNativeHRSemantics(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Divider</h1>`,
+		`>Divider</h1>`,
 		`href="/components/divider"`,
 		`aria-label="Divider examples"`,
 		`class="ui-divider"`,

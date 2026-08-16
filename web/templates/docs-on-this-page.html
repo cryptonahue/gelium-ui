@@ -1,0 +1,16 @@
+{{/* On this page: server-built TOC (h2/h3 with goldmark auto heading IDs).
+     The rail is a plain anchor list — no JS required. Scrollspy in app.js
+     only adds the is-current highlight (progressive enhancement). Anchors are
+     native #fragment navigation, never boosted by htmx. */}}
+{{define "docs-on-this-page"}}
+<aside class="docs-on-this-page" aria-label="On this page">
+  <h2 class="docs-on-this-page-title">On this page</h2>
+  <ul class="docs-on-this-page-list">
+    {{range .}}
+    <li class="docs-on-this-page-item{{if eq .Level 3}} docs-on-this-page-item--nested{{end}}">
+      <a class="docs-on-this-page-link" href="#{{.ID}}">{{.Text}}</a>
+    </li>
+    {{end}}
+  </ul>
+</aside>
+{{end}}

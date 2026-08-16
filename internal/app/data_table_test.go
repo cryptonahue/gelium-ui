@@ -16,7 +16,7 @@ func TestDataTableDocsRouteDogfoodsNativeTableSemantics(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Data table</h1>`,
+		`>Data table</h1>`,
 		`class="ui-data-table"`,
 		`<table`,
 		`<caption`,

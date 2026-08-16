@@ -161,7 +161,7 @@ func TestIconButtonDocsRenderEveryVariantAndState(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Icon button</h1>`,
+		`>Icon button</h1>`,
 		`class="ui-icon-button ui-icon-button-standard"`,
 		`class="ui-icon-button ui-icon-button-filled"`,
 		`class="ui-icon-button ui-icon-button-filled-tonal"`,

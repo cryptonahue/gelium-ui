@@ -80,7 +80,7 @@ func TestTextFieldDocsRouteDogfoodsNativeAccessibleVariantsAndStates(t *testing.
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Text field</h1>`,
+		`>Text field</h1>`,
 		`href="/components/text-field"`,
 		`ui-text-field-outlined`,
 		`ui-text-field-filled`,
@@ -204,7 +204,7 @@ func TestTextFieldValidationWithoutHXRejectsWhitespaceInCompleteDocumentationPag
 		`<title>Text field · Gelium UI</title>`,
 		`<nav aria-label="Docs">`,
 		`<article class="prose"><p class="article-provenance">`,
-		`<h1>Text field</h1>`,
+		`>Text field</h1>`,
 		`aria-label="Text field examples"`,
 		`aria-label="Text field validation example"`,
 		`Name is required`,
@@ -270,7 +270,7 @@ func TestTextFieldValidationWithoutHXAcceptsValueInCompleteDocumentationPage(t *
 		`<title>Text field · Gelium UI</title>`,
 		`<nav aria-label="Docs">`,
 		`<article class="prose"><p class="article-provenance">`,
-		`<h1>Text field</h1>`,
+		`>Text field</h1>`,
 		`aria-label="Text field examples"`,
 		`aria-label="Text field validation example"`,
 		`role="status"`,

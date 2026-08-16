@@ -16,7 +16,7 @@ func TestElevationDocsRouteDogfoodsTokenMappedUtilityLevels(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Elevation</h1>`,
+		`>Elevation</h1>`,
 		`href="/components/elevation"`,
 		`aria-label="Elevation example"`,
 		`class="ui-elevation-0"`,

@@ -16,7 +16,7 @@ func TestSegmentedButtonDocsRouteDogfoodsStates(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Segmented buttons</h1>`,
+		`>Segmented buttons</h1>`,
 		`href="/components/segmented-button"`,
 		`aria-label="Segmented button examples"`,
 		`class="ui-segmented-button"`,

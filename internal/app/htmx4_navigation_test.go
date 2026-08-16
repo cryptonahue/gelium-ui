@@ -55,6 +55,8 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 		"applyOptimisticChrome",
 		"requestSubmit", // fires submit so htmx intercepts (form.submit() = native reload)
 		"keepPreservedState", // keeps the other form's hidden input in sync
+		"initOnThisPage", // On-this-page scrollspy (progressive enhancement)
+		"IntersectionObserver",
 		"data-class",
 		"theme-dark",
 		"data-theme",

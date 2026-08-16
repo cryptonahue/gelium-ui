@@ -37,8 +37,7 @@
       <div class="docs-shell-main">
         {{if .Breadcrumb}}{{template "breadcrumb" .Breadcrumb}}{{end}}
         {{if .Banner}}{{template "banner" .Banner}}{{end}}
-        <main id="main-content" class="docs-shell-content">
-  {{else}}
+        <main id="main-content" class="docs-shell-content">  {{else}}
   <header class="site-header">
     <a class="brand" href="/">Gelium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
@@ -109,9 +108,11 @@
     {{if .TooltipDemo}}<section class="component-preview" aria-label="Tooltip examples">{{template "tooltip-demo" .TooltipDemo}}</section>{{end}}
     {{if .Newsletter}}<section class="component-preview newsletter-preview" aria-label="Newsletter example">{{template "newsletter" .Newsletter}}</section>{{end}}
     {{end}}
+    {{if .PrevNext}}{{template "docs-prev-next" .PrevNext}}{{end}}
   </main>
   {{if .DocsNav}}
       </div>
+      {{if .OnThisPage}}{{template "docs-on-this-page" .OnThisPage}}{{end}}
     </div>
   </div>
   {{end}}

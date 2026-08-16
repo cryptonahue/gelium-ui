@@ -1,0 +1,20 @@
+{{/* Previous/next pagination across the docs IA (GOV.UK pattern). The order
+     is the SAME orderedDocsNav model that drives the sidebar, so pagination
+     can never drift from the IA. Hrefs carry the chrome query so navigation
+     keeps theme/scheme. A missing side renders a spacer to keep alignment. */}}
+{{define "docs-prev-next"}}
+<nav class="docs-prev-next" aria-label="Pagination">
+  {{if .Prev}}
+  <a class="docs-prev-next-link docs-prev-next-link--prev" href="{{.Prev.Href}}">
+    <span class="docs-prev-next-direction">Previous</span>
+    <span class="docs-prev-next-label">{{.Prev.Label}}</span>
+  </a>
+  {{else}}<span class="docs-prev-next-link docs-prev-next-link--empty"></span>{{end}}
+  {{if .Next}}
+  <a class="docs-prev-next-link docs-prev-next-link--next" href="{{.Next.Href}}">
+    <span class="docs-prev-next-direction">Next</span>
+    <span class="docs-prev-next-label">{{.Next.Label}}</span>
+  </a>
+  {{end}}
+</nav>
+{{end}}

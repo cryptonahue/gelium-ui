@@ -125,7 +125,7 @@ func TestNavBarDocsRouteDogfoodsNavSemantics(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Navigation bar</h1>`,
+		`>Navigation bar</h1>`,
 		`href="/components/navigation-bar"`,
 		`aria-label="Navigation bar examples"`,
 		`class="ui-nav-bar"`,

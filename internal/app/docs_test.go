@@ -16,12 +16,12 @@ func TestDocsIndexRendersSectionsAndComponentLinks(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Documentation</h1>`,
-		`<h2>Foundation</h2>`,
-		`<h2>Actions</h2>`,
-		`<h2>Input</h2>`,
-		`<h2>Navigation</h2>`,
-		`<h2>Data</h2>`,
+		`>Documentation</h1>`,
+		`>Foundation</h2>`,
+		`>Actions</h2>`,
+		`>Input</h2>`,
+		`>Navigation</h2>`,
+		`>Data</h2>`,
 		`href="/components/button"`,
 		`href="/components/tooltip"`,
 		`href="/components/data-table"`,

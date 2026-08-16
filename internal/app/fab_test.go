@@ -213,7 +213,7 @@ func TestFabDocsRenderEveryVariantSizeAndState(t *testing.T) {
 	body := res.Body.String()
 
 	for _, contract := range []string{
-		`<h1>Floating action button (FAB)</h1>`,
+		`>Floating action button (FAB)</h1>`,
 		`class="ui-fab ui-fab-primary ui-fab-medium"`,
 		`class="ui-fab ui-fab-surface ui-fab-medium"`,
 		`class="ui-fab ui-fab-secondary ui-fab-medium"`,

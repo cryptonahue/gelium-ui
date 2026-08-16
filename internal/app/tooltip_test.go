@@ -16,7 +16,7 @@ func TestTooltipDocsRouteDogfoodsVariants(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Tooltip</h1>`,
+		`>Tooltip</h1>`,
 		`href="/components/tooltip"`,
 		`aria-label="Tooltip examples"`,
 		`class="ui-tooltip"`,

@@ -16,7 +16,7 @@ func TestRadioDocsRouteDogfoodsStates(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Radio</h1>`,
+		`>Radio</h1>`,
 		`href="/components/radio"`,
 		`aria-label="Radio examples"`,
 		`type="radio"`,

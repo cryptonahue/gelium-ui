@@ -17,7 +17,7 @@ func TestMenuDocsRouteDogfoodsPopoverAndAnatomy(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Menu</h1>`,
+		`>Menu</h1>`,
 		`href="/components/menu"`,
 		`aria-label="Menu examples"`,
 		`class="ui-menu"`,

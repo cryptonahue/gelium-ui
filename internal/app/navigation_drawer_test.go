@@ -153,7 +153,7 @@ func TestNavigationDrawerDocsRouteDogfoodsNavAndDialogSemantics(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<h1>Navigation drawer</h1>`,
+		`>Navigation drawer</h1>`,
 		`href="/components/navigation-drawer"`,
 		`aria-label="Navigation drawer examples"`,
 		`class="ui-navigation-drawer ui-navigation-drawer--`,
