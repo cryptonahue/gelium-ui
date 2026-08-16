@@ -54,6 +54,7 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 		"htmx:before:swap", // server-authority reconciliation runs pre-swap
 		"applyOptimisticChrome",
 		"requestSubmit", // fires submit so htmx intercepts (form.submit() = native reload)
+		"keepPreservedState", // keeps the other form's hidden input in sync
 		"data-class",
 		"theme-dark",
 		"data-theme",

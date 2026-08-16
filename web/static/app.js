@@ -87,6 +87,7 @@ document.addEventListener("htmx:before:swap", function (event) {
         root.classList.remove("theme-dark");
         root.setAttribute("data-theme", "light");
       }
+      keepPreservedState("scheme", scheme.checked ? "dark" : "light");
       return;
     }
     var theme = form.querySelector('select[name="theme"]');
@@ -99,7 +100,19 @@ document.addEventListener("htmx:before:swap", function (event) {
         root.classList.remove(cls);
       }
       if (next) root.classList.add(next);
+      keepPreservedState("theme", theme.value);
     }
+  }
+  // keepPreservedState keeps the OTHER chrome form's hidden preserve input in
+  // sync. With hx-swap=none the body never re-renders, so the theme form's
+  // hidden scheme (and the scheme form's hidden theme) would otherwise stay
+  // stale and the next submission would silently forget the other parameter.
+  function keepPreservedState(name, value) {
+    var checkbox = document.querySelector('form[data-chrome-form] input[type="checkbox"][name="scheme"]');
+    var select = document.querySelector('form[data-chrome-form] select[name="theme"]');
+    var target = name === "scheme" ? (select && select.closest("form")) : (checkbox && checkbox.closest("form"));
+    var hidden = target && target.querySelector('input[type="hidden"][name="' + name + '"]');
+    if (hidden) hidden.value = value;
   }
   function initChrome(root) {
     var forms = (root || document).querySelectorAll("form[data-chrome-form]");
