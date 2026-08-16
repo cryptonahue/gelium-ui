@@ -166,3 +166,24 @@ func TestReducedMotionGlobalRuleReachesCompiledBundle(t *testing.T) {
 		t.Error("compiled static/app.css must carry the global *{transition/animation:none!important} rule (regenerate with npm run build)")
 	}
 }
+
+// TestHeroTitleSmallScreenStep pins the 320px typography evidence: at 320px
+// the hero h1 (display-lg, 56px) produces lines of 364px/322px inside a
+// 254px visible hero clip region (the unbreakable 15-char word
+// "Server-rendered" is ~364px at 56px), so the 56px display step silently
+// clips on the smallest supported width. The step-scale fix (GOV.UK: the
+// large 48px step drops to the small 32px class) is a media step under
+// 48rem that falls the hero title back to the existing small display class
+// (display-sm, 36px — its longest line then measures ~234px and fits).
+// Body steps are untouched: body copy stays at 16px everywhere.
+func TestHeroTitleSmallScreenStep(t *testing.T) {
+	css, err := sourceStyles.ReadFile("styles/hero.css")
+	if err != nil {
+		t.Fatalf("read hero.css: %v", err)
+	}
+	compact := regexp.MustCompile(`\s+`).ReplaceAllString(string(css), " ")
+	const want = "@media (max-width: 47.99rem) { .ui-hero-title { font: var(--ui-type-display-sm); letter-spacing: var(--ui-type-display-sm-letter-spacing); } }"
+	if !strings.Contains(compact, want) {
+		t.Errorf("hero.css must step the hero title to the small display class under 48rem: %s", want)
+	}
+}

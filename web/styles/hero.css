@@ -95,6 +95,17 @@
   @media (min-width: 48rem) {
     .ui-hero { padding: var(--ui-space-8) var(--ui-space-6); }
   }
+
+  /* Small-screen display step (GOV.UK step-scale: the large 48px step drops
+     to the small 32px class under 48rem). At 320px the 56px display-lg
+     title produces lines wider than the hero's visible clip region (an
+     unbreakable 15-char word measures ~364px at 56px), silently clipping
+     text — so the title falls back to the existing small display class
+     (display-sm, 36px) whose longest line fits the mobile column. Body
+     steps are untouched: body copy stays at 16px everywhere. */
+  @media (max-width: 47.99rem) {
+    .ui-hero-title { font: var(--ui-type-display-sm); letter-spacing: var(--ui-type-display-sm-letter-spacing); }
+  }
 }
 
 @media (forced-colors: active) {
