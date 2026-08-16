@@ -88,19 +88,19 @@ document.addEventListener("htmx:before:swap", function (event) {
         root.setAttribute("data-theme", "light");
       }
       keepPreservedState("scheme", scheme.checked ? "dark" : "light");
-      return;
-    }
-    var theme = form.querySelector('select[name="theme"]');
-    if (theme) {
-      var next = null;
-      for (var i = 0; i < theme.options.length; i++) {
-        var cls = theme.options[i].getAttribute("data-class");
-        if (!cls) continue;
-        if (i === theme.selectedIndex) next = cls;
-        root.classList.remove(cls);
+    } else {
+      var theme = form.querySelector('select[name="theme"]');
+      if (theme) {
+        var next = null;
+        for (var i = 0; i < theme.options.length; i++) {
+          var cls = theme.options[i].getAttribute("data-class");
+          if (!cls) continue;
+          if (i === theme.selectedIndex) next = cls;
+          root.classList.remove(cls);
+        }
+        if (next) root.classList.add(next);
+        keepPreservedState("theme", theme.value);
       }
-      if (next) root.classList.add(next);
-      keepPreservedState("theme", theme.value);
     }
     refreshChromeHrefs();
   }
