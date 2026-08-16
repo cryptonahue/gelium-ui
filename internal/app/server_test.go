@@ -85,7 +85,7 @@ func TestHomeRendersMarketingLanding(t *testing.T) {
 		`Admin Resource`,
 		`class="site-header"`,
 		`aria-label="Appearance"`,
-		`src="/static/htmx.min.js?v=0.4.0"`,
+		`src="/static/htmx.min.js?v=0.5.0"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("home does not contain contract %q", contract)
@@ -107,9 +107,9 @@ func TestLayoutCacheBustsEmbeddedAssetsAcrossExeUpgrades(t *testing.T) {
 	body := res.Body.String()
 
 	for _, asset := range []string{
-		`href="/static/app.css?v=0.4.0"`,
-		`src="/static/htmx.min.js?v=0.4.0"`,
-		`src="/static/app.js?v=0.4.0"`,
+		`href="/static/app.css?v=0.5.0"`,
+		`src="/static/htmx.min.js?v=0.5.0"`,
+		`src="/static/app.js?v=0.5.0"`,
 	} {
 		if !strings.Contains(body, asset) {
 			t.Errorf("layout must cache-bust upgraded embedded asset %s", asset)
@@ -126,6 +126,8 @@ func TestStaticBuildArtifactsAreServedFromEmbeddedFilesystem(t *testing.T) {
 		{path: "/static/app.css", contentType: "text/css; charset=utf-8", contract: ".ui-button"},
 		{path: "/static/htmx.min.js", contentType: "text/javascript; charset=utf-8", contract: "htmx"},
 		{path: "/static/app.js", contentType: "text/javascript; charset=utf-8", contract: "X-Gelium-Validation"},
+		{path: "/static/search.js", contentType: "text/javascript; charset=utf-8", contract: "search"},
+		{path: "/static/morph-afterswap.js", contentType: "text/javascript; charset=utf-8", contract: "_geliumPageGeneration"},
 	}
 
 	for _, tt := range tests {
@@ -1312,8 +1314,8 @@ func TestLayoutUsesHxBoostForInternalNavigation(t *testing.T) {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
 	}
 	body := res.Body.String()
-	if !strings.Contains(body, `<body hx-boost="true">`) {
-		t.Errorf("layout must boost the body for SPA-style navigation, got: %s", firstLineContaining(body, "<body"))
+	if !strings.Contains(body, `hx-boost:inherited="true"`) {
+		t.Errorf("layout must inherit boost for SPA-style navigation, got: %s", firstLineContaining(body, "<body"))
 	}
 }
 

@@ -102,7 +102,7 @@ func TestThemeSelectionIsClassDrivenWithoutJS(t *testing.T) {
 	}
 	// The boosted-nav sync is allowed and REQUIRED: it copies the server's
 	// decision from the response html onto the live document root.
-	for _, required := range []string{"responseText", "className"} {
+	for _, required := range []string{"ctx.text", "className"} {
 		if !strings.Contains(js, required) {
 			t.Errorf("app.js must sync the response html class after boosted swaps (missing %q)", required)
 		}

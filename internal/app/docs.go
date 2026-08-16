@@ -26,7 +26,7 @@ type docsNavGroup struct {
 }
 
 // docsNavView is the shell chrome model: grouped IA plus honest topbar slots.
-// Version aligns with the static asset query (?v=0.4.0). SearchIndex is the
+// Version aligns with the static asset query (?v=0.5.0). SearchIndex is the
 // JSON index of every nav destination ({title, href, group}) that search.js
 // filters client-side; ThemeSlug/Scheme let the search form preserve the
 // current chrome on its 0-JS GET fallback.

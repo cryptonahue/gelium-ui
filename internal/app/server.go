@@ -7,10 +7,12 @@ import (
 	"encoding/xml"
 	"html/template"
 	"io/fs"
+	"mime"
 	"net/http"
 	"net/url"
 	"os"
 	"path"
+	"path/filepath"
 	"strings"
 
 	"github.com/alecthomas/chroma/v2/formatters/html"
@@ -1048,25 +1050,33 @@ func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body 
 
 func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
 	name := r.PathValue("name")
-	contentTypes := map[string]string{
-		"app.css":     "text/css; charset=utf-8",
-		"htmx.min.js": "text/javascript; charset=utf-8",
-		"app.js":      "text/javascript; charset=utf-8",
-	}
-	contentType, ok := contentTypes[name]
-	if !ok {
-		http.NotFound(w, r)
-		return
-	}
 	asset, err := fs.ReadFile(s.assets, "static/"+name)
 	if err != nil {
 		http.NotFound(w, r)
 		return
 	}
-	w.Header().Set("Content-Type", contentType)
+	w.Header().Set("Content-Type", staticContentType(name))
 	w.Header().Set("Cache-Control", "no-cache")
 	w.WriteHeader(http.StatusOK)
 	_, _ = w.Write(asset)
+}
+
+// staticContentType maps a static asset extension to its Content-Type. The
+// static directory is part of the embedded build surface; any asset that
+// exists in the embed is servable, never a hardcoded allowlist.
+func staticContentType(name string) string {
+	switch mime.TypeByExtension(filepath.Ext(name)) {
+	case "":
+		return "application/octet-stream"
+	case "text/javascript":
+		return "text/javascript; charset=utf-8"
+	case "text/css":
+		return "text/css; charset=utf-8"
+	case "image/svg+xml", "application/json", "text/xml":
+		return mime.TypeByExtension(filepath.Ext(name)) + "; charset=utf-8"
+	default:
+		return mime.TypeByExtension(filepath.Ext(name))
+	}
 }
 
 func (s *server) renderMarkdownPage(w http.ResponseWriter, r *http.Request, data pageView, contentPath string) {
