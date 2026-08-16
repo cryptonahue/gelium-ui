@@ -47,7 +47,7 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 					`type="search"`,
 					`aria-label="Theme"`,
 					`aria-label="Appearance"`,
-					} {
+				} {
 					if !strings.Contains(body, contract) {
 						t.Errorf("%s missing shell contract %q", tt.path, contract)
 					}
@@ -363,7 +363,7 @@ func TestDocsShellChromeActivePeersAndIA(t *testing.T) {
 				t.Errorf("topbar theme select missing option %q", opt)
 			}
 		}
-		if !strings.Contains(body, `value="material" selected`) {
+		if !strings.Contains(body, `value="material" data-class="theme-material" selected`) {
 			t.Error("current theme must be selected in the native select")
 		}
 		// Must not re-emit non-theme query state into the chrome form.

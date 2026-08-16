@@ -94,15 +94,20 @@ func TestThemeSelectionIsClassDrivenWithoutJS(t *testing.T) {
 		t.Fatalf("read static/app.js: %v", err)
 	}
 	js := string(appJS)
-	// JS must never construct a theme class or select one itself. The sync
-	// code legitimately references data-theme (no "theme-" substring), so a
-	// plain "theme-" probe is the right contract.
-	if strings.Contains(js, "theme-") {
-		t.Errorf("app.js must not contain %q (theme selection is class-driven server-side, no JS)", "theme-")
+	// JS must never own the theme CATALOG: direction-class literals
+	// (theme-material, theme-basecoat) exist only server-side (availableThemes).
+	// It MAY reference the scheme class "theme-dark", which mirrors the
+	// server's applyDocumentRootScheme, and it reads the direction class from
+	// the server-emitted data-class attribute of the selected option.
+	for _, forbidden := range []string{"theme-material", "theme-basecoat"} {
+		if strings.Contains(js, forbidden) {
+			t.Errorf("app.js must not hardcode catalog class %q (catalog lives server-side)", forbidden)
+		}
 	}
 	// The boosted-nav sync is allowed and REQUIRED: it copies the server's
-	// decision from the response html onto the live document root.
-	for _, required := range []string{"ctx.text", "className"} {
+	// decision from the response html onto the live document root, and the
+	// optimistic preview reads its classes from server-emitted attributes.
+	for _, required := range []string{"ctx.text", "className", "data-class", "htmx:before:swap", "applyOptimisticChrome"} {
 		if !strings.Contains(js, required) {
 			t.Errorf("app.js must sync the response html class after boosted swaps (missing %q)", required)
 		}

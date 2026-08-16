@@ -5,7 +5,7 @@
      hidden theme input keeps the current ?theme= slug. JS enhancement
      (app.js): onchange submits and hides the submit button. */}}
 {{define "color-scheme-switcher"}}
-<form class="ui-theme-switcher ui-scheme-switcher" method="get" data-chrome-form role="group" aria-label="{{or .Label "Appearance"}}">
+<form class="ui-theme-switcher ui-scheme-switcher" method="get" data-chrome-form hx-swap="none" role="group" aria-label="{{or .Label "Appearance"}}">
   <span class="ui-theme-switcher-label" id="scheme-switcher-label">{{or .Label "Appearance"}}</span>
   <label class="ui-scheme-switch">
     <input type="checkbox" role="switch" name="scheme" value="dark"{{if .Checked}} checked{{end}}>

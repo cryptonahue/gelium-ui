@@ -50,6 +50,17 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 			}
 		}
 	}
+	for _, contract := range []string{
+		"htmx:before:swap", // server-authority reconciliation runs pre-swap
+		"applyOptimisticChrome",
+		"data-class",
+		"theme-dark",
+		"data-theme",
+	} {
+		if !strings.Contains(app, contract) {
+			t.Errorf("app.js is missing the optimistic chrome contract %q", contract)
+		}
+	}
 }
 
 func TestHTMX4NavigationPreservesNativeLinkBoundaries(t *testing.T) {

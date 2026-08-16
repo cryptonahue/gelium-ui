@@ -45,6 +45,7 @@ var availableThemes = []themeDirection{
 type themeOptionView struct {
 	Label    string
 	Value    string // public ?theme= slug the select submits: material, basecoat
+	Class    string // allowlisted theme class emitted as data-class for optimistic JS
 	Selected bool
 }
 
@@ -205,6 +206,7 @@ func themeSwitcherFor(r *http.Request, currentClass, themeSlug, scheme string) *
 		opts = append(opts, themeOptionView{
 			Label:    t.Label,
 			Value:    t.Slug,
+			Class:    t.Class,
 			Selected: t.Class == current,
 		})
 	}
