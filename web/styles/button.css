@@ -4,7 +4,7 @@
     --ui-button-spinner-size: 1rem;
     position: relative;
     display: inline-flex;
-    min-height: var(--ui-size-control);
+    min-height: var(--ui-touch-target);
     align-items: center;
     justify-content: center;
     gap: var(--ui-space-2);

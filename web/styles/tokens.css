@@ -135,6 +135,19 @@
   --ui-size-indicator: 32px;
   --ui-size-label-height: 16px;
 
+  /* Mobile foundations — touch target and container cap. One token, one
+     documented choice: --ui-touch-target is the interactive hit-area floor
+     (44px core default, >=44px for every control, well above the GOV.UK 40px
+     minimum; M3 specifies 48x48, so theme-material overrides it to 48px —
+     matching the USWDS 48px menu-button rule). Consumers reach the floor via
+     min-height (button) and width/height (icon-button); the theme decides the
+     exact value. --ui-container-max caps consumer layout columns at 64rem
+     (~1024px), mirroring the USWDS grid-container desktop cap and the GOV.UK
+     1020px max. Scales stay step-based per the GOV.UK and USWDS findings; no
+     fluid steps are introduced here. */
+  --ui-touch-target: 44px;
+  --ui-container-max: 64rem;
+
   /* Fonts — neutral defaults so every typescale token below stays resolvable
      in an unthemed document; themes override these under their own class. */
   --ui-font-sans: ui-sans-serif, system-ui, sans-serif;
@@ -237,3 +250,12 @@
   --ui-type-dialog-headline: var(--ui-type-dialog-headline-weight) var(--ui-type-dialog-headline-size)/var(--ui-type-dialog-headline-line-height) var(--ui-type-dialog-headline-family);
   --ui-type-dialog-body: var(--ui-type-dialog-body-weight) var(--ui-type-dialog-body-size)/var(--ui-type-dialog-body-line-height) var(--ui-type-dialog-body-family);
 }
+
+/* Breakpoint ladder (GOV.UK/USWDS reference ladder). The consumer and docs
+   layers resolve these four rungs; new layouts must reuse them instead of
+   inventing ad-hoc media queries (docs-shell.css and the popover rail are
+   the 48rem/64rem consumers today).
+   320px — mobile min (GOV.UK mobile default)
+   480px — mobile-lg (USWDS)
+   48rem — 768px, docs shell two-pane layout
+   64rem — 1024px, docs rail/sidebar third pane */

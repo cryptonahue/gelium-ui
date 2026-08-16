@@ -64,7 +64,7 @@
   .recipe-ar-main {
     box-sizing: border-box;
     width: 100%;
-    max-width: 64rem;
+    max-width: var(--ui-container-max);
     margin-inline: auto;
     padding: 1.5rem;
     display: grid;

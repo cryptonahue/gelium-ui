@@ -153,6 +153,10 @@
   --ui-size-item-lg: 72px;
   --ui-size-item-xl: 88px;
 
+  /* Mobile foundations — M3 48x48 touch target: Material overrides the core
+     44px floor so every button and icon button keeps a 48px hit area. */
+  --ui-touch-target: 48px;
+
   /* Shape */
   --ui-radius-none: 0;
   --ui-radius-xs: .25rem;
