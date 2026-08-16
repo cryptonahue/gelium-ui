@@ -2,8 +2,8 @@
   .ui-icon-button {
     position: relative;
     display: inline-flex;
-    width: var(--ui-size-control);
-    height: var(--ui-size-control);
+    width: var(--ui-touch-target);
+    height: var(--ui-touch-target);
     align-items: center;
     justify-content: center;
     border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent;

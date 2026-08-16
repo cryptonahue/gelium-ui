@@ -240,3 +240,13 @@
   }
   .text-field-preview .ui-text-field { width: 100%; }
 }
+
+/* Global reduced-motion safety net (mobile foundations, Layer 1): when the
+   OS requests reduced motion, kill every animation and transition with
+   !important so nothing in any component, theme, or consumer document can
+   play motion behind the per-component neutralizations above. The universal
+   selector keeps the rule cheap and future-proof: new moving declarations
+   are covered without a new neutralization entry. */
+@media (prefers-reduced-motion: reduce) {
+  * { animation: none !important; transition: none !important; }
+}
