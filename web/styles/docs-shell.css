@@ -206,15 +206,14 @@
     padding: 1.5rem clamp(1rem, 3vw, 2rem) 3rem;
   }
   .docs-shell-content {
-    width: min(68rem, 100%);
-    /* Center the content column between sidebar and rail on wide screens
-       (reference pattern: GOV.UK, M3, shadcn-style docs). Default block flow
-       hugs the left; with the sticky rail it leaves an awkward gap. */
+    /* The article, breadcrumb and prev/next all share ONE measure: the
+       reading width (prose is 65ch). Centered between sidebar and rail. */
+    width: min(65ch, 100%);
     margin: 0 auto;
   }
-  /* Breadcrumb sits above the page title: give it breathing room so the
-     label line never collides with the h1 (vertical rhythm, see base.css). */
-  .docs-shell-main > nav[aria-label="Breadcrumb"] {
+  /* Breadcrumb sits at the top of the centered content column, so it shares
+     the article measure instead of floating wider than the text. */
+  .docs-shell-content > nav[aria-label="Breadcrumb"] {
     margin-bottom: 1rem;
   }
 
