@@ -1,0 +1,14 @@
+{
+  "name": "gelium-ui-site",
+  "version": "0.5.0",
+  "private": true,
+  "scripts": {
+    "build": "tailwindcss -i ./web/styles/app.css -o ./web/static/app.css --minify && node ../scripts/copy-htmx.mjs && node ../scripts/copy-icons.mjs"
+  },
+  "devDependencies": {
+    "@material-symbols/svg-400": "^0.46.0",
+    "@tailwindcss/cli": "4.3.3",
+    "htmx.org": "^4.0.0-beta6",
+    "tailwindcss": "4.3.3"
+  }
+}
