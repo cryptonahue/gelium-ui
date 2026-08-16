@@ -1,10 +1,10 @@
 # Gelium UI
 
-Gelium UI is a themeable, open-code component library for server-rendered applications. Use it when you need native HTML semantics, zero component JavaScript, and a Material 3 design system — built with Tailwind CSS v4 and HTMX.
+Gelium UI is a themeable, open-code component library for server-rendered applications. Use it when you need native HTML semantics, zero component JavaScript, and a Material 3 design system — built with Tailwind CSS v4 and HTMX. Tailwind is a build-time dependency of this repository, not of your application: consumers link the compiled `/static/app.css` bundle and never install Tailwind themselves.
 
 Gelium UI is not an SPA framework and not a React component library. Every component is a server-rendered HTML partial with a documented server contract, styled by CSS custom properties (`--ui-*` tokens). There is no component JavaScript to bundle: menus, dialogs, tooltips, and selection run on declarative platform features (`:checked`, the Popover API, Invoker Commands, Interest Invokers) or plain server round-trips. HTMX is an optional progressive enhancement, never a requirement.
 
-The code is open — this documentation site is itself the first Gelium application, and every partial it renders is copyable. Start from the [GitHub repository](https://github.com/cryptonahue/gelium-ui), embed the handler, and pick the visual direction you want.
+The code is open — this documentation site is itself the first Gelium application, and every partial it renders is copyable. Gelium UI is distributed under the [MIT license](https://github.com/cryptonahue/gelium-ui/blob/main/LICENSE); see [Contributing](/docs/contributing) for how to work on the project. Start from the [GitHub repository](https://github.com/cryptonahue/gelium-ui), embed the handler, and pick the visual direction you want.
 
 ## The foundation
 
@@ -85,6 +85,6 @@ Basecoat is the Phase I alternative direction — a translation of the Basecoat 
 
 ## Get started
 
-Read the [documentation](/docs) or jump straight into a component: [Button](/components/button), [Text field](/components/text-field), [Dialog](/components/dialog), or [Toast](/components/toast).
+Read the [documentation](/docs) — the [component catalog](/docs) lists every component by category, generated from the same registry that drives the sidebar so it can never drift — or jump straight into a component: [Button](/components/button), [Text field](/components/text-field), [Dialog](/components/dialog), or [Toast](/components/toast).
 
 See the full library in action with the [WhatsApp manager demo](/demo/whatsapp).

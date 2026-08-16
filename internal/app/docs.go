@@ -204,8 +204,10 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
 	{Path: "/docs/accessibility", Label: "Accessibility"},
 	{Path: "/docs/principles", Label: "Design principles"},
+	{Path: "/docs/browser-support", Label: "Browser support"},
 	{Path: "/docs/content-style", Label: "Content style"},
 	{Path: "/docs/acknowledgments", Label: "Acknowledgments"},
+	{Path: "/docs/contributing", Label: "Contributing"},
 	{Path: "/docs/changelog", Label: "Changelog"},
 	{Path: "/docs/roadmap", Label: "Roadmap"},
 }
@@ -409,6 +411,21 @@ func (s *server) docsAccessibility(w http.ResponseWriter, r *http.Request) {
 // enforce them.
 func (s *server) docsPrinciples(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Design principles"}, "content/principles.md", "/docs/principles")
+}
+
+// docsBrowserSupport is GET /docs/browser-support — the Browser support
+// handbook page: the consolidated Baseline API table (Popover, anchor
+// positioning, Invoker Commands, dialog closedby) and the "what always
+// works" contract (native semantics, 0-JS, AA contrast, forced-colors).
+func (s *server) docsBrowserSupport(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Browser support"}, "content/handbook-browser-support.md", "/docs/browser-support")
+}
+
+// docsContributing is GET /docs/contributing — the Contributing page: where
+// the project lives, the development setup, the gates every contribution
+// must pass, commit conventions, and the PR workflow.
+func (s *server) docsContributing(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Contributing"}, "content/handbook-contributing.md", "/docs/contributing")
 }
 
 // docsContentStyle is GET /docs/content-style — the Content style handbook

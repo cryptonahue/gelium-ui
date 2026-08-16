@@ -869,8 +869,10 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/server-contracts", s.docsServerContracts)
 	mux.HandleFunc("GET /docs/accessibility", s.docsAccessibility)
 	mux.HandleFunc("GET /docs/principles", s.docsPrinciples)
+	mux.HandleFunc("GET /docs/browser-support", s.docsBrowserSupport)
 	mux.HandleFunc("GET /docs/content-style", s.docsContentStyle)
 	mux.HandleFunc("GET /docs/acknowledgments", s.docsAcknowledgments)
+	mux.HandleFunc("GET /docs/contributing", s.docsContributing)
 	mux.HandleFunc("GET /docs/changelog", s.docsChangelog)
 	mux.HandleFunc("GET /docs/roadmap", s.docsRoadmap)
 	// Blog space: separate surface with its own look. /blog is the index;
