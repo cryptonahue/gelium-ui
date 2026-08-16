@@ -110,7 +110,9 @@ document.addEventListener("htmx:before:swap", function (event) {
       var submit = form.querySelector('button[type="submit"]'); if (submit) submit.hidden = true;
       form.addEventListener("change", function () {
         applyOptimisticChrome(form);
-        this.submit();
+        // requestSubmit (not submit) fires the submit event so htmx intercepts
+        // the boosted GET; form.submit() performs a NATIVE full page load.
+        this.requestSubmit();
       });
     }
   }
