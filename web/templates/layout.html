@@ -35,9 +35,10 @@
         <nav aria-label="Docs">{{template "docs-sidebar" .DocsNav}}</nav>
       </aside>
       <div class="docs-shell-main">
+        <main id="main-content" class="docs-shell-content">
         {{if .Breadcrumb}}{{template "breadcrumb" .Breadcrumb}}{{end}}
         {{if .Banner}}{{template "banner" .Banner}}{{end}}
-        <main id="main-content" class="docs-shell-content">  {{else}}
+  {{else}}
   <header class="site-header">
     <a class="brand" href="/">Gelium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>

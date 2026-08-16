@@ -16,7 +16,7 @@ func TestOnThisPageStylesInBundle(t *testing.T) {
 		".docs-prev-next{",
 		".docs-prev-next-direction{",
 		// compactCSS strips whitespace: margin:0 auto compacts to margin:0auto.
-		".docs-shell-content{width:min(68rem,100%);margin:0auto}",
+		".docs-shell-content{width:min(65ch,100%);margin:0auto}",
 	} {
 		if !strings.Contains(compiled, contract) {
 			t.Errorf("compiled bundle is missing On-this-page contract %q", contract)
