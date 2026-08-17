@@ -229,6 +229,20 @@
   .component-preview > * {
     min-width: 0;
   }
+  /* Full-bleed specimen surface for page-level primitives (hero, footer,
+     section-heading, …): block layout so full-width components keep their
+     measure; same spatial rhythm as .component-preview. Component styles
+     reset their own margins by design, so the docs container owns the
+     vertical space between the specimen and the prose above/below. */
+  .specimen-block {
+    display: block;
+    margin: 2rem 0;
+    padding: 1.5rem;
+    border: 1px solid var(--ui-color-border);
+    border-radius: var(--ui-radius-lg);
+    background: var(--ui-color-surface);
+    box-shadow: var(--ui-shadow-1);
+  }
   .text-field-preview {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
