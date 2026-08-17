@@ -203,7 +203,12 @@ func prevNextFor(activePath, themeSlug, scheme string) *prevNextView {
 var handbookNavLinks = []navLink{
 	{Path: "/docs/information-architecture", Label: "Information architecture"},
 	{Path: "/docs/screens", Label: "Screens"},
+	{Path: "/docs/journeys", Label: "Journeys"},
+	{Path: "/docs/data-display", Label: "Data display"},
 	{Path: "/docs/feedback", Label: "Feedback"},
+	{Path: "/docs/density", Label: "Density"},
+	{Path: "/docs/motion", Label: "Motion"},
+	{Path: "/docs/ui-definition-of-done", Label: "UI definition of done"},
 	{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
 	{Path: "/docs/forms", Label: "Forms"},
 	{Path: "/docs/compare", Label: "Why Gelium"},
@@ -331,7 +336,11 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "## Start here\n\n"
 	md += "High-value entry points (not the full catalog):\n\n"
 	md += "- [Screens](/docs/screens) — screen types, hierarchy, nav patterns (sourced criteria).\n"
+	md += "- [Journeys](/docs/journeys) — multi-step flows and where to land after submit.\n"
+	md += "- [Data display](/docs/data-display) — table vs list vs cards (DATA-*).\n"
 	md += "- [Feedback](/docs/feedback) — toast vs summary vs banner vs empty (decision matrix).\n"
+	md += "- [Patterns](/docs/patterns) — domain skeletons (forum, catalog, admin).\n"
+	md += "- [UI definition of done](/docs/ui-definition-of-done) — ship checklist for humans and agents.\n"
 	md += "- [Why Gelium](/docs/compare) — when to use Gelium vs React/headless kits, and explicit no-gos.\n"
 	md += "- [Forms contract](/docs/forms) — labels, `inputmode`/`type`, autocomplete, validate after interaction.\n"
 	md += "- [Themes](/docs/themes) — class-based direction; dark is a class route, not media-only.\n"
@@ -352,26 +361,9 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdown(w, r, pageView{Title: "Documentation"}, md, "/docs")
 }
 
-// docsPatterns is GET /docs/patterns — thin stub so the sidebar IA has a real
-// href while pattern registry content grows later.
+// docsPatterns is GET /docs/patterns — domain skeletons and recipe affinity.
 func (s *server) docsPatterns(w http.ResponseWriter, r *http.Request) {
-	md := `# Patterns
-
-Composition patterns for Gelium UI (Phase F–G). This page is a stub destination for the docs shell IA.
-
-## Screen recipes
-
-Full screens composed from library primitives live under Recipes:
-
-- [Admin Resource](/recipes/admin-resource)
-- [Ops Queue](/recipes/ops-queue)
-- [Public/Social Feed](/recipes/public-feed)
-
-## Component patterns
-
-See the [Documentation](/docs) index for foundation, actions, input, feedback, navigation, and data primitives.
-`
-	s.renderMarkdown(w, r, pageView{Title: "Patterns"}, md, "/docs/patterns")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Patterns"}, "content/handbook-patterns.md", "/docs/patterns")
 }
 
 // docsInformationArchitecture is GET /docs/information-architecture — the
@@ -399,6 +391,31 @@ func (s *server) docsScreens(w http.ResponseWriter, r *http.Request) {
 // validation-summary vs banner vs empty/error/skeleton (sourced criteria).
 func (s *server) docsFeedback(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Feedback"}, "content/handbook-feedback.md", "/docs/feedback")
+}
+
+// docsJourneys is GET /docs/journeys — multi-step shapes and post-submit landings.
+func (s *server) docsJourneys(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Journeys"}, "content/handbook-journeys.md", "/docs/journeys")
+}
+
+// docsDataDisplay is GET /docs/data-display — table vs list vs cards (DATA-*).
+func (s *server) docsDataDisplay(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Data display"}, "content/handbook-data-display.md", "/docs/data-display")
+}
+
+// docsDensity is GET /docs/density — comfortable/cozy/compact and app shell.
+func (s *server) docsDensity(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Density"}, "content/handbook-density.md", "/docs/density")
+}
+
+// docsMotion is GET /docs/motion — when to animate; reduced-motion policy.
+func (s *server) docsMotion(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Motion"}, "content/handbook-motion.md", "/docs/motion")
+}
+
+// docsUIDefinitionOfDone is GET /docs/ui-definition-of-done — ship checklist.
+func (s *server) docsUIDefinitionOfDone(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "UI definition of done"}, "content/handbook-ui-definition-of-done.md", "/docs/ui-definition-of-done")
 }
 
 // docsForms is GET /docs/forms — the Forms contract handbook page: labels,

@@ -77,13 +77,19 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 - Home: /
 - Docs hub: /docs
 - Screens (types, hierarchy, nav): /docs/screens
+- Journeys (multi-step + landings): /docs/journeys
+- Data display (table vs cards): /docs/data-display
 - Feedback (toast vs summary vs banner): /docs/feedback
+- Patterns (domain skeletons): /docs/patterns
+- Density / shell: /docs/density
+- Motion: /docs/motion
+- UI definition of done: /docs/ui-definition-of-done
 - Why Gelium (comparison): /docs/compare
 - Forms contract: /docs/forms
 - Performance stance: /docs/performance
 - Responsive (viewports, not devices): /docs/responsive
 - Components: /components/{name} (demo-first: title → live demo → body)
-- Handbook: /docs/principles, /docs/screens, /docs/feedback, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style, /docs/compare, /docs/forms, /docs/performance, /docs/responsive
+- Handbook: /docs/principles, /docs/screens, /docs/journeys, /docs/data-display, /docs/feedback, /docs/density, /docs/motion, /docs/ui-definition-of-done, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style, /docs/compare, /docs/forms, /docs/performance, /docs/responsive, /docs/patterns
 - Recipes: /recipes/admin-resource, /recipes/ops-queue, /recipes/public-feed
 - Health: /healthz
 - Sitemap: /sitemap.xml
@@ -93,7 +99,7 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 
 ## Agent UX (MUST before generating screens)
 
-Before inventing markup for a store, forum, or admin screen, fetch and follow **/llms-ux.txt** (screen types, feedback matrix, hierarchy). Human narrative: /docs/screens and /docs/feedback (criteria adapted from GOV.UK, USWDS, M3, NNG).
+Before inventing markup for a store, forum, or admin screen, fetch and follow **/llms-ux.txt** (SCREEN/JOURNEY/DATA/FEED/SKEL ids + DoD). Human narrative: /docs/screens, /docs/journeys, /docs/data-display, /docs/feedback, /docs/patterns, /docs/ui-definition-of-done (GOV.UK, USWDS, M3, NNG).
 
 ## Components (npm templates + CSS)
 

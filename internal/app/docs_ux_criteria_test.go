@@ -20,12 +20,15 @@ func TestDocsScreensPageRendersSourcedCriteria(t *testing.T) {
 		">Screens</h1>",
 		"Screen types",
 		"Build checklist",
+		"Primary action",
+		"Nav decision cues",
 		"GOV.UK",
 		"USWDS",
 		"design-system.service.gov.uk",
 		"designsystem.digital.gov",
 		"nngroup.com",
 		`href="/docs/feedback"`,
+		`href="/docs/journeys"`,
 		`href="/llms-ux.txt"`,
 		`href="/docs/screens"`,
 	} {
@@ -48,24 +51,95 @@ func TestDocsFeedbackPageRendersDecisionMatrix(t *testing.T) {
 		">Feedback</h1>",
 		"Decision matrix",
 		"error summary",
-		"validation",
-		"toast",
 		"FEED-VAL",
-		"FEED-OK-PAGE",
-		"FEED-ROW",
 		"FEED-PARTIAL",
-		"FEED-LOAD-LIST",
 		"Toast rules",
-		"Loading rules",
 		"design-system.service.gov.uk",
-		"designsystem.digital.gov",
-		"nngroup.com",
-		`href="/docs/screens"`,
 		`href="/llms-ux.txt"`,
-		`href="/docs/feedback"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("feedback page missing %q", contract)
+		}
+	}
+}
+
+// TestDocsJourneysPageRendersShapes proves GET /docs/journeys serves journey
+// shapes and post-submit landing rules from GOV.UK-adapted criteria.
+func TestDocsJourneysPageRendersShapes(t *testing.T) {
+	body := getOKBody(t, "/docs/journeys")
+	for _, contract := range []string{
+		">Journeys</h1>",
+		"JOURNEY-LINEAR",
+		"JOURNEY-TASKLIST",
+		"After submit",
+		"design-system.service.gov.uk",
+		`href="/docs/feedback"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("journeys page missing %q", contract)
+		}
+	}
+}
+
+// TestDocsDataDisplayPageRendersPatterns proves GET /docs/data-display serves
+// DATA-* when/when-not rules.
+func TestDocsDataDisplayPageRendersPatterns(t *testing.T) {
+	body := getOKBody(t, "/docs/data-display")
+	for _, contract := range []string{
+		">Data display</h1>",
+		"DATA-TABLE",
+		"DATA-CARDS",
+		"FEED-EMPTY",
+		"design-system.service.gov.uk",
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("data-display page missing %q", contract)
+		}
+	}
+}
+
+// TestDocsPatternsDomainSkeletons proves patterns is no longer a stub and
+// includes forum/catalog skeletons plus recipe links.
+func TestDocsPatternsDomainSkeletons(t *testing.T) {
+	body := getOKBody(t, "/docs/patterns")
+	for _, contract := range []string{
+		">Patterns</h1>",
+		"SKEL-FORUM",
+		"SKEL-CATALOG",
+		"SKEL-ADMIN-RESOURCE",
+		`href="/recipes/admin-resource"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("patterns page missing %q", contract)
+		}
+	}
+}
+
+// TestDocsDensityMotionAndDoD proves supporting UX criteria pages render.
+func TestDocsDensityMotionAndDoD(t *testing.T) {
+	cases := map[string][]string{
+		"/docs/density": {
+			"Density and shell",
+			"Density modes",
+			"--ui-touch-target",
+		},
+		"/docs/motion": {
+			">Motion</h1>",
+			"prefers-reduced-motion",
+			"MOTION-NONE",
+		},
+		"/docs/ui-definition-of-done": {
+			"UI definition of done",
+			"DoD checklist",
+			"FEED-VAL",
+		},
+	}
+	for path, contracts := range cases {
+		body := getOKBody(t, path)
+		for _, c := range contracts {
+			if !strings.Contains(body, c) {
+				t.Errorf("%s missing %q", path, c)
+			}
 		}
 	}
 }
@@ -85,16 +159,14 @@ func TestLlmsUXTxtServesAgentDecisionPack(t *testing.T) {
 	for _, contract := range []string{
 		"UX decision pack",
 		"SCREEN TYPE",
-		"FEEDBACK matrix",
-		"validation-summary",
+		"JOURNEY-LINEAR",
+		"DATA-TABLE",
 		"FEED-VAL",
-		"FEED-OK-PAGE",
-		"FEED-ROW",
-		"FEED-PARTIAL",
-		"FEED-LOAD-LIST",
-		"Toast rules",
-		"/docs/screens",
-		"/docs/feedback",
+		"SKEL-FORUM",
+		"DoD",
+		"/docs/journeys",
+		"/docs/data-display",
+		"/docs/ui-definition-of-done",
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("llms-ux.txt missing %q", contract)

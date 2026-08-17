@@ -22,7 +22,12 @@ type handbookRoute struct {
 var handbookRoutes = []handbookRoute{
 	{path: "/docs/information-architecture", label: "Information architecture", h1: "Information architecture", contract: "concept before reference"},
 	{path: "/docs/screens", label: "Screens", h1: "Screens", contract: "Build checklist"},
+	{path: "/docs/journeys", label: "Journeys", h1: "Journeys", contract: "JOURNEY-LINEAR"},
+	{path: "/docs/data-display", label: "Data display", h1: "Data display", contract: "DATA-TABLE"},
 	{path: "/docs/feedback", label: "Feedback", h1: "Feedback", contract: "error summary"},
+	{path: "/docs/density", label: "Density", h1: "Density and shell", contract: "Density modes"},
+	{path: "/docs/motion", label: "Motion", h1: "Motion", contract: "prefers-reduced-motion"},
+	{path: "/docs/ui-definition-of-done", label: "UI definition of done", h1: "UI definition of done", contract: "DoD checklist"},
 	{path: "/docs/choose-the-right-control", label: "Choose the right control", h1: "Choose the right control", contract: "Radio vs Select"},
 	{path: "/docs/forms", label: "Forms", h1: "Forms contract", contract: "inputmode"},
 	{path: "/docs/compare", label: "Why Gelium", h1: "Why Gelium (comparison)", contract: "When NOT to choose Gelium"},
@@ -194,7 +199,7 @@ func TestDocsIndexListsHandbook(t *testing.T) {
 		t.Error("docs hub must tell readers the full catalog is in the sidebar")
 	}
 	// Curated high-value handbook entry points (not the full handbookRoutes list).
-	for _, path := range []string{"/docs/screens", "/docs/feedback", "/docs/compare", "/docs/forms", "/docs/themes", "/docs/tokens", "/docs/performance"} {
+	for _, path := range []string{"/docs/screens", "/docs/journeys", "/docs/data-display", "/docs/feedback", "/docs/compare", "/docs/forms", "/docs/themes", "/docs/tokens", "/docs/performance"} {
 		if !strings.Contains(body, `href="`+path+`"`) {
 			t.Errorf("docs hub Start here must link to %s", path)
 		}

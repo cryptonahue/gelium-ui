@@ -49,8 +49,22 @@ Adapted from [NNG F-pattern](https://www.nngroup.com/articles/f-shaped-pattern-r
 |---|---|---|
 | Primary actions | One obvious primary per view | Three filled primary buttons competing |
 | Scanning | Put identity and action in the top band | Bury the only CTA under a long table |
-| Density | Admin lists may be dense; reading views stay measured (`65ch` prose) | Stretch paragraphs full bleed “because desktop” |
+| Density | Name a mode ([Density](/docs/density)); admin may be compact | Stretch paragraphs full bleed “because desktop” |
 | Empty | `empty-state` with reason + next step | Blank table with no explanation |
+
+### Primary action — good vs bad
+
+| Good | Bad |
+|---|---|
+| List page: one “Create” filled button top-right | Create + Export + Share + Filter all filled primary |
+| Form: “Save” primary, “Cancel” text/secondary | Two primaries: Save and Save & add another (make second secondary) |
+| Confirm: destructive primary + Cancel | Only a toast “Deleted?” |
+
+### Depth rules
+
+- Prefer **≤3 levels** of section nav (USWDS side navigation guidance).
+- Detail pages link **up** to their list (breadcrumb or back).
+- Don’t nest wizards inside tabs inside drawers without a journey map ([Journeys](/docs/journeys)).
 
 ## Navigation patterns (product IA)
 
@@ -61,9 +75,28 @@ Adapted from [NNG F-pattern](https://www.nngroup.com/articles/f-shaped-pattern-r
 | **Tabs** | Alternate **views of the same object** or peer modes | Primary site IA for everything; avoid stacking tab bars | `tabs`, `segmented-button` for local mode |
 | **Bottom nav (compact apps)** | ~3–5 top-level app areas on small viewports (M3 nav bar guidance) | More than ~5 peers; deep hierarchy | `navigation-bar` patterns in components |
 | **In-page (on this page)** | Long single document sections | Short pages | Docs on-this-page rail |
+| **Breadcrumb** | Depth ≥2; show path back to section | Single top-level page | `breadcrumb` |
+
+### Nav decision cues
+
+| If you have… | Prefer |
+|---|---|
+| 3–5 app-wide peers, mobile | Bottom / bar nav (M3) |
+| Many pages under one product area | Side nav |
+| Same entity, “Overview / Activity / Settings” | Tabs on the entity |
+| Long handbook-style page | In-page nav |
+| &lt;5 total pages | Simple top links; skip heavy sidenav (USWDS) |
 
 USWDS: side navigation is for **section sub-navigation**, not a substitute for simplifying a small site ([side navigation](https://designsystem.digital.gov/components/side-navigation/)).  
 M3: navigation bars are for switching top-level views on smaller windows and should stay consistent ([navigation bar](https://m3.material.io/components/navigation-bar/guidelines)).
+
+## Related criteria
+
+- Multi-step flows: [Journeys](/docs/journeys)  
+- Tables vs cards: [Data display](/docs/data-display)  
+- Shell chrome: [Density](/docs/density)  
+- Domain shapes: [Patterns](/docs/patterns)  
+- Ship bar: [UI definition of done](/docs/ui-definition-of-done)
 
 ## Build checklist (humans and agents)
 
@@ -77,6 +110,8 @@ Before writing markup:
 6. **Server** — GET for read, POST+redirect for mutates, 422 + summary for validation ([Server contracts](/docs/server-contracts)).
 7. **Theme** — `theme-*` on `<html>`; no one-off hex.
 8. **Narrow viewport** — stack headers, `min-width: 0`, local table scroll ([Responsive](/docs/responsive)).
+9. **Journey / data** — if multi-step or a collection, pick `JOURNEY-*` / `DATA-*` ids.
+10. **DoD** — run [UI definition of done](/docs/ui-definition-of-done) before handoff.
 
 ## Anti-patterns
 
@@ -84,10 +119,12 @@ Before writing markup:
 - Using a dialog for simple external navigation.
 - Validation only in a toast (see [Feedback](/docs/feedback)).
 - Desktop-only CSS patched with `overflow-x: hidden` on `body`.
+- Three navigation systems for the same five links.
 
 ## See also
 
 - [Feedback](/docs/feedback) — which message component for which situation  
+- [Journeys](/docs/journeys) · [Data display](/docs/data-display) · [Patterns](/docs/patterns)  
 - [Performance](/docs/performance) — payload stance  
 - [Why Gelium](/docs/compare) — when not to use this stack  
 - Agent pack: [`/llms-ux.txt`](/llms-ux.txt)
