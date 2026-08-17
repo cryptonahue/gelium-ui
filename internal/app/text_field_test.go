@@ -363,18 +363,19 @@ func TestTextFieldFormAndLocalScriptImplementHTMX422SwapContract(t *testing.T) {
 		}
 	}
 	htmxIndex := strings.Index(body, `src="/static/htmx.min.js?v=0.5.3"`)
+	geliumIndex := strings.Index(body, `src="/static/gelium.js?v=0.5.3"`)
 	appIndex := strings.Index(body, `src="/static/app.js?v=0.5.3"`)
-	if htmxIndex < 0 || appIndex < 0 || appIndex < htmxIndex {
-		t.Error("local app.js must load after local HTMX")
+	if htmxIndex < 0 || geliumIndex < 0 || appIndex < 0 || geliumIndex < htmxIndex || appIndex < geliumIndex {
+		t.Error("script order must be htmx → gelium.js (consumer) → app.js (chrome)")
 	}
 
 	asset := httptest.NewRecorder()
-	New().ServeHTTP(asset, httptest.NewRequest(http.MethodGet, "/static/app.js", nil))
+	New().ServeHTTP(asset, httptest.NewRequest(http.MethodGet, "/static/gelium.js", nil))
 	if asset.Code != http.StatusOK {
-		t.Fatalf("app.js status = %d, want %d", asset.Code, http.StatusOK)
+		t.Fatalf("gelium.js status = %d, want %d", asset.Code, http.StatusOK)
 	}
 	if got := asset.Header().Get("Content-Type"); got != "text/javascript; charset=utf-8" {
-		t.Errorf("app.js Content-Type = %q", got)
+		t.Errorf("gelium.js Content-Type = %q", got)
 	}
 	js := asset.Body.String()
 	for _, contract := range []string{
@@ -384,12 +385,12 @@ func TestTextFieldFormAndLocalScriptImplementHTMX422SwapContract(t *testing.T) {
 		`isError = false`,
 	} {
 		if !strings.Contains(js, contract) {
-			t.Errorf("app.js is missing 422 hook contract %q", contract)
+			t.Errorf("gelium.js is missing 422 hook contract %q", contract)
 		}
 	}
 	validation422 := regexp.MustCompile(`response\.status\s*===\s*422\s*&&\s*response\.headers\.get\("X-Gelium-Validation"\)\s*===\s*"true"`)
 	if !validation422.MatchString(js) {
-		t.Error("app.js must only swap a 422 when X-Gelium-Validation is true")
+		t.Error("gelium.js must only swap a 422 when X-Gelium-Validation is true")
 	}
 }
 

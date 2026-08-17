@@ -196,9 +196,9 @@ func TestToastTriggerJSONEscapesMessage(t *testing.T) {
 
 func TestAppJSWiresHTMXToastTriggerEvent(t *testing.T) {
 	res := httptest.NewRecorder()
-	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/static/app.js", nil))
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/static/gelium.js", nil))
 	if res.Code != http.StatusOK {
-		t.Fatalf("app.js status = %d, want %d", res.Code, http.StatusOK)
+		t.Fatalf("gelium.js status = %d, want %d", res.Code, http.StatusOK)
 	}
 	js := res.Body.String()
 	for _, contract := range []string{
@@ -208,7 +208,7 @@ func TestAppJSWiresHTMXToastTriggerEvent(t *testing.T) {
 		`Dismiss notification`,
 	} {
 		if !strings.Contains(js, contract) {
-			t.Errorf("app.js is missing toast enhancement contract %q", contract)
+			t.Errorf("gelium.js is missing toast enhancement contract %q", contract)
 		}
 	}
 }

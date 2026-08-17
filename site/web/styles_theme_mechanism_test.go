@@ -94,7 +94,11 @@ func TestThemeSelectionIsClassDrivenWithoutJS(t *testing.T) {
 	if err != nil {
 		t.Fatalf("read static/app.js: %v", err)
 	}
-	js := string(appJS)
+	geliumJS, err := Assets.ReadFile("static/gelium.js")
+	if err != nil {
+		t.Fatalf("read static/gelium.js: %v", err)
+	}
+	js := string(appJS) + "\n" + string(geliumJS)
 	// JS must never own the theme CATALOG: direction-class literals
 	// (theme-material, theme-basecoat) exist only server-side (availableThemes).
 	// It MAY reference the scheme class "theme-dark", which mirrors the
@@ -102,7 +106,7 @@ func TestThemeSelectionIsClassDrivenWithoutJS(t *testing.T) {
 	// the server-emitted data-class attribute of the selected option.
 	for _, forbidden := range []string{"theme-material", "theme-basecoat"} {
 		if strings.Contains(js, forbidden) {
-			t.Errorf("app.js must not hardcode catalog class %q (catalog lives server-side)", forbidden)
+			t.Errorf("site JS must not hardcode catalog class %q (catalog lives server-side)", forbidden)
 		}
 	}
 	// The boosted-nav sync is allowed and REQUIRED: it copies the server's

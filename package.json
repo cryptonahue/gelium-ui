@@ -7,6 +7,6 @@
     "site"
   ],
   "scripts": {
-    "build": "npm run build -w gelium-ui-site"
+    "build": "npm run build -w gelium-ui-site && node scripts/build-lib-dist.mjs"
   }
 }

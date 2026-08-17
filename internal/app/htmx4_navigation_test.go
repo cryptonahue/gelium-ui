@@ -32,14 +32,22 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 		t.Fatal("embedded runtime is not the official HTMX 4.0.0-beta6 build")
 	}
 	app := readAsset(t, "static/app.js")
+	gelium := readAsset(t, "static/gelium.js")
 	for _, legacy := range []string{"htmx:beforeSwap", "htmx:beforeRequest", "htmx:afterSwap", "htmx:responseError", "htmx:sendError", "event.detail.xhr", "responseText", "getResponseHeader", "this.submit();"} {
-		if strings.Contains(app, legacy) {
-			t.Errorf("app.js must not use the HTMX 2 API %q", legacy)
+		if strings.Contains(app, legacy) || strings.Contains(gelium, legacy) {
+			t.Errorf("site JS must not use the HTMX 2 API %q", legacy)
 		}
 	}
-	for _, contract := range []string{"htmx:before:swap", "htmx:before:request", "htmx:after:swap", "htmx:response:error", "ctx.response", "ctx.text", "X-Gelium-Validation", "shouldSwap = true", "isError = false"} {
+	// Consumer enhancements (gelium.js): 422 validation contract + transport errors.
+	for _, contract := range []string{"htmx:before:swap", "htmx:response:error", "ctx.response", "X-Gelium-Validation", "shouldSwap = true", "isError = false"} {
+		if !strings.Contains(gelium, contract) {
+			t.Errorf("gelium.js is missing the HTMX 4 response contract %q", contract)
+		}
+	}
+	// Docs chrome (app.js): server-authority reconciliation + post-swap focus.
+	for _, contract := range []string{"htmx:before:swap", "htmx:before:request", "htmx:after:swap", "ctx.text", "syncDocument"} {
 		if !strings.Contains(app, contract) {
-			t.Errorf("app.js is missing the HTMX 4 response contract %q", contract)
+			t.Errorf("app.js is missing the HTMX 4 chrome contract %q", contract)
 		}
 	}
 	search := readAsset(t, "static/search.js")
@@ -77,19 +85,19 @@ func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 // the JS guard is the enforcement point. Layout carries the safe-area
 // viewport (GOV.UK pattern) and a named mobile-nav disclosure.
 func TestLayer3RuntimeProgressiveEnhancementContract(t *testing.T) {
-	app := readAsset(t, "static/app.js")
+	gelium := readAsset(t, "static/gelium.js")
 	for _, contract := range []string{
 		"document.startViewTransition",
 		"htmx.config.transitions",
 		"matchMedia",
 		"prefers-reduced-motion: reduce",
 	} {
-		if !strings.Contains(app, contract) {
-			t.Errorf("app.js is missing the view-transition activation contract %q", contract)
+		if !strings.Contains(gelium, contract) {
+			t.Errorf("gelium.js is missing the view-transition activation contract %q", contract)
 		}
 	}
-	if !strings.Contains(app, "!window.matchMedia") {
-		t.Error("app.js must gate same-document view transitions on reduced motion (same-document VT is not auto-disabled)")
+	if !strings.Contains(gelium, "!window.matchMedia") {
+		t.Error("gelium.js must gate same-document view transitions on reduced motion (same-document VT is not auto-disabled)")
 	}
 
 	layout := readAsset(t, "templates/layout.html")

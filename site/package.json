@@ -3,7 +3,7 @@
   "version": "0.5.0",
   "private": true,
   "scripts": {
-    "build": "tailwindcss --cwd .. -i site/web/styles/app.css -o site/web/static/app.css --minify && node ../scripts/copy-htmx.mjs && node ../scripts/copy-icons.mjs"
+    "build": "tailwindcss --cwd .. -i site/web/styles/app.css -o site/web/static/app.css --minify && node ../scripts/copy-htmx.mjs && node ../scripts/copy-icons.mjs && node ../scripts/copy-lib-js.mjs"
   },
   "devDependencies": {
     "@material-symbols/svg-400": "^0.46.0",

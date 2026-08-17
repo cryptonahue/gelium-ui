@@ -125,7 +125,8 @@ func TestStaticBuildArtifactsAreServedFromEmbeddedFilesystem(t *testing.T) {
 	}{
 		{path: "/static/app.css", contentType: "text/css; charset=utf-8", contract: ".ui-button"},
 		{path: "/static/htmx.min.js", contentType: "text/javascript; charset=utf-8", contract: "htmx"},
-		{path: "/static/app.js", contentType: "text/javascript; charset=utf-8", contract: "X-Gelium-Validation"},
+		{path: "/static/gelium.js", contentType: "text/javascript; charset=utf-8", contract: "X-Gelium-Validation"},
+		{path: "/static/app.js", contentType: "text/javascript; charset=utf-8", contract: "applyOptimisticChrome"},
 		{path: "/static/search.js", contentType: "text/javascript; charset=utf-8", contract: "search"},
 		{path: "/static/morph-afterswap.js", contentType: "text/javascript; charset=utf-8", contract: "_geliumPageGeneration"},
 	}
