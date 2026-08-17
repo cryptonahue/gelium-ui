@@ -4,6 +4,7 @@ Callout is a contextual, ignorable note rendered inline in content — a tip box
 
 ## Examples
 
+<div class="specimen-block">
 <aside class="ui-callout ui-callout--tip">
   <span class="ui-callout-icon" aria-hidden="true">i</span>
   <div>
@@ -19,6 +20,7 @@ Callout is a contextual, ignorable note rendered inline in content — a tip box
     <p class="ui-callout-body">This view updates every 30 seconds. Changes you make elsewhere appear here automatically.</p>
   </div>
 </aside>
+</div>
 
 ## Guidance
 

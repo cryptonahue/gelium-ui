@@ -6,15 +6,21 @@ Avatar is a circular surface that shows initials or an image at one of three siz
 
 This page renders the real `avatar` template markup live. The decorative initials avatar is `aria-hidden` and must sit next to the visible name that supplies the meaning:
 
+<div class="specimen-block">
 <p>Signed in as <span class="ui-avatar ui-avatar--md" aria-hidden="true"><span class="ui-avatar-initials">AR</span></span> Alicia R.</p>
+</div>
 
 The three sizes use the closed `ui-avatar--{sm,md,lg}` modifier set:
 
+<div class="specimen-block">
 <p><span class="ui-avatar ui-avatar--sm" aria-hidden="true"><span class="ui-avatar-initials">AR</span></span> <span class="ui-avatar ui-avatar--md" aria-hidden="true"><span class="ui-avatar-initials">AR</span></span> <span class="ui-avatar ui-avatar--lg" aria-hidden="true"><span class="ui-avatar-initials">AR</span></span></p>
+</div>
 
 An image avatar that carries meaning on its own keeps its `alt` text and is not hidden:
 
+<div class="specimen-block">
 <p><span class="ui-avatar ui-avatar--lg"><img class="ui-avatar-image" src="/static/rich-article-image.svg" alt="Alicia R."></span> Alicia R.</p>
+</div>
 
 ## Guidance
 

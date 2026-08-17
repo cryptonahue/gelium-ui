@@ -6,6 +6,7 @@ Feature card is a composition of [Card](/components/card) and a call to action, 
 
 An elevated feature card with media, title, body copy, and a primary action.
 
+<div class="specimen-block">
 <article class="ui-card ui-card-elevated ui-feature-card">
   <div class="ui-feature-card-media">
     <img src="https://images.unsplash.com/photo-1494526585095-c41746248156?auto=format&fit=crop&w=800&q=60" alt="A landscape lit by a low sun" width="800" height="450" loading="lazy">
@@ -16,6 +17,7 @@ An elevated feature card with media, title, body copy, and a primary action.
     <div class="ui-card-action"><a class="ui-button ui-button-primary" href="/components/feature-card"><span>Explore routes</span></a></div>
   </div>
 </article>
+</div>
 
 The specimen above is the live markup the template `feature-card.html` emits: an `<article>` carrying both the `ui-card` variant and the `ui-feature-card` wrapper, with the media block and body slots filled.
 

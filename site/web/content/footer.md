@@ -6,6 +6,7 @@ Footer is the site chrome below every page: brand, secondary navigation, and leg
 
 This page renders the real `footer` template markup live:
 
+<div class="specimen-block">
 <footer class="ui-footer">
   <p class="ui-footer-brand">Gelium UI</p>
   <nav class="ui-footer-nav" aria-label="Footer">
@@ -32,6 +33,7 @@ This page renders the real `footer` template markup live:
   </nav>
   <p class="ui-footer-legal">MIT License · Server-rendered docs with native HTML semantics.</p>
 </footer>
+</div>
 
 ## Guidance
 
