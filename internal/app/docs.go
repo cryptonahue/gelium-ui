@@ -204,6 +204,7 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/information-architecture", Label: "Information architecture"},
 	{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
 	{Path: "/docs/compare", Label: "Why Gelium"},
+	{Path: "/docs/performance", Label: "Performance"},
 	{Path: "/docs/themes", Label: "Themes"},
 	{Path: "/docs/tokens", Label: "Tokens"},
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
@@ -389,6 +390,13 @@ func (s *server) docsChooseTheRightControl(w http.ResponseWriter, r *http.Reques
 // when to use and explicit no-gos.
 func (s *server) docsCompare(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Why Gelium"}, "content/handbook-compare.md", "/docs/compare")
+}
+
+// docsPerformance is GET /docs/performance — product stance on payload:
+// JS as progressive enhancement, large CSS (tokens+themes) by design,
+// how to measure static assets and npm pack size.
+func (s *server) docsPerformance(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Performance"}, "content/handbook-performance.md", "/docs/performance")
 }
 
 // docsThemes is GET /docs/themes — the Themes handbook page: how themes work

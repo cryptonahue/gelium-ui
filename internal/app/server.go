@@ -888,6 +888,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/information-architecture", s.docsInformationArchitecture)
 	mux.HandleFunc("GET /docs/choose-the-right-control", s.docsChooseTheRightControl)
 	mux.HandleFunc("GET /docs/compare", s.docsCompare)
+	mux.HandleFunc("GET /docs/performance", s.docsPerformance)
 	mux.HandleFunc("GET /docs/themes", s.docsThemes)
 	mux.HandleFunc("GET /docs/tokens", s.docsTokens)
 	mux.HandleFunc("GET /docs/server-contracts", s.docsServerContracts)
