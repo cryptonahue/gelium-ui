@@ -21,6 +21,15 @@ func TestSliderPrimitiveCSSMapsNativeRangeAndStates(t *testing.T) {
 		`::-moz-range-thumb {`,
 		`var(--ui-slider-handle-pressed-size)`,
 		`input[type="range"]:disabled {`,
+		`.ui-slider--ticks {`,
+		`var(--ui-slider-tick-interval)`,
+		`repeating-linear-gradient(to right, var(--ui-slider-tick)`,
+		`.ui-slider--value-label {`,
+		`attr(data-value)`,
+		`left: var(--ui-slider-fill, 0%);`,
+		`.ui-slider--value-label:has(input[type="range"]:focus-visible)::after`,
+		`.ui-slider--value-label:has(input[type="range"]:active:not(:disabled))::after`,
+		`.ui-slider--ticks:has(input:disabled)::before { opacity: 0; }`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("source CSS is missing slider contract %q", contract)
@@ -42,6 +51,8 @@ func TestSliderPrimitiveCSSMapsNativeRangeAndStates(t *testing.T) {
 		`::-webkit-slider-thumb`,
 		`::-moz-range-thumb`,
 		`::-webkit-slider-runnable-track`,
+		`repeating-linear-gradient(to right, Canvas`,
+		`.ui-slider--value-label::after { background: CanvasText;`,
 	} {
 		if !strings.Contains(forced, contract) {
 			t.Errorf("slider must stay distinguishable in forced colors; missing %q", contract)
@@ -76,6 +87,8 @@ func TestEmbeddedCompiledCSSIncludesSliderContracts(t *testing.T) {
 		`-webkit-slider-runnable-track`,
 		`-moz-range-progress`,
 		`-moz-range-thumb`,
+		`.ui-slider--ticks`,
+		`.ui-slider--value-label`,
 		`@media (forced-colors:active)`,
 	} {
 		if !strings.Contains(css, contract) {

@@ -22,6 +22,11 @@ func TestCheckboxPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 		`input:checked ~ .ui-checkbox-label {`,
 		`background: var(--ui-checkbox-container);`,
 		`input:disabled {`,
+		`input:indeterminate + .ui-checkbox-mark {`,
+		`input:indeterminate {`,
+		`input:indeterminate + .ui-checkbox-mark::after {`,
+		`background: var(--ui-checkbox-icon);`,
+		`input:disabled:indeterminate {`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("source CSS is missing checkbox contract %q", contract)
@@ -47,6 +52,8 @@ func TestCheckboxPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 	for _, contract := range []string{
 		`border-color: CanvasText;`,
 		`border-color: Canvas;`,
+		`input:indeterminate { background: CanvasText;`,
+		`input:indeterminate + .ui-checkbox-mark::after { background: Canvas;`,
 	} {
 		if !strings.Contains(forced, contract) {
 			t.Errorf("checkbox must stay operable in forced colors; missing %q", contract)

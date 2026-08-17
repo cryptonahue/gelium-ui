@@ -81,6 +81,68 @@
     background: var(--ui-slider-disabled);
     opacity: var(--ui-slider-disabled-opacity);
   }
+  /* Ticks variant (M3 discrete slider parity): a row of tick marks along the
+     track, painted as a decorative repeating gradient on the wrapper. Pure
+     CSS: the interval is a scoped --ui-slider-tick-interval token — a fixed
+     rhythm, because the step geometry lives on the native input and CSS
+     cannot read min/max/step. Ticks render in the inactive paint across the
+     whole track; recoloring the ticks on the filled portion (M3) is not
+     CSS-only, so the fill keeps its own solid paint. */
+  .ui-slider--ticks,
+  .ui-slider--value-label {
+    position: relative;
+  }
+  .ui-slider--ticks {
+    --ui-slider-tick-width: 2px;
+    --ui-slider-tick-interval: 1.5rem;
+    --ui-slider-tick: var(--ui-slider-inactive);
+  }
+  .ui-slider--ticks::before {
+    content: "";
+    position: absolute;
+    inset-inline: 0;
+    /* The track is vertically centered in the input band: with an
+       (handle-size - track-height) / 2 top margin and a handle-size input,
+       the track spans from (handle-size - track-height) to handle-size. */
+    top: calc(var(--ui-slider-handle-size) - var(--ui-slider-track-height));
+    height: var(--ui-slider-track-height);
+    background-image: repeating-linear-gradient(to right, var(--ui-slider-tick) 0 var(--ui-slider-tick-width), transparent var(--ui-slider-tick-width) var(--ui-slider-tick-interval));
+    pointer-events: none;
+  }
+  .ui-slider--ticks:has(input:disabled)::before { opacity: 0; }
+  /* Value label variant (M3 parity): a bubble that names the current value.
+     content: attr(data-value) reads the wrapper's data-value attribute, and
+     the bubble x-position follows --ui-slider-fill — the same percentage
+     custom property that drives the WebKit fill — so it sits over the handle
+     in both the no-JS flow (served value) and the enhanced flow (live
+     value). Shown while the handle is focused or pressed. */
+  .ui-slider--value-label {
+    --ui-slider-value-bubble-bg: var(--ui-color-primary);
+    --ui-slider-value-bubble-fg: var(--ui-color-primary-fg);
+  }
+  .ui-slider--value-label::after {
+    content: attr(data-value);
+    position: absolute;
+    left: var(--ui-slider-fill, 0%);
+    bottom: calc((var(--ui-slider-handle-size) + var(--ui-slider-track-height)) / 2 + var(--ui-space-2));
+    transform: translateX(-50%);
+    box-sizing: border-box;
+    min-width: 1.5rem;
+    padding: 0 var(--ui-space-2);
+    border-radius: var(--ui-radius-full);
+    background: var(--ui-slider-value-bubble-bg);
+    color: var(--ui-slider-value-bubble-fg);
+    font: var(--ui-type-label-sm);
+    line-height: 1.5rem;
+    text-align: center;
+    opacity: 0;
+    pointer-events: none;
+    transition: opacity var(--ui-motion-short) var(--ui-easing-standard);
+  }
+  .ui-slider--value-label:has(input[type="range"]:focus-visible)::after,
+  .ui-slider--value-label:has(input[type="range"]:active:not(:disabled))::after {
+    opacity: 1;
+  }
   .slider-demo-grid {
     display: grid;
     gap: 1.5rem;
@@ -92,5 +154,27 @@
     margin-top: .5rem;
     color: var(--ui-color-fg-muted);
     font: var(--ui-type-label-lg);
+  }
+}
+
+/* The base.css reduced-motion safety net also covers the bubble; this
+   explicit neutralization keeps the component self-documenting for consumers
+   that do not import base.css. */
+@media (prefers-reduced-motion: reduce) {
+  .ui-slider--value-label::after { transition: none; }
+}
+
+@media (forced-colors: active) {
+  /* The full track repaints as CanvasText (central block): ticks become
+     notches cut into the track, and the bubble becomes a solid CanvasText
+     chip with Canvas ink, so both variants survive without color. */
+  .ui-slider--ticks::before {
+    background-image: repeating-linear-gradient(to right, Canvas 0 var(--ui-slider-tick-width), transparent var(--ui-slider-tick-width) var(--ui-slider-tick-interval));
+    forced-color-adjust: auto;
+  }
+  .ui-slider--value-label::after {
+    background: CanvasText;
+    color: Canvas;
+    forced-color-adjust: auto;
   }
 }
