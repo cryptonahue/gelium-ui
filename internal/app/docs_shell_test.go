@@ -80,7 +80,7 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 // with shell chrome, honest disabled search, landmarks, and dual mobile
 // markup (2.2).
 func TestDocsStubRoutesAndShellChrome(t *testing.T) {
-	for _, path := range []string{"/docs/patterns", "/docs/themes"} {
+	for _, path := range []string{"/docs/patterns", "/docs/themes", "/docs/compare"} {
 		t.Run(path, func(t *testing.T) {
 			res := httptest.NewRecorder()
 			New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, path, nil))

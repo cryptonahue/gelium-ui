@@ -796,6 +796,7 @@ func TestLlmsTxtServesAgentBrief(t *testing.T) {
 		"X-Gelium-Validation",
 		"gelium:toast",
 		"/docs",
+		"/docs/compare",
 		"theme-material",
 		"When NOT to use",
 	} {

@@ -76,8 +76,9 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 
 - Home: /
 - Docs hub: /docs
+- Why Gelium (comparison): /docs/compare
 - Components: /components/{name} (demo-first: title → live demo → body)
-- Handbook: /docs/principles, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style
+- Handbook: /docs/principles, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style, /docs/compare
 - Recipes: /recipes/admin-resource, /recipes/ops-queue, /recipes/public-feed
 - Health: /healthz
 - Sitemap: /sitemap.xml

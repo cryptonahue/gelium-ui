@@ -22,6 +22,7 @@ type handbookRoute struct {
 var handbookRoutes = []handbookRoute{
 	{path: "/docs/information-architecture", label: "Information architecture", h1: "Information architecture", contract: "concept before reference"},
 	{path: "/docs/choose-the-right-control", label: "Choose the right control", h1: "Choose the right control", contract: "Radio vs Select"},
+	{path: "/docs/compare", label: "Why Gelium", h1: "Why Gelium (comparison)", contract: "When NOT to choose Gelium"},
 	{path: "/docs/themes", label: "Themes", h1: "Themes", contract: "?theme=basecoat"},
 	{path: "/docs/tokens", label: "Tokens", h1: "Tokens", contract: "--ui-color-primary"},
 	{path: "/docs/server-contracts", label: "Server contracts", h1: "Server contracts", contract: "HX-Trigger"},

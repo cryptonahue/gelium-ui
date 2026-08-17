@@ -203,6 +203,7 @@ func prevNextFor(activePath, themeSlug, scheme string) *prevNextView {
 var handbookNavLinks = []navLink{
 	{Path: "/docs/information-architecture", Label: "Information architecture"},
 	{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
+	{Path: "/docs/compare", Label: "Why Gelium"},
 	{Path: "/docs/themes", Label: "Themes"},
 	{Path: "/docs/tokens", Label: "Tokens"},
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
@@ -381,6 +382,13 @@ func (s *server) docsInformationArchitecture(w http.ResponseWriter, r *http.Requ
 // for picking the right input component per situation.
 func (s *server) docsChooseTheRightControl(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Choose the right control"}, "content/handbook-choose-the-right-control.md", "/docs/choose-the-right-control")
+}
+
+// docsCompare is GET /docs/compare — Why Gelium: honest comparison vs
+// React/headless kits (Radix, shadcn, Base UI), payload orders of magnitude,
+// when to use and explicit no-gos.
+func (s *server) docsCompare(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Why Gelium"}, "content/handbook-compare.md", "/docs/compare")
 }
 
 // docsThemes is GET /docs/themes — the Themes handbook page: how themes work
