@@ -70,6 +70,7 @@ func sourceAppCSS(t *testing.T) string {
 		"styles/feature-card.css",
 		"styles/hero.css",
 		"styles/language-switcher.css",
+		"styles/layout.css",
 		"styles/newsletter.css",
 		"styles/split.css",
 	}
