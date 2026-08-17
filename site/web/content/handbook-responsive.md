@@ -1,73 +1,76 @@
-# Diseñar para tamaños de pantalla, no para dispositivos
+# Design for screen sizes, not devices
 
-El diseño responsive en Gelium parte de **viewports y contenido**, no de “es un iPhone” o “es una tablet”. El mismo HTML y CSS deben refluir con dignidad desde un panel estrecho hasta un monitor ancho. Esta página fija la postura de producto; el detalle de controles está en [Elegir el control correcto](/docs/choose-the-right-control) y en [Forms](/docs/forms).
+Responsive design in Gelium starts from **viewports and content**, not “this is an iPhone” or “this is a tablet.” The same HTML and CSS should reflow cleanly from a narrow pane to a wide monitor. This page states the product stance; control choice details live in [Choose the right control](/docs/choose-the-right-control) and [Forms](/docs/forms).
 
-## Viewports, no nombres de dispositivo
+## Viewports, not device names
 
-- Diseña y prueba por **ancho de viewport** (y, cuando importe, altura/`dvh`), no por listas de modelos.
-- Los breakpoints son **pasos de layout** (`40rem`, `48rem`, …), no etiquetas `phone` / `tablet` / `desktop` en el CSS de producto.
-- Un teléfono plegado, un split-screen o una ventana de escritorio estrecha pueden compartir el mismo ancho: el layout no debe asumir “móvil = touch y poco ancho” como un solo paquete inseparable.
+- Design and test by **viewport width** (and height/`dvh` when it matters), not by model lists.
+- Breakpoints are **layout steps** (`40rem`, `48rem`, …), not `phone` / `tablet` / `desktop` labels in product CSS.
+- A foldable phone, a split-screen, and a narrow desktop window can share the same width: layout must not assume “mobile = touch + narrow” as one inseparable bundle.
 
-## Contenido que refluye
+## Content that reflows
 
-- Prioriza **reflow**: columnas que se apilan, filas con `flex-wrap`, tablas que hacen scroll **dentro** de su contenedor.
-- El texto de lectura larga usa la medida tipográfica del docs chrome: **`.prose` con `max-width: 65ch`**. No estires párrafos a todo el ancho del monitor.
-- Los layouts de consumo (p. ej. recipes) respetan **`--ui-container-max`** como techo de columna de aplicación, no como disculpa para forzar un ancho de “desktop forever”.
+- Prefer **reflow**: stacking columns, rows with `flex-wrap`, tables that scroll **inside** their container.
+- Long-form reading uses the docs chrome measure: **`.prose` with `max-width: 65ch`**. Do not stretch paragraphs across the full monitor.
+- App shells (for example recipes) honor **`--ui-container-max`** as a sensible column ceiling, not an excuse to force “desktop forever” width.
 
-## De móvil hacia arriba (mobile-first)
+## Mobile-first, enhance from desktop
 
-- Escribe el **stack por defecto** para el viewport estrecho: una columna, acciones apiladas, cabeceras que no pelean por el mismo renglón.
-- **Mejora desde desktop** con media queries `min-width` (o capas equivalentes): más columnas, toolbars en fila, paneles lado a lado.
-- Evita un CSS “desktop-only” que luego se parchea con excepciones móviles opacas. Las recipes (admin-resource, ops-queue, public-feed) **apilan cabeceras y contienen tablas** en anchos estrechos; ese es el patrón a copiar.
+- Write the **default stack** for the narrow viewport: one column, stacked actions, headers that do not fight for one row.
+- **Enhance from desktop** with `min-width` media queries (or equivalent layers): more columns, toolbars in a row, side-by-side panels.
+- Avoid desktop-only CSS patched with opaque mobile exceptions. Recipes (admin-resource, ops-queue, public-feed) **stack headers and contain tables** at narrow widths — copy that pattern.
+- Layout utilities such as `.ui-row-from-desktop` encode the same idea: column by default, row from the desktop step.
 
-## Contención: no enmascarar el desborde
+## Containment: do not mask overflow
 
-- **overflow-x: hidden no enmascara** un layout roto: no lo pongas en el documento ni en el body de la pantalla para “ocultar” el desborde. Corta focus, sombras y contenido real.
-- En flex/grid, pon **`min-width: 0`** (o `min-inline-size: 0`) en columnas e hijos que deban encogerse. Sin eso, el min-content del hijo empuja el viewport.
-- Tablas densas: envuelve el `<table>` en un contenedor con scroll horizontal local (p. ej. `.ui-data-table-scroll`), no en un clip del `html`.
-- Mide el **min-content width** real (DevTools, capturas a ~360–400px y en el umbral del breakpoint). Si algo fuerza ~780px, el fallo está en el layout, no en el usuario.
+- **`overflow-x: hidden` must not mask** a broken layout: do not put it on the document or screen body to “hide” overflow. It clips focus rings, shadows, and real content.
+- In flex/grid, set **`min-width: 0`** (or `min-inline-size: 0`) on columns and children that must shrink. Without it, the child’s min-content pushes the viewport.
+- Dense tables: wrap `<table>` in a local horizontal scroll container (for example `.ui-data-table-scroll`), not a clip on `html`.
+- Measure real **min-content width** (DevTools, captures at ~360–400px and at the breakpoint). If something forces ~780px, the bug is layout, not the user.
 
-## Objetivos táctiles y formularios
+## Touch targets and forms
 
-- Los controles interactivos respetan **`--ui-touch-target`** (suelo de área útil; Material lo eleva donde aplica el tema). No inventes hit-areas ad hoc por pantalla.
-- Formularios: etiquetas visibles, `type`/`inputmode` nativos, sin bloquear pegar — ver [Forms](/docs/forms).
-- Elige el control por la tarea, no por el “aspecto móvil”: [Choose the right control](/docs/choose-the-right-control).
+- Interactive controls honor **`--ui-touch-target`** (usable hit-area floor; Material may raise it). Do not invent ad-hoc hit areas per screen.
+- Forms: visible labels, native `type`/`inputmode`, do not block paste — see [Forms](/docs/forms).
+- Pick the control for the job, not for a “mobile look”: [Choose the right control](/docs/choose-the-right-control).
 
-## Breakpoints por pasos
+## Step breakpoints
 
-| Enfoque | Hacer | Evitar |
+| Focus | Do | Avoid |
 |---|---|---|
-| Nombre | Anchos en `rem` u otras unidades de layout | `@media (device-width: 375px)` o “solo iPad” |
-| Cantidad | Pocos escalones donde el **layout cambia de forma** | Un breakpoint por cada gadget del lab |
-| Orden | Base estrecha → realce ancho | Base ancha → parches `max-width` interminables |
-| Prueba | Viewports continuos y ventanas redimensionables | Solo emuladores con chrome de dispositivo fijo |
+| Naming | Widths in `rem` or other layout units | `@media (device-width: 375px)` or “iPad only” |
+| Count | Few steps where **layout shape** changes | One breakpoint per lab gadget |
+| Order | Narrow base → wide enhancement | Wide base → endless `max-width` patches |
+| Testing | Continuous viewports and resizable windows | Only fixed device-chrome emulators |
 
-## Tokens y piezas Gelium
+## Gelium tokens and pieces
 
-| Pieza | Rol |
+| Piece | Role |
 |---|---|
-| `--ui-touch-target` | Suelo de tamaño táctil / hit area en botones e icon-buttons |
-| `--ui-container-max` | Ancho máximo razonable de shell de aplicación / recipe |
-| `.prose` + **65ch** | Medida de lectura en documentación y texto largo |
-| Recipes + contención | Stack de headers, `min-width: 0`, scroll de tabla local |
+| `--ui-touch-target` | Touch / hit-area floor on buttons and icon-buttons |
+| `--ui-container-max` | Sensible max width for app shells / recipes |
+| `.ui-container` | Width-capped, padded layout column utility |
+| `.ui-row-from-desktop` | Stack by default; row from the desktop step |
+| `.prose` + **65ch** | Reading measure in docs and long text |
+| Recipes + containment | Header stack, `min-width: 0`, local table scroll |
 
-Temas y vocabulario de tokens: [Themes](/docs/themes), [Tokens](/docs/tokens). Accesibilidad (contraste, foco, motion): [Accessibility](/docs/accessibility).
+Themes and token vocabulary: [Themes](/docs/themes), [Tokens](/docs/tokens). Accessibility (contrast, focus, motion): [Accessibility](/docs/accessibility).
 
-## Rendimiento y honestidad de payload
+## Performance honesty
 
-Un layout que no desborda no sustituye una postura de payload. JS es mejora progresiva; el CSS de tokens y temas es grande **a propósito**. Mide y compara con la misma regla en [Performance](/docs/performance) y el posicionamiento en [Why Gelium](/docs/compare).
+A layout that does not overflow does not replace a payload stance. JS is progressive enhancement; token and theme CSS is large **on purpose**. Measure with the same rule in [Performance](/docs/performance) and positioning in [Why Gelium](/docs/compare).
 
-## Qué no es esta página
+## What this page is not
 
-- No es un catálogo de device frames ni un simulador de notch.
-- No autoriza `overflow-x: hidden` global como “fix responsive”.
-- No sustituye las demos de componente ni las recipes: allí se ve el apilado real.
+- Not a catalog of device frames or a notch simulator.
+- Not a license for global `overflow-x: hidden` as a “responsive fix.”
+- Not a substitute for component demos or recipes — that is where real stacking shows up.
 
-## Lista rápida de verificación
+## Quick checklist
 
-1. ¿El layout se entiende a ~360px de ancho sin scroll horizontal de página?
-2. ¿Los breakpoints nombran **cambios de layout**, no marcas de hardware?
-3. ¿Hay `min-width: 0` donde flex/grid se encoge?
-4. ¿Las tablas y pre scrollean **dentro** de su caja?
-5. ¿Los controles cumplen `--ui-touch-target` y el contrato de [Forms](/docs/forms)?
-6. ¿El CSS parte del stack estrecho y realza en anchos mayores?
+1. Does the layout make sense at ~360px width without page-level horizontal scroll?
+2. Do breakpoints name **layout changes**, not hardware brands?
+3. Is there `min-width: 0` where flex/grid must shrink?
+4. Do tables and pre blocks scroll **inside** their box?
+5. Do controls meet `--ui-touch-target` and the [Forms](/docs/forms) contract?
+6. Does CSS start from a narrow stack and enhance at larger widths?

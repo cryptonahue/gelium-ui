@@ -8,7 +8,7 @@ import (
 )
 
 // TestDocsResponsivePageRendersContract proves GET /docs/responsive serves the
-// Spanish responsive-design handbook: viewports not device names, containment
+// English responsive-design handbook: viewports not device names, containment
 // without overflow-x:hidden masking, Gelium touch/container tokens, and links
 // into related handbook pages.
 func TestDocsResponsivePageRendersContract(t *testing.T) {
@@ -19,8 +19,8 @@ func TestDocsResponsivePageRendersContract(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		"Diseñar para tamaños de pantalla, no para dispositivos",
-		"overflow-x: hidden no enmascara",
+		"Design for screen sizes, not devices",
+		"overflow-x: hidden must not mask",
 		"--ui-touch-target",
 		"--ui-container-max",
 		"65ch",

@@ -206,7 +206,7 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/forms", Label: "Forms"},
 	{Path: "/docs/compare", Label: "Why Gelium"},
 	{Path: "/docs/performance", Label: "Performance"},
-	{Path: "/docs/responsive", Label: "Diseño responsive"},
+	{Path: "/docs/responsive", Label: "Responsive"},
 	{Path: "/docs/themes", Label: "Themes"},
 	{Path: "/docs/tokens", Label: "Tokens"},
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
@@ -333,7 +333,7 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [Themes](/docs/themes) — class-based direction; dark is a class route, not media-only.\n"
 	md += "- [Tokens](/docs/tokens) — `--ui-*` ownership (core vs theme vs component).\n"
 	md += "- [Performance](/docs/performance) — ~50KB JS stance; CSS is the largest asset by design.\n"
-	md += "- [Diseño responsive](/docs/responsive) — pantallas, no dispositivos (ES).\n"
+	md += "- [Responsive](/docs/responsive) — design for screen sizes, not devices.\n"
 	md += "- [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) — install the package consumers get.\n"
 	md += "- [Agent brief](/llms.txt) — machine-readable project summary.\n\n"
 	md += "## Use the sidebar\n\n"
@@ -405,11 +405,11 @@ func (s *server) docsPerformance(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Performance"}, "content/handbook-performance.md", "/docs/performance")
 }
 
-// docsResponsive is GET /docs/responsive — diseño responsive: viewports y
-// reflow, no nombres de dispositivo; contención sin overflow-x:hidden;
-// tokens --ui-touch-target / --ui-container-max y prosa 65ch.
+// docsResponsive is GET /docs/responsive — design for viewports and content
+// reflow, not device names; containment without overflow-x:hidden masking;
+// --ui-touch-target / --ui-container-max and prose 65ch.
 func (s *server) docsResponsive(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPageAt(w, r, pageView{Title: "Diseño responsive"}, "content/handbook-responsive.md", "/docs/responsive")
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Responsive"}, "content/handbook-responsive.md", "/docs/responsive")
 }
 
 // docsThemes is GET /docs/themes — the Themes handbook page: how themes work

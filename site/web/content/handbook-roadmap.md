@@ -42,7 +42,7 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 | Performance stance `/docs/performance` — ~50KB JS / CSS-as-largest-asset as product stance | ✅ Shipped |
 | Theme polish — family ownership matrix, lib/themes paths, dark class-only docs | ✅ Shipped |
 | Layout utilities — `.ui-container`, `.ui-row-from-desktop`, prose measure ≤75ch (65ch) | ✅ Shipped |
-| Responsive chapter `/docs/responsive` — pantallas, no dispositivos (ES) | ✅ Shipped |
+| Responsive chapter `/docs/responsive` — design for screen sizes, not devices | ✅ Shipped |
 | Docs hub `/docs` — orientation Start here (no sidebar catalog dump) | ✅ Shipped |
 
 ## What is next (ordered by value, owner reprioritizes freely)
