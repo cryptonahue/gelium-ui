@@ -206,6 +206,7 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/forms", Label: "Forms"},
 	{Path: "/docs/compare", Label: "Why Gelium"},
 	{Path: "/docs/performance", Label: "Performance"},
+	{Path: "/docs/responsive", Label: "Diseño responsive"},
 	{Path: "/docs/themes", Label: "Themes"},
 	{Path: "/docs/tokens", Label: "Tokens"},
 	{Path: "/docs/server-contracts", Label: "Server contracts"},
@@ -405,6 +406,13 @@ func (s *server) docsCompare(w http.ResponseWriter, r *http.Request) {
 // how to measure static assets and npm pack size.
 func (s *server) docsPerformance(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Performance"}, "content/handbook-performance.md", "/docs/performance")
+}
+
+// docsResponsive is GET /docs/responsive — diseño responsive: viewports y
+// reflow, no nombres de dispositivo; contención sin overflow-x:hidden;
+// tokens --ui-touch-target / --ui-container-max y prosa 65ch.
+func (s *server) docsResponsive(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Diseño responsive"}, "content/handbook-responsive.md", "/docs/responsive")
 }
 
 // docsThemes is GET /docs/themes — the Themes handbook page: how themes work

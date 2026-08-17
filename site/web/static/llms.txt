@@ -79,8 +79,9 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 - Why Gelium (comparison): /docs/compare
 - Forms contract: /docs/forms
 - Performance stance: /docs/performance
+- Diseño responsive (viewports, not devices): /docs/responsive
 - Components: /components/{name} (demo-first: title → live demo → body)
-- Handbook: /docs/principles, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style, /docs/compare, /docs/forms, /docs/performance
+- Handbook: /docs/principles, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style, /docs/compare, /docs/forms, /docs/performance, /docs/responsive
 - Recipes: /recipes/admin-resource, /recipes/ops-queue, /recipes/public-feed
 - Health: /healthz
 - Sitemap: /sitemap.xml
