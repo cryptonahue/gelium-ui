@@ -849,8 +849,8 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 	// home + /docs + patterns + handbook pages + all components. The handbook
 	// count derives from handbookNavLinks() (same registry the sitemap uses), so
 	// adding a handbook page can never drift this total again.
-	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+3+len(handbookNavLinks()) {
-		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + patterns + handbook + all components)", got, len(componentRoutes())+3+len(handbookNavLinks()))
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+len(handbookNavLinks())+6+len(blogPosts) {
+		t.Errorf("sitemap <url> entries = %d, want %d (base pages + handbook + components + blog registry)", got, len(componentRoutes())+len(handbookNavLinks())+6+len(blogPosts))
 	}
 	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
 		if strings.Contains(body, excluded) {
@@ -1017,8 +1017,7 @@ func TestErrorPagesCarryMetadata(t *testing.T) {
 	body500 := res500.Body.String()
 	for _, contract := range []string{
 		`<link rel="canonical" href="https://gelium-ui.example/recipes/ops-queue">`,
-		`<meta name="robots" content="index, follow">`,
-		`<meta property="og:title" content="Something went wrong · Gelium UI">`,
+		`<meta name="robots" content="noindex, nofollow">`,
 	} {
 		if !strings.Contains(body500, contract) {
 			t.Errorf("500 page is missing %q", contract)

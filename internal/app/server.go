@@ -442,6 +442,10 @@ type metaView struct {
 	OGDescription string
 	OGType        string
 	OGImage       string
+	TwitterCard   string
+	TwitterTitle  string
+	TwitterDesc   string
+	TwitterURL    string
 	JSONLD        template.JS // trusted structured data; emitted inside <script type="application/ld+json">
 	Lang          string      // default "en"
 }
@@ -520,6 +524,60 @@ type jsonLDArticle struct {
 	DateModified  string          `json:"dateModified,omitempty"`
 	Author        jsonLDPublisher `json:"author"`
 	Publisher     jsonLDPublisher `json:"publisher"`
+}
+
+type jsonLDBlogPosting struct {
+	Context          string          `json:"@context"`
+	Type             string          `json:"@type"`
+	Headline         string          `json:"headline"`
+	DatePublished    string          `json:"datePublished"`
+	Author           jsonLDPublisher `json:"author"`
+	Publisher        jsonLDPublisher `json:"publisher"`
+	MainEntityOfPage string          `json:"mainEntityOfPage"`
+}
+
+type jsonLDWebPage struct {
+	Context     string `json:"@context"`
+	Type        string `json:"@type"`
+	Name        string `json:"name"`
+	URL         string `json:"url"`
+	Description string `json:"description"`
+}
+
+func blogJSONLD(routePath string) template.JS {
+	slug := strings.TrimPrefix(routePath, "/blog/")
+	for _, post := range blogPosts {
+		if post.Slug != slug {
+			continue
+		}
+		b, err := json.Marshal(jsonLDBlogPosting{
+			Context: "https://schema.org", Type: "BlogPosting", Headline: post.Title,
+			DatePublished:    post.Date,
+			Author:           jsonLDPublisher{Type: "Person", Name: post.Author},
+			Publisher:        jsonLDPublisher{Type: "Organization", Name: "Gelium UI"},
+			MainEntityOfPage: siteBaseURL + routePath,
+		})
+		if err != nil {
+			return template.JS("")
+		}
+		return template.JS(b) // #nosec G203 -- trusted, registry-derived JSON.
+	}
+	return template.JS("")
+}
+
+func docsJSONLD(routePath, title, description string) template.JS {
+	typeName := "WebPage"
+	if routePath == "/docs" {
+		typeName = "CollectionPage"
+	}
+	b, err := json.Marshal(jsonLDWebPage{
+		Context: "https://schema.org", Type: typeName, Name: title,
+		URL: siteBaseURL + routePath, Description: description,
+	})
+	if err != nil {
+		return template.JS("")
+	}
+	return template.JS(b) // #nosec G203 -- trusted, system-generated JSON.
 }
 
 // jsonLDSoftwareApplication is the SoftwareApplication entity emitted on every
@@ -657,10 +715,7 @@ func resolveMeta(data pageView, routePath string) metaView {
 		meta.Lang = "en"
 	}
 	if meta.Robots == "" {
-		meta.Robots = "index, follow"
-	}
-	if strings.HasPrefix(routePath, "/demo/") || strings.HasPrefix(routePath, "/examples/") {
-		meta.Robots = "noindex, nofollow"
+		meta.Robots = indexabilityPolicy(routePath)
 	}
 
 	meta.Canonical = siteBaseURL + routePath
@@ -700,6 +755,22 @@ func resolveMeta(data pageView, routePath string) metaView {
 	if meta.OGImage == "" {
 		meta.OGImage = ogImagePlaceholder
 	}
+	if meta.TwitterCard == "" {
+		if meta.OGImage != "" {
+			meta.TwitterCard = "summary_large_image"
+		} else {
+			meta.TwitterCard = "summary"
+		}
+	}
+	if meta.TwitterTitle == "" {
+		meta.TwitterTitle = meta.OGTitle
+	}
+	if meta.TwitterDesc == "" {
+		meta.TwitterDesc = meta.OGDescription
+	}
+	if meta.TwitterURL == "" {
+		meta.TwitterURL = meta.Canonical
+	}
 	if routePath == "/" && meta.JSONLD == "" {
 		meta.JSONLD = websiteJSONLD
 	}
@@ -707,6 +778,12 @@ func resolveMeta(data pageView, routePath string) metaView {
 		if _, ok := componentRouteLabel(routePath); ok {
 			meta.JSONLD = componentJSONLD(routePath)
 		}
+	}
+	if meta.JSONLD == "" && strings.HasPrefix(routePath, "/blog/") {
+		meta.JSONLD = blogJSONLD(routePath)
+	}
+	if meta.JSONLD == "" && strings.HasPrefix(routePath, "/docs") {
+		meta.JSONLD = docsJSONLD(routePath, meta.Title, meta.Description)
 	}
 	return meta
 }
@@ -919,6 +996,8 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/contributing", s.docsContributing)
 	mux.HandleFunc("GET /docs/changelog", s.docsChangelog)
 	mux.HandleFunc("GET /docs/roadmap", s.docsRoadmap)
+	mux.HandleFunc("GET /docs/seo", s.docsSEO)
+	mux.HandleFunc("GET /docs/aeo", s.docsAEO)
 	// Blog space: separate surface with its own look. /blog is the index;
 	// /blog/{slug} renders a post from the registry (unknown slugs 404).
 	mux.HandleFunc("GET /blog", s.blogIndex)
@@ -1046,19 +1125,38 @@ type urlset struct {
 	URLs    []sitemapURL `xml:"url"`
 }
 
-// sitemapPaths is the canonical list of indexable public pages: home, /docs and
-// every registered component route, derived from the route registry so the
-// sitemap can never drift from the library (contract §5). Demo, example and
-// recipe surfaces are excluded (noindex or form flows).
+// indexabilityPolicy is the one route policy consumed by both robots metadata
+// and sitemap generation. Interactive/demo/stateful surfaces are never indexed.
+func indexabilityPolicy(routePath string) string {
+	if strings.HasPrefix(routePath, "/demo/") || strings.HasPrefix(routePath, "/examples/") ||
+		strings.HasPrefix(routePath, "/recipes/") || routePath == "/components/dialog/confirm" {
+		return "noindex, nofollow"
+	}
+	return "index, follow"
+}
+
+func isIndexablePath(routePath string) bool { return indexabilityPolicy(routePath) == "index, follow" }
+
+// sitemapPaths is the canonical list of public pages filtered through the same
+// indexability policy used by resolveMeta.
 func sitemapPaths() []string {
-	paths := []string{"/", "/docs", "/docs/patterns"}
+	paths := []string{"/", "/docs", "/docs/patterns", "/docs/seo", "/docs/aeo", "/blog"}
 	for _, l := range handbookNavLinks() {
 		paths = append(paths, l.Path)
 	}
 	for _, r := range componentRoutes() {
 		paths = append(paths, r.Path)
 	}
-	return paths
+	for _, p := range blogPosts {
+		paths = append(paths, "/blog/"+p.Slug)
+	}
+	filtered := make([]string, 0, len(paths))
+	for _, p := range paths {
+		if isIndexablePath(p) {
+			filtered = append(filtered, p)
+		}
+	}
+	return filtered
 }
 
 // sitemap serves the server-generated sitemap.xml built from the route

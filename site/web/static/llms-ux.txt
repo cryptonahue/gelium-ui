@@ -159,6 +159,10 @@ Recipes show "Maps to Gelium criteria" (SKEL/FEED/DATA/JOURNEY). Patterns: /docs
 
 Consumer: /docs/templates/product · /docs/templates/design
 
+## SEO / AEO BOUNDARY
+
+One primary answer per page, answer-first lead, descriptive headings, and visible sources for sourced claims. `/llms.txt` and `/llms-ux.txt` are discovery aids, not ranking guarantees. The library owns semantic markup and media; the docs site owns Gelium metadata, canonical/robots/sitemap, social tags, and JSON-LD; consumers own BASE_URL/domain, brand, content facts, authors/dates, and social assets. Docs/blog may be indexable; recipes, demos, examples, and stateful surfaces stay noindex and out of the sitemap.
+
 ## INSTALL
 
 npm i gelium-ui

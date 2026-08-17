@@ -12,7 +12,11 @@
   <meta property="og:description" content="{{.Meta.OGDescription}}">
   <meta property="og:url" content="{{.Meta.Canonical}}">
   {{if .Meta.OGImage}}<meta property="og:image" content="{{.Meta.OGImage}}">{{end}}
-  <meta name="twitter:card" content="{{if .Meta.OGImage}}summary_large_image{{else}}summary{{end}}">{{end}}
+  <meta name="twitter:card" content="{{.Meta.TwitterCard}}">
+  <meta name="twitter:title" content="{{.Meta.TwitterTitle}}">
+  <meta name="twitter:description" content="{{.Meta.TwitterDesc}}">
+  <meta name="twitter:url" content="{{.Meta.TwitterURL}}">
+  {{if .Meta.OGImage}}<meta name="twitter:image" content="{{.Meta.OGImage}}">{{end}}{{end}}
   {{if .Meta.JSONLD}}<script type="application/ld+json">{{.Meta.JSONLD}}</script>{{end}}
   <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
   <meta name="htmx-config" content="{&quot;history&quot;:true,&quot;defaultFocusScroll&quot;:false,&quot;morphSkip&quot;:[&quot;[data-htmx-preserve]&quot;],&quot;morphIgnore&quot;:[&quot;data-htmx-powered&quot;,&quot;data-gelium-preserve&quot;]}" />

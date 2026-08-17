@@ -41,7 +41,7 @@ func (s *server) dialogDocs(w http.ResponseWriter, r *http.Request) {
 // Confirm as a real form POST and Cancel as a link back. This is the G1
 // fallback: it works in every browser with zero component JavaScript.
 func (s *server) dialogConfirm(w http.ResponseWriter, r *http.Request) {
-	s.renderMarkdownPage(w, r, pageView{
+	s.renderMarkdownPageAt(w, r, pageView{
 		Title: "Dialog",
 		DialogConfirm: &dialogConfirmView{
 			Headline:    "Confirm action",
@@ -49,7 +49,7 @@ func (s *server) dialogConfirm(w http.ResponseWriter, r *http.Request) {
 			Cancel:      buttonView{Label: "Cancel", Variant: "text", Href: "/components/dialog"},
 			Confirm:     buttonView{Label: "Confirm", Variant: "text", Submit: true, Value: "confirm"},
 		},
-	}, "content/dialog.md")
+	}, "content/dialog.md", "/components/dialog/confirm")
 }
 
 // dialogConfirmPost completes the no-JS confirmation round-trip: the form POSTs

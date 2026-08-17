@@ -373,7 +373,9 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [Agent brief](/llms.txt) — machine-readable project summary.\n"
 	md += "- [Agent UX pack](/llms-ux.txt) — SURFACE / FEED / DATA / JOURNEY / WF tables.\n"
 	md += "- [Agent workflow](/docs/agent-workflow) — shape → build → audit → polish (ethos-safe).\n"
-	md += "- [UI definition of done](/docs/ui-definition-of-done) — ship checklist before accepting UI.\n\n"
+	md += "- [UI definition of done](/docs/ui-definition-of-done) — ship checklist before accepting UI.\n"
+	md += "- [AEO](/docs/aeo) — answer-first content and discovery aids are not ranking guarantees.\n"
+	md += "- [SEO](/docs/seo) — metadata ownership, indexability, sitemap, and social coherence.\n"
 	md += "### Core (screen criteria)\n\n"
 	md += "- [Screens](/docs/screens) — screen types, hierarchy, nav, surface modes.\n"
 	md += "- [Journeys](/docs/journeys) — multi-step flows and post-submit landings.\n"
@@ -574,6 +576,14 @@ func (s *server) docsMedia(w http.ResponseWriter, r *http.Request) {
 // works" contract (native semantics, 0-JS, AA contrast, forced-colors).
 func (s *server) docsBrowserSupport(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Browser support"}, "content/handbook-browser-support.md", "/docs/browser-support")
+}
+
+func (s *server) docsSEO(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "SEO"}, "content/handbook-seo.md", "/docs/seo")
+}
+
+func (s *server) docsAEO(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "AEO"}, "content/handbook-aeo.md", "/docs/aeo")
 }
 
 // docsContributing is GET /docs/contributing — the Contributing page: where
