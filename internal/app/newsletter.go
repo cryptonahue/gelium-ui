@@ -131,3 +131,14 @@ func validEmail(s string) bool {
 	}
 	return strings.Contains(s[i+1:], ".")
 }
+
+// newsletterDocs renders the Newsletter component docs page (Phase F public
+// content pattern): a zero-JS subscription form whose whole contract is
+// server-driven — POST + 422 with an inline alert on an invalid email, a
+// persistent success view on a valid one. The page documents the aside
+// pattern; the live example lives at /examples/newsletter.
+func (s *server) newsletterDocs(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPage(w, r, pageView{
+		Title: "Newsletter",
+	}, "content/newsletter.md")
+}
