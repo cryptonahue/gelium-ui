@@ -1,6 +1,6 @@
 # Gelium UI — UX decision pack (for agents)
 
-Human: /docs/agent-workflow /docs/screens /docs/feedback /docs/journeys /docs/data-display /docs/patterns /docs/density /docs/motion /docs/ui-definition-of-done
+Human: /docs/agent-workflow /docs/screens /docs/feedback /docs/journeys /docs/data-display /docs/patterns /docs/density /docs/motion /docs/content-style /docs/ui-definition-of-done
 Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT free-form aesthetic redesign.
 
 ## MUST before generating UI
@@ -106,16 +106,32 @@ Nav: side 1–3 levels; bar 3–5 peers; tabs=same object; breadcrumb depth≥2.
 Density: comfortable|cozy|compact — one per surface; keep --ui-touch-target.
 Motion: MOTION-NONE default; honor prefers-reduced-motion.
 
+## DOC structure (prose)
+
+| ID | Rule |
+|---|---|
+| DOC-H1 | One H1 per URL (page job) |
+| DOC-H2 | On-this-page worthy topic change; never skip H1→H3 |
+| DOC-H3 | Only inside an H2 |
+| DOC-LIST | ≥3 parallel items → list |
+| DOC-TABLE | Compare dimensions (when/when-not) |
+| DOC-QUOTE | Blockquote = cited source only, not flair |
+
+Handbook outline: H1 → lead → H2 Sources → H2 rules → H2 anti-patterns → H2 checklist → See also.
+Operate UI: one H1; do not stack marketing H2s on forms. Full: /docs/content-style
+
 ## DOMAIN SKELETONS
 
 | ID | Shape |
 |---|---|
 | SKEL-FORUM | list topics → thread → reply form |
 | SKEL-CATALOG | cards/list + detail + cart/checkout linear |
-| SKEL-ADMIN-RESOURCE | recipe admin-resource |
-| SKEL-OPS-QUEUE | recipe ops-queue |
+| SKEL-ADMIN-RESOURCE | recipe admin-resource (+ on-page criteria bridge) |
+| SKEL-OPS-QUEUE | recipe ops-queue (+ criteria bridge) |
 | SKEL-SETTINGS | settings list + section forms |
 | SKEL-ONBOARDING | start → steps → result |
+
+Recipes show "Maps to Gelium criteria" (SKEL/FEED/DATA/JOURNEY). Patterns: /docs/patterns
 
 ## TEMPLATES
 

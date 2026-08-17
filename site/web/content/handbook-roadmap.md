@@ -48,6 +48,7 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 | Journeys + data display + patterns skeletons + density/motion + UI DoD checklist | ✅ Shipped |
 | Agent workflow (Impeccable-class process adapted) + surface modes + ux-detect + PRODUCT/DESIGN templates | ✅ Shipped |
 | Docs sidebar handbook tiers Core / System / Meta (scannable IA) | ✅ Shipped |
+| Content structure grammar (H1–H3/list/table) + recipe criteria bridges + harder ux-detect | ✅ Shipped |
 
 ## What is next (ordered by value, owner reprioritizes freely)
 

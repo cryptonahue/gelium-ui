@@ -170,9 +170,13 @@ func TestLlmsUXTxtServesAgentDecisionPack(t *testing.T) {
 		"DATA-TABLE",
 		"FEED-VAL",
 		"SKEL-FORUM",
+		"DOC-H1",
+		"DOC-H2",
+		"DOC-LIST",
 		"DoD",
 		"/docs/agent-workflow",
 		"/docs/journeys",
+		"/docs/content-style",
 		"/docs/ui-definition-of-done",
 	} {
 		if !strings.Contains(body, contract) {

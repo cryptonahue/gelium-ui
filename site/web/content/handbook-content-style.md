@@ -48,6 +48,69 @@ Banners and validation summaries use the same voice as errors: what happened, th
 
 Docs titles are **tasks, not topics**: "Choose the right control", not "Controls". Guidance comes before reference, per the [Information architecture](/docs/information-architecture) rule. Keep sentences to 20 words or fewer, and avoid filler words: "just", "very", "obviously".
 
+## Content structure (headings and blocks)
+
+How to choose **H1–H3**, lists, tables, and quotes. Same rules for handbook pages and for long-form Read surfaces. Product **Operate** screens still follow [Screens](/docs/screens) (one H1, few decorative headings).
+
+### Sources
+
+| Topic | Source |
+|---|---|
+| Scan / F-pattern | [NNG: F-shaped pattern](https://www.nngroup.com/articles/f-shaped-pattern-reading-web-content/) (see Reading on screen above) |
+| Clear structure | GOV.UK content design — short pages, meaningful headings |
+| Heading order | WCAG: headings describe topic or purpose; do not skip levels for looks |
+
+### Headings
+
+| Level | When to use | When not |
+|---|---|---|
+| **H1** | Exactly **one** per URL: the page job or title | Mid-body H1; multiple H1s |
+| **H2** | A section you could put on “On this page”; a real topic change | Decorating a single paragraph; skipping from H1 to H3 |
+| **H3** | A labeled part **inside** an H2 (sub-rules, “Toast rules”, steps) | Fake H2 because the outline looks empty |
+| **H4+** | Almost never in Gelium docs | Deep trees |
+
+**Test:** if the section would not appear in an on-this-page list, it is probably not an H2.
+
+### Canonical handbook outline
+
+```text
+H1  Task-shaped title
+    Lead paragraph (conclusion first)
+H2  Sources (when criteria are sourced)
+H2  Main rules or decision matrix
+  H3  Nested rule groups only when needed
+H2  When not / anti-patterns
+H2  Checklist (agents)
+H2  See also
+```
+
+### Lists, tables, prose, quotes
+
+| Form | When | When not |
+|---|---|---|
+| **Bullet / numbered list** | Three or more **parallel** items | Two items that need a full sentence of nuance each |
+| **Prosa** | Cause/effect, one idea with lead sentence | Long walls of parallel facts (use a list) |
+| **Table** | Compare dimensions (when / when not / ID → use) | Layout or “pretty” columns of prose |
+| **Blockquote** | Short **external** quote or cited rule | Emphasis, slogans, or “design flair” |
+| **Callout / banner (UI)** | Page or system status ([Feedback](/docs/feedback)) | Replacing a heading |
+| **Code** | Commands, markup, contracts | Theory and narrative |
+
+### Product UI (Operate) vs docs (Read)
+
+| Surface | Headings | Blocks |
+|---|---|---|
+| **Operate** (forms, tables, queues) | One H1; section labels via structure, not essay H2 stacks | Lists in empty/error copy; FEED matrices live in docs, not on every screen |
+| **Read** (handbook) | Full H1–H3 outline above | Tables for criteria; lists for parallels |
+| **Persuade** (landing) | One H1; section H2 sparingly | One primary CTA ([Screens](/docs/screens)) |
+
+### Anti-patterns
+
+- H1 → H3 with no H2 (skipped level for style).
+- H2 for every sentence.
+- Blockquote used as a highlight box without a source.
+- Table used to position non-tabular marketing copy.
+- Operate form with a marketing H2 stack above the fields.
+
 ## How it is enforced
 
-The copy contract tests in `internal/app/copy_contract_test.go` pin the action pattern on recipe errors and the action language in recipe empty states. The same file carries the sentence-length contract: every sentence in every component page is at most 25 words (code and table rows are stripped before counting), per §Paragraphs and sentences. The Handbook tests pin this page in the sidebar, the /docs hub, and the sitemap. The [Screen recipes](/recipes/admin-resource) dogfood the voice on real screens.
+The copy contract tests in `internal/app/copy_contract_test.go` pin the action pattern on recipe errors and the action language in recipe empty states. The same file carries the sentence-length contract: every sentence in every component page is at most 25 words (code and table rows are stripped before counting), per §Paragraphs and sentences. Structure rules above are pinned by handbook/content-style tests and the agent pack (`DOC-H1`, `DOC-H2`, `DOC-LIST`). The Handbook tests pin this page in the sidebar. Recipes link criteria via the on-page “Maps to Gelium criteria” bridge. The [Screen recipes](/recipes/admin-resource) dogfood the voice on real screens.

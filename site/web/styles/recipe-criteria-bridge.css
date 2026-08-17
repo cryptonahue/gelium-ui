@@ -1,0 +1,33 @@
+/* Criteria bridge: short Read strip on Operate recipe pages. */
+.recipe-criteria-bridge {
+  margin: var(--ui-space-6) var(--ui-space-4) var(--ui-space-4);
+  padding: var(--ui-space-4);
+  max-width: var(--ui-container-max, 64rem);
+  border: var(--ui-border-width-1, 1px) solid var(--ui-color-outline-variant, var(--ui-color-outline));
+  border-radius: var(--ui-radius-md, 0.5rem);
+  background: var(--ui-color-surface-container-low, var(--ui-color-surface));
+  color: var(--ui-color-on-surface);
+}
+
+.recipe-criteria-bridge-title {
+  margin: 0 0 var(--ui-space-3);
+  font: var(--ui-type-title-sm, 600 1rem/1.4 var(--ui-font-sans, system-ui, sans-serif));
+}
+
+.recipe-criteria-bridge-list {
+  margin: 0 0 var(--ui-space-3);
+  padding-left: 1.25rem;
+}
+
+.recipe-criteria-bridge-list li {
+  margin: 0.25rem 0;
+}
+
+.recipe-criteria-bridge-links {
+  margin: 0;
+  font: var(--ui-type-body-sm, 400 0.875rem/1.4 var(--ui-font-sans, system-ui, sans-serif));
+}
+
+.recipe-criteria-bridge-links a {
+  color: var(--ui-color-primary);
+}

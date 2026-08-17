@@ -29,9 +29,30 @@ for f in "${required[@]}"; do
 done
 
 # Contract IDs must remain in agent pack
-for id in FEED-VAL JOURNEY-LINEAR DATA-TABLE WF-SHAPE SURFACE Operate SKEL-FORUM; do
+for id in FEED-VAL JOURNEY-LINEAR DATA-TABLE WF-SHAPE SURFACE Operate SKEL-FORUM DOC-H1 DOC-H2 DOC-LIST; do
   if grep -q "$id" site/web/static/llms-ux.txt; then ok "llms-ux has $id"; else bad "llms-ux missing $id"; fi
 done
+
+# Content structure grammar
+if grep -q 'Content structure' site/web/content/handbook-content-style.md; then ok "content-style has structure grammar"; else bad "content-style missing Content structure"; fi
+if grep -q 'Canonical handbook outline' site/web/content/handbook-content-style.md; then ok "content-style has outline"; else bad "content-style missing outline"; fi
+
+# Recipe criteria bridges
+for f in site/web/templates/recipe-admin-resource.html site/web/templates/recipe-ops-queue.html site/web/templates/recipe-public-feed.html; do
+  if grep -q 'recipe-criteria-bridge' "$f"; then ok "bridge in $f"; else bad "missing criteria bridge in $f"; fi
+done
+
+# Landing: only one primary button variant assignment in marketingLanding
+primaries=$(grep -c 'Variant: "primary"' internal/app/landing.go || true)
+if [[ "$primaries" -eq 1 ]]; then ok "landing.go has exactly one primary Variant"; else bad "landing.go primary Variant count=$primaries want 1"; fi
+
+# Hub: Start here string appears before Deep dive in docsIndex source order
+idx_start=$(grep -n 'Start here' internal/app/docs.go | head -1 | cut -d: -f1)
+idx_deep=$(grep -n 'Deep dive' internal/app/docs.go | head -1 | cut -d: -f1)
+if [[ -n "$idx_start" && -n "$idx_deep" && "$idx_start" -lt "$idx_deep" ]]; then ok "docsIndex Start here before Deep dive"; else bad "docsIndex ordering Start/Deep"; fi
+
+# Hub names Core/System/Meta
+if grep -q 'Core' internal/app/docs.go && grep -q 'System' internal/app/docs.go && grep -q 'Meta' internal/app/docs.go; then ok "docsIndex names Core/System/Meta"; else bad "docsIndex missing tier names"; fi
 
 # Human workflow page must name passes + ethos
 for s in "WF-SHAPE" "Surface modes" "Anti-slop" "Ethos"; do

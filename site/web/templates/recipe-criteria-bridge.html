@@ -1,0 +1,59 @@
+{{/* Shared “Maps to Gelium criteria” bridge for screen recipes (Read strip on Operate demos). */}}
+
+{{define "recipe-criteria-bridge-admin"}}
+<aside class="recipe-criteria-bridge" aria-labelledby="recipe-criteria-admin-title">
+  <h2 class="recipe-criteria-bridge-title" id="recipe-criteria-admin-title">Maps to Gelium criteria</h2>
+  <ul class="recipe-criteria-bridge-list">
+    <li><strong>SKEL-ADMIN-RESOURCE</strong> · surface <strong>Operate</strong></li>
+    <li><strong>DATA-TABLE</strong> · list + filters on GET</li>
+    <li><strong>FEED-VAL</strong> · 422 + validation-summary + field errors</li>
+    <li><strong>FEED-EMPTY</strong> · empty-state with next action</li>
+    <li><strong>FEED-OK-*</strong> / <strong>FEED-CONFIRM</strong> · toast / delete dialog</li>
+    <li><strong>JOURNEY-CRUD</strong> · list ↔ form ↔ confirm</li>
+  </ul>
+  <p class="recipe-criteria-bridge-links">
+    <a href="/docs/patterns">Patterns</a>
+    · <a href="/docs/feedback">Feedback</a>
+    · <a href="/docs/data-display">Data display</a>
+    · <a href="/docs/screens">Screens</a>
+  </p>
+</aside>
+{{end}}
+
+{{define "recipe-criteria-bridge-ops"}}
+<aside class="recipe-criteria-bridge" aria-labelledby="recipe-criteria-ops-title">
+  <h2 class="recipe-criteria-bridge-title" id="recipe-criteria-ops-title">Maps to Gelium criteria</h2>
+  <ul class="recipe-criteria-bridge-list">
+    <li><strong>SKEL-OPS-QUEUE</strong> · surface <strong>Operate</strong></li>
+    <li><strong>DATA-QUEUE</strong> · work list + status badge</li>
+    <li><strong>FEED-EMPTY</strong> · empty-state when filtered dry</li>
+    <li><strong>FEED-OK-TOAST</strong> · refresh / action feedback</li>
+    <li><strong>JOURNEY-QUEUE</strong> · row POST+303 actions</li>
+  </ul>
+  <p class="recipe-criteria-bridge-links">
+    <a href="/docs/patterns">Patterns</a>
+    · <a href="/docs/feedback">Feedback</a>
+    · <a href="/docs/journeys">Journeys</a>
+    · <a href="/docs/screens">Screens</a>
+  </p>
+</aside>
+{{end}}
+
+{{define "recipe-criteria-bridge-feed"}}
+<aside class="recipe-criteria-bridge" aria-labelledby="recipe-criteria-feed-title">
+  <h2 class="recipe-criteria-bridge-title" id="recipe-criteria-feed-title">Maps to Gelium criteria</h2>
+  <ul class="recipe-criteria-bridge-list">
+    <li><strong>SKEL-FORUM</strong> list/feed slice · surface <strong>Operate</strong> (activity)</li>
+    <li><strong>DATA-FEED</strong> · time-ordered cards</li>
+    <li><strong>FEED-EMPTY</strong> · empty-state for empty views</li>
+    <li><strong>FEED-OK-TOAST</strong> · refresh / react feedback</li>
+    <li><strong>FEED-LOAD-*</strong> · skeleton / progressive where used</li>
+  </ul>
+  <p class="recipe-criteria-bridge-links">
+    <a href="/docs/patterns">Patterns</a>
+    · <a href="/docs/data-display">Data display</a>
+    · <a href="/docs/feedback">Feedback</a>
+    · <a href="/docs/screens">Screens</a>
+  </p>
+</aside>
+{{end}}

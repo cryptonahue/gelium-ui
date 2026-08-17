@@ -20,6 +20,7 @@
 @import "./recipe-admin-resource.css";
 @import "./recipe-ops-queue.css";
 @import "./recipe-public-feed.css";
+@import "./recipe-criteria-bridge.css";
 
 @source "../templates";
 @source "../content";
