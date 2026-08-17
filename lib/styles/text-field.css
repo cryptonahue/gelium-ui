@@ -156,6 +156,38 @@
   .ui-text-field-error.ui-text-field-disabled .ui-text-field-control > label {
     color: var(--ui-field-label);
   }
+  /* A real placeholder replaces the invisible empty-state hook: the label is
+     always floated so hint text and label never overlap. CSS-only, no JS. */
+  .ui-text-field-has-placeholder .ui-text-field-control > label {
+    font: var(--ui-type-label-sm);
+    letter-spacing: var(--ui-type-label-sm-letter-spacing);
+  }
+  .ui-text-field-has-placeholder input::placeholder,
+  .ui-text-field-has-placeholder textarea::placeholder {
+    color: var(--ui-field-label);
+    opacity: 1;
+  }
+  .ui-text-field-has-placeholder.ui-text-field-outlined .ui-text-field-control > label {
+    top: 0;
+    padding: 0 var(--ui-space-1);
+    background: var(--ui-color-surface);
+    transform: translate(-.25rem, -50%);
+  }
+  .ui-text-field-has-placeholder.ui-text-field-outlined .ui-text-field-control:dir(rtl) > label {
+    transform: translate(.25rem, -50%);
+  }
+  .ui-text-field-has-placeholder.ui-text-field-filled .ui-text-field-control > label {
+    top: .5rem;
+    transform: none;
+  }
+  .ui-text-field-has-placeholder.ui-text-field-outlined .ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label {
+    top: 0;
+    transform: translate(-.25rem, -50%);
+  }
+  .ui-text-field-has-placeholder.ui-text-field-filled .ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label {
+    top: .5rem;
+    transform: none;
+  }
   form:has(> .ui-text-field) { display: grid; width: min(100%, 24rem); gap: var(--ui-space-4); }
   form:has(> .ui-text-field) .ui-button { justify-self: start; }
 }

@@ -36,9 +36,22 @@ Use Text field when people must enter or edit free-form text — names, email ad
 
 ## Variants and states
 
-The dogfooded examples demonstrate outlined and filled variants, plus normal and helper text. They include a visibly labelled error that does not rely on color. They cover disabled inputs (filled and outlined), a disabled textarea, and an editable textarea.
+The dogfooded examples demonstrate outlined and filled variants, plus normal and helper text. They include a visibly labelled error that does not rely on color. They cover disabled inputs (filled and outlined), a disabled textarea, and an editable textarea. The preview also dogfoods the native input surface: typed inputs, constraints, autofill hints, and a real placeholder.
 
 Disabled fields keep the native `disabled` attribute: they leave the tab order, cannot receive focus or edits, and are excluded from hover and focus states. Disabled takes explicit precedence over error: a field flagged disabled never advertises `aria-invalid` or an error alert, even when both states are set. The CSS also resolves a combined `ui-text-field-error ui-text-field-disabled` wrapper to the disabled palettes instead of the error palette.
+
+## Input surface
+
+Single-line fields map to the native `<input>`; multi-line ones to the `<textarea>`. The view passes a set of native attributes through, rendering each only when set.
+
+- `Type` switches the input kind: `email`, `url`, `tel`, `number`, `password`, `search`, or the default `text`. Textareas ignore it, and so does `Pattern`, which is input-only.
+- `InputMode` hints at the on-screen keyboard. Pair it with `Type` per the [Forms contract](/docs/forms) table.
+- `Autocomplete` carries a standard token for identity and contact data, like `email` or `current-password`.
+- `Required`, `MaxLength`, `MinLength`, and `Pattern` express native constraints. Server validation stays authoritative on submit.
+- `ReadOnly` keeps the field focusable and submitted, but not editable. Disabled instead leaves the tab order.
+- `Placeholder` shows hint text without replacing the visible label. The floating label stays floated so hint and label never overlap.
+
+See [Forms contract](/docs/forms) for the `type` and `inputmode` pairing table, `autocomplete` tokens, and validation timing.
 
 ## How does server-side validation work?
 

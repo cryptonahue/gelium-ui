@@ -336,3 +336,31 @@ func TestReducedMotionDisablesTextFieldControlAndLabelTransitions(t *testing.T) 
 		}
 	}
 }
+
+// TestTextFieldPlaceholderKeepsLabelFloatedWithoutJS locks the placeholder
+// contract: a real placeholder replaces the invisible space hook, so the
+// label must stay floated (never resting on the hint text) and the hint must
+// be visible. Pure CSS — the template just adds the has-placeholder modifier.
+func TestTextFieldPlaceholderKeepsLabelFloatedWithoutJS(t *testing.T) {
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
+	for _, contract := range []string{
+		`.ui-text-field-has-placeholder .ui-text-field-control > label { font: var(--ui-type-label-sm);`,
+		`.ui-text-field-has-placeholder input::placeholder, .ui-text-field-has-placeholder textarea::placeholder { color: var(--ui-field-label); opacity: 1;`,
+		`.ui-text-field-has-placeholder.ui-text-field-outlined .ui-text-field-control > label { top: 0;`,
+		`.ui-text-field-has-placeholder.ui-text-field-outlined .ui-text-field-control:dir(rtl) > label { transform: translate(.25rem, -50%);`,
+		`.ui-text-field-has-placeholder.ui-text-field-filled .ui-text-field-control > label { top: .5rem;`,
+		`.ui-text-field-has-placeholder.ui-text-field-outlined .ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label { top: 0;`,
+		`.ui-text-field-has-placeholder.ui-text-field-filled .ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label { top: .5rem;`,
+	} {
+		if !strings.Contains(css, contract) {
+			t.Errorf("source CSS is missing placeholder float contract %q", contract)
+		}
+	}
+	// The modifier rules must follow the resting label rule so equal
+	// specificity resolves to the floated state.
+	resting := strings.Index(css, `.ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label { top: 1rem;`)
+	modifier := strings.Index(css, `.ui-text-field-has-placeholder .ui-text-field-control > label {`)
+	if resting < 0 || modifier < resting {
+		t.Error("placeholder float rules must be declared after the resting textarea label rule")
+	}
+}
