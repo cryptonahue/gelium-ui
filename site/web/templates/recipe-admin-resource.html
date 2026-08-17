@@ -67,6 +67,7 @@
 
 {{define "recipe-admin-resource-panel"}}
 <div class="ui-data-table" id="resource-panel">
+  <div class="ui-data-table-scroll">
   <table class="ui-data-table-table">
     <caption class="ui-data-table-caption">{{.Caption}}</caption>
     <thead>
@@ -112,6 +113,7 @@
       {{end}}
     </tbody>
   </table>
+  </div>
   <nav class="ui-data-table-pagination" aria-label="Table pages">
     {{if .HasPrev}}<a class="ui-data-table-page" href="{{.PrevHref}}" hx-get="{{$.FilterAction}}{{.PrevHref}}" hx-target="#resource-panel" hx-swap="outerHTML">Previous</a>{{else}}<span class="ui-data-table-page ui-data-table-page--disabled" aria-disabled="true">Previous</span>{{end}}
     {{range .PageLinks}}{{if .Current}}<span class="ui-data-table-page ui-data-table-page--current" aria-current="page">{{.Num}}</span>{{else}}<a class="ui-data-table-page" href="{{.Href}}" hx-get="{{$.FilterAction}}{{.Href}}" hx-target="#resource-panel" hx-swap="outerHTML">{{.Num}}</a>{{end}}{{end}}
