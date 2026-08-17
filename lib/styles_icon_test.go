@@ -37,8 +37,8 @@ func TestIconSetIsTrustedDecorativeMarkup(t *testing.T) {
 		}
 		rows = append(rows, iconRow{name: name, attrs: svg[:end]})
 	}
-	if len(rows) < 21 {
-		t.Fatalf("generated icon rows = %d, want at least 21 (the curated allowlist)", len(rows))
+	if len(rows) < 36 {
+		t.Fatalf("generated icon rows = %d, want at least 36 (the curated allowlist)", len(rows))
 	}
 	seen := map[string]bool{}
 	for _, r := range rows {

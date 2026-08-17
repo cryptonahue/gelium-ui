@@ -45,6 +45,23 @@ const ICONS = [
   "search",
   "settings",
   "warning",
+  "person",
+  "notifications",
+  "share",
+  "star",
+  "thumb_up",
+  "visibility",
+  "visibility_off",
+  "lock",
+  "send",
+  "download",
+  "upload",
+  "calendar_today",
+  "schedule",
+  "more_horiz",
+  "add_circle",
+  "dark_mode",
+  "light_mode",
 ];
 
 // stripSvg turns a Material Symbols source file into the inner content of a

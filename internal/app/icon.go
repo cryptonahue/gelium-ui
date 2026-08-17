@@ -50,7 +50,10 @@ func materialIconSVGs() []template.HTML {
 		"add", "arrow_back", "arrow_downward", "arrow_forward", "arrow_upward",
 		"check", "chevron_left", "chevron_right", "close", "delete", "edit",
 		"error", "home", "info", "menu", "more_vert", "refresh", "save",
-		"search", "settings", "warning",
+		"search", "settings", "warning", "person", "notifications", "share",
+		"star", "thumb_up", "visibility", "visibility_off", "lock", "send",
+		"download", "upload", "calendar_today", "schedule", "more_horiz",
+		"add_circle", "dark_mode", "light_mode",
 	}
 	out := make([]template.HTML, 0, len(order))
 	for _, name := range order {
