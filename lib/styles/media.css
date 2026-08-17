@@ -5,6 +5,12 @@
 .ui-media--aspect img, .ui-media--aspect picture { height:100%; object-fit:cover; }
 .ui-media audio { width:100%; }
 .ui-media figcaption, .ui-transcript { max-width:65ch; color:var(--ui-color-on-surface-variant); }
+/* Vertical rhythm inside the figure: the player is a full-width block, so the
+   caption and the transcript link need owned spacing — browser defaults reset
+   by the docs reset would otherwise leave them flush against the audio bar. */
+.ui-media figcaption { margin-top: var(--ui-space-2, .5rem); }
+.ui-media p { margin: var(--ui-space-2, .5rem) 0 0; }
+.ui-transcript { margin-top: var(--ui-space-4, 1rem); }
 .ui-media-fallback, .ui-embed-boundary { padding:var(--ui-space-3, .75rem); border:1px solid currentColor; }
 .ui-embed-boundary { min-height:8rem; display:grid; align-content:center; }
 .ui-transcript-content { white-space:pre-wrap; }
