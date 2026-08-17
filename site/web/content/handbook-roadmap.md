@@ -37,22 +37,19 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 | npm package `gelium-ui@0.5.3` on the public registry (https://www.npmjs.com/package/gelium-ui) — dist bundle, themes, templates, consumer JS | ✅ Shipped |
 | `/llms.txt` agent brief (install, wire contracts, when not to use, component list) | ✅ Shipped |
 | Comparison page `/docs/compare` — Why Gelium vs Radix/shadcn/Base UI, ~50KB JS story, no-gos | ✅ Shipped |
+| Recipes mobile — admin/ops/feed headers stack + table/list containment under ~40rem (no overflow-x:hidden) | ✅ Shipped |
+| Forms contract `/docs/forms` — label above, inputmode/type, autocomplete, validate after interaction | ✅ Shipped |
+| Performance stance `/docs/performance` — ~50KB JS / CSS-as-largest-asset as product stance | ✅ Shipped |
 
 ## What is next (ordered by value, owner reprioritizes freely)
 
 ```text
 1.  SEO productization    BASE_URL configurable + real og.png (when there is a domain)
-2.  Recipes mobile        admin-resource (646px) / ops-queue (780px) expand the mobile
-                         viewport — layout fix, not typography
-3.  Theme polish          dark routine already single; scoped ownership of families
-4.  Forms contract        document input rules BEFORE components: label above,
-                         inputmode/type pairing, autocomplete, validate after interaction
-5.  Grid/container        -from-desktop modifiers, per-component reflow line (M3 swap
+2.  Theme polish          dark routine already single; scoped ownership of families
+3.  Grid/container        -from-desktop modifiers, per-component reflow line (M3 swap
                          style), prose measure ≤75ch check
-6.  Performance stance    document ~50KB JS / 215KB CSS as a feature; Tailwind scope
-                         review (CSS is the biggest asset)
-7.  Responsive chapter    "design for screen sizes, not devices" in served docs (ES)
-8.  Optional expansion    third theme · registry JSON runtime · iframe srcdoc demos ·
+4.  Responsive chapter    "design for screen sizes, not devices" in served docs (ES)
+5.  Optional expansion    third theme · registry JSON runtime · iframe srcdoc demos ·
                          drawer menu upgrade · demo height presets · VT docs chapter ·
                          date-input pattern (3 inputs, inputmode numeric)
 ```
