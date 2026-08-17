@@ -14,20 +14,37 @@ A token is a CSS custom property that names a design decision. Gelium UI classif
 
 ## Core families
 
-| Family | Prefix | Example |
-|---|---|---|
-| Semantic color | `--ui-color-*` | `--ui-color-primary`, `--ui-color-surface` |
-| Typography | `--ui-font-*`, `--ui-type-*` | `--ui-font-sans`, `--ui-type-body-md` |
-| Spacing | `--ui-space-*` | `--ui-space-4` |
-| Radius | `--ui-radius-*` | `--ui-radius-md` |
-| Elevation | `--ui-shadow-*` | `--ui-shadow-2` |
-| Border | `--ui-border-*` | `--ui-border-width-1` |
-| Focus | `--ui-focus-*` | `--ui-focus-thickness` |
-| Motion | `--ui-motion-*`, `--ui-easing-*` | `--ui-motion-short`, `--ui-easing-standard` |
-| State | `--ui-state-*` | `--ui-state-hover-opacity` |
-| Z-index | `--ui-z-*` | `--ui-z-toast` |
-| Breakpoints | `--ui-breakpoint-*` | `--ui-breakpoint-md` |
-| Density and size | `--ui-density-*`, `--ui-size-*` | `--ui-size-control` |
+| Family | Prefix | Example | Owner |
+|---|---|---|---|
+| Semantic color | `--ui-color-*` | `--ui-color-primary`, `--ui-color-surface` | **theme** (roles in core; values per theme) |
+| Typography | `--ui-font-*`, `--ui-type-*` | `--ui-font-sans`, `--ui-type-body-md` | **theme** for faces and scale steps; **core** owns shorthand composition aliases |
+| Spacing | `--ui-space-*` | `--ui-space-4` | **core** (themes must not invent a parallel scale) |
+| Radius | `--ui-radius-*` | `--ui-radius-md` | **theme** |
+| Elevation | `--ui-shadow-*` | `--ui-shadow-2` | **theme** |
+| Border | `--ui-border-*` | `--ui-border-width-1` | **core** defaults; theme may refine |
+| Focus | `--ui-focus-*` | `--ui-focus-thickness` | **core** defaults; theme may refine ring color via `--ui-color-focus-ring` |
+| Motion | `--ui-motion-*`, `--ui-easing-*` | `--ui-motion-short`, `--ui-easing-standard` | **core** defaults; **theme** may override timings |
+| State | `--ui-state-*` | `--ui-state-hover-opacity` | **core** defaults; **theme** may override opacities |
+| Z-index | `--ui-z-*` | `--ui-z-toast` | **core** (themes never own stacking order) |
+| Breakpoints | `--ui-breakpoint-*` | `--ui-breakpoint-md` | **core** |
+| Density and size | `--ui-density-*`, `--ui-size-*` | `--ui-size-control` | **core** defaults; **theme** may override control density |
+
+### What a valid theme must define
+
+A theme **MUST** define (light + single dark class route where color-bearing) at least:
+
+- Semantic **color** family (`--ui-color-*` roles and `-fg` pairs used by components)
+- **Typography** faces and decomposed type-scale steps the matrix requires
+- **Radius** scale used by controls and surfaces
+- **Elevation** (`--ui-shadow-*`) when components consume elevation tokens
+- **Motion** overrides when the direction differs from core defaults (Material and Basecoat both set them)
+- Every **component surface family** listed in the theme matrix (field, dialog, toast, card, badge, checkbox, radio, switch, slider, progress, fab, select, divider, …)
+
+### What core never overrides
+
+Core **never** re-owns or renames a theme’s brand direction under a second public prefix. Core does **not** ship product primary/secondary brand hexes as the long-term source of truth — those live on the theme root (`.theme-material`, `.theme-basecoat`). Core also does **not** override component anatomy that is scoped on the component root for structural layout (list item height, menu padding, data-table cell geometry) unless the component contract promotes a default into core for all themes to share.
+
+Scoped component families (Owner = **component**): List, Menu, Data table, Navigation bar/tab/drawer, Segmented button, Tooltip — anatomy stays in the component CSS; themes may only override declared degrees of freedom (color, shape, type, motion).
 
 ## Naming conventions
 
@@ -40,4 +57,4 @@ A token is a CSS custom property that names a design decision. Gelium UI classif
 3. No dead tokens: every `--ui-*` has a consumer and an owner.
 4. State layers paint with `color-mix()` over the defining `-fg` token, never hardcoded overlays.
 
-Components that consume the shared vocabulary: [Elevation](/components/elevation), [Focus ring](/components/focus-ring), [Icon](/components/icon), and [Divider](/components/divider). Scoped families live on [List](/components/list), [Menu](/components/menu), [Data table](/components/data-table), and the navigation components. See [Themes](/docs/themes) for how themes populate token values.
+Components that consume the shared vocabulary: [Elevation](/components/elevation), [Focus ring](/components/focus-ring), [Icon](/components/icon), and [Divider](/components/divider). Scoped families live on [List](/components/list), [Menu](/components/menu), [Data table](/components/data-table), and the navigation components. See [Themes](/docs/themes) for how themes populate token values, file paths (`lib/themes/*.css` / `gelium-ui/themes/*`), and the single dark class route.

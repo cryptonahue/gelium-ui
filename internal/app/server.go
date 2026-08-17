@@ -29,7 +29,7 @@ import (
 )
 
 // defaultThemeClass is the theme applied when none is requested. The value must
-// match a class owned by a theme that ships on disk (lib/themes/*/theme.css).
+// match a class owned by a theme that ships on disk (lib/themes/<name>.css).
 const defaultThemeClass = "theme-material"
 
 // themeDirection is one product-facing visual direction in the catalog.
@@ -149,9 +149,9 @@ func themeQueryMiddleware(next http.Handler) http.Handler {
 // arbitrary class or depend on a theme that does not exist.
 //
 // Allowlist rule (Phase H): a theme class only enters this list together with
-// its bundle entry — an import in web/styles/app.css AND themes/<name>/theme.css
+// its bundle entry — an import in site/web/styles/app.css AND lib/themes/<name>.css
 // on disk. theme-basecoat joined the list in Phase I, at the same commit that
-// created themes/theme-basecoat and its app.css import. Adding a string before
+// created lib/themes/theme-basecoat.css and its app.css import. Adding a string before
 // the theme exists would let a page select a theme that is not in the bundle.
 func themeClass(theme string) string {
 	for _, t := range availableThemes {

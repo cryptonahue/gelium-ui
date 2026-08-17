@@ -1,6 +1,8 @@
 package lib
 
 import (
+	"os"
+	"path/filepath"
 	"regexp"
 	"strings"
 	"testing"
@@ -16,7 +18,7 @@ import (
 //	                                    literals.
 //
 // The suite discovers themes by glob (availableThemes), so adding a new theme
-// under themes/<name>/theme.css (e.g. theme-basecoat, Phase I) extends the
+// under lib/themes/<name>.css (e.g. theme-basecoat, Phase I) extends the
 // matrix without editing tests — the matrix never assumes a theme that does
 // not exist, and it never asserts a concrete value, only token presence.
 //
@@ -220,7 +222,7 @@ func hasFamilyDefinition(block, family string) bool {
 // TestThemeMatrixCoversEveryAvailableTheme proves the matrix is theme-agnostic
 // by construction: it iterates the themes the glob discovers (never a hardcoded
 // path), runs the full component matrix for each, and documents the contract a
-// new theme must satisfy. Adding themes/theme-basecoat/theme.css later extends
+// new theme must satisfy. Adding lib/themes/theme-basecoat.css later extends
 // the matrix with zero test edits.
 func TestThemeMatrixCoversEveryAvailableTheme(t *testing.T) {
 	themes := availableThemes(t)
@@ -344,5 +346,30 @@ func TestThemeMatrixLabelMdDefinedPerTheme(t *testing.T) {
 				t.Errorf("%s must define label-md standalone, never as var(--ui-type-label-lg)", theme)
 			}
 		})
+	}
+}
+
+// TestThemeFilesLiveUnderLibThemes pins the flat package layout: every
+// discovered theme is a single file at lib/themes/<name>.css — not the
+// retired nested themes/<name>/theme.css tree.
+func TestThemeFilesLiveUnderLibThemes(t *testing.T) {
+	themes := availableThemes(t)
+	if len(themes) == 0 {
+		t.Fatal("lib/themes/*.css must discover at least one theme")
+	}
+	root := repositoryRoot(t)
+	for _, name := range themes {
+		flat := filepath.Join(root, "lib", "themes", name+".css")
+		if _, err := os.Stat(flat); err != nil {
+			t.Errorf("theme %s must live at lib/themes/%s.css: %v", name, name, err)
+		}
+		nested := filepath.Join(root, "themes", name, "theme.css")
+		if _, err := os.Stat(nested); err == nil {
+			t.Errorf("retired nested path themes/%s/theme.css must not exist (use lib/themes/%s.css)", name, name)
+		}
+		nestedLib := filepath.Join(root, "lib", "themes", name, "theme.css")
+		if _, err := os.Stat(nestedLib); err == nil {
+			t.Errorf("retired nested path lib/themes/%s/theme.css must not exist (use flat lib/themes/%s.css)", name, name)
+		}
 	}
 }

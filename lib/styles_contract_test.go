@@ -115,7 +115,7 @@ func entryTail(t *testing.T) string {
 
 // defaultThemeName is the theme the contract tests use to prove a concrete
 // theme satisfies the semantic token contract. It must exist on disk under
-// themes/<name>/theme.css.
+// lib/themes/<name>.css (flat package layout).
 const defaultThemeName = "theme-material"
 
 // repositoryRoot returns the repository root as seen from this test file.
@@ -1010,7 +1010,7 @@ func TestNoPhantomOutlineToken(t *testing.T) {
 		css := themeCSS(t, theme)
 		for i, line := range strings.Split(css, "\n") {
 			if strings.Contains(line, "--ui-color-outline:") || strings.Contains(line, "var(--ui-color-outline)") {
-				t.Errorf("themes/%s/theme.css:%d defines or consumes the phantom --ui-color-outline token (outline role is --ui-color-border-strong)", theme, i+1)
+				t.Errorf("lib/themes/%s.css:%d defines or consumes the phantom --ui-color-outline token (outline role is --ui-color-border-strong)", theme, i+1)
 			}
 		}
 	}
