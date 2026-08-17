@@ -203,6 +203,7 @@ func prevNextFor(activePath, themeSlug, scheme string) *prevNextView {
 var handbookNavLinks = []navLink{
 	{Path: "/docs/information-architecture", Label: "Information architecture"},
 	{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
+	{Path: "/docs/forms", Label: "Forms"},
 	{Path: "/docs/compare", Label: "Why Gelium"},
 	{Path: "/docs/themes", Label: "Themes"},
 	{Path: "/docs/tokens", Label: "Tokens"},
@@ -382,6 +383,13 @@ func (s *server) docsInformationArchitecture(w http.ResponseWriter, r *http.Requ
 // for picking the right input component per situation.
 func (s *server) docsChooseTheRightControl(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Choose the right control"}, "content/handbook-choose-the-right-control.md", "/docs/choose-the-right-control")
+}
+
+// docsForms is GET /docs/forms — the Forms contract handbook page: labels,
+// type/inputmode pairing, autocomplete, validation timing, and native-first
+// rules that apply before any component page.
+func (s *server) docsForms(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Forms"}, "content/handbook-forms.md", "/docs/forms")
 }
 
 // docsCompare is GET /docs/compare — Why Gelium: honest comparison vs
