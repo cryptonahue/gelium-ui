@@ -28,7 +28,7 @@ func openingTagWithID(t *testing.T, body, element, id string) string {
 
 func renderButton(t *testing.T, view buttonView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/button.html"))
+	tmpl := parseTestTemplates(t, "templates/button.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "button", view); err != nil {
 		t.Fatalf("execute button template: %v", err)
@@ -38,7 +38,7 @@ func renderButton(t *testing.T, view buttonView) string {
 
 func renderTextField(t *testing.T, view textFieldView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/text-field.html"))
+	tmpl := parseTestTemplates(t, "templates/text-field.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "text-field", view); err != nil {
 		t.Fatalf("execute text field template: %v", err)
@@ -250,7 +250,7 @@ func TestLayoutRendersThemeClassOnHTMLElement(t *testing.T) {
 
 func renderToast(t *testing.T, view toastView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/toast.html"))
+	tmpl := parseTestTemplates(t, "templates/toast.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "toast", view); err != nil {
 		t.Fatalf("execute toast template: %v", err)
@@ -260,7 +260,7 @@ func renderToast(t *testing.T, view toastView) string {
 
 func renderBanner(t *testing.T, view bannerView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/banner.html"))
+	tmpl := parseTestTemplates(t, "templates/banner.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "banner", view); err != nil {
 		t.Fatalf("execute banner template: %v", err)
@@ -273,7 +273,7 @@ func renderBanner(t *testing.T, view bannerView) string {
 // derivation (error → alert, rest → status).
 func renderInlineAlert(t *testing.T, view inlineAlertView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/inline-alert.html"))
+	tmpl := parseTestTemplates(t, "templates/inline-alert.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "inline-alert", view); err != nil {
 		t.Fatalf("execute inline-alert template: %v", err)
@@ -298,7 +298,7 @@ func TestLayoutOmitsBannerWhenNil(t *testing.T) {
 // sits between the </header> and <main> landmarks and renders the partial when
 // pageView.Banner is set.
 func TestLayoutRendersBannerSlotBetweenHeaderAndMain(t *testing.T) {
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	tmpl := parseTestTemplates(t, "templates/*.html")
 	var page bytes.Buffer
 	data := pageView{
 		Title:      "banner slot",
@@ -406,7 +406,7 @@ func TestBannerMarkupContracts(t *testing.T) {
 
 func renderErrorState(t *testing.T, view errorStateView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/error-state.html"))
+	tmpl := parseTestTemplates(t, "templates/error-state.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "error-state", view); err != nil {
 		t.Fatalf("execute error-state template: %v", err)
@@ -550,7 +550,7 @@ func TestComponentPageRendersMetadata(t *testing.T) {
 // production breadcrumbItem view model (server.go).
 func renderBreadcrumb(t *testing.T, items []breadcrumbItem) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/breadcrumb.html"))
+	tmpl := parseTestTemplates(t, "templates/breadcrumb.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "breadcrumb", struct{ Items []breadcrumbItem }{Items: items}); err != nil {
 		t.Fatalf("execute breadcrumb template: %v", err)
@@ -560,7 +560,7 @@ func renderBreadcrumb(t *testing.T, items []breadcrumbItem) string {
 
 func renderFooter(t *testing.T, view footerView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/footer.html"))
+	tmpl := parseTestTemplates(t, "templates/footer.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "footer", view); err != nil {
 		t.Fatalf("execute footer template: %v", err)
@@ -639,7 +639,7 @@ func TestFooterMarkupContracts(t *testing.T) {
 // TestLayoutOmitsFooterWhenNil proves the pageView.Footer slot is optional: a
 // nil footer renders no <footer> and the layout still builds cleanly.
 func TestLayoutOmitsFooterWhenNil(t *testing.T) {
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	tmpl := parseTestTemplates(t, "templates/*.html")
 	var page bytes.Buffer
 	data := pageView{Title: "no footer", ThemeClass: "theme-material", Nav: []navLink{{Path: "/", Label: "Home"}}}
 	if err := tmpl.ExecuteTemplate(&page, "layout", data); err != nil {
@@ -653,7 +653,7 @@ func TestLayoutOmitsFooterWhenNil(t *testing.T) {
 // TestLayoutRendersFooterAfterMain proves the footer slot renders after the
 // </main> landmark and before the toast region when pageView.Footer is set.
 func TestLayoutRendersFooterAfterMain(t *testing.T) {
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	tmpl := parseTestTemplates(t, "templates/*.html")
 	var page bytes.Buffer
 	data := pageView{
 		Title:      "footer slot",
@@ -971,7 +971,7 @@ func TestErrorPagesCarryMetadata(t *testing.T) {
 	// resolveMeta and preserve the internal-error status. A server is built
 	// directly (no natural HTTP route 500s) and the page-level failure path
 	// exercised with a real route identity.
-	templates := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	templates := parseTestTemplates(t, "templates/*.html")
 	s := &server{templates: templates, markdown: goldmark.New(), assets: webassets.Assets}
 	res500 := httptest.NewRecorder()
 	s.renderErrorPage(res500, http.StatusInternalServerError, "Something went wrong", "boom", true, "/", "Back to home", "/recipes/ops-queue")

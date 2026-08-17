@@ -24,6 +24,11 @@ func TestComponentRegistrySyncsWithTemplates(t *testing.T) {
 	if err != nil {
 		t.Fatalf("glob templates: %v", err)
 	}
+	libPartials, err := filepath.Glob(filepath.Join(repositoryRoot(t), "lib", "templates", "*.html"))
+	if err != nil {
+		t.Fatalf("glob lib templates: %v", err)
+	}
+	partials = append(partials, libPartials...)
 
 	// Non-component templates: shell/layout, docs shell chrome, demos,
 	// recipes, and theme switchers are NOT registry components — they are
@@ -111,7 +116,7 @@ func registryFileExists(root, name string) bool {
 	if !strings.HasPrefix(name, "gelium-ui-") {
 		candidates = append(candidates, "gelium-ui-"+name)
 	}
-	for _, dir := range []string{"site/web/templates", "site/web/styles", "internal/app", "themes/theme-material", "themes/theme-basecoat", "docs", "docs/handoffs", "site/web"} {
+	for _, dir := range []string{"lib/templates", "lib/styles", "site/web/templates", "site/web/styles", "internal/app", "themes/theme-material", "themes/theme-basecoat", "docs", "docs/handoffs", "site/web"} {
 		for _, c := range candidates {
 			if _, err := os.Stat(filepath.Join(root, dir, c)); err == nil {
 				return true

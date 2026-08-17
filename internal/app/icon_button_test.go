@@ -7,13 +7,11 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	webassets "geliumui/site/web"
 )
 
 func renderIconButton(t *testing.T, view iconButtonView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/icon-button.html"))
+	tmpl := parseTestTemplates(t, "templates/icon-button.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "icon-button", view); err != nil {
 		t.Fatalf("execute icon-button template: %v", err)

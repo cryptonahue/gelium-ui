@@ -1,11 +1,8 @@
 package app
 
 import (
-	"html/template"
 	"strings"
 	"testing"
-
-	webassets "geliumui/site/web"
 )
 
 // pilotComponentSlugs is the pilot set for the Base UI "Examples + code +
@@ -179,7 +176,7 @@ func TestExampleDescriptionsStayUnder25Words(t *testing.T) {
 // live demo next to it, and that partial must exist in the template bundle.
 // If a partial is renamed or an example's code drifts, this test fails.
 func TestExampleCodeMatchesRenderedPartial(t *testing.T) {
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	tmpl := parseTestTemplates(t, "templates/*.html")
 	for _, slug := range pilotComponentSlugs {
 		for _, ex := range pilotPages[slug].Examples {
 			if tmpl.Lookup(ex.Partial) == nil {

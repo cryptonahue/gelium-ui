@@ -7,15 +7,13 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	webassets "geliumui/site/web"
 )
 
 // renderFab renders a single FAB from the real dogfooded template so the test
 // asserts the component's contract, never duplicated markup.
 func renderFab(t *testing.T, view fabView) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/fab.html"))
+	tmpl := parseTestTemplates(t, "templates/fab.html")
 	var rendered bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&rendered, "fab", view); err != nil {
 		t.Fatalf("execute fab template: %v", err)

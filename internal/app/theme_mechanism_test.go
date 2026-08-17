@@ -2,13 +2,10 @@ package app
 
 import (
 	"bytes"
-	"html/template"
 	"net/http"
 	"net/http/httptest"
 	"strings"
 	"testing"
-
-	webassets "geliumui/site/web"
 )
 
 // TestThemeClassRenderedAndServedCSSCarriesRootSelector proves the Phase H
@@ -45,7 +42,7 @@ func TestThemeClassRenderedAndServedCSSCarriesRootSelector(t *testing.T) {
 // single served bundle carries the .theme-basecoat root selector, so swapping
 // the server-driven class switches the visual direction without a rebuild.
 func TestBasecoatThemeClassRenderedAndServedCSSCarriesRootSelector(t *testing.T) {
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	tmpl := parseTestTemplates(t, "templates/*.html")
 	var page bytes.Buffer
 	data := pageView{
 		Title:      "basecoat render",

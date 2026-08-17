@@ -24,6 +24,8 @@ import (
 	"github.com/yuin/goldmark/text"
 
 	webassets "geliumui/site/web"
+
+	"geliumui/lib"
 )
 
 // defaultThemeClass is the theme applied when none is requested. The value must
@@ -742,13 +744,13 @@ type prevNextView struct {
 }
 
 type pageView struct {
-	Meta    metaView
-	Title   string
+	Meta  metaView
+	Title string
 	// H1 is the leading level-1 heading of a component page, rendered as its
 	// own block so the live demo can sit between the title and the body
 	// (Base UI/Naive UI order: show the component, then the rules). Empty on
 	// pages whose markdown does not lead with an H1 (handbook, hub, landing).
-	H1 template.HTML
+	H1      template.HTML
 	Content template.HTML
 	// ContentRest is the tail of a pilot component page's markdown (from
 	// "## Guidance" onward), rendered AFTER the server-injected Examples and
@@ -839,9 +841,20 @@ type server struct {
 	assets    fs.FS
 }
 
+// buildTemplates parses the merged template set: the site shell/chrome first
+// (site/web), then the component library (lib). Template names are disjoint by
+// construction (registry_sync enforces the boundary), so the merge is a plain
+// superset; a collision would fail loudly here instead of silently shadowing.
+func buildTemplates() *template.Template {
+	tmpl := template.New("geliumui")
+	template.Must(tmpl.ParseFS(webassets.Assets, "templates/*.html"))
+	template.Must(tmpl.ParseFS(lib.LibAssets, "templates/*.html"))
+	return tmpl
+}
+
 // New builds the Gelium UI documentation HTTP handler from embedded assets.
 func New() http.Handler {
-	templates := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	templates := buildTemplates()
 	s := &server{
 		templates: templates,
 		markdown: goldmark.New(

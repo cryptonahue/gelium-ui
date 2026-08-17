@@ -52,7 +52,7 @@ func TestEveryThemeShipsRootSelectorInSourceAndBundle(t *testing.T) {
 // not glob, so a theme is in the bundle if and only if its import line exists
 // here — adding theme-basecoat is literally one import line plus its class.
 func TestAppCSSImportsEveryThemeExplicitly(t *testing.T) {
-	entry, err := sourceStyles.ReadFile("styles/app.css")
+	entry, err := siteStyles.ReadFile("styles/app.css")
 	if err != nil {
 		t.Fatalf("read styles/app.css: %v", err)
 	}
@@ -190,4 +190,3 @@ func TestThemeAppliesFromStaticDocumentOnly(t *testing.T) {
 		t.Error("both root selectors must resolve from the same single bundle")
 	}
 }
-

@@ -2,18 +2,15 @@ package app
 
 import (
 	"bytes"
-	"html/template"
 	"strings"
 	"testing"
-
-	webassets "geliumui/site/web"
 )
 
 // renderPartial executes one recipe/primitive partial from the same embedded
 // template set the server uses, for focused primitive tests.
 func renderPartial(t *testing.T, name string, data any) string {
 	t.Helper()
-	tmpl := template.Must(template.ParseFS(webassets.Assets, "templates/*.html"))
+	tmpl := parseTestTemplates(t, "templates/*.html")
 	var b bytes.Buffer
 	if err := tmpl.ExecuteTemplate(&b, name, data); err != nil {
 		t.Fatalf("render template %q: %v", name, err)
