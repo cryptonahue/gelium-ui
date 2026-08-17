@@ -16,21 +16,49 @@ Rules below are adapted from **GOV.UK Design System**, **USWDS**, **Material 3**
 | Copy voice | [Content style](/docs/content-style) |
 | 422 / toast wire | [Server contracts](/docs/server-contracts) |
 
+Stable rule IDs (`FEED-*`) match [`/llms-ux.txt`](/llms-ux.txt) so agents and humans share one vocabulary.
+
 ## Decision matrix
 
-| Situation | Use | Do not use | Gelium |
+| ID | Situation | Use | Do not use | Gelium |
+|---|---|---|---|---|
+| **FEED-VAL** | **Field validation** after submit | Error **summary** + **inline** field errors | Toast-only; notification banner for validation | `validation-summary` + field `error` / `aria-invalid`; HTTP **422** + `X-Gelium-Validation` |
+| **FEED-INLINE** | **Single field** guidance while typing (rare) | Inline message **after** interaction | Blocking modal; premature errors on empty focus | Prefer submit-time validation ([Forms](/docs/forms)); NNG: avoid grading before the user answered |
+| **FEED-OK-TOAST** | **Task succeeded**, user stays in flow | Brief **toast** (optional short action) | Error styling; modal that only says “OK” | `gelium:toast` success; M3 snackbar = low priority, non-blocking |
+| **FEED-OK-PAGE** | **Task succeeded** and the next page **is** the result | Success **banner** / **inline-alert** on the result page; toast optional echo | Toast alone with no destination context | After **303** to GET: show durable success in main column |
+| **FEED-FAIL** | **Task failed** (server/network), not a field | Persistent **inline-alert** or page **banner** + recovery | Toast that vanishes before it can be read (critical) | `inline-alert` / `banner` error + retry control |
+| **FEED-SYS** | **System / service-wide** notice | Site-level alert on layout | Mixing with field validation | Layout `banner`; USWDS **site alert** = every page / system status, not form response |
+| **FEED-PAGE** | **Page-level status** (step completed, warning on this view) | Page alert / banner in **main** content | Global chrome for a one-page message | `banner` or `inline-alert` in the main column |
+| **FEED-EMPTY** | **Empty collection** | Empty state with reason + next step | Silent blank table | `empty-state` |
+| **FEED-LOAD-FAIL** | **Section failed to load** | Error state + retry | Infinite skeleton | `error-state` |
+| **FEED-LOAD-LIST** | **List / table loading** | Skeleton rows or list placeholders | Full-page spinner for every partial fetch | `skeleton` scoped to the list region |
+| **FEED-LOAD-PAGE** | **First paint of a whole view** | Page-level skeleton **once**; then content | Blocking the app forever | Prefer progressive: shell + skeleton main |
+| **FEED-ROW** | **One row / one item** failed (bulk or table action) | Error **in or next to the row** + optional page summary | Toast-only listing every row error | Inline cell/row message; summary if many rows share one cause |
+| **FEED-PARTIAL** | **Batch partial success** (some OK, some not) | Summary of outcomes + per-item status | Single green toast “Done” | `banner` or `inline-alert` + list/table status `badge`s |
+| **FEED-CONFIRM** | **Consequential choice** (destroy, pay, irrevocable) | Confirm screen or dialog with clear verbs | Toast “Deleted?” with no undo and no confirm | `dialog` confirm route + POST |
+| **FEED-FYI** | **Low-priority FYI** after an action | Snackbar/toast-class feedback | Toast for validation lists | `toast` via `gelium:toast` |
+
+### Toast rules (M3 snackbar, adapted)
+
+[M3 snackbars](https://m3.material.io/components/snackbar/guidelines) are **brief** and **low priority**. Gelium `toast` follows that ladder:
+
+| Rule | Do | Don’t |
+|---|---|---|
+| Purpose | Confirm a completed action or safe FYI | Carry the only copy of field validation |
+| Duration | Short; OK if missed for non-critical OK | Rely on toast for money/safety failures |
+| Action | At most **one** short action (e.g. “Undo” when truly reversible) | Multi-step workflows inside a toast |
+| With redirect | Toast **echo** after 303 is fine; durable success still on the result page when the page *is* the confirmation | Toast-only success when the user lands on a blank list with no context |
+| Stacking | One toast at a time in `#gelium-toast-region` | Toast spam per keystroke |
+
+NNG: match **severity** to interruption cost — modals/dialogs for severe blocking issues; transient notices for minimal interaction ([error-message guidelines](https://www.nngroup.com/articles/error-message-guidelines/)).
+
+### Loading rules
+
+| ID | Pattern | Prefer | Avoid |
 |---|---|---|---|
-| **Field validation** after submit | Error **summary** + **inline** field errors | Toast-only; notification banner for validation | `validation-summary` + field `error` / `aria-invalid`; HTTP **422** + `X-Gelium-Validation` |
-| **Single field** guidance while typing (rare) | Inline message after interaction | Blocking modal; premature errors on empty focus | Prefer submit-time validation ([Forms](/docs/forms)); NNG: avoid grading before the user answered |
-| **Task succeeded** (saved, sent, deleted) | Short confirmation: toast and/or inline success on the result page | Error styling; modal that only says “OK” | `gelium:toast` success; or success `banner` / `inline-alert` when the page itself is the result |
-| **Task failed** (server/network), not a field | Persistent inline or page alert + recovery action | Toast that disappears before it can be read (for critical failure) | `inline-alert` / `banner` error; toast only if non-blocking and repeated safe |
-| **System / service-wide** notice | Site-level alert pattern | Mixing with field validation on the same focus | `banner` at layout level; USWDS **site alert** = every page / system status, not form response |
-| **Page-level status** (you completed a step) | Page alert / banner in main content | Site-wide chrome for a one-page message | `banner` or `inline-alert` in the main column |
-| **Empty collection** | Empty state with reason + next step | Silent blank table | `empty-state` |
-| **Section failed to load** | Error state + retry | Infinite skeleton | `error-state` |
-| **Content loading** | Skeleton / progressive reveal | Full-page blocker for every fetch | `skeleton` |
-| **Consequential choice** (destroy, pay, irrevocable) | Confirm screen or dialog with clear verbs | Toast “Deleted?” with no undo and no confirm | `dialog` confirm route + POST |
-| **Low-priority FYI** after an action | Snackbar/toast-class feedback (M3 snackbar: brief, non-blocking) | Using toast for validation lists | `toast` via `gelium:toast` |
+| FEED-LOAD-LIST | Collection refetch | Skeleton **inside** the list/table card | Replacing the whole app chrome |
+| FEED-LOAD-PAGE | Slow first navigation | One page skeleton, then content | Nested full-page blockers |
+| FEED-LOAD-FAIL | Fetch error | `error-state` + retry where the content was | Endless skeleton |
 
 ### GOV.UK rules we adopt literally (adapted names)
 
@@ -66,30 +94,37 @@ All feedback copy follows [Content style](/docs/content-style):
 - Errors: **say the fix** (“Enter the project name”), not only the consequence (“Name is required”).
 - Toasts: **verb + result** (“Project created”), not “Success”.
 - Empty: **what / why / next**.
+- Partial batch: **counts + next** (“3 sent, 2 failed — fix the failed rows”).
 
 ## Server mapping
 
 | Feedback | HTTP / wire |
 |---|---|
-| Validation | `422` + `X-Gelium-Validation: true` + summary + fields |
-| OK mutate | `303` redirect to GET result; optional `HX-Trigger: gelium:toast` |
-| Transport failure | Client may toast error; page should still offer retry if critical |
+| Validation (FEED-VAL) | `422` + `X-Gelium-Validation: true` + summary + fields |
+| OK mutate (FEED-OK-*) | `303` redirect to GET result; optional `HX-Trigger: gelium:toast` |
+| Transport failure (FEED-FAIL) | Client may toast if non-critical; page still offers retry when critical |
+| Partial batch (FEED-PARTIAL) | Prefer **200/303** to a result view that lists per-item outcomes; avoid “all good” toast |
 
 ## Anti-patterns
 
-- Validation errors only in a toast (far from fields; easy to miss) — called out across GOV.UK and industry guidance summarizing NNG.
+- Validation errors only in a toast (far from fields; easy to miss) — GOV.UK + common NNG-aligned practice.
 - Premature inline errors before the user finished the field ([NNG](https://www.nngroup.com/articles/error-message-guidelines/)).
 - Error summary without field-level messages (or the reverse) on submit validation.
 - Global `banner` for a single field typo.
 - Modal dialog for “Saved successfully” with no decision to make.
+- **Green toast “Done”** after a partial batch failure.
+- **Row action errors** only as a global toast with no row marker.
+- **Infinite skeleton** with no path to `error-state`.
+- Toast **and** banner **and** summary for the same validation event.
 
 ## Checklist (agents)
 
-1. Is this **validation**, **task result**, **system status**, or **empty/load**?
-2. Pick the row in the matrix — do not invent a fifth channel.
-3. Write copy per Content style.
-4. Wire the matching server contract.
-5. Check narrow viewports still show the message (no clip via overflow tricks).
+1. Classify: **validation** | **task OK** | **task fail** | **system** | **empty** | **load** | **row/partial** | **confirm**.
+2. Pick the **FEED-*** row — do not invent a new channel.
+3. If toast: is it **low priority** and OK if missed? If no → banner/inline/dialog.
+4. Write copy per Content style.
+5. Wire the matching server contract.
+6. Narrow viewports still show the message (no clip via overflow tricks).
 
 ## See also
 

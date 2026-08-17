@@ -13,6 +13,7 @@ Obey Forms (/docs/forms), Content style, Server contracts, Responsive. Stack: se
 6. SERVER: GET read; POST+303 mutate; 422+X-Gelium-Validation for field errors
 7. THEME: class theme-* on html
 8. NARROW: stack; min-width:0; no overflow-x:hidden on body
+9. FEEDBACK: pick a FEED-* id from the matrix below (do not improvise)
 
 ## SCREEN types → building blocks
 
@@ -29,17 +30,38 @@ Obey Forms (/docs/forms), Content style, Server contracts, Responsive. Stack: se
 
 ## FEEDBACK matrix (do not improvise)
 
-| Situation | Use | Never |
-|---|---|---|
-| Field validation | validation-summary + inline field errors + 422 | toast-only; banner for validation |
-| Save/send OK | toast and/or success on result page | error styles |
-| Hard failure | inline-alert/banner + retry | toast that vanishes if critical |
-| System-wide notice | layout banner | mix with field errors |
-| Empty list | empty-state + CTA | blank table |
-| Loading | skeleton | infinite full-page block |
-| Irreversible | confirm dialog/page + POST | toast-only delete |
+| ID | Situation | Use | Never |
+|---|---|---|---|
+| FEED-VAL | Field validation after submit | validation-summary + inline field errors + 422 | toast-only; banner for validation |
+| FEED-INLINE | Rare live field help after interaction | inline after interaction | premature on empty focus; modal |
+| FEED-OK-TOAST | Task OK, stay in flow | short success toast (optional one action) | error styles; OK-only modal |
+| FEED-OK-PAGE | Task OK and page IS the result | success banner/inline-alert on result; toast optional echo | toast-only with no page context |
+| FEED-FAIL | Hard task/network fail (not a field) | inline-alert/banner + retry | vanishing toast if critical |
+| FEED-SYS | System-wide notice | layout banner | mix with field errors |
+| FEED-PAGE | Page-level status/warning | banner/alert in main column | global chrome for one-page msg |
+| FEED-EMPTY | Empty collection | empty-state + CTA | blank table |
+| FEED-LOAD-FAIL | Section fetch failed | error-state + retry | infinite skeleton |
+| FEED-LOAD-LIST | List/table loading | skeleton inside list region | full-app blocker every refetch |
+| FEED-LOAD-PAGE | Whole view first paint | one page skeleton then content | nested forever blockers |
+| FEED-ROW | One row/item action failed | error in/near row (+ summary if many) | toast-only with no row marker |
+| FEED-PARTIAL | Batch some OK some not | outcome summary + per-item status | single green toast "Done" |
+| FEED-CONFIRM | Irreversible/consequential | confirm dialog/page + POST | toast-only delete |
+| FEED-FYI | Low-priority FYI | toast/snackbar-class | toast for validation lists |
 
-Sources (authoritative): GOV.UK error summary + notification banner when-not; USWDS alert vs site-alert; M3 snackbar vs dialog; NNG error timing/severity.
+### Toast rules (FEED-OK-TOAST / FEED-FYI)
+
+- Brief, low priority (M3 snackbar). OK if missed when non-critical.
+- At most one short action (e.g. Undo only if truly reversible).
+- After 303: toast may echo; durable success still on result page when needed (FEED-OK-PAGE).
+- Never sole channel for FEED-VAL or FEED-PARTIAL failures.
+
+### Loading rules
+
+- FEED-LOAD-LIST: skeleton scoped to list/table.
+- FEED-LOAD-PAGE: one shell skeleton.
+- FEED-LOAD-FAIL: replace skeleton with error-state + retry.
+
+Sources: GOV.UK error summary + notification banner when-not; USWDS alert vs site-alert; M3 snackbar vs dialog; NNG error timing/severity.
 
 ## NAV quick rules
 
@@ -59,7 +81,8 @@ F-pattern (NNG): important info top/left; do not bury sole CTA under the fold of
 
 ## COPY
 
-Errors = fix first ("Enter the name"). Toasts = verb+result. Empty = what/why/next. See content-style.
+Errors = fix first ("Enter the name"). Toasts = verb+result. Empty = what/why/next.
+Partial = counts + next ("3 sent, 2 failed"). See content-style.
 
 ## INSTALL
 
