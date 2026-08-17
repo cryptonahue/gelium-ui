@@ -1,0 +1,21 @@
+{{define "audio"}}
+<figure class="ui-media ui-media-audio">
+  <audio controls preload="{{or .Preload "metadata"}}">{{range .Sources}}<source src="{{.Src}}" type="{{.Type}}">{{end}}<p class="ui-media-fallback">{{or .Fallback "Your browser does not support audio."}}</p></audio>
+  {{if .Caption}}<figcaption>{{.Caption}}</figcaption>{{end}}
+  {{if .Transcript}}<p><a href="#{{.TranscriptID}}">Read transcript</a></p>{{end}}
+</figure>
+{{end}}
+
+{{define "transcript"}}
+<section class="ui-transcript" id="{{.ID}}" aria-labelledby="{{.ID}}-heading">
+  <h2 id="{{.ID}}-heading">{{or .Heading "Transcript"}}</h2>
+  <div class="ui-transcript-content">{{.Content}}</div>
+</section>
+{{end}}
+
+{{define "embed"}}
+<figure class="ui-media ui-media-embed">
+  {{if and .Allowed .Src}}<iframe src="{{.Src}}" title="{{.Title}}" loading="lazy"{{if .Width}} width="{{.Width}}"{{end}}{{if .Height}} height="{{.Height}}"{{end}}></iframe>{{else}}<div class="ui-embed-boundary"><p>{{or .Fallback "This optional embed is unavailable until the source is approved."}}</p>{{if .ConsentLabel}}<a href="{{.ConsentHref}}">{{.ConsentLabel}}</a>{{end}}</div>{{end}}
+  {{if .Caption}}<figcaption>{{.Caption}}</figcaption>{{end}}
+</figure>
+{{end}}

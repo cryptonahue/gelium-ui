@@ -131,6 +131,17 @@ Operate UI: one H1; do not stack marketing H2s on forms. Full: /docs/content-sty
 | SPACE-SCALE | No feature-specific spacing scale; use the core scale and keep touch targets at `--ui-touch-target`. |
 | COLOR-FOCUS | Keep `--ui-color-focus-ring`, `--ui-focus-thickness`, and `--ui-focus-offset` visible on `:focus-visible`. |
 
+## MEDIA (server-rendered, native-first)
+
+| ID | Rule |
+|---|---|
+| MEDIA-IMAGE | Informative images require meaningful `alt`, intrinsic `width`/`height`, and lazy loading below the fold. |
+| MEDIA-RESPONSIVE | Use real `srcset`/`sizes` variants or a single source; never invent variants; preserve aspect-ratio fallback. |
+| MEDIA-AUDIO | Use native `audio[controls]`, typed sources, fallback text, and link an optional readable transcript. |
+| MEDIA-CAPTIONS | Video with meaningful audio gets a captions track; captions and transcript serve different jobs. |
+| MEDIA-EMBED | Render external iframes only across an explicit allowlist + consent boundary; otherwise show a canonical fallback. |
+| MEDIA-STATES | Reserve space for loading; provide recovery for error; explain empty media. |
+
 ## DOMAIN SKELETONS
 
 | ID | Shape |

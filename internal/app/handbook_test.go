@@ -34,6 +34,7 @@ var handbookRoutes = []handbookRoute{
 	{path: "/docs/compare", label: "Why Gelium", h1: "Why Gelium (comparison)", contract: "When NOT to choose Gelium"},
 	{path: "/docs/performance", label: "Performance", h1: "Performance stance", contract: "CSS is the biggest asset by design"},
 	{path: "/docs/responsive", label: "Responsive", h1: "Design for screen sizes, not devices", contract: "must not mask"},
+	{path: "/docs/media", label: "Media", h1: "Media", contract: "MEDIA-IMAGE"},
 	{path: "/docs/themes", label: "Themes", h1: "Themes", contract: "?theme=basecoat"},
 	{path: "/docs/tokens", label: "Tokens", h1: "Tokens", contract: "--ui-color-primary"},
 	{path: "/docs/server-contracts", label: "Server contracts", h1: "Server contracts", contract: "HX-Trigger"},

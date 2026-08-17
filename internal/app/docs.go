@@ -238,6 +238,7 @@ var handbookSections = []handbookSection{
 			{Path: "/docs/principles", Label: "Design principles"},
 			{Path: "/docs/performance", Label: "Performance"},
 			{Path: "/docs/responsive", Label: "Responsive"},
+			{Path: "/docs/media", Label: "Media"},
 			{Path: "/docs/browser-support", Label: "Browser support"},
 			{Path: "/docs/content-style", Label: "Content style"},
 		},
@@ -392,6 +393,7 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [Accessibility](/docs/accessibility) — platform defaults and contracts.\n"
 	md += "- [Performance](/docs/performance) — ~50KB JS stance; CSS is large by design.\n"
 	md += "- [Responsive](/docs/responsive) — viewports, not device names.\n"
+	md += "- [Media](/docs/media) — accessible images, audio, video, transcripts, and safe embeds.\n"
 	md += "- [Density](/docs/density) — comfortable / cozy / compact + shell.\n"
 	md += "- [Motion](/docs/motion) — when to animate; reduced-motion.\n"
 	md += "- [Content style](/docs/content-style) — voice + H1–H3 / list / table grammar.\n\n"
@@ -559,6 +561,11 @@ func (s *server) docsAccessibility(w http.ResponseWriter, r *http.Request) {
 // enforce them.
 func (s *server) docsPrinciples(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Design principles"}, "content/principles.md", "/docs/principles")
+}
+
+// docsMedia is GET /docs/media — server-rendered media contracts and guidance.
+func (s *server) docsMedia(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Media"}, "content/handbook-media.md", "/docs/media")
 }
 
 // docsBrowserSupport is GET /docs/browser-support — the Browser support

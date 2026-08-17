@@ -70,6 +70,8 @@ Cada entrada de la tabla maestra ($2) declara:
 | Footer | `.ui-footer` | `footer.html` | `footer.css` | — | (server.go `footerView`) | `--ui-footer-*`, `--ui-color-*`, `--ui-space-*` | none | `<details>/<summary>` plegable; grid→stack | P |
 | Section heading | `.ui-section-heading` | `section-heading.html` | `section-heading.css` | — | — | `--ui-section-heading-*`, `--ui-type-headline-sm` | none (siempre `h2`) | `--centered`; eyebrow opcional | P |
 | Video | `.ui-video` | `video.html` | `video.css` | — | — | `--ui-video-*`, `--ui-radius-sm` | none | `--aspect-4-3`; `<video controls>` nativo | P |
+| Image / picture | `.ui-media-image`, `.ui-media-picture` | `image.html` | `media.css` | — | — | `--ui-media-*`, `--ui-color-*` | alt, intrinsic dimensions, responsive sources | aspect fallback; `srcset`/`sizes` | P |
+| Audio / transcript / embed | `.ui-media-audio`, `.ui-transcript`, `.ui-media-embed` | `media.html` | `media.css` | — | — | `--ui-media-*`, `--ui-color-*` | native controls; transcript; allowlist + consent fallback | typed sources; safe iframe boundary | P |
 | Feature card | `.ui-feature-card` | `feature-card.html` | `feature-card.css` | — | — | `--ui-color-surface-container`, `--ui-space-*` | none (reusa `.ui-card`) | media 16:9 (aspect literal, no token) | P |
 | Hero | `.ui-hero` | `hero.html` | `hero.css` | — | — | `--ui-hero-*`, `--ui-type-display-lg`, `--ui-color-scrim` | none | `--has-media`; scrim | P |
 | Language switcher | `.ui-language-switcher` | `language-switcher.html` | `language-switcher.css` | — | — | `--ui-language-switcher-*`, `--ui-color-border` | none | GET form + submit visible (cero auto-submit) | P |

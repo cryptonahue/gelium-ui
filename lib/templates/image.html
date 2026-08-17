@@ -1,0 +1,13 @@
+{{define "image"}}
+<figure class="ui-media ui-media-image{{if .AspectRatio}} ui-media--aspect" style="--ui-media-aspect:{{.AspectRatio}}"{{end}}>
+  <img src="{{.Src}}" alt="{{.Alt}}" width="{{.Width}}" height="{{.Height}}" loading="{{or .Loading "lazy"}}"{{if .SrcSet}} srcset="{{.SrcSet}}"{{end}}{{if .Sizes}} sizes="{{.Sizes}}"{{end}}>
+  {{if .Caption}}<figcaption>{{.Caption}}</figcaption>{{end}}
+</figure>
+{{end}}
+
+{{define "picture"}}
+<figure class="ui-media ui-media-picture{{if .AspectRatio}} ui-media--aspect" style="--ui-media-aspect:{{.AspectRatio}}"{{end}}>
+  <picture>{{range .Sources}}<source srcset="{{.SrcSet}}"{{if .Sizes}} sizes="{{.Sizes}}"{{end}}{{if .Type}} type="{{.Type}}"{{end}}>{{end}}<img src="{{.Src}}" alt="{{.Alt}}" width="{{.Width}}" height="{{.Height}}" loading="{{or .Loading "lazy"}}"></picture>
+  {{if .Caption}}<figcaption>{{.Caption}}</figcaption>{{end}}
+</figure>
+{{end}}

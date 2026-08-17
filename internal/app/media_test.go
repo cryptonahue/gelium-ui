@@ -1,0 +1,67 @@
+package app
+
+import (
+	"html/template"
+	"io/fs"
+	"net/http"
+	"net/http/httptest"
+	"strings"
+	"testing"
+
+	"geliumui/lib"
+)
+
+func TestMediaTemplatesExposeAccessibleContracts(t *testing.T) {
+	tmpl := parseTestTemplates(t, "templates/media.html", "templates/image.html")
+	for _, name := range []string{"image", "picture", "audio", "transcript", "embed"} {
+		if tmpl.Lookup(name) == nil {
+			t.Fatalf("missing template %q", name)
+		}
+	}
+	contracts := map[string][]string{
+		"templates/media.html": {"controls", "Fallback", "preload="},
+		"templates/image.html": {"alt=", "width=", "height=", "loading=", "srcset=", "sizes="},
+	}
+	// The contract is asserted against the embedded source, avoiding browser timing or layout.
+	for source, wants := range contracts {
+		b, err := fs.ReadFile(lib.LibAssets, source)
+		if err != nil {
+			t.Fatal(err)
+		}
+		text := string(b)
+		for _, want := range wants {
+			if !strings.Contains(text, want) {
+				t.Errorf("%s missing %q", source, want)
+			}
+		}
+	}
+}
+
+func TestMediaDocsRouteAndNavigation(t *testing.T) {
+	for _, path := range []string{"/docs/media", "/docs"} {
+		res := httptest.NewRecorder()
+		New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, path, nil))
+		if res.Code != http.StatusOK {
+			t.Fatalf("%s status = %d", path, res.Code)
+		}
+		if !strings.Contains(res.Body.String(), "/docs/media") {
+			t.Errorf("%s missing media nav", path)
+		}
+	}
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/llms-ux.txt", nil))
+	for _, id := range []string{"MEDIA-IMAGE", "MEDIA-RESPONSIVE", "MEDIA-AUDIO", "MEDIA-CAPTIONS", "MEDIA-EMBED", "MEDIA-STATES"} {
+		if !strings.Contains(res.Body.String(), id) {
+			t.Errorf("missing %s", id)
+		}
+	}
+	docsRes := httptest.NewRecorder()
+	New().ServeHTTP(docsRes, httptest.NewRequest(http.MethodGet, "/docs/media", nil))
+	for _, url := range []string{"https://www.w3.org/WAI/WCAG22/Understanding/non-text-content.html", "https://www.w3.org/WAI/WCAG22/Understanding/captions-prerecorded.html", "https://design-system.service.gov.uk/styles/images/"} {
+		if !strings.Contains(docsRes.Body.String(), url) {
+			t.Errorf("source not found: %s", url)
+		}
+	}
+}
+
+var _ *template.Template
