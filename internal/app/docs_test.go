@@ -21,8 +21,12 @@ func TestDocsIndexIsOrientationHub(t *testing.T) {
 	for _, contract := range []string{
 		`>Documentation</h1>`,
 		`>Start here</h2>`,
+		`>Install and agents</h3>`,
+		`>Core (screen criteria)</h3>`,
+		`>System (design system)</h3>`,
 		`>Use the sidebar</h2>`,
 		`>Try a full screen</h2>`,
+		`>Deep dive</h2>`,
 		`href="/docs/screens"`,
 		`href="/docs/journeys"`,
 		`href="/docs/data-display"`,
@@ -39,10 +43,17 @@ func TestDocsIndexIsOrientationHub(t *testing.T) {
 		`href="/recipes/admin-resource"`,
 		`href="/demo/whatsapp"`,
 		`npmjs.com/package/gelium-ui`,
+		"Core (screen criteria)",
+		"System (design system)",
+		"Open",
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("docs hub missing %q", contract)
 		}
+	}
+	// Sidebar tier names appear in the orientation copy (not as H2 catalog dumps).
+	if !strings.Contains(body, "Core") || !strings.Contains(body, "System") || !strings.Contains(body, "Meta") {
+		t.Error("docs hub must name Core / System / Meta tiers")
 	}
 	// Redundancy guard: category catalog headings belong in the sidebar IA, not the hub body.
 	for _, banned := range []string{
@@ -52,6 +63,7 @@ func TestDocsIndexIsOrientationHub(t *testing.T) {
 		`>Navigation</h2>`,
 		`>Data</h2>`,
 		`>Handbook</h2>`,
+		`>Meta</h2>`, // Meta is sidebar-only; hub must not dump the tier as H2 catalog
 	} {
 		if strings.Contains(body, banned) {
 			t.Errorf("docs hub must not re-list sidebar catalog heading %q", banned)

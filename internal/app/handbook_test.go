@@ -205,13 +205,16 @@ func TestDocsIndexListsHandbook(t *testing.T) {
 	if !strings.Contains(body, "sidebar") {
 		t.Error("docs hub must tell readers the full catalog is in the sidebar")
 	}
+	if !strings.Contains(body, "Core") || !strings.Contains(body, "System") || !strings.Contains(body, "Meta") {
+		t.Error("docs hub must name Core / System / Meta sidebar tiers")
+	}
 	// Curated high-value handbook entry points (not the full handbookRoutes list).
 	for _, path := range []string{"/docs/screens", "/docs/journeys", "/docs/data-display", "/docs/feedback", "/docs/compare", "/docs/forms", "/docs/themes", "/docs/tokens", "/docs/performance", "/llms.txt", "/llms-ux.txt"} {
 		if !strings.Contains(body, `href="`+path+`"`) {
 			t.Errorf("docs hub Start here must link to %s", path)
 		}
 	}
-	// No full-catalog H2 dump (sidebar owns Handbook + component groups).
+	// No full-catalog H2 dump (sidebar owns tiers + component groups).
 	if strings.Contains(body, ">Handbook</h2>") || strings.Contains(body, ">Foundation</h2>") {
 		t.Error("docs hub must not dump Handbook/Foundation catalog headings (sidebar owns that)")
 	}
