@@ -79,7 +79,7 @@ func contrastRatio(t *testing.T, a, b string) float64 {
 // color itself with the --ui-color-fg-muted semantic token (never a literal),
 // so the contrast contract below applies to the actual served prose text.
 func TestProseColorUsesFgMutedToken(t *testing.T) {
-	p := cssBlock(t, readSourceStyle(t, "base.css"), ".prose p")
+	p := cssBlock(t, readSourceStyle(t, "docs-chrome.css"), ".prose p")
 	if !strings.Contains(p, "color: var(--ui-color-fg-muted)") {
 		t.Errorf(".prose p must color via var(--ui-color-fg-muted), got block: %s", p)
 	}

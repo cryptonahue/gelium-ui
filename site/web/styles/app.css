@@ -14,6 +14,7 @@
 @import "../../../lib/styles/base.css";
 @import "./examples.css";
 @import "./docs-shell.css";
+@import "./docs-chrome.css";
 @import "../../../lib/styles/button.css";
 @import "../../../lib/styles/text-field.css";
 @import "../../../lib/styles/dialog.css";

@@ -173,11 +173,8 @@ func TestMobileTokensWiredIntoComponents(t *testing.T) {
 // clamp() fluid steps.
 
 func TestReducedMotionGlobalRuleInBaseCSS(t *testing.T) {
-	css, err := sourceStyles.ReadFile("styles/base.css")
-	if err != nil {
-		t.Fatalf("read base.css: %v", err)
-	}
-	compact := regexp.MustCompile(`\s+`).ReplaceAllString(string(css), " ")
+	css := sourceComponentCSS(t, "base.css")
+	compact := regexp.MustCompile(`\s+`).ReplaceAllString(css, " ")
 	const want = "@media (prefers-reduced-motion: reduce) { * { animation: none !important; transition: none !important; } }"
 	if !strings.Contains(compact, want) {
 		t.Errorf("base.css must append the global reduced-motion rule: %s", want)
@@ -270,7 +267,7 @@ func TestChipsRowsWrapInsteadOfPushing(t *testing.T) {
 // chat-head window block yields to its container.
 
 func TestComponentPreviewContainsPageOverflow(t *testing.T) {
-	rules := cssRules(t, sourceComponentCSS(t, "base.css"))
+	rules := cssRules(t, sourceComponentCSS(t, "docs-chrome.css"))
 
 	preview, ok := findCSSRule(t, rules, ".component-preview")
 	if !ok {
@@ -355,7 +352,7 @@ func TestDataTableWideTablesScrollInside(t *testing.T) {
 // component's design is wrapping, not scrolling.
 
 func TestExistingProseScrollPatternsStayPinned(t *testing.T) {
-	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceComponentCSS(t, "base.css"), " ")
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceComponentCSS(t, "docs-chrome.css"), " ")
 	for _, contract := range []string{
 		`.prose pre { margin: 1rem 0; padding: 1rem 1.25rem; overflow-x: auto;`,
 		`@media (max-width: 48rem) { .prose table { display: block; overflow-x: auto; } }`,

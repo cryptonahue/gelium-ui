@@ -901,7 +901,7 @@ func TestPersistentSuccessPartialsNeverToast(t *testing.T) {
 // keyboard focus brings it into view, so it never shows on the page but stays
 // reachable.
 func TestSkipLinkCSSWiredIntoAppCSS(t *testing.T) {
-	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(repositoryFile(t, "site", "web", "styles", "docs-chrome.css"), " ")
 	for _, contract := range []string{
 		`.ui-skip-link {`,
 		`position: absolute;`,
@@ -1250,9 +1250,9 @@ func TestLabelMdClosure(t *testing.T) {
 	// and zero label-lg fallbacks; the label-md-letter-spacing consumer on
 	// the same rules references the decomposed token and must not be mistaken
 	// for a bare consumption.
-	for _, file := range []string{"base.css", "docs-shell.css"} {
+	for _, file := range []string{"docs-chrome.css", "docs-shell.css"} {
 		var content string
-		if file == "docs-shell.css" {
+		if file == "docs-chrome.css" {
 			content = repositoryFile(t, "site", "web", "styles", file)
 		} else {
 			content = string(sourceComponentCSS(t, file))
@@ -1345,6 +1345,7 @@ func allStyleSources(t *testing.T) []styleSource {
 		}
 		sources = append(sources, styleSource{name: "web/styles/" + entry.Name(), css: string(css)})
 	}
+	sources = append(sources, styleSource{name: "web/styles/docs-chrome.css", css: repositoryFile(t, "site", "web", "styles", "docs-chrome.css")})
 	for _, theme := range availableThemes(t) {
 		sources = append(sources, styleSource{name: "themes/" + theme + "/theme.css", css: themeCSS(t, theme)})
 	}

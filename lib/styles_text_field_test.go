@@ -102,7 +102,7 @@ func TestTextFieldRestingLabelKeepsBodyLargeLineHeight(t *testing.T) {
 }
 
 func TestTextFieldPreviewUsesAlignedTwoColumnGrid(t *testing.T) {
-	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(repositoryFile(t, "site", "web", "styles", "docs-chrome.css"), " ")
 	for _, contract := range []string{
 		`.text-field-preview { display: grid;`,
 		`grid-template-columns: repeat(2, minmax(0, 1fr));`,
