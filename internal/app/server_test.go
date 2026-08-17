@@ -696,7 +696,7 @@ func TestLayoutRendersFooterAfterMain(t *testing.T) {
 
 // TestHomeRendersDefaultFooter proves the real home page ships the footer
 // chrome with the default site data: brand, docsNavFor IA groups (Getting
-// started + docsSections + Patterns/Recipes/Handbook), and the legal line.
+// started + docsSections + Patterns/Recipes/Core-System-Meta), and the legal line.
 func TestHomeRendersDefaultFooter(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
@@ -713,7 +713,9 @@ func TestHomeRendersDefaultFooter(t *testing.T) {
 		`<summary class="ui-footer-heading">Actions</summary>`,
 		`<summary class="ui-footer-heading">Patterns</summary>`,
 		`<summary class="ui-footer-heading">Recipes</summary>`,
-		`<summary class="ui-footer-heading">Handbook</summary>`,
+		`<summary class="ui-footer-heading">Core</summary>`,
+		`<summary class="ui-footer-heading">System</summary>`,
+		`<summary class="ui-footer-heading">Meta</summary>`,
 		`<a href="/components/button">Button</a>`,
 		`<a href="/docs">Documentation</a>`,
 		`<a href="/docs/patterns">Patterns</a>`,
