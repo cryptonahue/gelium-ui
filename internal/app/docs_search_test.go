@@ -60,7 +60,7 @@ func TestDocsSearchIndexEmitted(t *testing.T) {
 	}
 	for _, want := range []struct{ href, title, group string }{
 		{"/docs", "Documentation", "Getting started"},
-		{"/docs/themes", "Themes", "Handbook"},
+		{"/docs/themes", "Themes", "System"},
 		{"/components/button", "Button", "Actions"},
 	} {
 		got, ok := byHref[want.href]

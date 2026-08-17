@@ -845,10 +845,10 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 		}
 	}
 	// home + /docs + patterns + handbook pages + all components. The handbook
-	// count derives from handbookNavLinks (same registry the sitemap uses), so
+	// count derives from handbookNavLinks() (same registry the sitemap uses), so
 	// adding a handbook page can never drift this total again.
-	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+3+len(handbookNavLinks) {
-		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + patterns + handbook + all components)", got, len(componentRoutes())+3+len(handbookNavLinks))
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+3+len(handbookNavLinks()) {
+		t.Errorf("sitemap <url> entries = %d, want %d (home + /docs + patterns + handbook + all components)", got, len(componentRoutes())+3+len(handbookNavLinks()))
 	}
 	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
 		if strings.Contains(body, excluded) {

@@ -1046,7 +1046,7 @@ type urlset struct {
 // recipe surfaces are excluded (noindex or form flows).
 func sitemapPaths() []string {
 	paths := []string{"/", "/docs", "/docs/patterns"}
-	for _, l := range handbookNavLinks {
+	for _, l := range handbookNavLinks() {
 		paths = append(paths, l.Path)
 	}
 	for _, r := range componentRoutes() {

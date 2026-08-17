@@ -89,14 +89,16 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 		Title: "Getting started",
 		Links: []docsNavLink{link("/docs", "Documentation")},
 	})
-	// Handbook is the concept layer: it sits at position 2, right after
-	// Getting started and BEFORE the component reference sections, so
-	// onboarding precedes lookup (Information architecture handbook page).
-	handbook := make([]docsNavLink, 0, len(handbookNavLinks))
-	for _, l := range handbookNavLinks {
-		handbook = append(handbook, link(l.Path, l.Label))
+	// Handbook criteria split into Core / System / Meta so the sidebar stays
+	// scannable (USWDS-style: don't dump one giant concept list). All three
+	// sit after Getting started and BEFORE component reference sections.
+	for _, section := range handbookSections {
+		links := make([]docsNavLink, 0, len(section.Links))
+		for _, l := range section.Links {
+			links = append(links, link(l.Path, l.Label))
+		}
+		groups = append(groups, docsNavGroup{Title: section.Title, Links: links})
 	}
-	groups = append(groups, docsNavGroup{Title: "Handbook", Links: handbook})
 	for _, section := range docsSections {
 		links := make([]docsNavLink, 0, len(section.Links))
 		for _, l := range section.Links {
@@ -155,12 +157,12 @@ func buildSearchIndex(groups []docsNavGroup) template.JS {
 }
 
 // orderedDocsNav is the flat, ordered IA shared by the sidebar AND the
-// previous/next pagination: Getting started, Handbook, component sections,
-// Patterns, Recipes. One model, two renderings — they can never drift.
+// previous/next pagination: Getting started, Core/System/Meta handbook,
+// component sections, Patterns, Recipes. One model, two renderings.
 func orderedDocsNav() []navLink {
 	links := make([]navLink, 0, 48)
 	links = append(links, navLink{Path: "/docs", Label: "Documentation"})
-	links = append(links, handbookNavLinks...)
+	links = append(links, handbookNavLinks()...)
 	for _, section := range docsSections {
 		links = append(links, section.Links...)
 	}
@@ -196,36 +198,70 @@ func prevNextFor(activePath, themeSlug, scheme string) *prevNextView {
 	return nil
 }
 
-// handbookNavLinks is the Gelium Handbook IA: the concept pages that explain
-// how the library works, ordered first-to-read first. It drives the sidebar
-// group (position 2, before the component reference), the /docs hub section,
-// and the sitemap so the destinations can never drift.
-var handbookNavLinks = []navLink{
-	{Path: "/docs/information-architecture", Label: "Information architecture"},
-	{Path: "/docs/screens", Label: "Screens"},
-	{Path: "/docs/journeys", Label: "Journeys"},
-	{Path: "/docs/data-display", Label: "Data display"},
-	{Path: "/docs/feedback", Label: "Feedback"},
-	{Path: "/docs/density", Label: "Density"},
-	{Path: "/docs/motion", Label: "Motion"},
-	{Path: "/docs/ui-definition-of-done", Label: "UI definition of done"},
-	{Path: "/docs/agent-workflow", Label: "Agent workflow"},
-	{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
-	{Path: "/docs/forms", Label: "Forms"},
-	{Path: "/docs/compare", Label: "Why Gelium"},
-	{Path: "/docs/performance", Label: "Performance"},
-	{Path: "/docs/responsive", Label: "Responsive"},
-	{Path: "/docs/themes", Label: "Themes"},
-	{Path: "/docs/tokens", Label: "Tokens"},
-	{Path: "/docs/server-contracts", Label: "Server contracts"},
-	{Path: "/docs/accessibility", Label: "Accessibility"},
-	{Path: "/docs/principles", Label: "Design principles"},
-	{Path: "/docs/browser-support", Label: "Browser support"},
-	{Path: "/docs/content-style", Label: "Content style"},
-	{Path: "/docs/acknowledgments", Label: "Acknowledgments"},
-	{Path: "/docs/contributing", Label: "Contributing"},
-	{Path: "/docs/changelog", Label: "Changelog"},
-	{Path: "/docs/roadmap", Label: "Roadmap"},
+// handbookSection is one scannable handbook tier in the docs sidebar.
+type handbookSection struct {
+	Title string
+	Links []navLink
+}
+
+// handbookSections splits concept docs into Core (how to design screens),
+// System (tokens/themes/platform), and Meta (project). Order within and
+// across sections is first-to-read; flattening feeds prev/next + sitemap.
+var handbookSections = []handbookSection{
+	{
+		Title: "Core",
+		Links: []navLink{
+			{Path: "/docs/information-architecture", Label: "Information architecture"},
+			{Path: "/docs/screens", Label: "Screens"},
+			{Path: "/docs/journeys", Label: "Journeys"},
+			{Path: "/docs/data-display", Label: "Data display"},
+			{Path: "/docs/feedback", Label: "Feedback"},
+			{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
+			{Path: "/docs/forms", Label: "Forms"},
+			{Path: "/docs/agent-workflow", Label: "Agent workflow"},
+			{Path: "/docs/ui-definition-of-done", Label: "UI definition of done"},
+			{Path: "/docs/density", Label: "Density"},
+			{Path: "/docs/motion", Label: "Motion"},
+			{Path: "/docs/compare", Label: "Why Gelium"},
+		},
+	},
+	{
+		Title: "System",
+		Links: []navLink{
+			{Path: "/docs/themes", Label: "Themes"},
+			{Path: "/docs/tokens", Label: "Tokens"},
+			{Path: "/docs/server-contracts", Label: "Server contracts"},
+			{Path: "/docs/accessibility", Label: "Accessibility"},
+			{Path: "/docs/principles", Label: "Design principles"},
+			{Path: "/docs/performance", Label: "Performance"},
+			{Path: "/docs/responsive", Label: "Responsive"},
+			{Path: "/docs/browser-support", Label: "Browser support"},
+			{Path: "/docs/content-style", Label: "Content style"},
+		},
+	},
+	{
+		Title: "Meta",
+		Links: []navLink{
+			{Path: "/docs/acknowledgments", Label: "Acknowledgments"},
+			{Path: "/docs/contributing", Label: "Contributing"},
+			{Path: "/docs/changelog", Label: "Changelog"},
+			{Path: "/docs/roadmap", Label: "Roadmap"},
+		},
+	},
+}
+
+// handbookNavLinks flattens handbookSections in sidebar order for prev/next,
+// sitemap, and any caller that needs a single ordered concept list.
+func handbookNavLinks() []navLink {
+	n := 0
+	for _, s := range handbookSections {
+		n += len(s.Links)
+	}
+	out := make([]navLink, 0, n)
+	for _, s := range handbookSections {
+		out = append(out, s.Links...)
+	}
+	return out
 }
 
 // docsSections groups the component library into logical categories for the

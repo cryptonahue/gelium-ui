@@ -49,7 +49,7 @@ var handbookRoutes = []handbookRoute{
 
 // TestHandbookPagesRender proves every Handbook destination returns 200 under
 // the docs shell, renders its own content (h1 + a page-specific contract
-// marker), and is reachable from the Handbook sidebar group.
+// marker), and is reachable from a Core/System/Meta sidebar group.
 func TestHandbookPagesRender(t *testing.T) {
 	for _, hb := range handbookRoutes {
 		t.Run(hb.path, func(t *testing.T) {
@@ -65,8 +65,11 @@ func TestHandbookPagesRender(t *testing.T) {
 			if !strings.Contains(body, hb.contract) {
 				t.Errorf("page is missing its content contract %q", hb.contract)
 			}
-			if !strings.Contains(body, `class="docs-nav-group-label">Handbook`) {
-				t.Error("sidebar must include a Handbook nav group")
+			hasTier := strings.Contains(body, `class="docs-nav-group-label">Core<`) ||
+				strings.Contains(body, `class="docs-nav-group-label">System<`) ||
+				strings.Contains(body, `class="docs-nav-group-label">Meta<`)
+			if !hasTier {
+				t.Error("sidebar must include Core/System/Meta handbook tiers")
 			}
 			if !strings.Contains(body, `href="`+hb.path+`"`) {
 				t.Errorf("sidebar must link to %s", hb.path)
@@ -75,77 +78,81 @@ func TestHandbookPagesRender(t *testing.T) {
 	}
 }
 
-// TestDocsNavForHandbookGroup proves the nav model carries exactly the five
-// Handbook destinations with the right labels and correct current marking.
+// TestDocsNavForHandbookGroup proves Core/System/Meta carry every handbook
+// route with correct labels and current marking on /docs/tokens (System).
 func TestDocsNavForHandbookGroup(t *testing.T) {
 	nav := docsNavFor("/docs/tokens", "", "")
-	var handbook *docsNavGroup
+	flat := make([]docsNavLink, 0)
+	var system *docsNavGroup
 	for i := range nav.Groups {
-		if nav.Groups[i].Title == "Handbook" {
-			handbook = &nav.Groups[i]
-			break
+		switch nav.Groups[i].Title {
+		case "Core", "System", "Meta":
+			flat = append(flat, nav.Groups[i].Links...)
+		}
+		if nav.Groups[i].Title == "System" {
+			system = &nav.Groups[i]
 		}
 	}
-	if handbook == nil {
-		t.Fatal("docsNavFor must include a Handbook group")
+	if system == nil {
+		t.Fatal("docsNavFor must include a System group")
 	}
-	if len(handbook.Links) != len(handbookRoutes) {
-		t.Fatalf("Handbook links = %d, want %d", len(handbook.Links), len(handbookRoutes))
+	if len(flat) != len(handbookRoutes) {
+		t.Fatalf("Core+System+Meta links = %d, want %d", len(flat), len(handbookRoutes))
 	}
 	for _, hb := range handbookRoutes {
 		found := false
-		for _, link := range handbook.Links {
+		for _, link := range flat {
 			if link.Path != hb.path {
 				continue
 			}
 			found = true
 			if link.Label != hb.label {
-				t.Errorf("Handbook link %s label = %q, want %q", hb.path, link.Label, hb.label)
+				t.Errorf("handbook link %s label = %q, want %q", hb.path, link.Label, hb.label)
 			}
 			if link.Path == "/docs/tokens" && !link.Current {
-				t.Error("Tokens must be the current Handbook link on /docs/tokens")
+				t.Error("Tokens must be current on /docs/tokens")
 			}
 			if link.Path != "/docs/tokens" && link.Current {
 				t.Errorf("peer %s must not be current on /docs/tokens", link.Path)
 			}
 		}
 		if !found {
-			t.Errorf("Handbook group is missing %s", hb.path)
+			t.Errorf("handbook tiers missing %s", hb.path)
 		}
 	}
 }
 
-// TestHandbookGroupPrecedesComponentSections proves the owner's IA rule:
-// concept docs (Handbook) come right after Getting started and BEFORE the
-// component reference sections — in the nav model, the rendered sidebar,
-// and the /docs hub — so onboarding precedes lookup.
+// TestHandbookGroupPrecedesComponentSections proves concept tiers come right
+// after Getting started and BEFORE component reference sections.
 func TestHandbookGroupPrecedesComponentSections(t *testing.T) {
 	t.Run("nav model index", func(t *testing.T) {
 		nav := docsNavFor("", "", "")
-		if len(nav.Groups) < 3 {
-			t.Fatalf("docsNavFor groups = %d, want at least 3", len(nav.Groups))
+		if len(nav.Groups) < 5 {
+			t.Fatalf("docsNavFor groups = %d, want at least 5", len(nav.Groups))
 		}
 		if nav.Groups[0].Title != "Getting started" {
 			t.Fatalf("groups[0] = %q, want Getting started", nav.Groups[0].Title)
 		}
-		if nav.Groups[1].Title != "Handbook" {
-			t.Fatalf("groups[1] = %q, want Handbook (concept before reference)", nav.Groups[1].Title)
+		if nav.Groups[1].Title != "Core" || nav.Groups[2].Title != "System" || nav.Groups[3].Title != "Meta" {
+			t.Fatalf("groups[1..3] = %q/%q/%q, want Core/System/Meta", nav.Groups[1].Title, nav.Groups[2].Title, nav.Groups[3].Title)
 		}
-		if nav.Groups[2].Title != "Foundation" {
-			t.Fatalf("groups[2] = %q, want Foundation (first component section)", nav.Groups[2].Title)
+		if nav.Groups[4].Title != "Foundation" {
+			t.Fatalf("groups[4] = %q, want Foundation (first component section)", nav.Groups[4].Title)
 		}
 	})
 
 	t.Run("sidebar render order", func(t *testing.T) {
 		body := getOKBody(t, "/components/button")
 		gettingStarted := strings.Index(body, `class="docs-nav-group-label">Getting started<`)
-		handbook := strings.Index(body, `class="docs-nav-group-label">Handbook<`)
+		core := strings.Index(body, `class="docs-nav-group-label">Core<`)
+		system := strings.Index(body, `class="docs-nav-group-label">System<`)
+		meta := strings.Index(body, `class="docs-nav-group-label">Meta<`)
 		foundation := strings.Index(body, `class="docs-nav-group-label">Foundation<`)
-		if gettingStarted < 0 || handbook < 0 || foundation < 0 {
-			t.Fatalf("sidebar must render Getting started, Handbook, Foundation group labels (idxs %d, %d, %d)", gettingStarted, handbook, foundation)
+		if gettingStarted < 0 || core < 0 || system < 0 || meta < 0 || foundation < 0 {
+			t.Fatalf("sidebar must render Getting started, Core, System, Meta, Foundation (idxs %d,%d,%d,%d,%d)", gettingStarted, core, system, meta, foundation)
 		}
-		if !(gettingStarted < handbook && handbook < foundation) {
-			t.Errorf("sidebar order must be Getting started < Handbook < Foundation, got %d < %d < %d", gettingStarted, handbook, foundation)
+		if !(gettingStarted < core && core < system && system < meta && meta < foundation) {
+			t.Errorf("sidebar order must be Getting started < Core < System < Meta < Foundation")
 		}
 	})
 
@@ -159,7 +166,6 @@ func TestHandbookGroupPrecedesComponentSections(t *testing.T) {
 		if start > try {
 			t.Errorf("hub must lead with Start here before recipes/demos, got Start %d > Try %d", start, try)
 		}
-		// Hub must not re-list component category H2s (sidebar owns that IA).
 		if strings.Contains(body, ">Foundation</h2>") || strings.Contains(body, ">Actions</h2>") {
 			t.Error("docs hub body must not dump component category headings")
 		}

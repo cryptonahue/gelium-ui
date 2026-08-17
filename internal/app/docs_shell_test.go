@@ -126,7 +126,9 @@ func TestDocsShellActiveAndIAGroups(t *testing.T) {
 		"Actions",
 		"Patterns",
 		"Recipes",
-		"Handbook",
+		"Core",
+		"System",
+		"Meta",
 	} {
 		if !strings.Contains(body, group) {
 			t.Errorf("sidebar missing IA group %q", group)
@@ -359,9 +361,11 @@ func TestDocsShellChromeActivePeersAndIA(t *testing.T) {
 		// Top-level IA blocks + every docsSections category title.
 		want := []string{
 			"Getting started",
+			"Core",
+			"System",
+			"Meta",
 			"Patterns",
 			"Recipes",
-			"Handbook",
 		}
 		for _, section := range docsSections {
 			want = append(want, section.Title)
@@ -454,7 +458,7 @@ func TestDocsShellFooterAndJSONLDRegressions(t *testing.T) {
 		`class="ui-footer-heading">Actions</summary>`,
 		`class="ui-footer-heading">Patterns</summary>`,
 		`class="ui-footer-heading">Recipes</summary>`,
-		`class="ui-footer-heading">Handbook</summary>`,
+		`class="ui-footer-heading">Core</summary>`,
 		`<a href="/docs/patterns">Patterns</a>`,
 		`<a href="/docs/information-architecture">Information architecture</a>`,
 		`<a href="/docs/themes">Themes</a>`,
@@ -548,9 +552,11 @@ func TestDocsNavFor(t *testing.T) {
 		titles := docsNavGroupTitles(nav)
 		for _, want := range []string{
 			"Getting started",
+			"Core",
+			"System",
+			"Meta",
 			"Patterns",
 			"Recipes",
-			"Handbook",
 		} {
 			if !containsString(titles, want) {
 				t.Errorf("docsNavFor missing IA block %q; got %v", want, titles)
