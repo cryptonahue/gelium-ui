@@ -1,66 +1,17 @@
 @import "tailwindcss";
-@import "../../../lib/styles/tokens.css";
+@import "../../../lib/styles/index.css";
 /*
- * Theme bundle (Phase H mechanism): one explicit @import per theme. CSS does
- * not glob, so every theme ships as themes/<name>/theme.css with its own root
- * selector (.theme-<name>, light + dark self-contained) and is listed here.
- * Selection happens at runtime by class on the document root
- * ({{.ThemeClass}}, allowlisted server-side): no JS, no rebuild, the tokens
- * resolve by cascade. Add a new theme in two steps — import it here, then
- * allowlist its class in themeClass() (internal/app/server.go).
+ * Theme bundle (Phase H mechanism): themes ship as themes/<name>/theme.css
+ * with their own root selector (.theme-<name>, light + dark self-contained)
+ * and are imported by the lib manifest (lib/styles/index.css) so the cascade
+ * order is core defaults -> theme overrides -> components. Selection happens
+ * at runtime by class on the document root ({{.ThemeClass}}, allowlisted
+ * server-side): no JS, no rebuild. Add a theme by importing it in the lib
+ * manifest and allowlisting its class in themeClass() (internal/app/server.go).
  */
-@import "../../../themes/theme-material/theme.css";
-@import "../../../themes/theme-basecoat/theme.css";
-@import "../../../lib/styles/base.css";
 @import "./examples.css";
 @import "./docs-shell.css";
 @import "./docs-chrome.css";
-@import "../../../lib/styles/button.css";
-@import "../../../lib/styles/text-field.css";
-@import "../../../lib/styles/dialog.css";
-@import "../../../lib/styles/toast.css";
-@import "../../../lib/styles/focus-ring.css";
-@import "../../../lib/styles/elevation.css";
-@import "../../../lib/styles/icon.css";
-@import "../../../lib/styles/divider.css";
-@import "../../../lib/styles/card.css";
-@import "../../../lib/styles/badge.css";
-@import "../../../lib/styles/avatar.css";
-@import "../../../lib/styles/checkbox.css";
-@import "../../../lib/styles/radio.css";
-@import "../../../lib/styles/switch.css";
-@import "../../../lib/styles/select.css";
-@import "../../../lib/styles/slider.css";
-@import "../../../lib/styles/progress.css";
-@import "../../../lib/styles/icon-button.css";
-@import "../../../lib/styles/fab.css";
-@import "../../../lib/styles/list.css";
-@import "../../../lib/styles/chips.css";
-@import "../../../lib/styles/tabs.css";
-@import "../../../lib/styles/navigation-bar.css";
-@import "../../../lib/styles/navigation-tab.css";
-@import "../../../lib/styles/segmented-button.css";
-@import "../../../lib/styles/menu.css";
-@import "../../../lib/styles/navigation-drawer.css";
-@import "../../../lib/styles/data-table.css";
-@import "../../../lib/styles/pagination.css";
-@import "../../../lib/styles/banner.css";
-@import "../../../lib/styles/callout.css";
-@import "../../../lib/styles/empty-state.css";
-@import "../../../lib/styles/error-state.css";
-@import "../../../lib/styles/inline-alert.css";
-@import "../../../lib/styles/skeleton.css";
-@import "../../../lib/styles/tooltip.css";
-@import "../../../lib/styles/validation-summary.css";
-@import "../../../lib/styles/breadcrumb.css";
-@import "../../../lib/styles/footer.css";
-@import "../../../lib/styles/section-heading.css";
-@import "../../../lib/styles/video.css";
-@import "../../../lib/styles/feature-card.css";
-@import "../../../lib/styles/hero.css";
-@import "../../../lib/styles/language-switcher.css";
-@import "../../../lib/styles/newsletter.css";
-@import "../../../lib/styles/split.css";
 @import "./landing.css";
 @import "./blog.css";
 @import "./demo-whatsapp.css";

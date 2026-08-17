@@ -47,30 +47,32 @@ func TestEveryThemeShipsRootSelectorInSourceAndBundle(t *testing.T) {
 	}
 }
 
-// TestAppCSSImportsEveryThemeExplicitly proves contract point (b) at the entry
-// level: the bundle lists each theme on disk as an explicit @import. CSS does
-// not glob, so a theme is in the bundle if and only if its import line exists
-// here — adding theme-basecoat is literally one import line plus its class.
+// TestAppCSSImportsEveryThemeExplicitly proves contract point (b) at the
+// manifest level: the lib manifest (lib/styles/index.css) lists each theme on
+// disk as an explicit @import, and the site entry consumes the manifest. CSS
+// does not glob, so a theme is in the bundle if and only if its import line
+// exists in the manifest — adding theme-basecoat is literally one import line
+// plus its class.
 func TestAppCSSImportsEveryThemeExplicitly(t *testing.T) {
-	entry, err := siteStyles.ReadFile("styles/app.css")
+	manifest, err := os.ReadFile(filepath.Join(repositoryRoot(t), "lib", "styles", "index.css"))
 	if err != nil {
-		t.Fatalf("read styles/app.css: %v", err)
+		t.Fatalf("read lib/styles/index.css: %v", err)
 	}
 	imports := map[string]bool{}
-	for _, m := range regexp.MustCompile(`@import\s+"\.\./\.\./\.\./themes/([a-z0-9-]+)/theme\.css"`).FindAllStringSubmatch(string(entry), -1) {
+	for _, m := range regexp.MustCompile(`@import\s+"\.\./\.\./themes/([a-z0-9-]+)/theme\.css"`).FindAllStringSubmatch(string(manifest), -1) {
 		imports[m[1]] = true
 	}
 	if len(imports) == 0 {
-		t.Fatal("app.css must import at least one theme explicitly")
+		t.Fatal("lib manifest must import at least one theme explicitly")
 	}
 	for _, name := range availableThemes(t) {
 		if !imports[name] {
-			t.Errorf("theme %s exists on disk but app.css does not import it (add the explicit @import)", name)
+			t.Errorf("theme %s exists on disk but the manifest does not import it (add the explicit @import)", name)
 		}
 	}
 	for name := range imports {
 		if _, err := os.Stat(filepath.Join(repositoryRoot(t), "themes", name, "theme.css")); err != nil {
-			t.Errorf("app.css imports theme %s but themes/%s/theme.css does not exist", name, name)
+			t.Errorf("manifest imports theme %s but its file is missing", name)
 		}
 	}
 }
