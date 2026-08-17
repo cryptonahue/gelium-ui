@@ -84,12 +84,14 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 - Density / shell: /docs/density
 - Motion: /docs/motion
 - UI definition of done: /docs/ui-definition-of-done
+- Agent workflow (shape/audit/polish + surface modes): /docs/agent-workflow
+- Templates: /docs/templates/product , /docs/templates/design
 - Why Gelium (comparison): /docs/compare
 - Forms contract: /docs/forms
 - Performance stance: /docs/performance
 - Responsive (viewports, not devices): /docs/responsive
 - Components: /components/{name} (demo-first: title → live demo → body)
-- Handbook: /docs/principles, /docs/screens, /docs/journeys, /docs/data-display, /docs/feedback, /docs/density, /docs/motion, /docs/ui-definition-of-done, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style, /docs/compare, /docs/forms, /docs/performance, /docs/responsive, /docs/patterns
+- Handbook: /docs/principles, /docs/screens, /docs/journeys, /docs/data-display, /docs/feedback, /docs/density, /docs/motion, /docs/ui-definition-of-done, /docs/agent-workflow, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style, /docs/compare, /docs/forms, /docs/performance, /docs/responsive, /docs/patterns
 - Recipes: /recipes/admin-resource, /recipes/ops-queue, /recipes/public-feed
 - Health: /healthz
 - Sitemap: /sitemap.xml
@@ -99,7 +101,7 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 
 ## Agent UX (MUST before generating screens)
 
-Before inventing markup for a store, forum, or admin screen, fetch and follow **/llms-ux.txt** (SCREEN/JOURNEY/DATA/FEED/SKEL ids + DoD). Human narrative: /docs/screens, /docs/journeys, /docs/data-display, /docs/feedback, /docs/patterns, /docs/ui-definition-of-done (GOV.UK, USWDS, M3, NNG).
+Before inventing markup, fetch **/llms-ux.txt** (SURFACE + WF-SHAPE/BUILD/AUDIT/POLISH + FEED/DATA/JOURNEY/SKEL + DoD). Human: /docs/agent-workflow and linked handbook pages. Ethos: tokens/themes + sourced criteria — not free-form aesthetic slop or anti-system bans.
 
 ## Components (npm templates + CSS)
 

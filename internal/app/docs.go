@@ -209,6 +209,7 @@ var handbookNavLinks = []navLink{
 	{Path: "/docs/density", Label: "Density"},
 	{Path: "/docs/motion", Label: "Motion"},
 	{Path: "/docs/ui-definition-of-done", Label: "UI definition of done"},
+	{Path: "/docs/agent-workflow", Label: "Agent workflow"},
 	{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
 	{Path: "/docs/forms", Label: "Forms"},
 	{Path: "/docs/compare", Label: "Why Gelium"},
@@ -341,6 +342,7 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [Feedback](/docs/feedback) — toast vs summary vs banner vs empty (decision matrix).\n"
 	md += "- [Patterns](/docs/patterns) — domain skeletons (forum, catalog, admin).\n"
 	md += "- [UI definition of done](/docs/ui-definition-of-done) — ship checklist for humans and agents.\n"
+	md += "- [Agent workflow](/docs/agent-workflow) — shape → build → audit → polish (ethos-safe).\n"
 	md += "- [Why Gelium](/docs/compare) — when to use Gelium vs React/headless kits, and explicit no-gos.\n"
 	md += "- [Forms contract](/docs/forms) — labels, `inputmode`/`type`, autocomplete, validate after interaction.\n"
 	md += "- [Themes](/docs/themes) — class-based direction; dark is a class route, not media-only.\n"
@@ -416,6 +418,21 @@ func (s *server) docsMotion(w http.ResponseWriter, r *http.Request) {
 // docsUIDefinitionOfDone is GET /docs/ui-definition-of-done — ship checklist.
 func (s *server) docsUIDefinitionOfDone(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "UI definition of done"}, "content/handbook-ui-definition-of-done.md", "/docs/ui-definition-of-done")
+}
+
+// docsAgentWorkflow is GET /docs/agent-workflow — ethos-safe agent passes + surface modes.
+func (s *server) docsAgentWorkflow(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Agent workflow"}, "content/handbook-agent-workflow.md", "/docs/agent-workflow")
+}
+
+// docsTemplateProduct is GET /docs/templates/product — consumer PRODUCT.md template.
+func (s *server) docsTemplateProduct(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "PRODUCT.md template"}, "content/templates/product.md", "/docs/templates/product")
+}
+
+// docsTemplateDesign is GET /docs/templates/design — consumer DESIGN.md template.
+func (s *server) docsTemplateDesign(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "DESIGN.md template"}, "content/templates/design.md", "/docs/templates/design")
 }
 
 // docsForms is GET /docs/forms — the Forms contract handbook page: labels,

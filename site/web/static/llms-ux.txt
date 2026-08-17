@@ -1,20 +1,49 @@
 # Gelium UI — UX decision pack (for agents)
 
-Machine-oriented rules. Human pages: /docs/screens /docs/feedback /docs/journeys /docs/data-display /docs/patterns /docs/density /docs/motion /docs/ui-definition-of-done
-Obey Forms, Content style, Server contracts, Responsive. Stack: server HTML + gelium-ui CSS; JS optional.
+Human: /docs/agent-workflow /docs/screens /docs/feedback /docs/journeys /docs/data-display /docs/patterns /docs/density /docs/motion /docs/ui-definition-of-done
+Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT free-form aesthetic redesign.
 
 ## MUST before generating UI
 
-1. SCREEN TYPE: hub | list | detail | form | confirm | settings | queue | result
-2. USER JOB: one sentence
+0. SURFACE mode: Operate | Read | Persuade | Experience (Operate default for tools)
+1. USER JOB: one sentence
+2. SCREEN TYPE: hub | list | detail | form | confirm | settings | queue | result
 3. ONE PRIMARY ACTION
 4. JOURNEY-* if multi-step; DATA-* if collection
-5. STATES: loading | empty | error | success (+ FEED-*)
-6. CONTROLS: choose-the-right-control + forms
-7. SERVER: GET read; POST+303 mutate; 422+X-Gelium-Validation
-8. THEME: theme-* on html
+5. STATES + FEED-*
+6. CONTROLS: forms + choose-the-right-control
+7. SERVER: GET read; POST+303; 422+X-Gelium-Validation
+8. THEME: theme-* on html (no one-off hex chrome)
 9. NARROW: stack; min-width:0; no overflow-x:hidden on body
-10. Run UI DoD (/docs/ui-definition-of-done) before handoff
+10. WF passes: BRIEF → SHAPE → BUILD → AUDIT → POLISH (stop; no endless loops)
+11. DoD: /docs/ui-definition-of-done
+12. If present: read consumer PRODUCT.md + DESIGN.md
+
+## SURFACE modes
+
+| Mode | Bias |
+|---|---|
+| Operate | task, scan, table/form — default admin/tools |
+| Read | 65ch prose, structure |
+| Persuade | one CTA, hub/start — still tokens not stock gradients |
+| Experience | artifact first — not fake CRUD |
+
+## WORKFLOW (WF-*)
+
+| ID | Do | Don't |
+|---|---|---|
+| WF-BRIEF | job, mode, constraints | skip straight to pretty CSS |
+| WF-SHAPE | list SCREEN/JOURNEY/DATA/FEED ids | write markup in shape |
+| WF-BUILD | partials + server | invent parallel design system |
+| WF-AUDIT | DoD + bash scripts/ux-detect.sh (monorepo) | claim pass without checks |
+| WF-POLISH | theme/spacing/copy one pass | redesign under polish |
+| WF-HARDEN | empty/error/edge | happy-path only |
+| WF-ONBOARD | first-run empty CTA | blank first screen |
+
+## ANTI-SLOP (Gelium-aware)
+
+Avoid: nested cards for simple forms; stock purple-blue heroes; icon-tile above every H1; gray on saturated fills; bounce motion; bolder-for-its-own-sake on Operate tables; new font per feature; layout tables for non-data.
+OK: Material/Basecoat stacks from theme; brand fonts if DESIGN.md says so.
 
 ## SCREEN types → blocks
 
@@ -71,24 +100,11 @@ Collections MUST implement FEED-LOAD-LIST, FEED-EMPTY, FEED-LOAD-FAIL (+ FEED-RO
 
 Full FEED-* list: /docs/feedback
 
-## NAV
+## NAV / DENSITY / MOTION
 
-| Need | Prefer |
-|---|---|
-| 1–3 section levels | side nav/drawer |
-| 3–5 app peers mobile | nav bar |
-| same object modes | tabs |
-| long doc | on-this-page |
-| depth≥2 | breadcrumb |
-| <5 pages | simple top links |
-
-## DENSITY
-
-comfortable | cozy (default) | compact — one mode per surface; never shrink below --ui-touch-target.
-
-## MOTION
-
-MOTION-NONE default. Else FEEDBACK|STATE|NAV only. Honor prefers-reduced-motion. Token durations.
+Nav: side 1–3 levels; bar 3–5 peers; tabs=same object; breadcrumb depth≥2.
+Density: comfortable|cozy|compact — one per surface; keep --ui-touch-target.
+Motion: MOTION-NONE default; honor prefers-reduced-motion.
 
 ## DOMAIN SKELETONS
 
@@ -101,17 +117,9 @@ MOTION-NONE default. Else FEEDBACK|STATE|NAV only. Honor prefers-reduced-motion.
 | SKEL-SETTINGS | settings list + section forms |
 | SKEL-ONBOARDING | start → steps → result |
 
-## HIERARCHY
+## TEMPLATES
 
-H1 → context → primary → main → secondary. F-pattern: don't bury sole CTA.
-
-## COPY
-
-Errors=fix first. Toasts=verb+result. Empty=what/why/next. Partial=counts+next.
-
-## DoD (short)
-
-Job, screen type, journey/data ids, one primary, FEED states, forms+server, theme, narrow, motion, content-style, skeleton if domain. Full: /docs/ui-definition-of-done
+Consumer: /docs/templates/product · /docs/templates/design
 
 ## INSTALL
 

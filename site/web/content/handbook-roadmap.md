@@ -46,6 +46,7 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 | Docs hub `/docs` — orientation Start here (no sidebar catalog dump) | ✅ Shipped |
 | UX criteria `/docs/screens` + `/docs/feedback` (GOV.UK/USWDS/M3/NNG) + `/llms-ux.txt` agent pack | ✅ Shipped |
 | Journeys + data display + patterns skeletons + density/motion + UI DoD checklist | ✅ Shipped |
+| Agent workflow (Impeccable-class process adapted) + surface modes + ux-detect + PRODUCT/DESIGN templates | ✅ Shipped |
 
 ## What is next (ordered by value, owner reprioritizes freely)
 

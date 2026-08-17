@@ -28,6 +28,7 @@ var handbookRoutes = []handbookRoute{
 	{path: "/docs/density", label: "Density", h1: "Density and shell", contract: "Density modes"},
 	{path: "/docs/motion", label: "Motion", h1: "Motion", contract: "prefers-reduced-motion"},
 	{path: "/docs/ui-definition-of-done", label: "UI definition of done", h1: "UI definition of done", contract: "DoD checklist"},
+	{path: "/docs/agent-workflow", label: "Agent workflow", h1: "Agent workflow", contract: "WF-SHAPE"},
 	{path: "/docs/choose-the-right-control", label: "Choose the right control", h1: "Choose the right control", contract: "Radio vs Select"},
 	{path: "/docs/forms", label: "Forms", h1: "Forms contract", contract: "inputmode"},
 	{path: "/docs/compare", label: "Why Gelium", h1: "Why Gelium (comparison)", contract: "When NOT to choose Gelium"},

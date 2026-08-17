@@ -3,6 +3,9 @@ package app
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"os/exec"
+	"path/filepath"
 	"strings"
 	"testing"
 )
@@ -158,18 +161,89 @@ func TestLlmsUXTxtServesAgentDecisionPack(t *testing.T) {
 	body := res.Body.String()
 	for _, contract := range []string{
 		"UX decision pack",
+		"SURFACE",
+		"WF-SHAPE",
+		"Operate",
+		"ANTI-SLOP",
 		"SCREEN TYPE",
 		"JOURNEY-LINEAR",
 		"DATA-TABLE",
 		"FEED-VAL",
 		"SKEL-FORUM",
 		"DoD",
+		"/docs/agent-workflow",
 		"/docs/journeys",
-		"/docs/data-display",
 		"/docs/ui-definition-of-done",
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("llms-ux.txt missing %q", contract)
 		}
+	}
+}
+
+// TestDocsAgentWorkflowEthosSafe proves agent workflow documents surface modes,
+// WF passes, and Gelium-aware anti-slop without abandoning system ethos.
+func TestDocsAgentWorkflowEthosSafe(t *testing.T) {
+	body := getOKBody(t, "/docs/agent-workflow")
+	for _, c := range []string{
+		">Agent workflow</h1>",
+		"Ethos",
+		"Surface modes",
+		"WF-SHAPE",
+		"Operate",
+		"Anti-slop",
+		"ux-detect",
+		`href="/docs/templates/product"`,
+		`href="/docs/ui-definition-of-done"`,
+	} {
+		if !strings.Contains(body, c) {
+			t.Errorf("agent-workflow missing %q", c)
+		}
+	}
+}
+
+// TestConsumerDesignTemplatesRender proves PRODUCT/DESIGN templates are served.
+func TestConsumerDesignTemplatesRender(t *testing.T) {
+	for _, path := range []string{"/docs/templates/product", "/docs/templates/design"} {
+		body := getOKBody(t, path)
+		if !strings.Contains(body, "gelium") && !strings.Contains(body, "Gelium") {
+			t.Errorf("%s should mention Gelium", path)
+		}
+	}
+	if body := getOKBody(t, "/docs/templates/product"); !strings.Contains(body, "PRODUCT.md") {
+		t.Error("product template missing PRODUCT.md")
+	}
+	if body := getOKBody(t, "/docs/templates/design"); !strings.Contains(body, "theme-material") {
+		t.Error("design template missing theme-material")
+	}
+}
+
+// TestUxDetectScriptPasses proves deterministic detectors stay green on main.
+func TestUxDetectScriptPasses(t *testing.T) {
+	root := moduleRoot(t)
+	cmd := exec.Command("bash", filepath.Join(root, "scripts/ux-detect.sh"))
+	cmd.Dir = root
+	out, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("ux-detect.sh failed: %v\n%s", err, out)
+	}
+}
+
+func moduleRoot(t *testing.T) string {
+	t.Helper()
+	wd, err := os.Getwd()
+	if err != nil {
+		t.Fatal(err)
+	}
+	dir := wd
+	for {
+		if _, err := os.Stat(filepath.Join(dir, "go.mod")); err == nil {
+			return dir
+		}
+		parent := filepath.Dir(dir)
+		if parent == dir {
+			t.Fatal("go.mod not found from test wd")
+		}
+		dir = parent
 	}
 }

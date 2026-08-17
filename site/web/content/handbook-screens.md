@@ -16,6 +16,17 @@ UI starts with **what kind of screen this is**, not with which component looks p
 
 Gelium **adapts** these sources: we do not ship React shells; we ship HTML partials, tokens, and server contracts.
 
+## Surface mode
+
+Before picking a screen type, name the **mode** of this URL ([Agent workflow](/docs/agent-workflow)):
+
+| Mode | Bias |
+|---|---|
+| **Operate** | Task completion — default for tools, tables, forms |
+| **Read** | Comprehension — docs, long prose (65ch) |
+| **Persuade** | Decision — hub/start, one primary CTA |
+| **Experience** | Artifact first — galleries; not fake-CRUD |
+
 ## Screen types
 
 Pick **one primary type** per URL. Mixing “settings + giant table + marketing hero” on one route usually means split the page.

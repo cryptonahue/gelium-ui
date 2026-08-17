@@ -29,6 +29,7 @@ func TestDocsIndexIsOrientationHub(t *testing.T) {
 		`href="/docs/feedback"`,
 		`href="/docs/patterns"`,
 		`href="/docs/ui-definition-of-done"`,
+		`href="/docs/agent-workflow"`,
 		`href="/docs/compare"`,
 		`href="/docs/forms"`,
 		`href="/docs/themes"`,
