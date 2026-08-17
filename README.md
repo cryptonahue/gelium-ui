@@ -2,14 +2,45 @@
 
 > Themeable, open-code UI components for Tailwind CSS and HTMX.
 
-Current release: **v0.5.3** — monorepo split (publishable `lib/` package + `site/` docs consumer), HTMX 4 (namespaced events, innerMorph, optimistic theme/scheme toggling with server authority), on-this-page rail and GOV.UK-style prev/next pagination, dark mode across standalone recipes, unified 65ch reading column, mobile foundations (touch targets, safe areas, reduced motion, overflow containment contracts).
+Current release: **v0.5.3** — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) published, monorepo `lib/` + `site/` dogfood, HTMX 4, demo-first docs, mobile foundations (touch targets, safe areas, reduced motion, overflow containment).
 
 Gelium UI is a server-rendered component library: semantic HTML, copyable components, token-driven `--ui-*` themes, Tailwind CSS 4 and HTMX served locally. No CDN, no client framework, no hydration. JavaScript is progressive enhancement — everything works without it.
 
+## Install (consumer)
+
+```bash
+npm install gelium-ui
+```
+
+Drop-in CSS bundle (themes + components):
+
+```css
+@import "gelium-ui/dist/gelium.css";
+```
+
+Or pick themes + source styles in your own Tailwind entry:
+
+```css
+@import "tailwindcss";
+@import "gelium-ui/themes/theme-material.css";
+@import "gelium-ui/themes/theme-basecoat.css";
+@import "gelium-ui/styles/index.css";
+```
+
+Optional progressive-enhancement JS (toast, 422 validation swap, slider fill, view-transition guard):
+
+```html
+<script defer src="node_modules/gelium-ui/js/gelium.js"></script>
+```
+
+Theme selection is a class on the document root, e.g. `<html class="theme-material">` (add `theme-dark` / `data-theme="dark"` for dark). Copyable HTML partials live under `node_modules/gelium-ui/templates/`.
+
+Package page: [npmjs.com/package/gelium-ui](https://www.npmjs.com/package/gelium-ui) · consumer README inside the package.
+
 ## Dos audiencias
 
-- **Instalar y usar** (desarrollador o LLM): `npm install gelium-ui` (pendiente de publish) — CSS por componente, themes, templates y un bundle prebuilt `dist/gelium.css` + consumer JS `js/gelium.js`. El handler Go embebido es el modo avanzado.
-- **Contribuir** (este repo): monorepo npm-workspaces — `lib/` es el paquete publicable, `site/` es el consumidor que lo importa por nombre de paquete (dogfooding).
+- **Instalar y usar** (desarrollador o LLM): `npm install gelium-ui` — CSS, themes, templates, `dist/gelium.css`, `js/gelium.js`. El handler Go embebido es el modo avanzado (docs demo).
+- **Contribuir** (este repo): monorepo npm-workspaces — `lib/` es el paquete publicado, `site/` lo importa por nombre de paquete (dogfooding).
 
 ## Requisitos
 
