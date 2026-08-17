@@ -890,6 +890,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/forms", s.docsForms)
 	mux.HandleFunc("GET /docs/compare", s.docsCompare)
 	mux.HandleFunc("GET /docs/performance", s.docsPerformance)
+	mux.HandleFunc("GET /docs/responsive", s.docsResponsive)
 	mux.HandleFunc("GET /docs/themes", s.docsThemes)
 	mux.HandleFunc("GET /docs/tokens", s.docsTokens)
 	mux.HandleFunc("GET /docs/server-contracts", s.docsServerContracts)
