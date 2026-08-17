@@ -1046,6 +1046,7 @@ func New() http.Handler {
 	// tabs + server-side pagination), reactions are POST+303 with a flash
 	// toast, and refresh is POST-only.
 	mux.HandleFunc("GET /recipes/public-feed", s.recipePublicFeedList)
+	mux.HandleFunc("GET /recipes/rich-article", s.recipeRichArticle)
 	mux.HandleFunc("POST /recipes/public-feed/{id}/react", s.recipePublicFeedReact)
 	mux.HandleFunc("POST /recipes/public-feed/refresh", s.recipePublicFeedRefresh)
 	mux.HandleFunc("GET /static/{name}", s.staticAsset)

@@ -788,6 +788,8 @@ func applyRequestChrome(r *http.Request, view interface{}) {
 		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
 	case *recipeFeedView:
 		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
+	case *richArticleView:
+		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
 	}
 }
 

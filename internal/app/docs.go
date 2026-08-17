@@ -117,6 +117,7 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 				link("/recipes/admin-resource", "Admin Resource"),
 				link("/recipes/ops-queue", "Ops Queue"),
 				link("/recipes/public-feed", "Public Feed"),
+				link("/recipes/rich-article", "Rich Article"),
 			},
 		},
 	)
@@ -171,6 +172,7 @@ func orderedDocsNav() []navLink {
 		navLink{Path: "/recipes/admin-resource", Label: "Admin Resource"},
 		navLink{Path: "/recipes/ops-queue", Label: "Ops Queue"},
 		navLink{Path: "/recipes/public-feed", Label: "Public Feed"},
+		navLink{Path: "/recipes/rich-article", Label: "Rich Article"},
 	)
 	return links
 }

@@ -1,0 +1,59 @@
+{{define "recipe-rich-article"}}<!doctype html>
+<html lang="{{.Meta.Lang}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
+<head>
+  <meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Meta.Title}}</title><meta name="description" content="{{.Meta.Description}}">
+  <link rel="canonical" href="{{.Meta.Canonical}}"><meta name="robots" content="{{.Meta.Robots}}">
+  <meta property="og:type" content="{{.Meta.OGType}}"><meta property="og:title" content="{{.Meta.OGTitle}}">
+  <meta property="og:description" content="{{.Meta.OGDescription}}"><meta property="og:url" content="{{.Meta.TwitterURL}}">
+  <script type="application/ld+json">{{.Meta.JSONLD}}</script>
+  <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
+</head>
+<body class="recipe-rich-article-root">
+  <header class="recipe-rich-article-bar"><a href="/docs">Gelium UI</a><a href="/docs/patterns">Recipes</a></header>
+  <main class="recipe-rich-article-layout">
+    <article class="recipe-rich-article" aria-labelledby="rich-article-title">
+      <header class="recipe-rich-article-header">
+        <p class="recipe-rich-article-eyebrow">Integration fixture · RICH-ARTICLE</p>
+        <h1 id="rich-article-title">{{.Title}}</h1>
+        <p class="recipe-rich-article-lead">{{.Description}} It is intentionally noindex, but complete enough to exercise the content surface.</p>
+        <p class="recipe-rich-article-byline"><span>By Gelium UI team</span><time datetime="2026-08-17">August 17, 2026</time><span>8 min read</span></p>
+      </header>
+
+      <div class="recipe-rich-article-prose">
+        <p>This fixture keeps meaning in HTML first. The browser receives a readable article before any enhancement arrives. Start with <a href="/docs/media">native media guidance</a> and keep each block useful on its own.</p>
+        <h2 id="structure">Structure follows the reader</h2>
+        <p>A strong article gives readers landmarks, then lets them choose depth. Use <code>aria-describedby</code> when a control needs supporting context.</p>
+        <ol><li>Answer the question in the lead.</li><li>Group evidence under descriptive headings.</li><li>Offer a recovery path when content is partial.</li></ol>
+        <ul><li>Short paragraphs and a readable measure.</li><li>Links that name their destination.</li><li>Native controls with visible labels.</li></ul>
+        <blockquote cite="https://www.w3.org/WAI/">“The power of the Web is in its universality.”<cite> — Tim Berners-Lee, W3C</cite></blockquote>
+        <h3 id="server-first">Server-first code stays inspectable</h3>
+        <p>The article can show a small implementation detail without turning the page into a code catalog:</p>
+        <pre><code>func renderArticle(w http.ResponseWriter) {
+  // HTML remains the baseline.
+  render(w, "article")
+}</code></pre>
+
+        <aside class="ui-alert ui-alert-info recipe-rich-article-callout" role="note"><strong>Fixture boundary.</strong> This page demonstrates composition only. It is noindex and uses local, safe media with explicit fallbacks.</aside>
+
+        <figure class="recipe-rich-article-media ui-media">
+          <picture><source srcset="/static/rich-article-image.svg" type="image/svg+xml"><img src="/static/rich-article-image.svg" alt="Abstract blue and coral blocks arranged as a readable content layout" width="1200" height="675" loading="lazy"></picture>
+          <figcaption>A local SVG fixture shows responsive picture markup without an external asset dependency.</figcaption>
+        </figure>
+
+        <figure class="recipe-rich-article-media ui-video"><video controls poster="/static/rich-article-image.svg" preload="metadata"><source src="/static/rich-article-demo.mp4" type="video/mp4"><track kind="captions" src="/static/rich-article-captions.vtt" srclang="en" label="English captions"><p>Video is unavailable. Read the <a href="#video-fallback">video summary</a> instead.</p></video><figcaption id="video-fallback">A short fixture video would demonstrate captioned native playback. The fallback remains visible to unsupported browsers.</figcaption></figure>
+
+        <figure class="recipe-rich-article-media ui-media"><audio controls preload="metadata"><source src="/static/rich-article-demo.ogg" type="audio/ogg"><p>Audio is unavailable. Read the <a href="#transcript">transcript</a> instead.</p></audio><figcaption>Native audio keeps transport controls available without JavaScript.</figcaption></figure>
+        <details id="transcript" class="ui-transcript"><summary>Read the audio transcript</summary><p><strong>Narrator:</strong> A resilient article gives every reader a useful path, even when media cannot load.</p></details>
+
+        <section class="recipe-rich-article-embed" aria-labelledby="embed-heading"><h2 id="embed-heading">Safe embed boundary</h2><div class="ui-alert ui-alert-info" role="status"><strong>Embed unavailable.</strong> No external provider is loaded. <a href="/docs/media">Use the media guidance</a> to add an approved source.</div></section>
+
+        <section aria-labelledby="table-heading"><h2 id="table-heading">Content contract at a glance</h2><div class="ui-data-table-scroll"><table class="ui-data-table-table"><caption>Fixture blocks and their recovery paths</caption><thead><tr><th scope="col">Block</th><th scope="col">Baseline</th><th scope="col">Recovery</th></tr></thead><tbody><tr><th scope="row">Video</th><td>Native controls</td><td>Captions and summary</td></tr><tr><th scope="row">Audio</th><td>Metadata preload</td><td>Transcript</td></tr><tr><th scope="row">Embed</th><td>Safe fallback</td><td>Approved docs link</td></tr></tbody></table></div></section>
+
+        <section aria-labelledby="feed-heading"><h2 id="feed-heading">Related activity</h2><ul class="ui-list recipe-rich-article-feed"><li class="ui-list-item"><strong>Media guidance</strong><span>Native video, audio, captions, and transcript patterns.</span></li><li class="ui-list-item"><strong>Responsive guidance</strong><span>Internal scroll containers and a narrow prose measure.</span></li></ul></section>
+        <section class="recipe-rich-article-states" aria-labelledby="states-heading"><h2 id="states-heading">Recoverable states</h2><p class="ui-skeleton" role="status">Loading the next related story…</p><p class="ui-empty-state">No related stories are available yet. <a href="/blog">Browse the blog</a>.</p><p class="ui-alert ui-alert-error" role="alert"><strong>Could not load related stories.</strong> Try again from the <a href="/docs">documentation hub</a>.</p></section>
+        <nav class="recipe-rich-article-related" aria-label="Related content"><h2>Related content</h2><ul><li><a href="/docs/media">Media foundations</a></li><li><a href="/docs/responsive">Responsive foundations</a></li><li><a href="/recipes/public-feed">Public feed recipe</a></li></ul></nav>
+      </div>
+    </article>
+  </main>
+</body></html>{{end}}

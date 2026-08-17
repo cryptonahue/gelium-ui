@@ -1,0 +1,32 @@
+.recipe-rich-article-root { min-width: 0; background: var(--ui-color-canvas); color: var(--ui-color-fg); }
+.recipe-rich-article-bar { display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; max-width:72rem; margin:auto; padding:1.25rem 1.5rem; }
+.recipe-rich-article-layout { min-width:0; padding:2rem 1rem 5rem; }
+.recipe-rich-article { max-width:72rem; margin:auto; }
+.recipe-rich-article-header, .recipe-rich-article-prose { max-width:68ch; margin-inline:auto; }
+.recipe-rich-article-header { text-align:center; }
+.recipe-rich-article-eyebrow { color:var(--ui-color-primary); font-weight:700; letter-spacing:.08em; text-transform:uppercase; }
+.recipe-rich-article-header h1 { text-wrap:balance; }
+.recipe-rich-article-lead { font-size:1.2rem; line-height:1.55; color:var(--ui-color-on-surface-variant); }
+.recipe-rich-article-byline { display:flex; justify-content:center; gap:.75rem; flex-wrap:wrap; color:var(--ui-color-on-surface-variant); }
+.recipe-rich-article-prose { line-height:1.7; }
+.recipe-rich-article-prose h2 { margin-top:3rem; }
+.recipe-rich-article-prose h3 { margin-top:2rem; }
+.recipe-rich-article-prose pre { overflow-x:auto; padding:1rem; border-radius:var(--ui-radius-sm); }
+.recipe-rich-article-prose blockquote { border-inline-start:.25rem solid var(--ui-color-primary); margin-inline:0; padding-inline:1rem; color:var(--ui-color-on-surface-variant); }
+.recipe-rich-article-prose blockquote cite { display:block; margin-top:.5rem; font-style:normal; }
+.recipe-rich-article-callout, .recipe-rich-article-embed { margin-block:2rem; }
+.recipe-rich-article-media { margin:2rem 0; }
+.recipe-rich-article-media img, .recipe-rich-article-media video { display:block; width:100%; max-width:100%; height:auto; border-radius:var(--ui-radius-sm); }
+.recipe-rich-article-media video { aspect-ratio:16/9; }
+.recipe-rich-article-media figcaption { margin-top:.75rem; color:var(--ui-color-on-surface-variant); }
+.recipe-rich-article-feed .ui-list-item { display:flex; justify-content:space-between; gap:1rem; flex-wrap:wrap; min-width:0; }
+.recipe-rich-article-states { display:grid; gap:1rem; margin-top:2rem; }
+.recipe-rich-article-related { border-top:1px solid var(--ui-color-border); margin-top:3rem; padding-top:1rem; }
+@media (max-width:48rem) {
+  .recipe-rich-article-layout { padding-inline:.75rem; }
+  .recipe-rich-article-header, .recipe-rich-article-prose { max-width:100%; min-width:0; }
+  .recipe-rich-article-byline { justify-content:flex-start; }
+  .recipe-rich-article-prose table { min-width:36rem; }
+}
+@media (prefers-reduced-motion: reduce) { .recipe-rich-article-root * { scroll-behavior:auto; } }
+@media (forced-colors: active) { .recipe-rich-article-media img, .recipe-rich-article-media video { border:1px solid CanvasText; } }

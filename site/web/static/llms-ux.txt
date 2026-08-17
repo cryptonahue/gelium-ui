@@ -159,6 +159,16 @@ Recipes show "Maps to Gelium criteria" (SKEL/FEED/DATA/JOURNEY). Patterns: /docs
 
 Consumer: /docs/templates/product · /docs/templates/design
 
+## RICH-ARTICLE
+
+| ID | Rule |
+|---|---|
+| RICH-STRUCTURE | One H1, eyebrow, lead, byline, then descriptive H2/H3 sections in a readable prose measure. |
+| RICH-MEDIA | Use local safe image/picture, native video with poster/captions/fallback, native audio with transcript, and no arbitrary external embeds. |
+| RICH-STATES | Show loading, empty, and error recovery paths as readable HTML, not spinner-only UI. |
+| RICH-DATA | Reuse list/feed and data-table primitives; keep tables internally scrollable on narrow screens. |
+| RICH-SEO | Demo/fixture routes stay noindex, nofollow while retaining accurate Article JSON-LD for inspection. |
+
 ## SEO / AEO BOUNDARY
 
 One primary answer per page, answer-first lead, descriptive headings, and visible sources for sourced claims. `/llms.txt` and `/llms-ux.txt` are discovery aids, not ranking guarantees. The library owns semantic markup and media; the docs site owns Gelium metadata, canonical/robots/sitemap, social tags, and JSON-LD; consumers own BASE_URL/domain, brand, content facts, authors/dates, and social assets. Docs/blog may be indexable; recipes, demos, examples, and stateful surfaces stay noindex and out of the sitemap.

@@ -626,6 +626,7 @@ func TestDocsNavFor(t *testing.T) {
 			"/recipes/admin-resource": "Admin Resource",
 			"/recipes/ops-queue":      "Ops Queue",
 			"/recipes/public-feed":    "Public Feed",
+			"/recipes/rich-article":   "Rich Article",
 		}
 		if len(recipes.Links) != len(wantPaths) {
 			t.Fatalf("Recipes links = %d, want %d", len(recipes.Links), len(wantPaths))
