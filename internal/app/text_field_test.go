@@ -104,6 +104,9 @@ func TestTextFieldDocsRouteDogfoodsNativeAccessibleVariantsAndStates(t *testing.
 		"text-disabled-outlined": "Server path",
 		"text-disabled-textarea": "Changelog",
 		"text-textarea":          "Biography",
+		"text-email":             "Email address",
+		"text-search":            "Search the docs",
+		"text-constrained":       "Handle",
 	} {
 		if !strings.Contains(body, `<label for="`+id+`">`+label+`</label>`) {
 			t.Errorf("field %q is missing its associated label", id)
@@ -136,6 +139,33 @@ func TestTextFieldDocsRouteDogfoodsNativeAccessibleVariantsAndStates(t *testing.
 	}
 	if strings.Contains(errorInput, `autofocus`) {
 		t.Error("the static Username error demo must not steal focus on GET")
+	}
+
+	emailInput := openingTagWithID(t, body, "input", "text-email")
+	for _, attribute := range []string{`type="email"`, `autocomplete="email"`, `inputmode="email"`, `required`} {
+		if !strings.Contains(emailInput, attribute) {
+			t.Errorf("dogfooded email field is missing %s", attribute)
+		}
+	}
+	searchInput := openingTagWithID(t, body, "input", "text-search")
+	for _, attribute := range []string{`type="search"`, `inputmode="search"`, `placeholder="Search components…"`, `maxlength="60"`} {
+		if !strings.Contains(searchInput, attribute) {
+			t.Errorf("dogfooded search field is missing %s", attribute)
+		}
+	}
+	if strings.Contains(searchInput, `placeholder=" "`) {
+		t.Error("a set placeholder must replace the invisible space hook")
+	}
+	if !strings.Contains(body, `ui-text-field-has-placeholder`) {
+		t.Error("a placeholder field must float its label via the has-placeholder modifier")
+	}
+	constrainedInput := openingTagWithID(t, body, "input", "text-constrained")
+	// html/template escapes "+" as "&#43;" inside attribute values; browsers
+	// decode it back to the literal regex when matching.
+	for _, attribute := range []string{`minlength="3"`, `maxlength="20"`, `pattern="[a-z0-9_]&#43;"`} {
+		if !strings.Contains(constrainedInput, attribute) {
+			t.Errorf("dogfooded constrained field is missing %s", attribute)
+		}
 	}
 }
 
@@ -432,5 +462,102 @@ func TestTextFieldDocsDisabledFieldCarriesBlockedAttribute(t *testing.T) {
 	}
 	if strings.Contains(disabledInput, "aria-invalid") {
 		t.Error("dogfooded disabled input must not be announced as invalid")
+	}
+}
+
+// TestTextFieldRendersInputSurfaceAttributesWhenSet locks the full input
+// surface: every new native attribute renders from its view field, and a set
+// placeholder replaces the invisible space hook while floating the label via
+// the has-placeholder modifier class (no JS involved).
+func TestTextFieldRendersInputSurfaceAttributesWhenSet(t *testing.T) {
+	rendered := renderTextField(t, textFieldView{
+		ID: "account-email", Label: "Email", Name: "email", Variant: "outlined",
+		Type: "email", Placeholder: "you@example.com", Pattern: "[^@]+@[^@]+",
+		Autocomplete: "email", InputMode: "email", MaxLength: 254, MinLength: 5,
+		Required: true, ReadOnly: true,
+	})
+
+	input := openingTagWithID(t, rendered, "input", "account-email")
+	// html/template escapes "+" as "&#43;" inside attribute values; browsers
+	// decode it back to the literal regex when matching.
+	for _, attribute := range []string{
+		`type="email"`, `placeholder="you@example.com"`, `pattern="[^@]&#43;@[^@]&#43;"`,
+		`autocomplete="email"`, `inputmode="email"`, `maxlength="254"`, `minlength="5"`,
+		`required`, `readonly`,
+	} {
+		if !strings.Contains(input, attribute) {
+			t.Errorf("input surface is missing attribute %s in %q", attribute, input)
+		}
+	}
+	if strings.Contains(input, `placeholder=" "`) {
+		t.Error("a set placeholder must replace the invisible space hook")
+	}
+	if !strings.Contains(rendered, "ui-text-field-has-placeholder") {
+		t.Error("a placeholder field must float its label via the has-placeholder modifier")
+	}
+}
+
+// TestTextFieldOmitsInputSurfaceAttributesWhenZero locks backward
+// compatibility: empty/zero values must keep the template's defaults (type
+// text, the invisible space placeholder hook) and must not emit any of the
+// new attributes.
+func TestTextFieldOmitsInputSurfaceAttributesWhenZero(t *testing.T) {
+	rendered := renderTextField(t, textFieldView{ID: "plain", Label: "Name", Variant: "outlined"})
+
+	input := openingTagWithID(t, rendered, "input", "plain")
+	if !strings.Contains(input, `type="text"`) {
+		t.Errorf("default type must remain text, got %q", input)
+	}
+	if !strings.Contains(input, `placeholder=" "`) {
+		t.Error("empty placeholder must keep the invisible space hook")
+	}
+	for _, forbidden := range []string{`required`, `maxlength=`, `minlength=`, `pattern=`, `autocomplete=`, `inputmode=`, `readonly`} {
+		if strings.Contains(input, forbidden) {
+			t.Errorf("zero-valued input surface must not render %q in %q", forbidden, input)
+		}
+	}
+	if strings.Contains(rendered, "ui-text-field-has-placeholder") {
+		t.Error("a placeholder-less field must not carry the has-placeholder modifier")
+	}
+}
+
+// TestTextFieldPassesThroughSupportedNativeTypes covers the documented type
+// vocabulary: email, url, tel, number, password, and search all render as the
+// native type attribute on the input.
+func TestTextFieldPassesThroughSupportedNativeTypes(t *testing.T) {
+	for _, inputType := range []string{"email", "url", "tel", "number", "password", "search"} {
+		t.Run(inputType, func(t *testing.T) {
+			rendered := renderTextField(t, textFieldView{ID: "t", Label: "Field", Variant: "outlined", Type: inputType})
+			input := openingTagWithID(t, rendered, "input", "t")
+			if !strings.Contains(input, `type="`+inputType+`"`) {
+				t.Errorf("type %q not rendered, got %q", inputType, input)
+			}
+		})
+	}
+}
+
+// TestTextFieldTextareaSupportsConstraintsButNotTypeOrPattern locks the
+// textarea branch of the input surface: constraints and hints apply, while
+// type and pattern stay input-only and the value lives in the element body.
+func TestTextFieldTextareaSupportsConstraintsButNotTypeOrPattern(t *testing.T) {
+	rendered := renderTextField(t, textFieldView{
+		ID: "bio", Label: "Biography", Name: "bio", Variant: "outlined", Textarea: true,
+		Placeholder: "Tell people about yourself…", Required: true, MaxLength: 400,
+		MinLength: 10, Autocomplete: "off", InputMode: "text", ReadOnly: true,
+	})
+
+	textarea := openingTagWithID(t, rendered, "textarea", "bio")
+	for _, attribute := range []string{
+		`placeholder="Tell people about yourself…"`, `required`, `maxlength="400"`,
+		`minlength="10"`, `autocomplete="off"`, `inputmode="text"`, `readonly`,
+	} {
+		if !strings.Contains(textarea, attribute) {
+			t.Errorf("textarea is missing %s in %q", attribute, textarea)
+		}
+	}
+	for _, forbidden := range []string{`type=`, `pattern=`, `value="`} {
+		if strings.Contains(textarea, forbidden) {
+			t.Errorf("textarea must not render %q in %q", forbidden, textarea)
+		}
 	}
 }

@@ -27,7 +27,7 @@ var pilotPartialInvocations = map[string][]string{
 // fields for select.
 var pilotAPIRefProps = map[string][]string{
 	"button":     {"Label", "Variant", "Href", "IconSVG", "Command", "CommandFor", "Value", "Disabled", "Loading", "Submit", "Autofocus"},
-	"text-field": {"ID", "Label", "Name", "Value", "Variant", "Helper", "MessageRole", "Error", "Disabled", "Textarea", "Autofocus"},
+	"text-field": {"ID", "Label", "Name", "Value", "Variant", "Helper", "MessageRole", "Error", "Disabled", "Textarea", "Autofocus", "Type", "Required", "MaxLength", "MinLength", "Pattern", "Autocomplete", "InputMode", "ReadOnly", "Placeholder"},
 	"select":     {"Options", "Error", "Value", "Label", "Selected"},
 }
 

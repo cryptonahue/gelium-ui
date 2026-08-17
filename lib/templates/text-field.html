@@ -1,13 +1,15 @@
 {{define "text-field"}}
-<div class="ui-text-field ui-text-field-{{.Variant}}{{if and .Error (not .Disabled)}} ui-text-field-error{{end}}{{if .Disabled}} ui-text-field-disabled{{end}}">
+<div class="ui-text-field ui-text-field-{{.Variant}}{{if and .Error (not .Disabled)}} ui-text-field-error{{end}}{{if .Disabled}} ui-text-field-disabled{{end}}{{if .Placeholder}} ui-text-field-has-placeholder{{end}}">
   <span class="ui-text-field-control">
     <label for="{{.ID}}">{{.Label}}</label>
-    {{if .Textarea}}<textarea id="{{.ID}}" placeholder=" "{{if .Name}} name="{{.Name}}"{{end}}{{if and .Error (not .Disabled)}} aria-invalid="true" aria-describedby="{{.ID}}-error"{{else if .Helper}} aria-describedby="{{.ID}}-help"{{end}}{{if .Disabled}} disabled{{end}}{{if .Autofocus}} autofocus{{end}}>{{.Value}}</textarea>{{else}}<input id="{{.ID}}" type="text" placeholder=" "{{if .Name}} name="{{.Name}}"{{end}} value="{{.Value}}"{{if and .Error (not .Disabled)}} aria-invalid="true" aria-describedby="{{.ID}}-error"{{else if .Helper}} aria-describedby="{{.ID}}-help"{{end}}{{if .Disabled}} disabled{{end}}{{if .Autofocus}} autofocus{{end}}>{{end}}
+    {{if .Textarea}}<textarea id="{{.ID}}"{{template "text-field-common-attrs" .}}>{{.Value}}</textarea>{{else}}<input id="{{.ID}}" type="{{if .Type}}{{.Type}}{{else}}text{{end}}"{{template "text-field-common-attrs" .}} value="{{.Value}}"{{if .Pattern}} pattern="{{.Pattern}}"{{end}}>{{end}}
     {{if and .Error (not .Disabled)}}<svg class="ui-text-field-error-icon" aria-hidden="true" focusable="false" viewBox="0 0 24 24"><path d="M12 2a10 10 0 1 0 0 20 10 10 0 0 0 0-20Zm1 15h-2v-2h2v2Zm0-4h-2V7h2v6Z"></path></svg>{{end}}
   </span>
   {{if and .Error (not .Disabled)}}<p class="ui-text-field-message" id="{{.ID}}-error" role="alert"><strong>Error:</strong> {{.Error}}</p>{{else if .Helper}}<p class="ui-text-field-message" id="{{.ID}}-help"{{if .MessageRole}} role="{{.MessageRole}}"{{end}}>{{.Helper}}</p>{{end}}
 </div>
 {{end}}
+
+{{define "text-field-common-attrs"}}{{if .Name}} name="{{.Name}}"{{end}}{{if .Placeholder}} placeholder="{{.Placeholder}}"{{else}} placeholder=" "{{end}}{{if .Required}} required{{end}}{{if .MaxLength}} maxlength="{{.MaxLength}}"{{end}}{{if .MinLength}} minlength="{{.MinLength}}"{{end}}{{if .Autocomplete}} autocomplete="{{.Autocomplete}}"{{end}}{{if .InputMode}} inputmode="{{.InputMode}}"{{end}}{{if .ReadOnly}} readonly{{end}}{{if and .Error (not .Disabled)}} aria-invalid="true" aria-describedby="{{.ID}}-error"{{else if .Helper}} aria-describedby="{{.ID}}-help"{{end}}{{if .Disabled}} disabled{{end}}{{if .Autofocus}} autofocus{{end}}{{end}}
 
 {{define "validation-form"}}
 <form method="post" action="/examples/text-field/validate#validation-example" novalidate hx-post="/examples/text-field/validate" hx-target="this" hx-swap="outerHTML">

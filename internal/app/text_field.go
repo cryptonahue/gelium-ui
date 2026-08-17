@@ -18,6 +18,17 @@ type textFieldView struct {
 	Disabled    bool
 	Textarea    bool
 	Autofocus   bool
+	// Input surface: each field renders as the matching native attribute,
+	// and only when set (empty/zero values keep the template's defaults).
+	Type         string
+	Placeholder  string
+	Pattern      string
+	Autocomplete string
+	InputMode    string
+	MaxLength    int
+	MinLength    int
+	Required     bool
+	ReadOnly     bool
 }
 
 type validationFormView struct {
@@ -41,6 +52,9 @@ func textFieldPage(validationForm validationFormView) pageView {
 			{ID: "text-disabled-outlined", Label: "Server path", Variant: "outlined", Disabled: true},
 			{ID: "text-disabled-textarea", Label: "Changelog", Variant: "filled", Textarea: true, Value: "Locked notes.", Disabled: true},
 			{ID: "text-textarea", Label: "Biography", Variant: "outlined", Textarea: true, Helper: "Tell people a little about yourself."},
+			{ID: "text-email", Label: "Email address", Variant: "filled", Type: "email", Autocomplete: "email", InputMode: "email", Required: true, Helper: "Required; we check the format on submit."},
+			{ID: "text-search", Label: "Search the docs", Variant: "outlined", Type: "search", InputMode: "search", Placeholder: "Search components…", MaxLength: 60},
+			{ID: "text-constrained", Label: "Handle", Variant: "filled", MinLength: 3, MaxLength: 20, Pattern: "[a-z0-9_]+", Helper: "3–20 lowercase letters, numbers, or underscores."},
 		},
 		ValidationForm: &validationForm,
 		Examples:       examples,
