@@ -849,7 +849,7 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 	// home + /docs + patterns + handbook pages + all components. The handbook
 	// count derives from handbookNavLinks() (same registry the sitemap uses), so
 	// adding a handbook page can never drift this total again.
-	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+len(handbookNavLinks())+6+len(blogPosts) {
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+len(handbookNavLinks())+8+len(blogPosts) {
 		t.Errorf("sitemap <url> entries = %d, want %d (base pages + handbook + components + blog registry)", got, len(componentRoutes())+len(handbookNavLinks())+6+len(blogPosts))
 	}
 	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
@@ -993,7 +993,7 @@ func TestErrorPagesCarryMetadata(t *testing.T) {
 	for _, contract := range []string{
 		`<meta name="description" content="Gelium UI — open-code, server-rendered UI components with native HTML semantics.">`,
 		`<link rel="canonical" href="https://gelium-ui.example/does-not-exist">`,
-		`<meta name="robots" content="index, follow">`,
+		`<meta name="robots" content="noindex, nofollow">`,
 		`<meta property="og:title" content="Page not found · Gelium UI">`,
 		`<meta property="og:url" content="https://gelium-ui.example/does-not-exist">`,
 		`<meta property="og:image" content="https://gelium-ui.example/og.png">`,
@@ -1010,7 +1010,7 @@ func TestErrorPagesCarryMetadata(t *testing.T) {
 	templates := parseTestTemplates(t, "templates/*.html")
 	s := &server{templates: templates, markdown: goldmark.New(), assets: webassets.Assets}
 	res500 := httptest.NewRecorder()
-	s.renderErrorPage(res500, http.StatusInternalServerError, "Something went wrong", "boom", true, "/", "Back to home", "/recipes/ops-queue")
+	s.renderErrorPage(res500, nil, http.StatusInternalServerError, "Something went wrong", "boom", true, "/", "Back to home", "/recipes/ops-queue")
 	if res500.Code != http.StatusInternalServerError {
 		t.Fatalf("status = %d, want %d", res500.Code, http.StatusInternalServerError)
 	}

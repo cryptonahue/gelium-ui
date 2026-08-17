@@ -1049,7 +1049,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /recipes/rich-article", s.recipeRichArticle)
 	mux.HandleFunc("POST /recipes/public-feed/{id}/react", s.recipePublicFeedReact)
 	mux.HandleFunc("POST /recipes/public-feed/refresh", s.recipePublicFeedRefresh)
-	mux.HandleFunc("GET /static/{name}", s.staticAsset)
+	mux.HandleFunc("GET /static/{path...}", s.staticAsset)
 	// 404 catch-all: any unknown GET path falls back to the styled ERROR STATE
 	// page (the mux gives the more specific patterns above priority). Post-only
 	// routes register a GET 405 companion below so a GET to them keeps the
@@ -1141,7 +1141,7 @@ func isIndexablePath(routePath string) bool { return indexabilityPolicy(routePat
 // sitemapPaths is the canonical list of public pages filtered through the same
 // indexability policy used by resolveMeta.
 func sitemapPaths() []string {
-	paths := []string{"/", "/docs", "/docs/patterns", "/docs/seo", "/docs/aeo", "/blog"}
+	paths := []string{"/", "/docs", "/docs/patterns", "/docs/seo", "/docs/aeo", "/docs/templates/product", "/docs/templates/design", "/blog"}
 	for _, l := range handbookNavLinks() {
 		paths = append(paths, l.Path)
 	}
@@ -1215,6 +1215,7 @@ func methodNotAllowed(w http.ResponseWriter, r *http.Request) {
 // requested path (SEO §16).
 func (s *server) notFound(w http.ResponseWriter, r *http.Request) {
 	s.renderErrorPage(w,
+		r,
 		http.StatusNotFound,
 		"Page not found",
 		"The page you are looking for does not exist or has moved.",
@@ -1231,7 +1232,7 @@ func (s *server) notFound(w http.ResponseWriter, r *http.Request) {
 // failed template exec still falls back to a minimal plain response. Meta is
 // populated through resolveMeta for the failing routePath so error pages carry
 // description, canonical, robots and OG tags per the route contract (SEO §16).
-func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body string, retry bool, href, label, routePath string) {
+func (s *server) renderErrorPage(w http.ResponseWriter, r *http.Request, status int, title, body string, retry bool, href, label, routePath string) {
 	var page bytes.Buffer
 	data := pageView{
 		Title:         title,
@@ -1249,6 +1250,35 @@ func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body 
 		},
 	}
 	data.Meta = resolveMeta(data, routePath)
+	// Non-200 responses must never be indexed: a soft-404 (or a soft-500)
+	// that Google crawls undermines the indexability contract (SEO §4).
+	if status != http.StatusOK {
+		data.Meta.Robots = "noindex, nofollow"
+	}
+	// Docs shell chrome for shell routes, mirroring renderMarkdownStatus:
+	// grouped sidebar + search + theme/scheme switchers. Shell routes get the
+	// two-pane chrome instead of the flat legacy header (Nav must be nil so
+	// layout.html does not render both navigations on the failure page).
+	// r is nil for a few legacy helpers (recipe not-found) whose routes never
+	// use the shell; they keep the flat header path unchanged.
+	if r != nil {
+		themeSlug := ""
+		if q := themeFromRequest(r); q != "" {
+			data.ThemeClass = q
+			themeSlug = themeSlugFromClass(q)
+		} else {
+			data.ThemeClass = themeClass(data.ThemeClass)
+		}
+		scheme := schemeFromRequest(r)
+		applyDocumentRootScheme(&data, scheme)
+		if usesDocsShell(routePath) {
+			nav := docsNavFor(routePath, themeSlug, scheme)
+			data.DocsNav = &nav
+			data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass, themeSlug, scheme)
+			data.SchemeSwitcher = schemeSwitcherFor(r, themeSlug, scheme)
+			data.Nav = nil
+		}
+	}
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {
 		http.Error(w, "documentation unavailable", http.StatusInternalServerError)
 		return
@@ -1259,7 +1289,7 @@ func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body 
 }
 
 func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
-	name := r.PathValue("name")
+	name := r.PathValue("path")
 	asset, err := fs.ReadFile(s.assets, "static/"+name)
 	if err != nil {
 		http.NotFound(w, r)
@@ -1296,7 +1326,7 @@ func (s *server) renderMarkdownPage(w http.ResponseWriter, r *http.Request, data
 func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, r *http.Request, data pageView, contentPath string, status int) {
 	source, err := fs.ReadFile(s.assets, contentPath)
 	if err != nil {
-		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePathForContent(contentPath))
+		s.renderErrorPage(w, r, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePathForContent(contentPath))
 		return
 	}
 	s.renderMarkdownStatus(w, r, data, string(source), routePathForContent(contentPath), status)
@@ -1309,7 +1339,7 @@ func (s *server) renderMarkdownPageStatus(w http.ResponseWriter, r *http.Request
 func (s *server) renderMarkdownPageAt(w http.ResponseWriter, r *http.Request, data pageView, contentPath, routePath string) {
 	source, err := fs.ReadFile(s.assets, contentPath)
 	if err != nil {
-		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePath)
+		s.renderErrorPage(w, r, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePath)
 		return
 	}
 	s.renderMarkdownStatus(w, r, data, string(source), routePath, http.StatusOK)
@@ -1386,7 +1416,7 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 	data.AssetsVersion = lib.AssetsVersion
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
-		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
+		s.renderErrorPage(w, r, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
 		return
 	}
 	if h1 != "" {
@@ -1440,13 +1470,13 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 		}
 		var introHTML bytes.Buffer
 		if err := s.markdown.Convert([]byte(source), &introHTML); err != nil {
-			s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
+			s.renderErrorPage(w, r, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
 			return
 		}
 		var restHTML bytes.Buffer
 		if rest != "" {
 			if err := s.markdown.Convert([]byte(rest), &restHTML); err != nil {
-				s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
+				s.renderErrorPage(w, r, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)
 				return
 			}
 		}
@@ -1463,7 +1493,7 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 	if len(data.Examples) > 0 {
 		examples, err := s.renderExampleDemos(data.Examples)
 		if err != nil {
-			s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePath)
+			s.renderErrorPage(w, r, http.StatusInternalServerError, "Something went wrong", "This page could not be loaded. Please try again later.", true, "/", "Back to home", routePath)
 			return
 		}
 		data.Examples = examples

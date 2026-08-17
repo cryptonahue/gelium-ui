@@ -115,19 +115,19 @@ func (s *server) blogPost(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	if entry == nil {
-		s.renderErrorPage(w, http.StatusNotFound, "Post not found", "This blog post does not exist. Browse the blog index for published posts.", true, "/blog", "Back to blog", "/blog/"+slug)
+		s.renderErrorPage(w, r, http.StatusNotFound, "Post not found", "This blog post does not exist. Browse the blog index for published posts.", true, "/blog", "Back to blog", "/blog/"+slug)
 		return
 	}
 	source, err := fs.ReadFile(s.assets, entry.ContentPath)
 	if err != nil {
-		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This post could not be loaded. Please try again later.", true, "/blog", "Back to blog", "/blog/"+slug)
+		s.renderErrorPage(w, r, http.StatusInternalServerError, "Something went wrong", "This post could not be loaded. Please try again later.", true, "/blog", "Back to blog", "/blog/"+slug)
 		return
 	}
 	// The post header renders the title; drop the file's leading H1 so the
 	// page keeps exactly one heading level 1 (same helper as the docs root).
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(stripDocsRootH1(string(source))), &rendered); err != nil {
-		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This post could not be rendered. Please try again later.", true, "/blog", "Back to blog", "/blog/"+slug)
+		s.renderErrorPage(w, r, http.StatusInternalServerError, "Something went wrong", "This post could not be rendered. Please try again later.", true, "/blog", "Back to blog", "/blog/"+slug)
 		return
 	}
 	data := pageView{

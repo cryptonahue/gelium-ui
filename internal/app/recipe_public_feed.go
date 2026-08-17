@@ -280,7 +280,7 @@ func (s *server) recipePublicFeedRefresh(w http.ResponseWriter, r *http.Request)
 }
 
 func (s *server) recipeFeedNotFound(w http.ResponseWriter, title, body string) {
-	s.renderErrorPage(w, http.StatusNotFound, title, body, true, "/recipes/public-feed", "Back to the feed", "/recipes/public-feed")
+	s.renderErrorPage(w, nil, http.StatusNotFound, title, body, true, "/recipes/public-feed", "Back to the feed", "/recipes/public-feed")
 }
 
 // ----- view builders -----

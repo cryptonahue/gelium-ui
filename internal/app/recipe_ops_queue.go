@@ -292,7 +292,7 @@ func (s *server) recipeOpsQueueRefresh(w http.ResponseWriter, r *http.Request) {
 }
 
 func (s *server) recipeQueueNotFound(w http.ResponseWriter, title, body string) {
-	s.renderErrorPage(w, http.StatusNotFound, title, body, true, "/recipes/ops-queue", "Back to the queue", "/recipes/ops-queue")
+	s.renderErrorPage(w, nil, http.StatusNotFound, title, body, true, "/recipes/ops-queue", "Back to the queue", "/recipes/ops-queue")
 }
 
 // ----- view builders -----

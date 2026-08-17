@@ -369,6 +369,9 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	var md string
 	md += "# Documentation\n\n"
 	md += "This hub **orients** you. The **sidebar** is the map — grouped as **Core** (how to design screens), **System** (tokens, themes, platform), **Meta** (project), then components, Patterns, and Recipes. This page does not repeat that catalog.\n\n"
+	if q := strings.TrimSpace(r.URL.Query().Get("q")); q != "" {
+		md += searchResultsMarkdown(q)
+	}
 	md += "## Start here\n\n"
 	md += "### Install and agents\n\n"
 	md += "- [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) — CSS, themes, templates, optional JS for product apps.\n"
@@ -416,6 +419,43 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	s.renderMarkdown(w, r, pageView{Title: "Documentation"}, md, "/docs")
+}
+
+// searchResultsMarkdown honors the 0-JS GET /docs?q= search fallback
+// server-side. It filters the SAME nav model the client-side index is built
+// from (docsNavFor -> docsSections + handbookSections), so the no-JS path can
+// never agree on a different page set than the JS path. Titles and paths are
+// matched case-insensitively; results render as sidebar group + link.
+func searchResultsMarkdown(q string) string {
+	lower := strings.ToLower(q)
+	nav := docsNavFor("/docs", "", "")
+	type hit struct {
+		label string
+		href  string
+		group string
+	}
+	hits := make([]hit, 0, 8)
+	seen := make(map[string]bool, 64)
+	for _, g := range nav.Groups {
+		for _, l := range g.Links {
+			if seen[l.Path] {
+				continue
+			}
+			seen[l.Path] = true
+			if strings.Contains(strings.ToLower(l.Label), lower) || strings.Contains(strings.ToLower(l.Path), strings.ToLower(q)) {
+				hits = append(hits, hit{label: l.Label, href: l.Href, group: g.Title})
+			}
+		}
+	}
+	if len(hits) == 0 {
+		return "## No matches for “" + q + "”\n\nNothing in the sidebar matches. Try a broader term, or browse the **Core**, **System**, and **Meta** groups; every component, handbook page, and recipe lives in the sidebar.\n\n"
+	}
+	var b strings.Builder
+	b.WriteString("## Search results for “" + q + "”\n\n")
+	for _, h := range hits {
+		b.WriteString("- [" + h.label + "](" + h.href + ") — " + h.group + ".\n")
+	}
+	return b.String()
 }
 
 // docsPatterns is GET /docs/patterns — domain skeletons and recipe affinity.
