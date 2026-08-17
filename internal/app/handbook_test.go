@@ -96,8 +96,8 @@ func TestDocsNavForHandbookGroup(t *testing.T) {
 	if system == nil {
 		t.Fatal("docsNavFor must include a System group")
 	}
-	if len(flat) != len(handbookRoutes) {
-		t.Fatalf("Core+System+Meta links = %d, want %d", len(flat), len(handbookRoutes))
+	if len(flat) != len(handbookRoutes)+3 {
+		t.Fatalf("Core+System+Meta links = %d, want %d", len(flat), len(handbookRoutes)+3)
 	}
 	for _, hb := range handbookRoutes {
 		found := false

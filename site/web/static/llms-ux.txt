@@ -120,6 +120,17 @@ Motion: MOTION-NONE default; honor prefers-reduced-motion.
 Handbook outline: H1 → lead → H2 Sources → H2 rules → H2 anti-patterns → H2 checklist → See also.
 Operate UI: one H1; do not stack marketing H2s on forms. Full: /docs/content-style
 
+## FOUNDATIONS (human docs)
+
+| ID | Rule |
+|---|---|
+| DOC-TYPE | Use `/docs/typography`; choose a `--ui-type-*` role, preserve its size/weight/line-height, and keep prose near 65ch. |
+| DOC-SPACE | Use `/docs/spacing`; compose with `--ui-space-1/2/3/4/6/8`, smaller inside groups and larger between groups. |
+| DOC-COLOR | Use `/docs/colors`; consume semantic `--ui-color-*` pairs, test focus/status in light and dark, and never use color alone. |
+| TYPE-ROLE | Theme overrides decomposed type tokens; consumers keep the alias. |
+| SPACE-SCALE | No feature-specific spacing scale; use the core scale and keep touch targets at `--ui-touch-target`. |
+| COLOR-FOCUS | Keep `--ui-color-focus-ring`, `--ui-focus-thickness`, and `--ui-focus-offset` visible on `:focus-visible`. |
+
 ## DOMAIN SKELETONS
 
 | ID | Shape |

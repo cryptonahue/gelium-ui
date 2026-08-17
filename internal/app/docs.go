@@ -230,6 +230,9 @@ var handbookSections = []handbookSection{
 		Links: []navLink{
 			{Path: "/docs/themes", Label: "Themes"},
 			{Path: "/docs/tokens", Label: "Tokens"},
+			{Path: "/docs/typography", Label: "Typography"},
+			{Path: "/docs/spacing", Label: "Spacing"},
+			{Path: "/docs/colors", Label: "Colors"},
 			{Path: "/docs/server-contracts", Label: "Server contracts"},
 			{Path: "/docs/accessibility", Label: "Accessibility"},
 			{Path: "/docs/principles", Label: "Design principles"},
@@ -382,6 +385,9 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "### System (design system)\n\n"
 	md += "- [Themes](/docs/themes) — class-based direction; dark is a class route.\n"
 	md += "- [Tokens](/docs/tokens) — `--ui-*` ownership (core vs theme vs component).\n"
+	md += "- [Typography](/docs/typography) — live type roles, measure, weight, and line-height.\n"
+	md += "- [Spacing](/docs/spacing) — the `--ui-space-*` scale and compositions.\n"
+	md += "- [Colors](/docs/colors) — semantic roles, focus, status, and light/dark examples.\n"
 	md += "- [Server contracts](/docs/server-contracts) — GET, POST+303, 422, toast wire.\n"
 	md += "- [Accessibility](/docs/accessibility) — platform defaults and contracts.\n"
 	md += "- [Performance](/docs/performance) — ~50KB JS stance; CSS is large by design.\n"
@@ -517,6 +523,21 @@ func (s *server) docsThemes(w http.ResponseWriter, r *http.Request) {
 // vocabulary, core families, theme-owned values, and naming conventions.
 func (s *server) docsTokens(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Tokens"}, "content/handbook-tokens.md", "/docs/tokens")
+}
+
+// docsTypography, docsSpacing, and docsColors are the human-readable
+// foundation showcases. Their specimens stay in Markdown/HTML so the server
+// renders the same token-driven markup without a client runtime.
+func (s *server) docsTypography(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Typography"}, "content/handbook-typography.md", "/docs/typography")
+}
+
+func (s *server) docsSpacing(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Spacing"}, "content/handbook-spacing.md", "/docs/spacing")
+}
+
+func (s *server) docsColors(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Colors"}, "content/handbook-colors.md", "/docs/colors")
 }
 
 // docsServerContracts is GET /docs/server-contracts — the server contract

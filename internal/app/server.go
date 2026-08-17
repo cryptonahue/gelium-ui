@@ -21,6 +21,7 @@ import (
 	"github.com/yuin/goldmark/ast"
 	"github.com/yuin/goldmark/extension"
 	"github.com/yuin/goldmark/parser"
+	goldmarkhtml "github.com/yuin/goldmark/renderer/html"
 	"github.com/yuin/goldmark/text"
 
 	webassets "geliumui/site/web"
@@ -873,6 +874,7 @@ func New() http.Handler {
 			// land on the heading nodes during parsing, so the TOC builder
 			// reads them from the AST instead of duplicating the algorithm.
 			goldmark.WithParserOptions(parser.WithAutoHeadingID()),
+			goldmark.WithRendererOptions(goldmarkhtml.WithUnsafe()),
 		),
 		assets: webassets.Assets,
 	}
@@ -904,6 +906,9 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/responsive", s.docsResponsive)
 	mux.HandleFunc("GET /docs/themes", s.docsThemes)
 	mux.HandleFunc("GET /docs/tokens", s.docsTokens)
+	mux.HandleFunc("GET /docs/typography", s.docsTypography)
+	mux.HandleFunc("GET /docs/spacing", s.docsSpacing)
+	mux.HandleFunc("GET /docs/colors", s.docsColors)
 	mux.HandleFunc("GET /docs/server-contracts", s.docsServerContracts)
 	mux.HandleFunc("GET /docs/accessibility", s.docsAccessibility)
 	mux.HandleFunc("GET /docs/principles", s.docsPrinciples)

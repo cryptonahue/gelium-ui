@@ -1,0 +1,19 @@
+@layer components {
+  /* Human docs foundation showcases: every specimen reads the live semantic
+     token on the document root, so ?theme= and ?scheme= stay meaningful. */
+  .docs-foundation-showcase { display: grid; gap: var(--ui-space-6); margin-block: var(--ui-space-6); }
+  .docs-type-sample { display: grid; gap: var(--ui-space-2); padding: var(--ui-space-4); border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-md); background: var(--ui-color-surface); color: var(--ui-color-fg); }
+  .docs-type-sample code, .docs-token-note { color: var(--ui-color-fg-muted); font: var(--ui-type-label-sm); }
+  .docs-space-scale { display: grid; gap: var(--ui-space-2); }
+  .docs-space-row { display: grid; grid-template-columns: 4rem minmax(0, 1fr) 5rem; align-items: center; gap: var(--ui-space-3); }
+  .docs-space-bar { block-size: var(--space-demo); min-inline-size: .25rem; border-radius: var(--ui-radius-xs); background: var(--ui-color-primary); }
+  .docs-space-composition { display: grid; grid-template-columns: repeat(3, minmax(0, 1fr)); gap: var(--ui-space-4); padding: var(--ui-space-4); border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-md); background: var(--ui-color-canvas); }
+  .docs-space-composition > div { display: grid; gap: var(--ui-space-2); padding: var(--ui-space-3); border: 1px solid var(--ui-color-border); border-radius: var(--ui-radius-sm); background: var(--ui-color-surface-container); }
+  .docs-color-grid { display: grid; grid-template-columns: repeat(auto-fit, minmax(min(12rem, 100%), 1fr)); gap: var(--ui-space-3); }
+  .docs-color-swatch { display: grid; gap: var(--ui-space-2); min-block-size: 7rem; padding: var(--ui-space-3); border-radius: var(--ui-radius-md); background: var(--swatch-bg); color: var(--swatch-fg); border: 1px solid var(--ui-color-border); }
+  .docs-color-swatch strong { font: var(--ui-type-label-lg); }
+  .docs-color-swatch code { color: inherit; opacity: .9; font: var(--ui-type-label-sm); }
+  .docs-focus-example { display: inline-block; padding: var(--ui-space-3); border-radius: var(--ui-radius-sm); color: var(--ui-color-primary-fg); background: var(--ui-color-primary); text-decoration: none; }
+  .docs-focus-example:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset); }
+  @media (max-width: 48rem) { .docs-space-composition { grid-template-columns: 1fr; } .docs-space-row { grid-template-columns: 3.5rem minmax(0, 1fr) 4rem; } }
+}
