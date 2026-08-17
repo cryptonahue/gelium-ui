@@ -320,38 +320,30 @@ func stripDocsRootH1(source string) string {
 	return source
 }
 
-// docsIndex is the GET /docs handler. It is an orientation hub, not a second
-// sidebar: the embedded docs root (content/index.md) explains what Gelium is
-// and how to start, then a short "Start here" list points at high-value
-// handbook pages. The full Handbook and component catalog live in the docs
-// shell sidebar (and footer) — this body must not re-list every destination.
+// docsIndex is the GET /docs handler. Orientation first (Start here), then a
+// deep-dive essay from content/index.md. Sidebar owns the full catalog.
 func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	var md string
-	if source, err := fs.ReadFile(s.assets, docsRootLeadSource); err == nil {
-		if lead := stripDocsRootH1(string(source)); strings.TrimSpace(lead) != "" {
-			md += lead + "\n\n"
-		}
-	}
 	md += "# Documentation\n\n"
 	md += "This hub orients you. The **sidebar** is the map: Handbook concepts and the full component reference stay there so this page does not repeat them.\n\n"
 	md += "## Start here\n\n"
 	md += "High-value entry points (not the full catalog):\n\n"
+	md += "- [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) — install the package consumers get.\n"
+	md += "- [Agent brief](/llms.txt) — machine-readable project summary.\n"
+	md += "- [Agent UX pack](/llms-ux.txt) — SURFACE / FEED / DATA / JOURNEY decision tables.\n"
+	md += "- [Agent workflow](/docs/agent-workflow) — shape → build → audit → polish (ethos-safe).\n"
 	md += "- [Screens](/docs/screens) — screen types, hierarchy, nav patterns (sourced criteria).\n"
 	md += "- [Journeys](/docs/journeys) — multi-step flows and where to land after submit.\n"
 	md += "- [Data display](/docs/data-display) — table vs list vs cards (DATA-*).\n"
 	md += "- [Feedback](/docs/feedback) — toast vs summary vs banner vs empty (decision matrix).\n"
 	md += "- [Patterns](/docs/patterns) — domain skeletons (forum, catalog, admin).\n"
 	md += "- [UI definition of done](/docs/ui-definition-of-done) — ship checklist for humans and agents.\n"
-	md += "- [Agent workflow](/docs/agent-workflow) — shape → build → audit → polish (ethos-safe).\n"
 	md += "- [Why Gelium](/docs/compare) — when to use Gelium vs React/headless kits, and explicit no-gos.\n"
 	md += "- [Forms contract](/docs/forms) — labels, `inputmode`/`type`, autocomplete, validate after interaction.\n"
 	md += "- [Themes](/docs/themes) — class-based direction; dark is a class route, not media-only.\n"
 	md += "- [Tokens](/docs/tokens) — `--ui-*` ownership (core vs theme vs component).\n"
 	md += "- [Performance](/docs/performance) — ~50KB JS stance; CSS is the largest asset by design.\n"
-	md += "- [Responsive](/docs/responsive) — design for screen sizes, not devices.\n"
-	md += "- [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) — install the package consumers get.\n"
-	md += "- [Agent brief](/llms.txt) — machine-readable project summary.\n"
-	md += "- [Agent UX pack](/llms-ux.txt) — screen/feedback decision tables for LLMs.\n\n"
+	md += "- [Responsive](/docs/responsive) — design for screen sizes, not devices.\n\n"
 	md += "## Use the sidebar\n\n"
 	md += "Every Handbook page and every component is already linked in the left nav (desktop) and the mobile docs menu. Jump from there for reference; come back here for the story and the start list.\n\n"
 	md += "## Try a full screen\n\n"
@@ -359,7 +351,13 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [Admin Resource](/recipes/admin-resource) — data table + form + dialog on the server contract.\n"
 	md += "- [Ops Queue](/recipes/ops-queue) — work queue with POST+303 transitions.\n"
 	md += "- [Public/Social Feed](/recipes/public-feed) — feed with reactions and loading states.\n"
-	md += "- [WhatsApp manager](/demo/whatsapp) — larger composed demo.\n"
+	md += "- [WhatsApp manager](/demo/whatsapp) — larger composed demo.\n\n"
+	if source, err := fs.ReadFile(s.assets, docsRootLeadSource); err == nil {
+		if lead := stripDocsRootH1(string(source)); strings.TrimSpace(lead) != "" {
+			md += "## Deep dive\n\n"
+			md += lead + "\n"
+		}
+	}
 	s.renderMarkdown(w, r, pageView{Title: "Documentation"}, md, "/docs")
 }
 

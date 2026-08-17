@@ -1,55 +1,76 @@
 # Gelium UI
 
-Gelium UI is a themeable, open-code component library for server-rendered applications. Use it when you need native HTML semantics, zero component JavaScript, and a Material 3 design system — built with Tailwind CSS v4 and HTMX. Tailwind is a build-time dependency of this repository, not of your application: consumers link the compiled `/static/app.css` bundle and never install Tailwind themselves.
+Gelium UI is a themeable, open-code component library for server-rendered applications. Use it when you need native HTML semantics, zero required component JavaScript, and token themes — built with Tailwind CSS v4 in the monorepo build, shipped to consumers as CSS, themes, templates, and optional JS.
 
-Gelium UI is not an SPA framework and not a React component library. Every component is a server-rendered HTML partial with a documented server contract, styled by CSS custom properties (`--ui-*` tokens). There is no component JavaScript to bundle: menus, dialogs, tooltips, and selection run on declarative platform features (`:checked`, the Popover API, Invoker Commands, Interest Invokers) or plain server round-trips. HTMX is an optional progressive enhancement, never a requirement.
+Gelium is not an SPA framework and not a React component library. Components are server-rendered HTML partials with documented server contracts, styled by CSS custom properties (`--ui-*`). Menus, dialogs, tooltips, and selection use platform features (`:checked`, Popover API, Invoker Commands) or server round-trips. HTMX is optional progressive enhancement.
 
-The code is open — this documentation site is itself the first Gelium application, and every partial it renders is copyable. Gelium UI is distributed under the [MIT license](https://github.com/cryptonahue/gelium-ui/blob/main/LICENSE); see [Contributing](/docs/contributing) for how to work on the project. Start from the [GitHub repository](https://github.com/cryptonahue/gelium-ui), embed the handler, and pick the visual direction you want.
+The package on npm is [`gelium-ui`](https://www.npmjs.com/package/gelium-ui). This documentation site is the first dogfood app (Go), not the install path for product UI. Source: [GitHub](https://github.com/cryptonahue/gelium-ui). License: [MIT](https://github.com/cryptonahue/gelium-ui/blob/main/LICENSE).
 
 ## The foundation
 
 Every Gelium component starts from the platform, not from a framework:
 
 - **Native semantics first** — real `<button>`, `<dialog>`, `<input type="radio">`, `<table>`, `<nav>`; ARIA only where the platform has no equivalent.
-- **No component JavaScript** — selection, menus, tooltips, and dialogs run on declarative platform features (`:checked`, Popover API, Invoker Commands, Interest Invokers) or plain server round-trips.
-- **Server-rendered by design** — HTMX as an enhancement, never a requirement. The docs you are reading are themselves the first Gelium application.
+- **No required component JavaScript** — selection, menus, tooltips, and dialogs run on declarative platform features or plain server round-trips.
+- **Server-rendered by design** — HTMX as an enhancement, never a requirement.
 - **Accessible by default** — light/dark, forced-colors, reduced-motion, keyboard focus, and RTL are part of every component contract, tested in the build.
 
 ## Quick start
 
-Four steps from zero to a themed page:
+### 1. Install (consumers)
 
-1. **Embed the handler.** Gelium UI is a Go module (`geliumui`). `app.New()` returns an `http.Handler` you mount on any path:
+```bash
+npm install gelium-ui
+```
 
-   ```go
-   package main
+### 2. Stylesheet
 
-   import (
-       "net/http"
+Drop-in bundle:
 
-       "geliumui/internal/app"
-   )
+```css
+@import "gelium-ui/dist/gelium.css";
+```
 
-   func main() {
-       http.ListenAndServe(":8787", app.New())
-   }
-   ```
+Or compose with your Tailwind build:
 
-   Set `BASE_URL` to your production origin before deploying — canonical URLs, Open Graph tags, breadcrumb JSON-LD, and the sitemap all derive from it. Without it, absolute links point at the default `https://gelium-ui.example`:
+```css
+@import "tailwindcss";
+@import "gelium-ui/themes/theme-material.css";
+@import "gelium-ui/themes/theme-basecoat.css";
+@import "gelium-ui/styles/index.css";
+```
 
-   ```sh
-   BASE_URL=https://your-domain.example go run .
-   ```
+### 3. Theme class
 
-2. **Serve the stylesheet bundle.** The compiled single-file bundle (`/static/app.css`) carries every theme; link it once and switch directions at runtime:
+Material is the default direction. Set the class on the document root (no JS required):
 
-   ```html
-   <link rel="stylesheet" href="/static/app.css">
-   ```
+```html
+<html class="theme-material">
+<html class="theme-material theme-dark" data-theme="dark">
+<html class="theme-basecoat">
+```
 
-3. **Pick a theme.** Material is the default. Append `?theme=basecoat` to any URL to preview the Basecoat direction, use the Theme control in the docs topbar, or set the class directly on the document root (`<html class="theme-basecoat">`). Dark mode is an explicit class route too: `?scheme=dark` or `<html class="theme-basecoat theme-dark">`.
+On this docs site, preview with `?theme=basecoat` and `?scheme=dark`, or use the topbar controls.
 
-4. **Copy the partials you need.** Open any component page, copy its markup and its server contract, and paste it into your own templates. This is the open-code model: nothing is generated, nothing is hidden behind a runtime.
+### 4. Partials and optional JS
+
+Copy HTML from `node_modules/gelium-ui/templates/` (and the component pages on this site). Optional:
+
+```html
+<script defer src="node_modules/gelium-ui/js/gelium.js"></script>
+```
+
+Provides toast region wiring, HTMX 422 swap when `X-Gelium-Validation: true`, and related helpers.
+
+### Docs app only (this repository)
+
+The documentation handler is a Go module used to dogfood the library. Set `BASE_URL` for canonical URLs, Open Graph, and the sitemap when you deploy **this** site:
+
+```sh
+BASE_URL=https://your-domain.example go run .
+```
+
+Product UIs should depend on **npm `gelium-ui`**, not on embedding `internal/app` as a component library.
 
 ## Themes and the layer model
 
@@ -66,25 +87,12 @@ A theme never changes markup, component anatomy, or server contracts — only to
 
 ### Material (default)
 
-Material is the default direction, built on **Material 3 (M3)**, Google's design system. Gelium UI takes from M3 the *role-based* approach to design, not a copy of its components:
-
-- **Color roles, not fixed palettes** — `primary`, `secondary`, `tertiary`, `surface`, `error`, and their foregrounds are semantic roles; the theme supplies the values. This is why the same component contract works under a tonal M3 palette and under Basecoat's near-black ink.
-- **Type scale** — M3's display/headline/title/body/label hierarchy maps directly onto Gelium's `--ui-type-*` steps.
-- **States** — hover, pressed, focus, disabled, and loading follow M3's state-layer model, expressed through `--ui-state-*` opacity tokens.
-- **Elevation and shape** — tonal surfaces, rounded corners, and elevation levels (`--ui-shadow-0..5`, `--ui-radius-*`) come from M3's system.
-
-Gelium implements M3 as **token values in `themes/theme-material/theme.css`** — components never hardcode a Material look. M3 defines the *visual direction*; the layer model keeps it swappable, which is exactly why Basecoat can live in the same bundle. (Compare this with Base UI below: M3 contributes aesthetics and roles; Base UI contributes headless *behavior* vocabulary — two different influences, both documented.)
+Material is the default direction, built on **Material 3 (M3)** roles (color, type, state layers, elevation) expressed as token values in `gelium-ui/themes/theme-material.css` — not a copy of M3 React components.
 
 ### Basecoat
 
-Basecoat is the Phase I alternative direction — a translation of the Basecoat UI "Vega" style pack (a shadcn-compatible, Tailwind 4 CSS system) into the Gelium `--ui-*` vocabulary: near-black ink on white, hairline borders, soft shadows, a 0.625rem base radius, Geist typography, and 2.25rem control density. It ships in the same bundle as Material and is selected with `?theme=basecoat` or the `theme-basecoat` class. Both themes support the explicit `theme-dark` class route.
+Basecoat is the alternative direction in the same package (`gelium-ui/themes/theme-basecoat.css`): near-black ink on white, hairline borders, soft shadows, selected via `theme-basecoat` / `?theme=basecoat`. Both themes support the explicit `theme-dark` class route.
 
 ## Base UI: vocabulary, never runtime
 
-[Base UI](https://base-ui.com) is a React headless-primitive library that Gelium UI uses as a **vocabulary reference only** — focus management, component states, and keyboard-navigation patterns. It is **never a runtime dependency**: Base UI is React, and Gelium UI ships no React and no component JavaScript. When Gelium documents a "headless primitive" behavior, it implements that behavior natively with platform features (`:checked`, the Popover API, Invoker Commands) or server round-trips — the vocabulary is shared, the implementation is native.
-
-## Get started
-
-Read the [documentation](/docs) — the [component catalog](/docs) lists every component by category, generated from the same registry that drives the sidebar so it can never drift — or jump straight into a component: [Button](/components/button), [Text field](/components/text-field), [Dialog](/components/dialog), or [Toast](/components/toast).
-
-See the full library in action with the [WhatsApp manager demo](/demo/whatsapp).
+[Base UI](https://base-ui.com) is a React headless-primitive library that Gelium UI uses as a **vocabulary reference only** — focus management, component states, and keyboard-navigation patterns. It is **never a runtime dependency**: Base UI is React, and Gelium UI ships no React and no required component JavaScript. When Gelium documents a "headless primitive" behavior, it implements that behavior natively with platform features or server round-trips — the vocabulary is shared, the implementation is native.

@@ -200,7 +200,7 @@ func TestDocsIndexListsHandbook(t *testing.T) {
 		t.Error("docs hub must tell readers the full catalog is in the sidebar")
 	}
 	// Curated high-value handbook entry points (not the full handbookRoutes list).
-	for _, path := range []string{"/docs/screens", "/docs/journeys", "/docs/data-display", "/docs/feedback", "/docs/compare", "/docs/forms", "/docs/themes", "/docs/tokens", "/docs/performance"} {
+	for _, path := range []string{"/docs/screens", "/docs/journeys", "/docs/data-display", "/docs/feedback", "/docs/compare", "/docs/forms", "/docs/themes", "/docs/tokens", "/docs/performance", "/llms.txt", "/llms-ux.txt"} {
 		if !strings.Contains(body, `href="`+path+`"`) {
 			t.Errorf("docs hub Start here must link to %s", path)
 		}

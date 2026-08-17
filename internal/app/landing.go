@@ -95,12 +95,13 @@ type faqItemView struct {
 }
 
 // marketingLanding builds the home page composition from Gelium primitives.
+// Persuade mode: exactly one primary button on the page (hero Get started).
 func marketingLanding() landingView {
 	return landingView{
 		Hero: &heroView{
 			Eyebrow:  "Gelium UI",
 			Title:    "Server-rendered components. Zero required JS.",
-			Subtitle: "Open-code HTML and tokens for Go apps. Native semantics first, HTMX when you want it, themes that swap without a rebuild.",
+			Subtitle: "Open-code HTML and tokens for server apps. Install npm gelium-ui, pick a theme class, copy partials. HTMX when you want it.",
 			CTAs: []buttonView{
 				{Label: "Get started", Variant: "primary", Href: "/docs"},
 				{Label: "Browse components", Variant: "secondary", Href: "/components/button"},
@@ -121,7 +122,7 @@ func marketingLanding() landingView {
 			{
 				Title: "Native HTML first",
 				Body:  "Real buttons, dialogs, selects, and tables. ARIA only when the platform has no equivalent.",
-				CTA:   &buttonView{Label: "Read principles", Variant: "outline", Href: "/docs"},
+				CTA:   &buttonView{Label: "Read principles", Variant: "outline", Href: "/docs/principles"},
 			},
 			{
 				Title: "Tokens, not forks",
@@ -136,18 +137,20 @@ func marketingLanding() landingView {
 		},
 		Split: &splitView{
 			Eyebrow: "How it fits",
-			Title:   "Embed the handler. Copy the open code.",
-			Body:    "Gelium UI is an embeddable docs + component system, not an SPA runtime. Wire app.New() in Go, keep progressive enhancement optional, and dogfood every page against the real partials.",
-			CTA:     &buttonView{Label: "Open the docs shell", Variant: "primary", Href: "/docs"},
+			Title:   "Install the package. Copy the open code.",
+			Body:    "Consumers use npm gelium-ui (CSS, themes, templates, JS helpers). This docs site is a Go dogfood app — not the install path for product UI. Progressive enhancement stays optional.",
+			CTA:     &buttonView{Label: "Open the docs", Variant: "secondary", Href: "/docs"},
 			Media: template.HTML(
-				`<pre class="ui-landing-code" tabindex="0"><code>// BASE_URL=https://your-domain.example  → canonical origin (og:url, sitemap)
-http.ListenAndServe(":8787", app.New())
+				`<pre class="ui-landing-code" tabindex="0"><code>npm install gelium-ui
 
-// Contracts (stable)
-// GET  + query   → list state in the URL
-// POST + 303     → mutations
-// 422  + header  → field validation
-// HX-Trigger     → transient toast only</code></pre>`,
+/* CSS */
+@import "gelium-ui/dist/gelium.css";
+
+/* Theme on &lt;html&gt; */
+&lt;html class="theme-material"&gt;
+
+/* Optional */
+// gelium.js — toast + 422 helper</code></pre>`,
 			),
 		},
 		Demo: &landingDemoView{
@@ -156,8 +159,8 @@ http.ListenAndServe(":8787", app.New())
 				Title:    "A real app, running on Gelium",
 				Centered: true,
 			},
-			Body: "The WhatsApp manager demo — chat list, search, send, and templates — is a complete server-rendered app built from the same public components and tokens you embed.",
-			CTA:  buttonView{Label: "Launch live demo", Variant: "primary", Href: "/demo/whatsapp"},
+			Body: "The WhatsApp manager demo — chat list, search, send, and templates — is a complete server-rendered app built from the same public components and tokens you install.",
+			CTA:  buttonView{Label: "Launch live demo", Variant: "secondary", Href: "/demo/whatsapp"},
 			Media: template.HTML(
 				`<div class="ui-landing-demo-phone" aria-hidden="true">
   <div class="ui-landing-demo-phone-bar"></div>
@@ -179,17 +182,17 @@ http.ListenAndServe(":8787", app.New())
 				{
 					Title: "Admin Resource",
 					Body:  "Table, filters, create/edit forms, and delete confirm — server-driven end to end.",
-					CTA:   &buttonView{Label: "Open recipe", Variant: "secondary", Href: "/recipes/admin-resource"},
+					CTA:   &buttonView{Label: "Open recipe", Variant: "outline", Href: "/recipes/admin-resource"},
 				},
 				{
 					Title: "Ops Queue",
 					Body:  "FIFO work queue with advance/dequeue actions and refresh without a SPA.",
-					CTA:   &buttonView{Label: "Open recipe", Variant: "secondary", Href: "/recipes/ops-queue"},
+					CTA:   &buttonView{Label: "Open recipe", Variant: "outline", Href: "/recipes/ops-queue"},
 				},
 				{
 					Title: "Public Feed",
 					Body:  "Social-style feed composition with reactions and progressive enhancement.",
-					CTA:   &buttonView{Label: "Open recipe", Variant: "secondary", Href: "/recipes/public-feed"},
+					CTA:   &buttonView{Label: "Open recipe", Variant: "outline", Href: "/recipes/public-feed"},
 				},
 			},
 		},
@@ -202,7 +205,7 @@ http.ListenAndServe(":8787", app.New())
 			Items: []faqItemView{
 				{
 					Question: "Is Gelium UI a framework?",
-					Answer:   "No — it's a Go module you embed. app.New() returns an http.Handler your server mounts; there is no runtime to install and no service to run.",
+					Answer:   "No — the UI package is npm gelium-ui (HTML/CSS/tokens). This documentation site is a Go dogfood app; there is no SPA runtime to install and no service to run for components.",
 				},
 				{
 					Question: "Does it work with my existing stack?",
@@ -210,7 +213,7 @@ http.ListenAndServe(":8787", app.New())
 				},
 				{
 					Question: "How does it differ from a React component library?",
-					Answer:   "No component JavaScript and no build step for consumers — Gelium ships server contracts instead of props, and the server renders the HTML.",
+					Answer:   "No component JavaScript and no framework runtime for consumers — Gelium ships server contracts instead of props, and the server renders the HTML.",
 				},
 				{
 					Question: "Can I switch themes?",
@@ -224,10 +227,11 @@ http.ListenAndServe(":8787", app.New())
 				Title:    "Ship UI that works without JavaScript",
 				Centered: true,
 			},
-			CTA: buttonView{Label: "Read the docs", Variant: "primary", Href: "/docs"},
+			// Secondary only — hero already owns the single primary (Persuade / Screens).
+			CTA: buttonView{Label: "Read the docs", Variant: "secondary", Href: "/docs"},
 			SecondaryCTA: &buttonView{
 				Label:   "View source",
-				Variant: "secondary",
+				Variant: "outline",
 				Href:    "https://github.com/cryptonahue/gelium-ui",
 			},
 		},
@@ -240,6 +244,7 @@ func homeLandingNav() []navLink {
 		{Path: "/docs", Label: "Docs"},
 		{Path: "/components/button", Label: "Components"},
 		{Path: "/recipes/admin-resource", Label: "Recipes"},
+		{Path: "/docs/agent-workflow", Label: "Agents"},
 		{Path: "/demo/whatsapp", Label: "Demo"},
 	}
 }

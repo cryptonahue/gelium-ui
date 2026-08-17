@@ -36,11 +36,17 @@ func TestLandingGitHubLinkStaysClean(t *testing.T) {
 	}
 }
 
-// TestLandingCodeSampleDocumentsBaseURL proves the landing code sample tells
-// deployers about the BASE_URL environment variable (canonical origin).
-func TestLandingCodeSampleDocumentsBaseURL(t *testing.T) {
+// TestLandingCodeSampleDocumentsNpmInstall proves the landing code sample
+// teaches the consumer install path (npm gelium-ui), not embedding internal/app.
+func TestLandingCodeSampleDocumentsNpmInstall(t *testing.T) {
 	body := getOKBody(t, "/")
-	if !strings.Contains(body, "BASE_URL=") {
-		t.Error("landing code sample must document BASE_URL for deployers")
+	for _, want := range []string{
+		"npm install gelium-ui",
+		"gelium-ui/dist/gelium.css",
+		"theme-material",
+	} {
+		if !strings.Contains(body, want) {
+			t.Errorf("landing code sample missing %q", want)
+		}
 	}
 }

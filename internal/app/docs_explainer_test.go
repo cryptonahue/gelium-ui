@@ -10,8 +10,8 @@ import (
 	webassets "geliumui/site/web"
 )
 
-// TestDocsIndexRendersExplainer proves the /docs hub leads with the expanded
-// docs root: what Gelium UI is, how to use it, and the theme/layer model.
+// TestDocsIndexRendersExplainer proves the /docs hub keeps the deep-dive essay
+// (quick start, themes, Base UI) after Start here orientation.
 func TestDocsIndexRendersExplainer(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/docs", nil))
@@ -20,26 +20,34 @@ func TestDocsIndexRendersExplainer(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
+		">Start here</h2>",
+		">Deep dive</h2>",
 		"Quick start",
+		"npm install gelium-ui",
 		"Themes and the layer model",
 		"Base UI",
 		"BASE_URL",
 		"?theme=basecoat",
 		"https://github.com/cryptonahue/gelium-ui",
+		"gelium-ui/themes/theme-material.css",
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("docs index is missing explainer content %q", contract)
 		}
 	}
-	// Exactly one H1: the shell hub title. The embedded docs root must not
-	// bring a second heading level 1 into the page.
+	start := strings.Index(body, ">Start here</h2>")
+	deep := strings.Index(body, ">Deep dive</h2>")
+	if start < 0 || deep < 0 || start > deep {
+		t.Fatalf("Start here must precede Deep dive (idxs %d, %d)", start, deep)
+	}
+	// Exactly one H1: the shell hub title.
 	if count := strings.Count(body, "<h1"); count != 1 {
 		t.Errorf("docs index must render exactly one h1, got %d", count)
 	}
 }
 
 // TestContentIndexExplainsLibrary proves the embedded docs root file itself
-// carries the explainer sections (WHAT / HOW / themes / Base UI).
+// carries the explainer sections (npm-first quick start / themes / Base UI).
 func TestContentIndexExplainsLibrary(t *testing.T) {
 	source, err := fs.ReadFile(webassets.Assets, "content/index.md")
 	if err != nil {
@@ -48,15 +56,20 @@ func TestContentIndexExplainsLibrary(t *testing.T) {
 	content := string(source)
 	for _, section := range []string{
 		"Quick start",
+		"npm install gelium-ui",
 		"Themes and the layer model",
 		"Base UI",
 		"BASE_URL",
 		"?theme=basecoat",
 		"https://github.com/cryptonahue/gelium-ui",
+		"gelium-ui/themes/theme-material.css",
 	} {
 		if !strings.Contains(content, section) {
 			t.Errorf("content/index.md is missing %q", section)
 		}
+	}
+	if strings.Contains(content, "themes/theme-material/theme.css") {
+		t.Error("content/index.md must not use legacy nested theme path")
 	}
 }
 

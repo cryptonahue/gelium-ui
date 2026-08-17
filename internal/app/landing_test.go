@@ -46,7 +46,7 @@ func TestLandingPrimaryNavIsCompact(t *testing.T) {
 	}
 	body := res.Body.String()
 	// Compact marketing nav — not the full 28-component dump.
-	for _, label := range []string{">Docs<", ">Components<", ">Recipes<", ">Demo<"} {
+	for _, label := range []string{">Docs<", ">Components<", ">Recipes<", ">Agents<", ">Demo<"} {
 		if !strings.Contains(body, label) {
 			t.Errorf("landing header missing nav label marker %q", label)
 		}
@@ -66,5 +66,22 @@ func TestLandingPrimaryNavIsCompact(t *testing.T) {
 	}
 	if !strings.Contains(primary, `href="/docs"`) {
 		t.Error("primary nav must link Docs")
+	}
+	if !strings.Contains(primary, `href="/docs/agent-workflow"`) {
+		t.Error("primary nav must link Agents workflow")
+	}
+}
+
+// TestLandingSinglePrimaryCTA proves Persuade hierarchy: one filled primary
+// button on the marketing home (hero Get started).
+func TestLandingSinglePrimaryCTA(t *testing.T) {
+	body := getOKBody(t, "/")
+	// Class token is "ui-button-primary" as a whole word in class attrs.
+	n := strings.Count(body, "ui-button-primary")
+	if n != 1 {
+		t.Fatalf("landing must render exactly one ui-button-primary, got %d", n)
+	}
+	if !strings.Contains(body, "Get started") {
+		t.Error("landing primary must remain Get started")
 	}
 }

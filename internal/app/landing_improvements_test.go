@@ -27,7 +27,7 @@ func TestLandingShowsFAQ(t *testing.T) {
 	qa := []struct{ question, answer string }{
 		{
 			question: "Is Gelium UI a framework?",
-			answer:   "no runtime to install",
+			answer:   "no SPA runtime to install",
 		},
 		{
 			question: "Does it work with my existing stack?",
@@ -101,8 +101,8 @@ func TestLandingDemoCard(t *testing.T) {
 			t.Errorf("landing demo card missing %q", want)
 		}
 	}
-	if !strings.Contains(body, `class="ui-button ui-button-primary" href="/demo/whatsapp"`) {
-		t.Error("landing demo card primary CTA must link /demo/whatsapp")
+	if !strings.Contains(body, `class="ui-button ui-button-secondary" href="/demo/whatsapp"`) {
+		t.Error("landing demo card CTA must be secondary and link /demo/whatsapp")
 	}
 }
 
@@ -114,7 +114,7 @@ func TestLandingDemoCard(t *testing.T) {
 func TestLandingDemoCardKeepsChrome(t *testing.T) {
 	body := getOKBody(t, "/?theme=basecoat&scheme=dark")
 
-	anchor := `class="ui-button ui-button-primary" href="/demo/whatsapp?`
+	anchor := `class="ui-button ui-button-secondary" href="/demo/whatsapp?`
 	i := strings.Index(body, anchor)
 	if i < 0 {
 		t.Fatalf("demo card CTA missing (anchor %q)", anchor)
