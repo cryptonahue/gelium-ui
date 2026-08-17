@@ -312,11 +312,11 @@ func stripDocsRootH1(source string) string {
 	return source
 }
 
-// docsIndex is the GET /docs handler. It renders a Markdown page whose content
-// is generated from the same componentRoutes registry that drives the nav, so
-// the index can never drift from the actual library. The embedded docs root
-// (web/content/index.md) leads the page so the hub explains what Gelium UI is
-// and how to use it before cataloging the library.
+// docsIndex is the GET /docs handler. It is an orientation hub, not a second
+// sidebar: the embedded docs root (content/index.md) explains what Gelium is
+// and how to start, then a short "Start here" list points at high-value
+// handbook pages. The full Handbook and component catalog live in the docs
+// shell sidebar (and footer) — this body must not re-list every destination.
 func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	var md string
 	if source, err := fs.ReadFile(s.assets, docsRootLeadSource); err == nil {
@@ -325,28 +325,25 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 		}
 	}
 	md += "# Documentation\n\n"
-	md += "The Gelium UI documentation, ordered concept before reference: the Handbook explains how the library works, then the component reference is organized by category. Every page is dogfooded: it renders the real component it documents.\n\n"
-	md += "## Handbook\n\n"
-	md += "How Gelium UI works: information architecture, themes, tokens, server contracts, accessibility, and the principles behind the library.\n\n"
-	for _, link := range handbookNavLinks {
-		md += "- [" + link.Label + "](" + link.Path + ")\n"
-	}
-	md += "\n"
-	for _, section := range docsSections {
-		md += "## " + section.Title + "\n\n"
-		md += section.Intro + "\n\n"
-		for _, link := range section.Links {
-			md += "- [" + link.Label + "](" + link.Path + ")\n"
-		}
-		md += "\n"
-	}
-	md += "\n## Demos\n\n"
-	md += "- [WhatsApp manager](/demo/whatsapp) — a complete chat application built with the library.\n"
-	md += "\n## Screen recipes\n\n"
-	md += "Phase G screen recipes — full screens composed from the library primitives on the canonical server contract.\n\n"
-	md += "- [Admin Resource](/recipes/admin-resource) — a server-rendered resource manager (Data table + form + dialog + banner).\n"
-	md += "- [Ops Queue](/recipes/ops-queue) — a work queue with avatar, tone badges and POST+303 transitions.\n"
-	md += "- [Public/Social Feed](/recipes/public-feed) — a reverse-chronological activity feed with views, reactions and loading states.\n"
+	md += "This hub orients you. The **sidebar** is the map: Handbook concepts and the full component reference stay there so this page does not repeat them.\n\n"
+	md += "## Start here\n\n"
+	md += "High-value entry points (not the full catalog):\n\n"
+	md += "- [Why Gelium](/docs/compare) — when to use Gelium vs React/headless kits, and explicit no-gos.\n"
+	md += "- [Forms contract](/docs/forms) — labels, `inputmode`/`type`, autocomplete, validate after interaction.\n"
+	md += "- [Themes](/docs/themes) — class-based direction; dark is a class route, not media-only.\n"
+	md += "- [Tokens](/docs/tokens) — `--ui-*` ownership (core vs theme vs component).\n"
+	md += "- [Performance](/docs/performance) — ~50KB JS stance; CSS is the largest asset by design.\n"
+	md += "- [Diseño responsive](/docs/responsive) — pantallas, no dispositivos (ES).\n"
+	md += "- [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) — install the package consumers get.\n"
+	md += "- [Agent brief](/llms.txt) — machine-readable project summary.\n\n"
+	md += "## Use the sidebar\n\n"
+	md += "Every Handbook page and every component is already linked in the left nav (desktop) and the mobile docs menu. Jump from there for reference; come back here for the story and the start list.\n\n"
+	md += "## Try a full screen\n\n"
+	md += "Composed recipes and demos (also in the nav under Recipes / outside the handbook):\n\n"
+	md += "- [Admin Resource](/recipes/admin-resource) — data table + form + dialog on the server contract.\n"
+	md += "- [Ops Queue](/recipes/ops-queue) — work queue with POST+303 transitions.\n"
+	md += "- [Public/Social Feed](/recipes/public-feed) — feed with reactions and loading states.\n"
+	md += "- [WhatsApp manager](/demo/whatsapp) — larger composed demo.\n"
 	s.renderMarkdown(w, r, pageView{Title: "Documentation"}, md, "/docs")
 }
 

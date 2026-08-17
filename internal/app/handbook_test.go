@@ -143,13 +143,17 @@ func TestHandbookGroupPrecedesComponentSections(t *testing.T) {
 
 	t.Run("hub render order", func(t *testing.T) {
 		body := getOKBody(t, "/docs")
-		handbook := strings.Index(body, ">Handbook</h2>")
-		foundation := strings.Index(body, ">Foundation</h2>")
-		if handbook < 0 || foundation < 0 {
-			t.Fatalf("docs hub must render Handbook and Foundation sections (idxs %d, %d)", handbook, foundation)
+		start := strings.Index(body, ">Start here</h2>")
+		try := strings.Index(body, ">Try a full screen</h2>")
+		if start < 0 || try < 0 {
+			t.Fatalf("docs hub must render Start here and Try a full screen (idxs %d, %d)", start, try)
 		}
-		if handbook > foundation {
-			t.Errorf("hub must lead with Handbook before component sections, got Handbook idx %d > Foundation idx %d", handbook, foundation)
+		if start > try {
+			t.Errorf("hub must lead with Start here before recipes/demos, got Start %d > Try %d", start, try)
+		}
+		// Hub must not re-list component category H2s (sidebar owns that IA).
+		if strings.Contains(body, ">Foundation</h2>") || strings.Contains(body, ">Actions</h2>") {
+			t.Error("docs hub body must not dump component category headings")
 		}
 	})
 }
@@ -171,8 +175,9 @@ func TestHandbookPagesInSitemap(t *testing.T) {
 	}
 }
 
-// TestDocsIndexListsHandbook proves the /docs hub leads readers to the
-// Handbook: a Handbook section with every page linked from the hub body.
+// TestDocsIndexListsHandbook proves the /docs hub points readers into the
+// Handbook without dumping every handbook destination (those live in the
+// sidebar). A curated Start here set is enough.
 func TestDocsIndexListsHandbook(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/docs", nil))
@@ -180,12 +185,20 @@ func TestDocsIndexListsHandbook(t *testing.T) {
 		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
 	}
 	body := res.Body.String()
-	if !strings.Contains(body, ">Handbook</h2>") {
-		t.Error("docs hub must include a Handbook section")
+	if !strings.Contains(body, ">Start here</h2>") {
+		t.Error("docs hub must include a Start here section")
 	}
-	for _, hb := range handbookRoutes {
-		if !strings.Contains(body, `href="`+hb.path+`"`) {
-			t.Errorf("docs hub must link to %s", hb.path)
+	if !strings.Contains(body, "sidebar") {
+		t.Error("docs hub must tell readers the full catalog is in the sidebar")
+	}
+	// Curated high-value handbook entry points (not the full handbookRoutes list).
+	for _, path := range []string{"/docs/compare", "/docs/forms", "/docs/themes", "/docs/tokens", "/docs/performance"} {
+		if !strings.Contains(body, `href="`+path+`"`) {
+			t.Errorf("docs hub Start here must link to %s", path)
 		}
+	}
+	// No full-catalog H2 dump (sidebar owns Handbook + component groups).
+	if strings.Contains(body, ">Handbook</h2>") || strings.Contains(body, ">Foundation</h2>") {
+		t.Error("docs hub must not dump Handbook/Foundation catalog headings (sidebar owns that)")
 	}
 }

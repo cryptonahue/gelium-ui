@@ -40,16 +40,16 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 | Recipes mobile — admin/ops/feed headers stack + table/list containment under ~40rem (no overflow-x:hidden) | ✅ Shipped |
 | Forms contract `/docs/forms` — label above, inputmode/type, autocomplete, validate after interaction | ✅ Shipped |
 | Performance stance `/docs/performance` — ~50KB JS / CSS-as-largest-asset as product stance | ✅ Shipped |
+| Theme polish — family ownership matrix, lib/themes paths, dark class-only docs | ✅ Shipped |
+| Layout utilities — `.ui-container`, `.ui-row-from-desktop`, prose measure ≤75ch (65ch) | ✅ Shipped |
+| Responsive chapter `/docs/responsive` — pantallas, no dispositivos (ES) | ✅ Shipped |
+| Docs hub `/docs` — orientation Start here (no sidebar catalog dump) | ✅ Shipped |
 
 ## What is next (ordered by value, owner reprioritizes freely)
 
 ```text
 1.  SEO productization    BASE_URL configurable + real og.png (when there is a domain)
-2.  Theme polish          dark routine already single; scoped ownership of families
-3.  Grid/container        -from-desktop modifiers, per-component reflow line (M3 swap
-                         style), prose measure ≤75ch check
-4.  Responsive chapter    "design for screen sizes, not devices" in served docs (ES)
-5.  Optional expansion    third theme · registry JSON runtime · iframe srcdoc demos ·
+2.  Optional expansion    third theme · registry JSON runtime · iframe srcdoc demos ·
                          drawer menu upgrade · demo height presets · VT docs chapter ·
                          date-input pattern (3 inputs, inputmode numeric)
 ```
