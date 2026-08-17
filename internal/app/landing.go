@@ -4,6 +4,8 @@ import (
 	"bytes"
 	"html/template"
 	"net/http"
+
+	"geliumui/lib"
 )
 
 // landingView is the marketing home composition. Every section dogfoods an
@@ -257,6 +259,7 @@ func (s *server) home(w http.ResponseWriter, r *http.Request) {
 func (s *server) renderLanding(w http.ResponseWriter, r *http.Request, data pageView) {
 	routePath := "/"
 	data.Meta = resolveMeta(data, routePath)
+	data.AssetsVersion = lib.AssetsVersion
 	if data.Footer == nil {
 		data.Footer = defaultFooter()
 	}

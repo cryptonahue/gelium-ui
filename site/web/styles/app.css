@@ -1,13 +1,15 @@
 @import "tailwindcss";
-@import "../../../lib/styles/index.css";
+@import "../../../themes/theme-material/theme.css";
+@import "../../../themes/theme-basecoat/theme.css";
+@import "gelium-ui/styles/index.css";
 /*
  * Theme bundle (Phase H mechanism): themes ship as themes/<name>/theme.css
  * with their own root selector (.theme-<name>, light + dark self-contained)
- * and are imported by the lib manifest (lib/styles/index.css) so the cascade
+ * and are imported by the site entry BEFORE the lib manifest so the cascade
  * order is core defaults -> theme overrides -> components. Selection happens
  * at runtime by class on the document root ({{.ThemeClass}}, allowlisted
- * server-side): no JS, no rebuild. Add a theme by importing it in the lib
- * manifest and allowlisting its class in themeClass() (internal/app/server.go).
+ * server-side): no JS, no rebuild. Add a theme by importing it here and
+ * allowlisting its class in themeClass() (internal/app/server.go).
  */
 @import "./examples.css";
 @import "./docs-shell.css";

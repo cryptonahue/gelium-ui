@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"geliumui/lib"
 	"html/template"
 	"net/http"
 	"sort"
@@ -106,6 +107,7 @@ type whatsAppChatView struct {
 
 // whatsAppDemoView is the main app page.
 type whatsAppDemoView struct {
+	AssetsVersion string
 	Conversations []whatsAppConversationView
 	ActiveChat    *whatsAppChatView
 	Search        string
@@ -139,6 +141,7 @@ type whatsAppWebhookDeliveryView struct {
 
 // whatsAppAdminView is the admin/dev section.
 type whatsAppAdminView struct {
+	AssetsVersion       string
 	Numbers             []whatsAppNumberView
 	QRCodes             []whatsAppQRView
 	Deliveries          []whatsAppWebhookDeliveryView
@@ -542,6 +545,7 @@ func (s *server) whatsAppDemo(w http.ResponseWriter, r *http.Request) {
 		chat = whatsAppDemoStore.chat(activeID, now)
 	}
 	s.templates.ExecuteTemplate(w, "demo-whatsapp", whatsAppDemoView{
+		AssetsVersion: lib.AssetsVersion,
 		Conversations: conversations,
 		ActiveChat:    chat,
 		Search:        search,
@@ -552,6 +556,7 @@ func (s *server) whatsAppDemo(w http.ResponseWriter, r *http.Request) {
 
 func (s *server) whatsAppAdmin(w http.ResponseWriter, r *http.Request) {
 	view := whatsAppDemoStore.adminView(time.Now())
+	view.AssetsVersion = lib.AssetsVersion
 	view.ActiveTab = "numbers"
 	view.ThemeClass = themeClass(themeFromRequest(r))
 	view.Meta = demoMetaES

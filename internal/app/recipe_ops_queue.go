@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"geliumui/lib"
 	"net/http"
 	"net/url"
 	"sort"
@@ -167,6 +168,8 @@ func (s *recipeQueueStore) takeBanner() *bannerView {
 // + the queue panel (two-line List rows composed from Avatar + Badge tone +
 // Button) + standalone pagination + the remote refresh form.
 type recipeOpsQueueView struct {
+	AssetsVersion string
+
 	Meta          metaView
 	ThemeClass    string
 	DataTheme     string
@@ -357,6 +360,7 @@ func newRecipeOpsQueueView(statusParam, kindParam, page string, banner *bannerVi
 	)
 
 	return &recipeOpsQueueView{
+		AssetsVersion: lib.AssetsVersion,
 		Meta:          meta,
 		ThemeClass:    themeClass(""),
 		Title:         "Work queue",

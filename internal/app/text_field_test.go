@@ -362,8 +362,8 @@ func TestTextFieldFormAndLocalScriptImplementHTMX422SwapContract(t *testing.T) {
 			t.Errorf("validation form is missing %s", attribute)
 		}
 	}
-	htmxIndex := strings.Index(body, `src="/static/htmx.min.js?v=0.5.2"`)
-	appIndex := strings.Index(body, `src="/static/app.js?v=0.5.2"`)
+	htmxIndex := strings.Index(body, `src="/static/htmx.min.js?v=0.5.3"`)
+	appIndex := strings.Index(body, `src="/static/app.js?v=0.5.3"`)
 	if htmxIndex < 0 || appIndex < 0 || appIndex < htmxIndex {
 		t.Error("local app.js must load after local HTMX")
 	}

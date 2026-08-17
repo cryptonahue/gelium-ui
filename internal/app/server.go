@@ -746,6 +746,10 @@ type prevNextView struct {
 type pageView struct {
 	Meta  metaView
 	Title string
+	// AssetsVersion is the single cache-busting version for static asset URLs
+	// (rendered as ?v={{.AssetsVersion}} in templates). Centralized in
+	// geliumui/lib so package, Go, and template surfaces cannot drift.
+	AssetsVersion string
 	// H1 is the leading level-1 heading of a component page, rendered as its
 	// own block so the live demo can sit between the title and the body
 	// (Base UI/Naive UI order: show the component, then the rules). Empty on
@@ -1083,10 +1087,11 @@ func (s *server) notFound(w http.ResponseWriter, r *http.Request) {
 func (s *server) renderErrorPage(w http.ResponseWriter, status int, title, body string, retry bool, href, label, routePath string) {
 	var page bytes.Buffer
 	data := pageView{
-		Title:      title,
-		ThemeClass: themeClass(""),
-		Nav:        navLinks(),
-		Footer:     defaultFooter(),
+		Title:         title,
+		ThemeClass:    themeClass(""),
+		Nav:           navLinks(),
+		Footer:        defaultFooter(),
+		AssetsVersion: lib.AssetsVersion,
 		Error: &errorStateView{
 			StatusCode: status,
 			Title:      title,
@@ -1231,6 +1236,7 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 	// component, then the rules). Non-component pages (no leading H1) keep
 	// the whole source in Content as before.
 	source, h1 := splitLeadingH1(source)
+	data.AssetsVersion = lib.AssetsVersion
 	var rendered bytes.Buffer
 	if err := s.markdown.Convert([]byte(source), &rendered); err != nil {
 		s.renderErrorPage(w, http.StatusInternalServerError, "Something went wrong", "This page could not be rendered. Please try again later.", true, "/", "Back to home", routePath)

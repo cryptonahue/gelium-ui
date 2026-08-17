@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"fmt"
+	"geliumui/lib"
 	"net/http"
 	"sort"
 	"strconv"
@@ -189,6 +190,8 @@ func recipeResourceSlug(name string) string {
 // remote refresh form. The columns, page links and empty state reuse the Data
 // table view models.
 type recipeAdminResourceView struct {
+	AssetsVersion string
+
 	Meta            metaView
 	ThemeClass      string
 	DataTheme       string
@@ -236,6 +239,7 @@ type recipeResourceRowView struct {
 // failures re-render this view with the inline alert + validation summary set
 // and per-field errors, preserving the submitted values.
 type recipeAdminResourceFormView struct {
+	AssetsVersion string
 	Meta          metaView
 	ThemeClass    string
 	DataTheme     string
@@ -265,13 +269,14 @@ type recipeStatusOption struct {
 // page variant (real native <dialog open>) with the destructive action as a
 // real POST form.
 type recipeAdminResourceConfirmView struct {
-	Meta        metaView
-	ThemeClass  string
-	DataTheme   string
-	Item        recipeResource
-	DeleteHref  string
-	DeleteLabel string
-	ListHref    string
+	AssetsVersion string
+	Meta          metaView
+	ThemeClass    string
+	DataTheme     string
+	Item          recipeResource
+	DeleteHref    string
+	DeleteLabel   string
+	ListHref      string
 }
 
 // validationSummaryView is the production view model for the shared
@@ -358,12 +363,13 @@ func (s *server) recipeAdminResourceDeleteConfirm(w http.ResponseWriter, r *http
 		return
 	}
 	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-confirm", recipeAdminResourceConfirmView{
-		Meta:        recipeAdminMeta("Delete "+item.Name+" · Admin Resource recipe", "Confirm the deletion of a project in the Admin Resource screen recipe.", "/recipes/admin-resource/"+id+"/delete"),
-		ThemeClass:  themeClass(""),
-		Item:        item,
-		DeleteHref:  "/recipes/admin-resource/" + id + "/delete",
-		DeleteLabel: "Delete " + item.Name,
-		ListHref:    "/recipes/admin-resource",
+		AssetsVersion: lib.AssetsVersion,
+		Meta:          recipeAdminMeta("Delete "+item.Name+" · Admin Resource recipe", "Confirm the deletion of a project in the Admin Resource screen recipe.", "/recipes/admin-resource/"+id+"/delete"),
+		ThemeClass:    themeClass(""),
+		Item:          item,
+		DeleteHref:    "/recipes/admin-resource/" + id + "/delete",
+		DeleteLabel:   "Delete " + item.Name,
+		ListHref:      "/recipes/admin-resource",
 	})
 }
 
@@ -604,6 +610,7 @@ func newRecipeAdminResourceView(q, sortParam, dir, page string, selection []stri
 	)
 
 	return &recipeAdminResourceView{
+		AssetsVersion:   lib.AssetsVersion,
 		Meta:            meta,
 		ThemeClass:      themeClass(""),
 		Title:           "Projects",
@@ -715,6 +722,7 @@ func newRecipeAdminResourceFormView(mode, id, name, status, date, owner string, 
 	}
 
 	return recipeAdminResourceFormView{
+		AssetsVersion: lib.AssetsVersion,
 		Meta:          recipeAdminMeta(title, description, routePath),
 		ThemeClass:    themeClass(""),
 		Heading:       heading,

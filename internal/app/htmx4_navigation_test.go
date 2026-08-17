@@ -18,7 +18,7 @@ func TestHTMX4NavigationContract(t *testing.T) {
 		`&quot;history&quot;:true`,
 		`&quot;morphSkip&quot;`,
 		`&quot;morphIgnore&quot;`,
-		`/static/morph-afterswap.js?v=0.5.2`,
+		`/static/morph-afterswap.js?v={{.AssetsVersion}}`,
 	} {
 		if !strings.Contains(layout, contract) {
 			t.Errorf("layout is missing HTMX 4 contract %q", contract)

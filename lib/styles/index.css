@@ -1,12 +1,9 @@
 /* Gelium UI component styles manifest (package entry).
- * NO tailwindcss import: consumers add their own Tailwind entry and import
- * this file after it (or use the prebuilt dist). Tokens + themes are
- * imported here so the cascade order is identical to the docs build:
- * core defaults → theme overrides → components.
+ * NO tailwindcss import and NO theme imports: consumers add their own
+ * Tailwind entry, import the themes they own, then import this file so the
+ * cascade order is core defaults → consumer themes → components.
  */
 @import "./tokens.css";
-@import "../../themes/theme-material/theme.css";
-@import "../../themes/theme-basecoat/theme.css";
 @import "./base.css";
 @import "./avatar.css";
 @import "./badge.css";

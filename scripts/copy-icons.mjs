@@ -15,7 +15,11 @@ import { dirname } from "node:path";
 import { fileURLToPath } from "node:url";
 
 const ROOT = dirname(fileURLToPath(import.meta.url)) + "/..";
-const SRC = ROOT + "/node_modules/@material-symbols/svg-400/rounded";
+// Resolve the icon package through Node's module resolution (works under npm
+// workspace hoisting: the package may live at the root node_modules or
+// nested under site/node_modules — never hardcode ../node_modules).
+const ICON_ROOT = dirname(fileURLToPath(import.meta.resolve("@material-symbols/svg-400/package.json")));
+const SRC = ICON_ROOT + "/rounded";
 const OUT = ROOT + "/internal/app/icons.go";
 
 // Allowlist: names resolve to <name>.svg in @material-symbols/svg-400/rounded.

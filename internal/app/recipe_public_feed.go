@@ -2,6 +2,7 @@ package app
 
 import (
 	"fmt"
+	"geliumui/lib"
 	"net/http"
 	"net/url"
 	"sort"
@@ -177,6 +178,8 @@ type skeletonView struct {
 // selector) + the feed panel (Card list + empty state + standalone pagination)
 // + the documented Skeleton loading placeholder + the remote refresh form.
 type recipeFeedView struct {
+	AssetsVersion string
+
 	Meta         metaView
 	ThemeClass   string
 	DataTheme    string
@@ -357,18 +360,19 @@ func newRecipeFeedView(viewParam, page string, flash *toastView) *recipeFeedView
 	)
 
 	return &recipeFeedView{
-		Meta:        meta,
-		ThemeClass:  themeClass(""),
-		Title:       "Latest activity",
-		Description: "The Public/Social Feed screen recipe: a server-rendered activity feed composed from Card, Avatar, Badge, Tabs, Skeleton, Empty state, Button and Toast.",
-		ViewValue:   viewValue,
-		Views:       views,
-		Items:       rows,
-		Caption:     fmt.Sprintf("%d posts · page %d of %d", total, pageNum, totalPages),
-		Pagination:  pagination,
-		EmptyState:  recipeFeedEmptyState(viewValue),
-		Skeleton:    &skeletonView{Avatar: true, Label: "Loading the feed", Lines: []int{1, 2, 3}},
-		FlashToast:  flash,
+		AssetsVersion: lib.AssetsVersion,
+		Meta:          meta,
+		ThemeClass:    themeClass(""),
+		Title:         "Latest activity",
+		Description:   "The Public/Social Feed screen recipe: a server-rendered activity feed composed from Card, Avatar, Badge, Tabs, Skeleton, Empty state, Button and Toast.",
+		ViewValue:     viewValue,
+		Views:         views,
+		Items:         rows,
+		Caption:       fmt.Sprintf("%d posts · page %d of %d", total, pageNum, totalPages),
+		Pagination:    pagination,
+		EmptyState:    recipeFeedEmptyState(viewValue),
+		Skeleton:      &skeletonView{Avatar: true, Label: "Loading the feed", Lines: []int{1, 2, 3}},
+		FlashToast:    flash,
 	}
 }
 

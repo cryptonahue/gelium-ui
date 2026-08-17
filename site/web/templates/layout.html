@@ -14,12 +14,12 @@
   {{if .Meta.OGImage}}<meta property="og:image" content="{{.Meta.OGImage}}">{{end}}
   <meta name="twitter:card" content="{{if .Meta.OGImage}}summary_large_image{{else}}summary{{end}}">{{end}}
   {{if .Meta.JSONLD}}<script type="application/ld+json">{{.Meta.JSONLD}}</script>{{end}}
-  <link rel="stylesheet" href="/static/app.css?v=0.5.2">
+  <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
   <meta name="htmx-config" content="{&quot;history&quot;:true,&quot;defaultFocusScroll&quot;:false,&quot;morphSkip&quot;:[&quot;[data-htmx-preserve]&quot;],&quot;morphIgnore&quot;:[&quot;data-htmx-powered&quot;,&quot;data-gelium-preserve&quot;]}" />
-  <script defer src="/static/htmx.min.js?v=0.5.2"></script>
-  <script defer src="/static/app.js?v=0.5.2"></script>
-  <script defer src="/static/search.js?v=0.5.2"></script>
-  <script defer src="/static/morph-afterswap.js?v=0.5.2"></script>
+  <script defer src="/static/htmx.min.js?v={{.AssetsVersion}}"></script>
+  <script defer src="/static/app.js?v={{.AssetsVersion}}"></script>
+  <script defer src="/static/search.js?v={{.AssetsVersion}}"></script>
+  <script defer src="/static/morph-afterswap.js?v={{.AssetsVersion}}"></script>
 </head>
 <body hx-boost:inherited="true" hx-swap:inherited="innerMorph" hx-push-url:inherited="true" hx-history-elt>
   <a class="ui-skip-link" href="#main-content">Skip to main content</a>

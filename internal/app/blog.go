@@ -7,6 +7,8 @@ import (
 	"math"
 	"net/http"
 	"strings"
+
+	"geliumui/lib"
 )
 
 // blogPostSummary is one card on the blog index: the metadata that makes a
@@ -152,6 +154,7 @@ func (s *server) blogPost(w http.ResponseWriter, r *http.Request) {
 func (s *server) renderBlog(w http.ResponseWriter, r *http.Request, data pageView) {
 	routePath := requestPath(r)
 	data.Meta = resolveMeta(data, routePath)
+	data.AssetsVersion = lib.AssetsVersion
 	if data.Footer == nil {
 		data.Footer = defaultFooter()
 	}
