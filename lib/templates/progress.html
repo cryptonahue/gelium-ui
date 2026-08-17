@@ -24,5 +24,14 @@
       <label class="progress-demo-caption" for="progress-indeterminate">Indeterminate</label>
     </div>
   </div>
+  <div class="progress-demo-item">
+    <div class="ui-progress ui-progress--circular" role="status" aria-labelledby="progress-circular-caption">
+      <span class="ui-progress-circle" aria-hidden="true"></span>
+    </div>
+    <!-- The circular ring names itself from this visible caption (G6): the
+         wrapper's accessible name is the linked caption, never a shadowing
+         aria-label. -->
+    <p class="progress-demo-caption" id="progress-circular-caption">Circular indeterminate</p>
+  </div>
 </div>
 {{end}}

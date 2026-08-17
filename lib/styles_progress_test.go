@@ -19,6 +19,9 @@ func TestProgressPrimitiveCSSMapsNativeProgressAndStates(t *testing.T) {
 		`::-webkit-progress-value {`,
 		`var(--ui-progress-indicator)`,
 		`::-moz-progress-bar {`,
+		`.ui-progress--circular {`,
+		`.ui-progress-circle {`,
+		`animation: ui-spin .8s linear infinite;`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("source CSS is missing progress contract %q", contract)
@@ -33,10 +36,22 @@ func TestProgressPrimitiveCSSMapsNativeProgressAndStates(t *testing.T) {
 	for _, contract := range []string{
 		`::-webkit-progress-value`,
 		`::-moz-progress-bar`,
+		`.ui-progress-circle`,
+		`border-top-color: Highlight;`,
 	} {
 		if !strings.Contains(forced, contract) {
 			t.Errorf("progress must stay distinguishable in forced colors; missing %q", contract)
 		}
+	}
+}
+
+func TestProgressCircularVariantStopsUnderReducedMotion(t *testing.T) {
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceComponentCSS(t, "progress.css"), " ")
+	if !strings.Contains(css, `@media (prefers-reduced-motion: reduce)`) {
+		t.Error("progress.css must include a reduced-motion media query")
+	}
+	if !strings.Contains(css, `.ui-progress-circle { animation: none; }`) {
+		t.Error("circular progress reduced-motion must stop the ring sweep")
 	}
 }
 
@@ -60,6 +75,8 @@ func TestEmbeddedCompiledCSSIncludesProgressContracts(t *testing.T) {
 		`.ui-progress`,
 		`-webkit-progress-value`,
 		`-moz-progress-bar`,
+		`.ui-progress--circular`,
+		`ui-spin`,
 		`@media (forced-colors:active)`,
 	} {
 		if !strings.Contains(css, contract) {
