@@ -65,3 +65,54 @@ func TestMediaDocsRouteAndNavigation(t *testing.T) {
 }
 
 var _ *template.Template
+
+func TestMediaComponentDocsRouteDogfoodsAudioTranscriptEmbed(t *testing.T) {
+	s := docsTestServer(t)
+	res := httptest.NewRecorder()
+	s.mediaDocs(res, httptest.NewRequest(http.MethodGet, "/components/media", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("media component docs status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<!doctype html>`,
+		`>Media</h1>`,
+		`<figure class="ui-media ui-media-audio">`,
+		`<audio controls preload="metadata">`,
+		`type="audio/mpeg"`,
+		`class="ui-media-fallback">Your browser does not support audio.`,
+		`class="ui-transcript" id="transcript-launch"`,
+		`aria-labelledby="transcript-launch-heading"`,
+		`<h2 id="transcript-launch-heading">Transcript</h2>`,
+		`class="ui-transcript-content"`,
+		`class="ui-media ui-media-embed"`,
+		`class="ui-embed-boundary"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("media component docs are missing %q", contract)
+		}
+	}
+}
+
+func TestMediaComponentDocsEmbedsNothingByDefault(t *testing.T) {
+	s := docsTestServer(t)
+	res := httptest.NewRecorder()
+	s.mediaDocs(res, httptest.NewRequest(http.MethodGet, "/components/media", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("media component docs status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	// The embed specimen is NOT on an allowlist, so it must render the consent
+	// boundary — never an actual iframe to a third party.
+	if strings.Contains(body, "<iframe") {
+		t.Error("media component docs must not render a real iframe for an unapproved embed source")
+	}
+	if !strings.Contains(body, "unavailable until the source is approved") {
+		t.Error("media component docs must render the consent fallback copy for unapproved embeds")
+	}
+	if strings.Contains(body, "autoplay") {
+		t.Error("media component docs must never suggest autoplay in the specimens")
+	}
+}
