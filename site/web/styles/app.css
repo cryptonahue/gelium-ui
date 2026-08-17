@@ -1,6 +1,6 @@
 @import "tailwindcss";
-@import "../../../themes/theme-material/theme.css";
-@import "../../../themes/theme-basecoat/theme.css";
+@import "gelium-ui/themes/theme-material.css";
+@import "gelium-ui/themes/theme-basecoat.css";
 @import "gelium-ui/styles/index.css";
 /*
  * Theme bundle (Phase H mechanism): themes ship as themes/<name>/theme.css
@@ -23,6 +23,8 @@
 
 @source "../templates";
 @source "../content";
+@source "../../../lib/templates";
+@source "../../../lib/js";
 
 @theme inline {
   --color-canvas: var(--ui-color-canvas);

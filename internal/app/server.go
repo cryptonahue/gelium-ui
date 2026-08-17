@@ -29,7 +29,7 @@ import (
 )
 
 // defaultThemeClass is the theme applied when none is requested. The value must
-// match a class owned by a theme that ships on disk (themes/*/theme.css).
+// match a class owned by a theme that ships on disk (lib/themes/*/theme.css).
 const defaultThemeClass = "theme-material"
 
 // themeDirection is one product-facing visual direction in the catalog.

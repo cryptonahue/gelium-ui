@@ -11,9 +11,9 @@ func TestReleaseDocsAndPackageVersionStayCoherent(t *testing.T) {
 	readme := repositoryFile(t, "README.md")
 	toastDocs := repositoryFile(t, "site", "web", "content", "toast.md")
 	if !strings.Contains(packageJSON, `"version": "0.5.0"`) {
-		t.Error("package version must identify the 0.5.0 release")
+		t.Error("root package version must identify the 0.5.0 release line")
 	}
-	for _, contract := range []string{"v0.5.0", "HTMX 4", "on-this-page rail", "prev/next pagination", "/components/toast", "gelium:toast", "sin JS"} {
+	for _, contract := range []string{"v0.5.3", "HTMX 4", "on-this-page rail", "prev/next pagination", "Themeable", "gelium:toast", "progressive enhancement"} {
 		if !strings.Contains(readme, contract) {
 			t.Errorf("README is missing release contract %q", contract)
 		}

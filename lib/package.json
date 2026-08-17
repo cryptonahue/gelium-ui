@@ -4,8 +4,12 @@
   "description": "Server-rendered UI components: Go + HTMX + Tailwind. HTML-first, 0-JS contract, themes by class. Components and styles, not a framework.",
   "license": "MIT",
   "private": false,
+  "sideEffects": [
+    "*.css"
+  ],
   "files": [
     "styles",
+    "themes",
     "templates",
     "js",
     "dist"
@@ -13,6 +17,7 @@
   "exports": {
     ".": "./dist/gelium.css",
     "./styles/*": "./styles/*",
+    "./themes/*": "./themes/*",
     "./templates/*": "./templates/*",
     "./js/*": "./js/*",
     "./dist/*": "./dist/*"

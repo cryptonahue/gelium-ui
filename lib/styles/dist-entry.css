@@ -1,2 +1,7 @@
 @import "tailwindcss";
+@import "../themes/theme-material.css";
+@import "../themes/theme-basecoat.css";
 @import "./index.css";
+
+@source "../templates";
+@source "../js";

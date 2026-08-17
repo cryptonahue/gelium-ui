@@ -12,6 +12,6 @@
     "tailwindcss": "4.3.3"
   },
   "dependencies": {
-    "gelium-ui": "0.5.0"
+    "gelium-ui": "0.5.3"
   }
 }

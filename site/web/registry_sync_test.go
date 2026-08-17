@@ -116,7 +116,7 @@ func registryFileExists(root, name string) bool {
 	if !strings.HasPrefix(name, "gelium-ui-") {
 		candidates = append(candidates, "gelium-ui-"+name)
 	}
-	for _, dir := range []string{"lib/templates", "lib/styles", "site/web/templates", "site/web/styles", "internal/app", "themes/theme-material", "themes/theme-basecoat", "docs", "docs/handoffs", "site/web"} {
+	for _, dir := range []string{"lib/templates", "lib/styles", "lib/themes", "site/web/templates", "site/web/styles", "internal/app", "docs", "docs/handoffs", "site/web"} {
 		for _, c := range candidates {
 			if _, err := os.Stat(filepath.Join(root, dir, c)); err == nil {
 				return true

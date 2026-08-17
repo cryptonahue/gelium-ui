@@ -10,7 +10,7 @@
 
 Un theme es una **dirección visual codificada como tokens `--ui-*`**. NO es markup, NO es JS, NO es una copia de otro sistema (`theme-contract.md` §1).
 
-- Un `theme.css` por theme en `themes/<theme>/`, autocontenido (luz + dark), con selector raíz propio `.theme-<name>`.
+- Un CSS por theme en `lib/themes/` (flat: `theme-material.css`, `theme-basecoat.css`), autocontenido (luz + dark), con selector raíz propio `.theme-<name>`.
 - `web/styles/app.css` importa CADA theme explícitamente (CSS no globbea); el build produce UN solo `web/static/app.css` embebido con todos los themes adentro (`//go:embed static/*` en `web/assets.go:8`).
 - Selección en runtime por clase en el documento raíz — `layout.html:2` es data-driven (`class="{{.ThemeClass}}"`, allowlist server-side en `themeClass()`, `internal/app/server.go`). Cambiar la clase cambia la dirección visual sin rebuild ni JS.
 - Dark: cada theme declara UNA rutina por esquema (luz + dark autocontenidos). La cobertura dark usa la **ruta de clase única** (`.theme-dark`/`.dark`/`[data-theme="dark"]`) — sin `@media (prefers-color-scheme: dark)` (unificación Phase A, sin drift).
@@ -19,8 +19,8 @@ Un theme es una **dirección visual codificada como tokens `--ui-*`**. NO es mar
 
 | Theme | Directorio | Tokens `--ui-*` | Light | Dark | Estado | Selector raíz |
 |---|---|---|---|---|---|---|
-| **theme-material** | `themes/theme-material/theme.css` | 269 definiciones (169 únicos) | `.theme-material` | `.theme-material.theme-dark` / `.dark` / `[data-theme="dark"]` (clase única, sin media) | **Implementado, default** | `.theme-material` |
-| **theme-basecoat** | `themes/theme-basecoat/theme.css` | 269 definiciones (167 únicos) | `.theme-basecoat` | `.theme-basecoat.theme-dark` / `.dark` / `[data-theme="dark"]` (clase única, sin media) | **Implementado (Phase I)** | `.theme-basecoat` |
+| **theme-material** | `lib/themes/theme-material.css` | 269 definiciones (169 únicos) | `.theme-material` | `.theme-material.theme-dark` / `.dark` / `[data-theme="dark"]` (clase única, sin media) | **Implementado, default** | `.theme-material` |
+| **theme-basecoat** | `lib/themes/theme-basecoat.css` | 269 definiciones (167 únicos) | `.theme-basecoat` | `.theme-basecoat.theme-dark` / `.dark` / `[data-theme="dark"]` (clase única, sin media) | **Implementado (Phase I)** | `.theme-basecoat` |
 
 ### Familias de tokens de theme-material (por tamaño)
 
@@ -67,7 +67,7 @@ El contrato completo está en `docs/gelium-ui-theme-contract.md`. Resumen de lo 
 
 ### Mecanismo Phase H (2 pasos mínimos)
 
-1. **Importar el theme en el bundle**: agregar `@import "../../themes/<theme>/theme.css";` en `web/styles/app.css` (lista explícita, junto a los otros themes).
+1. **Importar el theme en el bundle**: agregar `@import "gelium-ui/themes/<theme>.css";` en `site/web/styles/app.css` (lista explícita, junto a los otros themes).
 2. **Seleccionarlo en runtime por clase**: `<html class="theme-<name>">` (o `data-theme="<name>")` en `layout.html` (línea 2), data-driven desde el server (`{{.ThemeClass}}`, allowlist en `themeClass()`, `internal/app/server.go`). **Placement: `<html>` es el documento raíz** — el literal `<body>` del roadmap no se adopta (decisión Phase H, `theme-contract.md` §2).
 
 Con esto, cambiar la clase cambia la dirección visual **sin rebuild ni JS** (`theme-contract.md` §2, `theme-architecture-audit.md` §7).

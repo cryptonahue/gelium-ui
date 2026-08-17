@@ -2,43 +2,93 @@
 
 > Themeable, open-code UI components for Tailwind CSS and HTMX.
 
-Current release: **v0.5.0**, moving the docs shell to HTMX 4 (namespaced events, innerMorph, optimistic theme/scheme toggling with server authority), adding an on-this-page rail and GOV.UK-style prev/next pagination, fixing dark mode across standalone recipes, and unifying the reading column to a single centered 65ch measure.
+Current release: **v0.5.3** — monorepo split (publishable `lib/` package + `site/` docs consumer), HTMX 4 (namespaced events, innerMorph, optimistic theme/scheme toggling with server authority), on-this-page rail and GOV.UK-style prev/next pagination, dark mode across standalone recipes, unified 65ch reading column, mobile foundations (touch targets, safe areas, reduced motion, overflow containment contracts).
 
-Este primer vertical slice es una aplicación de documentación server-rendered en Go. Usa HTML semántico, componentes copiables, un theme Material basado en tokens propios `--ui-*`, Tailwind CSS 4 y HTMX servido localmente.
+Gelium UI is a server-rendered component library: semantic HTML, copyable components, token-driven `--ui-*` themes, Tailwind CSS 4 and HTMX served locally. No CDN, no client framework, no hydration. JavaScript is progressive enhancement — everything works without it.
+
+## Dos audiencias
+
+- **Instalar y usar** (desarrollador o LLM): `npm install gelium-ui` (pendiente de publish) — CSS por componente, themes, templates y un bundle prebuilt `dist/gelium.css` + consumer JS `js/gelium.js`. El handler Go embebido es el modo avanzado.
+- **Contribuir** (este repo): monorepo npm-workspaces — `lib/` es el paquete publicable, `site/` es el consumidor que lo importa por nombre de paquete (dogfooding).
 
 ## Requisitos
 
 - Go 1.24 o posterior.
 - Node.js 20 o posterior con npm.
 
-## Setup y build reproducible
+## Setup y build reproducible (contribuidor)
 
 Desde la raíz del proyecto:
 
 ```bash
-npm ci
+npm install
 go mod download
 npm run build
 ```
 
-`npm run build` compila `web/styles/app.css` con Tailwind CSS 4 hacia `web/static/app.css` y copia `htmx.min.js` desde la dependencia npm `htmx.org` hacia `web/static/`. La integración local vive en `web/static/app.js`. No se usa CDN.
+`npm run build` (raíz) encadena: build del site (`tailwindcss` sobre `site/web/styles/app.css` → `site/web/static/app.css`, copia de `htmx.min.js` e iconos) + build del dist de la librería (`lib/styles/dist-entry.css` → `lib/dist/gelium.css`) + copia de `lib/js/gelium.js` → `site/web/static/gelium.js`. Los artefactos finales dentro de `site/web/static/` y `lib/dist/` se mantienen como artefactos de build y son embebidos en el binario Go mediante `embed`.
 
-Los archivos finales dentro de `web/static/` se mantienen como artefactos de build y son embebidos en el binario Go mediante `embed`.
-
-## Tests y checks
+## Tests y checks (gates)
 
 ```bash
-go test ./...
-go vet ./...
+go test ./internal/... ./site/... ./lib/...
+go vet ./internal/... ./site/... ./lib/...
+npm run build
+git diff --check
+gofmt -l internal site lib
 ```
 
-Los tests usan `httptest` y verifican comportamiento de handlers, forms URL-encoded, HTTP 422/200, render Markdown, contratos HTML/ARIA de Button y Text field, integración HTMX, CSS/tokens y assets embebidos sin snapshots completos.
+NUNCA uses `go test ./...`: el árbol incluye paquetes con imports pre-split que los gates excluyen a propósito. Los tests usan `httptest` y verifican handlers, forms URL-encoded, HTTP 422/200, render Markdown, contratos HTML/ARIA de componentes, integración HTMX, CSS/tokens y assets embebidos sin snapshots completos.
+
+## Estructura real
+
+```text
+gelium-ui/
+├── lib/                        ← paquete npm publicable (gelium-ui)
+│   ├── assets.go               (//go:embed templates + styles → geliumui/lib)
+│   ├── version.go              (AssetsVersion: cache-bust centralizado)
+│   ├── package.json            (exports map, files, sideEffects)
+│   ├── dist/gelium.css         (bundle prebuilt: preflight + themes + componentes)
+│   ├── js/gelium.js            (consumer JS: toast, 422 contract, view transitions, slider)
+│   ├── styles/                 (tokens.css, base.css foundation, 47 componentes, index.css manifest)
+│   ├── templates/              (45 partials de componentes)
+│   ├── themes/                 (theme-material.css, theme-basecoat.css — flat)
+│   └── *_test.go               (suites de contrato de los componentes)
+├── site/                       ← consumidor de demostración (docs, landing, recipes)
+│   ├── package.json            (depende de gelium-ui@0.5.3 por nombre de paquete)
+│   └── web/
+│       ├── assets.go           (//go:embed templates + content + static → geliumui/site/web)
+│       ├── content/            (44 markdown docs)
+│       ├── static/             (app.css compilado, gelium.js copiado, app.js chrome, search.js)
+│       ├── styles/             (app.css entry, docs-shell.css, docs-chrome.css, +8 site css)
+│       └── templates/          (15 shell/landing/recipes templates)
+├── internal/app/               (handler Go completo: docs server)
+├── scripts/                    (copy-htmx, copy-icons, copy-lib-js, build-lib-dist)
+├── go.mod                      (module geliumui — queda en la raíz)
+└── package.json                (workspaces: ["lib", "site"])
+```
+
+### Separación librería vs docs
+
+- `lib/` = el paquete reutilizable: componentes (`ui-*`), tokens, themes, consumer JS y dist prebuilt. Un consumidor instala esto.
+- `site/` = el primer consumidor: shell de docs, landing, recipes, blog. Importa la librería POR NOMBRE DE PAQUETE (`@import "gelium-ui/styles/index.css"`, `gelium-ui/themes/*.css`) — el mismo contrato que un consumidor externo (dogfooding).
+- `internal/app` = el handler Go que sirve el site (embed dual: `geliumui/site/web` + `geliumui/lib`).
+
+### Nota sobre `embed`
+
+Go no permite que una directiva `//go:embed` lea rutas padre con `..`. Por eso hay DOS embeds: `lib/assets.go` (templates + styles de la librería) y `site/web/assets.go` (templates + content + static del site). `buildTemplates()` mergea ambos con `template.ParseFS` — los nombres son disjuntos por construcción (collision-guard test).
+
+### Cache-bust
+
+La versión de cache-bust de assets es UN SOLO valor: `lib.AssetsVersion` (0.5.3), renderizado como `?v={{.AssetsVersion}}` en los templates. El test de coherencia pincha que la versión npm == constant y prohíbe `?v=` hardcodeado. Bumpéalo cuando cambie un asset estático.
 
 ## Ejecutar
 
-## Ejecutar
+```bash
+go run ./cmd/gelium        # sirve en :8787 (PORT=3000 para otro puerto)
+```
 
-El sitio de documentación se sirve desde tu propia aplicación usando `internal/app.New()`:
+El sitio de documentación también se sirve desde tu propia aplicación usando `internal/app.New()`:
 
 ```go
 package main
@@ -55,107 +105,16 @@ func main() {
 }
 ```
 
-La aplicación escucha en `http://localhost:8787`. Para elegir otro puerto:
-
-```bash
-PORT=3000 go run ./cmd/gelium   # dentro de tu aplicación consumidora
-```
-
 ## Wire contract (`gelium:*` / `X-Gelium-*`)
 
 Los contratos wire server-driven usan el prefijo del producto: `gelium:toast`
 (evento HX-Trigger + `#gelium-toast-region`) y el header `X-Gelium-Validation: true`.
-El hook HTMX servido (`web/static/app.js`) y los tests los fijan como canónicos.
+El hook HTMX servido (`lib/js/gelium.js`) y los tests los fijan como canónicos.
 Referencia canónica: [`docs/gelium-ui-wire-compatibility.md`](docs/gelium-ui-wire-compatibility.md).
-
-Rutas disponibles:
-
-- `/` — home renderizada desde Markdown.
-- `/components/button` — documentación y preview real del Button.
-- `/components/text-field` — documentación, estados y demo HTMX real del Text field.
-- `/components/dialog` — documentación y preview del Dialog como variante página: trigger link a `/components/dialog/confirm`, Confirm como form POST real y Cancel como link de vuelta (fallback G1, sin JS). El modal `<dialog>` con comandos declarativos queda como mejora opt-in documentada.
-- `/components/dialog/confirm` — página de confirmación inline: `POST /components/dialog/confirm` redirige con 303 de vuelta a `/components/dialog?confirmed=1`, que muestra el resultado en un inline alert persistente.
-- `/components/toast` — documentation y demo HTMX del Toast: variantes, contrato `gelium:toast` y fallback inline sin JS.
-- `POST /examples/text-field/validate` — validación server-side; devuelve 422 para vacío/whitespace y 200 para valores válidos. Sin JavaScript renderiza la página de documentación completa; con `HX-Request: true`, HTMX recibe únicamente el form actualizado como progressive enhancement.
-- `POST /examples/toast/demo` — feedback server-driven; devuelve `HX-Trigger: {"gelium:toast":{...}}` para HTMX y, sin JavaScript, re-renderiza la página con un toast inline persistente. 422 para mensaje vacío.
-- `/healthz` — health check de texto plano.
-- `/static/app.css` — CSS Tailwind compilado y embebido.
-- `/static/htmx.min.js` — HTMX local y embebido.
-- `/static/app.js` — hook local que permite a HTMX intercambiar únicamente fragments HTTP 422 marcados con `X-Gelium-Validation: true`.
-
-## Estructura real
-
-```text
-gelium-ui/                 (producto Gelium UI; carpeta física `loom-ui`)
-├── internal/app/
-│   ├── server.go         (http.Handler via app.New())
-│   ├── routes.go         (registro de rutas)
-│   ├── docs.go
-│   ├── demo_whatsapp.go
-│   ├── recipe_admin_resource.go
-│   └── ..._test.go
-├── scripts/
-│   └── copy-htmx.mjs
-├── themes/
-│   ├── theme-material/
-│   │   └── theme.css
-│   └── theme-basecoat/
-│       └── theme.css
-├── web/
-│   ├── assets.go
-│   ├── content/
-│   │   ├── button.md
-│   │   ├── dialog.md
-│   │   ├── index.md
-│   │   ├── text-field.md
-│   │   └── toast.md
-│   ├── static/
-│   │   ├── app.css
-│   │   ├── app.js
-│   │   └── htmx.min.js
-│   ├── styles/
-│   │   ├── app.css
-│   │   ├── tokens.css   (core tokens, defaults neutros)
-│   │   ├── empty-state.css, skeleton.css, inline-alert.css, …
-│   │   └── …
-│   └── templates/
-│       ├── layout.html
-│       ├── button.html
-│       ├── dialog.html
-│       ├── empty-state.html, skeleton.html, banner.html, …
-│       └── …
-├── go.mod
-├── go.sum
-├── package.json
-└── package-lock.json
-```
-
-### Nota sobre `embed`
-
-Go no permite que una directiva `//go:embed` lea rutas padre con `..`. Por eso `web/assets.go` vive junto al árbol `web/` y embebe `templates`, `content` y los assets compilados de `static`. El source independiente de cada theme permanece en `themes/<theme>/theme.css` (theme-material y theme-basecoat); Tailwind los integra vía `@import` en `web/styles/app.css` y produce `web/static/app.css`, que es el asset final embebido. La selección es por clase en el documento raíz (`class="{{.ThemeClass}}"`, `layout.html:2`), sin JS ni rebuild.
-
-### Nota sobre el binario
-
-El repositorio es una **librería embebible**: `internal/app.New()` devuelve un `http.Handler` listo para servir el sitio de documentación. No hay un `cmd/` en el repo; los consumidores sirven el handler desde su propia aplicación (o con un main mínimo de 5 líneas). El proyecto se ejecuta y verifica con `go test ./...` y `npm run build`.
-
-## Button open-code
-
-El markup reusable está en `web/templates/button.html` y los estilos en `web/styles/app.css`. Incluye:
-
-- `primary`, `secondary` y `outline`;
-- estados disabled y loading;
-- enlaces con `Href` se renderizan sin `href`, fuera del tab order y con `aria-disabled` cuando están disabled o loading; loading además expone `aria-busy` y el nombre accesible dinámico `Loading {Label}` tanto en enlaces como en botones;
-- focus exterior de 3 px con offset de 2 px;
-- slot `IconSVG` por instancia para SVG inline arbitrario. Es `template.HTML`: acepta únicamente markup interno/de confianza, nunca input de usuario. Por contrato, el SVG debe incluir `aria-hidden="true"` y `focusable="false"`; el texto `Label` aporta el texto de acción usado por el accessible name;
-- semántica separada para acciones (`button`) y navegación (`a`).
-
-## Dialog open-code
-
-El markup reusable está en `web/templates/dialog.html` y los estilos en `web/styles/app.css`. La base es una **variante página**: el trigger es un link real a una página de confirmación server-rendered, Confirm es un form POST real (303 de vuelta) y Cancel un link de regreso — funcional en todo navegador, 0 JS, sin markup de overlay. El `<dialog>` modal con `command`/`commandfor` queda como mejora opt-in para navegadores actuales (`command`/`commandfor` son **Baseline 2025 — Newly available**); `request-close` es más reciente y `closedby` no es Baseline, por lo que el modal nunca es el único camino y ninguna página Gelium deja un control inerte. `@starting-style` y las transiciones de cierre/top layer con `overlay` son mejoras progresivas (estas últimas, Chromium-only y no interoperables), por lo que el motion del modal puede ser instantáneo o asimétrico en otros navegadores. Incluye reduced motion, forced colors, nombres accesibles y acciones explícitas de Cancel/Confirm.
 
 ## Alcance
 
-El alcance actual incluye Button, Text field, Dialog y Toast open-code, con un form HTMX de validación server-side que reemplaza el form completo tanto en HTTP 200 como en HTTP 422, y un Toast server-driven que funciona sin JS y mejora con HTMX. No incorpora Lit, Shadow DOM, Astro, `templ`, SQLite, SSE, registry, CLI, toasts adicionales ni themes adicionales.
+El alcance actual incluye 47 componentes open-code (Button, Text field, Dialog, Toast, Data table, Chips, Navigation, …) con demos server-rendered, dos themes (`theme-material`, `theme-basecoat`) y un form HTMX de validación server-side. No incorpora Lit, Shadow DOM, Astro, `templ`, SQLite, SSE, CLI ni un registry de terceros.
 
 ## Licencia
 

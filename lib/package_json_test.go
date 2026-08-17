@@ -18,11 +18,12 @@ func TestLibPackageJsonIsPublishable(t *testing.T) {
 		t.Fatalf("read lib/package.json: %v", err)
 	}
 	var pkg struct {
-		Name    string            `json:"name"`
-		Version string            `json:"version"`
-		Private bool              `json:"private"`
-		Files   []string          `json:"files"`
-		Exports map[string]string `json:"exports"`
+		Name        string            `json:"name"`
+		Version     string            `json:"version"`
+		Private     bool              `json:"private"`
+		Files       []string          `json:"files"`
+		SideEffects []string          `json:"sideEffects"`
+		Exports     map[string]string `json:"exports"`
 	}
 	if err := json.Unmarshal(b, &pkg); err != nil {
 		t.Fatalf("parse lib/package.json: %v", err)
@@ -36,8 +37,11 @@ func TestLibPackageJsonIsPublishable(t *testing.T) {
 	if len(pkg.Files) == 0 {
 		t.Error("files must list published entries (styles, templates, js, dist)")
 	}
+	if len(pkg.SideEffects) == 0 {
+		t.Error("sideEffects must declare *.css so bundlers keep the CSS imports")
+	}
 	// Exports must cover the entries the consumer contract relies on.
-	for _, sub := range []string{".", "./styles/*", "./templates/*", "./js/*", "./dist/*"} {
+	for _, sub := range []string{".", "./styles/*", "./themes/*", "./templates/*", "./js/*", "./dist/*"} {
 		if _, ok := pkg.Exports[sub]; !ok {
 			t.Errorf("exports missing %q", sub)
 		}

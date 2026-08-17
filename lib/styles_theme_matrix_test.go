@@ -225,7 +225,7 @@ func hasFamilyDefinition(block, family string) bool {
 func TestThemeMatrixCoversEveryAvailableTheme(t *testing.T) {
 	themes := availableThemes(t)
 	if len(themes) == 0 {
-		t.Fatal("the glob themes/*/theme.css must discover at least one theme")
+		t.Fatal("the glob lib/themes/*.css must discover at least one theme")
 	}
 	for _, theme := range themes {
 		theme := theme

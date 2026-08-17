@@ -23,7 +23,7 @@ func compiledAppCSS(t *testing.T) string {
 
 // TestEveryThemeShipsRootSelectorInSourceAndBundle proves Phase H contract
 // points (a) and (b): every theme that exists on disk defines its own root
-// selector .theme-<name> in themes/<name>/theme.css AND that selector reaches
+// selector .theme-<name> in lib/themes/<name>.css AND that selector reaches
 // the compiled bundle served to the browser. Class-driven selection can only
 // work if the selector is inside the single served asset — a theme whose root
 // selector is missing from the bundle is a theme that cannot be selected.
@@ -35,8 +35,8 @@ func TestEveryThemeShipsRootSelectorInSourceAndBundle(t *testing.T) {
 	compiled := compactCSS(t, compiledAppCSS(t))
 	for _, name := range themes {
 		source := compactCSS(t, themeCSS(t, name))
-		// The directory is themes/<name>/ and the root selector is .<name>
-		// (e.g. themes/theme-material/ → .theme-material).
+		// The file is lib/themes/<name>.css and the root selector is .<name>
+		// (e.g. lib/themes/theme-material.css → .theme-material).
 		root := "." + name + "{"
 		if !strings.Contains(source, root) {
 			t.Errorf("%s theme.css must open its root block with %q", name, root)
@@ -58,7 +58,7 @@ func TestAppCSSImportsEveryThemeExplicitly(t *testing.T) {
 		t.Fatalf("read styles/app.css: %v", err)
 	}
 	imports := map[string]bool{}
-	for _, m := range regexp.MustCompile(`@import\s+"\.\./\.\./\.\./themes/([a-z0-9-]+)/theme\.css"`).FindAllStringSubmatch(string(entry), -1) {
+	for _, m := range regexp.MustCompile(`@import\s+"gelium-ui/themes/([a-z0-9-]+)\.css"`).FindAllStringSubmatch(string(entry), -1) {
 		imports[m[1]] = true
 	}
 	if len(imports) == 0 {
@@ -70,8 +70,8 @@ func TestAppCSSImportsEveryThemeExplicitly(t *testing.T) {
 		}
 	}
 	for name := range imports {
-		if _, err := os.Stat(filepath.Join(repositoryRoot(t), "themes", name, "theme.css")); err != nil {
-			t.Errorf("app.css imports theme %s but themes/%s/theme.css does not exist", name, name)
+		if _, err := os.Stat(filepath.Join(repositoryRoot(t), "lib", "themes", name+".css")); err != nil {
+			t.Errorf("app.css imports theme %s but lib/themes/%s.css does not exist", name, name)
 		}
 	}
 }

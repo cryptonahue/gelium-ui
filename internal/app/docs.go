@@ -6,6 +6,8 @@ import (
 	"io/fs"
 	"net/http"
 	"strings"
+
+	"geliumui/lib"
 )
 
 // docsNavLink is one destination in the docs shell sidebar / footer export.
@@ -44,7 +46,9 @@ type docsNavView struct {
 }
 
 // docsShellVersion is the static version badge shown in the docs topbar.
-const docsShellVersion = "0.5.0"
+// Derived from the single cache-busting version constant so the badge, the
+// npm package and the asset cache-buster can never drift (REQ-6.2).
+const docsShellVersion = lib.AssetsVersion
 
 // usesDocsShell reports whether path should render the two-pane docs chrome.
 // Home, recipes, and demos stay on the legacy site-header layout.

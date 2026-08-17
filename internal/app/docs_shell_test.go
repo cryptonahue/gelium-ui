@@ -6,6 +6,8 @@ import (
 	"net/http/httptest"
 	"strings"
 	"testing"
+
+	"geliumui/lib"
 )
 
 // TestDocsShellFrameOnDocsAndComponents proves the two-pane docs chrome
@@ -42,7 +44,7 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 					`ui-list`,
 					`ui-list-item-link`,
 					`ui-divider`,
-					`>0.5.0<`,
+					">" + lib.AssetsVersion + "<",
 					`Gelium UI`,
 					`type="search"`,
 					`aria-label="Theme"`,
@@ -531,8 +533,8 @@ func TestUsesDocsShell(t *testing.T) {
 func TestDocsNavFor(t *testing.T) {
 	t.Run("topbar slots and IA blocks", func(t *testing.T) {
 		nav := docsNavFor("/docs", "", "")
-		if nav.Version != "0.5.0" {
-			t.Errorf("Version = %q, want %q", nav.Version, "0.5.0")
+		if nav.Version != lib.AssetsVersion {
+			t.Errorf("Version = %q, want %q (derived from the single cache-bust constant)", nav.Version, lib.AssetsVersion)
 		}
 		// The nav model drives client-side search: a JSON index of every
 		// destination is emitted so search.js can filter without a server.

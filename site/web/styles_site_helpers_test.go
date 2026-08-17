@@ -38,16 +38,17 @@ func repositoryFile(t *testing.T, path ...string) string {
 	return string(b)
 }
 
-// availableThemes discovers the themes that actually exist on disk.
+// availableThemes discovers the themes that actually exist on disk
+// (lib/themes/<name>.css — the package ships themes flat).
 func availableThemes(t *testing.T) []string {
 	t.Helper()
-	matches, err := filepath.Glob(filepath.Join(repositoryRoot(t), "themes", "*", "theme.css"))
+	matches, err := filepath.Glob(filepath.Join(repositoryRoot(t), "lib", "themes", "*.css"))
 	if err != nil {
 		t.Fatalf("discover themes: %v", err)
 	}
 	var themes []string
 	for _, m := range matches {
-		themes = append(themes, filepath.Base(filepath.Dir(m)))
+		themes = append(themes, strings.TrimSuffix(filepath.Base(m), ".css"))
 	}
 	return themes
 }
@@ -65,7 +66,7 @@ func themeCSS(t *testing.T, name string) string {
 	if !found {
 		t.Fatalf("theme %q not present on disk", name)
 	}
-	return repositoryFile(t, "themes", name, "theme.css")
+	return repositoryFile(t, "lib", "themes", name+".css")
 }
 
 // sourceComponentCSS reads a source CSS file. Site styles come from the local

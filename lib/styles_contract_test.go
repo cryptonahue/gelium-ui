@@ -134,13 +134,13 @@ func repositoryRoot(t *testing.T) string {
 // test — and never assumes a theme that does not exist.
 func availableThemes(t *testing.T) []string {
 	t.Helper()
-	matches, err := filepath.Glob(filepath.Join(repositoryRoot(t), "themes", "*", "theme.css"))
+	matches, err := filepath.Glob(filepath.Join(repositoryRoot(t), "lib", "themes", "*.css"))
 	if err != nil {
 		t.Fatalf("discover themes: %v", err)
 	}
 	var themes []string
 	for _, m := range matches {
-		themes = append(themes, filepath.Base(filepath.Dir(m)))
+		themes = append(themes, strings.TrimSuffix(filepath.Base(m), ".css"))
 	}
 	return themes
 }
@@ -159,7 +159,7 @@ func themeCSS(t *testing.T, name string) string {
 	if !found {
 		t.Fatalf("theme %q is not present on disk (have %v)", name, availableThemes(t))
 	}
-	return repositoryFile(t, "themes", name, "theme.css")
+	return repositoryFile(t, "lib", "themes", name+".css")
 }
 
 // entryMediaBlock extracts one media block from the app.css entry tail. The
@@ -1347,7 +1347,7 @@ func allStyleSources(t *testing.T) []styleSource {
 	}
 	sources = append(sources, styleSource{name: "web/styles/docs-chrome.css", css: repositoryFile(t, "site", "web", "styles", "docs-chrome.css")})
 	for _, theme := range availableThemes(t) {
-		sources = append(sources, styleSource{name: "themes/" + theme + "/theme.css", css: themeCSS(t, theme)})
+		sources = append(sources, styleSource{name: "lib/themes/" + theme + ".css", css: themeCSS(t, theme)})
 	}
 	return sources
 }

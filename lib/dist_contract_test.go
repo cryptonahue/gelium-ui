@@ -23,9 +23,11 @@ func TestDistBundleIsCommittedAndComplete(t *testing.T) {
 			t.Errorf("dist bundle missing %q", contract)
 		}
 	}
-	// The dist bundle must NOT embed themes (themes are consumer-owned).
-	if strings.Contains(string(b), ".theme-basecoat") {
-		t.Error("dist bundle must not embed themes; themes are consumer-owned")
+	// The dist bundle MUST carry the theme roots: themes ship WITH the
+	// package (lib/themes/*.css) so a consumer installing gelium-ui gets a
+	// working theme pair, not bare components.
+	if !strings.Contains(string(b), ".theme-material") || !strings.Contains(string(b), ".theme-basecoat") {
+		t.Error("dist bundle must embed both theme roots (.theme-material, .theme-basecoat)")
 	}
 }
 
