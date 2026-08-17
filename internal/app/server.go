@@ -881,6 +881,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /healthz", s.health)
 	mux.HandleFunc("GET /sitemap.xml", s.sitemap)
 	mux.HandleFunc("GET /robots.txt", s.robots)
+	mux.HandleFunc("GET /llms.txt", s.llmsTxt)
 	mux.HandleFunc("GET /{$}", s.home)
 	mux.HandleFunc("GET /docs", s.docsIndex)
 	mux.HandleFunc("GET /docs/patterns", s.docsPatterns)
@@ -982,6 +983,21 @@ var robotsTxt = "User-agent: *\n" +
 func (s *server) robots(w http.ResponseWriter, r *http.Request) {
 	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
 	_, _ = w.Write([]byte(robotsTxt))
+}
+
+// llmsTxt serves /llms.txt — the agent-oriented project brief (llmstxt.org
+// style). Content lives in the embedded static/llms.txt so it ships with the
+// docs binary and stays one file to edit.
+func (s *server) llmsTxt(w http.ResponseWriter, r *http.Request) {
+	asset, err := fs.ReadFile(s.assets, "static/llms.txt")
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	w.Header().Set("Content-Type", "text/plain; charset=utf-8")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(asset)
 }
 
 // sitemapURL is one <url> entry in the server-generated sitemap.

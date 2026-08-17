@@ -35,25 +35,25 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 | Mobile audit — runtime: same-document view transitions (reduced-motion guard), safe areas, mobile nav 100dvh + aria-label, focus matrix | ✅ Shipped |
 | Library/docs split — monorepo npm workspaces: `lib/` publishable package `gelium-ui` (CSS+tokens+themes+templates+consumer JS+dist) + `site/` docs consumer dogfooding by package name; dual go:embed + gates include `./lib/...` | ✅ Shipped |
 | npm package `gelium-ui@0.5.3` on the public registry (https://www.npmjs.com/package/gelium-ui) — dist bundle, themes, templates, consumer JS | ✅ Shipped |
+| `/llms.txt` agent brief (install, wire contracts, when not to use, component list) | ✅ Shipped |
 
 ## What is next (ordered by value, owner reprioritizes freely)
 
 ```text
-1.  DX / discoverability  llms.txt + agent prompts exposed in docs web surface
-2.  Comparison page       "why Gelium vs Radix/shadcn/base-ui": server-rendered,
+1.  Comparison page       "why Gelium vs Radix/shadcn/base-ui": server-rendered,
                          ~50KB JS vs 625KB, 0-JS contract, no-go decisions
-3.  SEO productization    BASE_URL configurable + real og.png (when there is a domain)
-4.  Recipes mobile        admin-resource (646px) / ops-queue (780px) expand the mobile
+2.  SEO productization    BASE_URL configurable + real og.png (when there is a domain)
+3.  Recipes mobile        admin-resource (646px) / ops-queue (780px) expand the mobile
                          viewport — layout fix, not typography
-5.  Theme polish          dark routine already single; scoped ownership of families
-6.  Forms contract        document input rules BEFORE components: label above,
+4.  Theme polish          dark routine already single; scoped ownership of families
+5.  Forms contract        document input rules BEFORE components: label above,
                          inputmode/type pairing, autocomplete, validate after interaction
-7.  Grid/container        -from-desktop modifiers, per-component reflow line (M3 swap
+6.  Grid/container        -from-desktop modifiers, per-component reflow line (M3 swap
                          style), prose measure ≤75ch check
-8.  Performance stance    document ~50KB JS / 215KB CSS as a feature; Tailwind scope
+7.  Performance stance    document ~50KB JS / 215KB CSS as a feature; Tailwind scope
                          review (CSS is the biggest asset)
-9.  Responsive chapter    "design for screen sizes, not devices" in served docs (ES)
-10. Optional expansion    third theme · registry JSON runtime · iframe srcdoc demos ·
+8.  Responsive chapter    "design for screen sizes, not devices" in served docs (ES)
+9.  Optional expansion    third theme · registry JSON runtime · iframe srcdoc demos ·
                          drawer menu upgrade · demo height presets · VT docs chapter ·
                          date-input pattern (3 inputs, inputmode numeric)
 ```

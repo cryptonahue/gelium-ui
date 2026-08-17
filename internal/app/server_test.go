@@ -776,6 +776,35 @@ func TestRobotsTxtPolicy(t *testing.T) {
 	}
 }
 
+// TestLlmsTxtServesAgentBrief proves GET /llms.txt serves the embedded
+// agent-oriented project brief (install path, wire contracts, component list).
+func TestLlmsTxtServesAgentBrief(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/llms.txt", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	if got := res.Header().Get("Content-Type"); got != "text/plain; charset=utf-8" {
+		t.Errorf("Content-Type = %q, want plain UTF-8 text", got)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		"# Gelium UI",
+		"npm install gelium-ui",
+		"gelium-ui/dist/gelium.css",
+		"X-Gelium-Validation",
+		"gelium:toast",
+		"/docs",
+		"theme-material",
+		"When NOT to use",
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("llms.txt is missing %q", contract)
+		}
+	}
+}
+
 // TestSitemapXMLDerivedFromRegistry proves GET /sitemap.xml lists exactly the
 // indexable pages from the route registry — home, /docs and every component —
 // once each, with absolute URLs, and never lists the noindex/recipe surfaces.

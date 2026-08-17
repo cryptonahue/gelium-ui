@@ -1,0 +1,104 @@
+# Gelium UI
+
+> Server-rendered UI components for Tailwind CSS 4 and HTMX. HTML-first, 0-JS by default, token themes by class. Not a React/Vue runtime.
+
+Gelium is an open-code component library: semantic HTML partials, CSS with `--ui-*` tokens, optional progressive-enhancement JS. The docs site is a Go `http.Handler` that dogfoods the same npm package consumers install.
+
+## Install
+
+```bash
+npm install gelium-ui
+```
+
+- npm: https://www.npmjs.com/package/gelium-ui
+- version: 0.5.3
+- package root: CSS, themes, templates, js, dist
+
+### CSS (drop-in)
+
+```css
+@import "gelium-ui/dist/gelium.css";
+```
+
+Prebuilt bundle: Tailwind preflight + theme-material + theme-basecoat + tokens + components (~169KB CSS).
+
+### CSS (source + your Tailwind)
+
+```css
+@import "tailwindcss";
+@import "gelium-ui/themes/theme-material.css";
+@import "gelium-ui/themes/theme-basecoat.css";
+@import "gelium-ui/styles/index.css";
+```
+
+### Theme selection
+
+Class on document root (no JS required):
+
+```html
+<html class="theme-material">
+<html class="theme-material theme-dark" data-theme="dark">
+<html class="theme-basecoat">
+```
+
+### Optional JS
+
+```html
+<script defer src="node_modules/gelium-ui/js/gelium.js"></script>
+```
+
+Provides: `gelium:toast` region, HTMX 422 swap when `X-Gelium-Validation: true`, range slider fill, same-document view transitions with reduced-motion guard.
+
+### Templates
+
+Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button.html`, `text-field.html`).
+
+## When to use
+
+- Server-rendered apps (Go, Rails, Laravel, Django, plain HTML)
+- HTMX / progressive enhancement
+- Design systems that must work with JS disabled
+- Small JS budget (~5KB gelium.js + htmx if used)
+
+## When NOT to use
+
+- Need React/Vue/Svelte component APIs
+- Need Shadow DOM / Web Components runtime
+- Client-only SPA with no server HTML
+
+## Wire contracts (server-driven)
+
+- Header `X-Gelium-Validation: true` on HTTP 422 → HTMX may swap the fragment
+- Event / HX-Trigger `gelium:toast` + region `#gelium-toast-region`
+- Theme/scheme: server is authority; optimistic UI is progressive enhancement only
+
+## Docs (this site)
+
+- Home: /
+- Docs hub: /docs
+- Components: /components/{name} (demo-first: title → live demo → body)
+- Handbook: /docs/principles, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style
+- Recipes: /recipes/admin-resource, /recipes/ops-queue, /recipes/public-feed
+- Health: /healthz
+- Sitemap: /sitemap.xml
+- Robots: /robots.txt
+- This file: /llms.txt
+
+## Components (npm templates + CSS)
+
+avatar, badge, banner, breadcrumb, button, callout, card, checkbox, chips, data-table, dialog, divider, elevation, empty-state, error-state, fab, feature-card, focus-ring, footer, hero, icon, icon-button, inline-alert, list, menu, navigation-bar, navigation-drawer, navigation-tab, newsletter, pagination, progress, radio, section-heading, segmented-button, select, skeleton, slider, split, switch, tabs, text-field, toast, tooltip, validation-summary, video
+
+## Stack
+
+- Go 1.24+ module `geliumui` (docs handler: `geliumui/internal/app`)
+- Tailwind CSS 4, HTMX 4 (namespaced events, innerMorph)
+- Monorepo: `lib/` = npm package, `site/` = docs consumer (dogfood by package name)
+- Gates: `go test ./internal/... ./site/... ./lib/...` (never bare `./...`)
+
+## Repo
+
+https://github.com/cryptonahue/gelium-ui
+
+## License
+
+MIT
