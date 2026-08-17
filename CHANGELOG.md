@@ -1,110 +1,135 @@
 # Changelog
 
-Todas las cambios notables del proyecto Gelium UI se documentan en este archivo.
+All notable changes to the Gelium UI project are documented in this file.
 
-El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/) y el proyecto usa [Semantic Versioning](https://semver.org/).
+The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
+
+## [Unreleased]
+
+### Added
+- **Component catalog grown from 28 to 47 pages**: the composition, content, and feedback primitives that the handbook named but nobody could reach now have `/components/*` pages — hero, avatar, breadcrumb, footer, pagination, section-heading, feature-card, split, image, media, video, newsletter, banner, inline-alert, callout, skeleton, empty-state, error-state, validation-summary. Each page carries a live raw-HTML specimen, When to use / When not to use guidance, anatomy, and a11y notes; sidebar, search index, sitemap, and prev/next auto-derive from the one nav model.
+- **No-JS docs search actually searches**: `GET /docs?q=` now renders server-built results from the same nav model the client-side index is built from (the documented 0-JS fallback previously reloaded the hub without querying).
+- **`/static/{path...}`**: the static route now serves multi-segment assets (media fixtures, subfolders).
+- **Media fixtures**: `empty-audio.ogg` (Opus) + `editorial-placeholder.svg` — the `/docs/media` demo no longer 404s.
+- **Template pages in sitemap**: `/docs/templates/product` + `/docs/templates/design` were indexable but invisible to crawler discovery; both are now in the sitemap.
+
+### Changed
+- **Error pages render through the docs shell** on `/docs*` and `/components*` routes (grouped sidebar + search + theme/scheme switchers) instead of the flat legacy header, and force `noindex, nofollow` on any non-200 response (removes the soft-404 indexing risk).
+- **Specimen spacing**: full-bleed component specimens now live in a `.specimen-block` docs surface (2rem vertical rhythm, card look) — component styles reset their own margins by design, so the container owns the air between demo and prose.
+- **`ui-media` figure rhythm**: figcaption and the transcript link own their spacing below the full-width audio player (8px/12px/40px measured), and the same rule ships in the library CSS.
+- **llms.txt synced**: image + media in the component list, rich-article among the recipes.
+
+## [0.5.3] — 2026-08-17
+
+> 0.5.1 and 0.5.2 were packaging continuity steps (npm workspaces scaffolding, publish-auth hardening); this entry documents the series as one release.
+
+### Added
+- **Publishable `lib/` package** (`gelium-ui` on npm): npm workspaces monorepo, exports map (`./styles/*`, `./themes/*`, `./templates/*`, `./js/*`, `./dist/*`), cache-busting centralized in `lib/version.go`, dogfood import of the package by the docs site.
+- **Server-rendered Media component** (`media`): audio + transcript + embed templates with a zero-JS contract, accessible fallback copy, embed consent boundary, and media style contract.
+- **Coherent SEO/AEO metadata**: llms.txt + llms-ux.txt served, JSON-LD (CollectionPage, TechArticle, BreadcrumbList), canonical/robots/sitemap coherence.
 
 ## [0.5.0] — 2026-08-16
 
 ### Added
-- **On this page rail** (`/docs/*`): TOC server-side que lee los IDs reales del AST de goldmark (`parser.WithAutoHeadingID`), h2/h3 anidados, sticky ≥64rem, oculto en mobile. Cero duplicación de algoritmo.
-- **Prev/Next pagination**: patrón GOV.UK, mismo modelo `orderedDocsNav` que el sidebar; sin Previous en la primera página / sin Next en la última; honra theme/scheme.
-- **Sidebar current**: la entrada activa queda marcada al navegar.
-- **Toggle optimista de theme/scheme**: la clase/`data-theme` se aplica al instante (CSS de ambos temas ya en bundle), round-trip igual para persistir, `hx-swap="none"` + `requestSubmit`, reconciliación con el server en `htmx:before:swap` (antes del pintado). Sin JS = submit clásico.
-- **Iconos inline SVG** en los switchers de theme y scheme.
-- **Contenido centrado**: columna única `min(65ch,100%)` con `margin-inline:auto` para artículo, migas de pan y prev/next (migas/banner movidos dentro de `main`).
+- **On this page rail** (`/docs/*`): server-built TOC reading real goldmark AST heading ids (`parser.WithAutoHeadingID`), nested h2/h3, sticky ≥64rem, hidden on mobile, zero algorithm duplication.
+- **Prev/Next pagination**: GOV.UK pattern driven by the same `orderedDocsNav` model as the sidebar; no Previous on the first page / no Next on the last; honors theme/scheme.
+- **Sidebar current**: the active entry stays marked while navigating.
+- **Optimistic theme/scheme toggle**: the class/`data-theme` applies instantly (both theme CSS already in the bundle), round-trip persists, `hx-swap="none"` + `requestSubmit`, reconciled with the server in `htmx:before:swap` (before paint). No JS = classic submit.
+- **Inline SVG icons** in the theme and scheme switchers.
+- **Centered content**: single `min(65ch,100%)` column with `margin-inline:auto` for article, breadcrumbs, prev/next (crumbs/banner moved inside `main`).
 
 ### Changed
-- **HTMX 2.0.10 → 4.0.0-beta6**: eventos namespaced (`htmx:before:swap`, `htmx:before:request`, `htmx:response:error`, `htmx:error`), `ctx.response`/`ctx.text` en lugar de `xhr`, `hx-boost:inherited` + `innerMorph` + `morph-afterswap.js`.
-- **Sincronización de chrome en `before:swap`** (antes `after:swap`): elimina el flash de un frame al navegar entre dark/light.
-- **`staticAsset`**: sirve cualquier asset del embed con Content-Type por extensión (la allowlist de 3 archivos eliminada).
-- **Cache-busting a `?v=0.5.0`** en todos los assets.
-- **Recipes standalone** ahora aplican theme+scheme (`applyRequestChrome` + `data-theme`) — el sidebar ya no cambia dark→light.
-- **Topbar (brand/Blog/changelog)**: conserva el chrome query con orden scheme-first (`?scheme=dark&theme=basecoat`).
+- **HTMX 2.0.10 → 4.0.0-beta6**: namespaced events (`htmx:before:swap`, `htmx:before:request`, `htmx:response:error`, `htmx:error`), `ctx.response`/`ctx.text` instead of `xhr`, `hx-boost:inherited` + `innerMorph` + `morph-afterswap.js`.
+- **Chrome sync moved to `before:swap`** (was `after:swap`): removes the one-frame flash when navigating dark/light.
+- **`staticAsset`**: serves any embedded asset with extension-based Content-Type (the 3-file allowlist removed).
+- **Cache-busting to `?v=0.5.0`** on all assets.
+- **Standalone recipes** now apply theme+scheme (`applyRequestChrome` + `data-theme`) — the sidebar no longer flips dark→light.
+- **Topbar (brand/Blog/changelog)**: preserves the chrome query with scheme-first order (`?scheme=dark&theme=basecoat`).
 
 ### Fixed
-- `search.js` y `morph-afterswap.js` daban 404 + MIME text/plain rechazado (allowlist hardcodeada; search.js nunca se sirvió en `main`).
-- 3 listeners legacy de htmx 2 (`htmx:beforeRequest`, `htmx:responseError`, `htmx:sendError`) rompían scroll save y toasts de error.
-- 11 handlers de handbook usaban rutas de contenido (`/components/handbook-*`) en vez de `/docs/*` — sidebar current y Prev/Next daban nil.
+- `search.js` and `morph-afterswap.js` were 404 + `text/plain` rejected (hardcoded allowlist; search.js was never served on `main`).
+- 3 legacy htmx-2 listeners (`htmx:beforeRequest`, `htmx:responseError`, `htmx:sendError`) broke scroll save and error toasts.
+- 11 handbook handlers used content routes (`/components/handbook-*`) instead of `/docs/*` — sidebar current and Prev/Next returned nil.
 
-### Enforced (nuevos tests de contrato)
-- `htmx4_navigation_test.go`: lista de API htmx 2 obsoleta rechazada, contratos `htmx:before:swap`/`ctx.response`/`ctx.text`, cache-busting 0.5.0.
-- `on_this_page_test.go`: rail y Prev/Next en páginas servidas.
-- `recipe_chrome_test.go`: recipes honran `?scheme=`.
-- `styles_on_this_page_test.go`: contrato `margin:0auto` (compactCSS).
-- `docs_shell_test.go`: `TestProduceSameChromeURLs`, hrefs con `&amp;`.
-- `server_test.go`: tabla estática con `search.js`/`morph-afterswap.js`.
+### Enforced (new contract tests)
+- `htmx4_navigation_test.go`: deprecated htmx-2 API list rejected, `htmx:before:swap`/`ctx.response`/`ctx.text` contracts, 0.5.0 cache-busting.
+- `on_this_page_test.go`: rail and Prev/Next on served pages.
+- `recipe_chrome_test.go`: recipes honor `?scheme=`.
+- `styles_on_this_page_test.go`: `margin:0auto` contract (compactCSS).
+- `docs_shell_test.go`: `TestProduceSameChromeURLs`, hrefs with `&amp;`.
+- `server_test.go`: static table with `search.js`/`morph-afterswap.js`.
 
 ## [0.4.0] — 2026-08-15
 
 ### Added
-- **Content style guide** (`/docs/content-style`): reglas de copy para errores (recognize + recover, nunca culpar al usuario — NNG), toasts (verbo + resultado), empty states (qué hay / por qué está vacío / qué hacer), banners y validation summary. Patrones de escritura editorial: plain English, voz activa, sin "please", AP Style.
-- **Screen-reading rules**: sección "Reading on screen" en el content style guide — fundamento NNG del eye-tracking (la mayoría escanea, no lee), patrón F (lo importante arriba-izquierda), web copy más corto que impreso. Sección "Paragraphs and sentences": párrafos 2-4 oraciones, oraciones ≤ 25 palabras, pirámide invertida, listas sobre prosa.
-- **Copy length contract**: `TestComponentPagesKeepSentencesUnder25Words` — ninguna página de componente puede tener oraciones > 25 palabras (179 reescritas).
-- **Copy contract test**: `TestRecipeErrorCopyUsesActionPattern` + `TestRecipeEmptyStatesCarryActionLanguage` — errores con patrón de acción, empty states accionables.
-- **Acknowledgments page** (`/docs/acknowledgments`): reconocimiento explícito de todas las fuentes de inspiración — Material Design 3, USWDS, GOV.UK, Mozilla Protocol, Base UI, Basecoat UI, Naive UI, Name That UI, Material Web, shadcn/templ — con qué se tomó, cómo se adaptó y licencia.
-- **Information architecture page** (`/docs/information-architecture`): regla concepto-antes-que-referencia, criterios para agregar páginas (quién navega / qué tarea / concepto-vs-referencia) y un agent prompt para que LLMs auditen la IA de los docs.
-- **Choose the right control page** (`/docs/choose-the-right-control`): tabla de decisión para elegir el componente de input correcto (Radio vs Select vs Checkbox vs Switch vs Slider vs Text field vs Menu) con reglas de oro.
-- **Guidance sections en las 28 páginas de componentes**: When to use / When not to use / Usability / Accessibility, con cross-links a la página de decisión.
-- **Handbook de 6 páginas**: Themes, Tokens, Server contracts, Accessibility, Design principles, Information architecture — concepto antes que referencia.
-- **Búsqueda client-side de docs**: `#docs-search-index` JSON + `search.js`, fallback 0-JS a GET `/docs?q=`.
-- **Theme switcher nativo** (`<select name="theme">`) y **scheme switcher real** (`<input type="checkbox" role="switch">`) — ambos 0-JS con progressive enhancement.
-- **GitHub link en el topbar** de los docs.
+- **Content style guide** (`/docs/content-style`): copy rules for errors (recognize + recover, never blame the user — NNG), toasts (verb + result), empty states (what it is / why it's empty / what to do), banners, validation summary. Editorial writing patterns: plain English, active voice, no "please", AP Style.
+- **Screen-reading rules**: "Reading on screen" section with NNG eye-tracking research (most people scan, not read), F pattern (important content top-left), web copy shorter than print. "Paragraphs and sentences": 2–4 sentence paragraphs, sentences ≤ 25 words, inverted pyramid, lists over prose.
+- **Copy length contract**: `TestComponentPagesKeepSentencesUnder25Words` — no component page may have sentences over 25 words (179 rewritten).
+- **Copy contract test**: `TestRecipeErrorCopyUsesActionPattern` + `TestRecipeEmptyStatesCarryActionLanguage` — errors with an action pattern, actionable empty states.
+- **Acknowledgments page** (`/docs/acknowledgments`): explicit credit for all inspiration sources — Material Design 3, USWDS, GOV.UK, Mozilla Protocol, Base UI, Basecoat UI, Naive UI, Name That UI, Material Web, shadcn/templ — what was taken, how it was adapted, and the license.
+- **Information architecture page** (`/docs/information-architecture`): concept-before-reference rule, page-addition criteria (who navigates / what task / concept-vs-reference) and an agent prompt for LLMs auditing docs IA.
+- **Choose the right control page** (`/docs/choose-the-right-control`): decision table for picking the correct input component (Radio vs Select vs Checkbox vs Switch vs Slider vs Text field vs Menu) with rules of thumb.
+- **Guidance sections on all 28 component pages**: When to use / When not to use / Usability / Accessibility, cross-linked to the decision page.
+- **6-page handbook**: Themes, Tokens, Server contracts, Accessibility, Design principles, Information architecture — concept before reference.
+- **Client-side docs search**: `#docs-search-index` JSON + `search.js`, 0-JS fallback to GET `/docs?q=`.
+- **Native theme switcher** (`<select name="theme">`) and **real scheme switcher** (`<input type="checkbox" role="switch">`) — both 0-JS with progressive enhancement.
+- **GitHub link in the docs topbar.**
 
 ### Changed
-- **Wire contract migrado**: `loom:*` / `X-Loom-*` → `gelium:*` / `X-Gelium-*` (decisión del owner: el proyecto es nuevo, migrar ahora). El prefijo wire ahora coincide con el nombre del producto.
-- **Legibilidad del prose**: medida 48rem (~90 chars) → **65ch**, `text-wrap: pretty` (sin orphans), `text-wrap: balance` en headings, `hyphens: auto`, `text-box-trim` progresivo.
-- **Ritmo vertical**: breadcrumb → título, provenance → título, h2 → h3 con márgenes bidireccionales (antes solo en una dirección).
-- **Contraste AA**: el `fg-muted` de Basecoat light corregido (4.35:1 → 4.75:1) para cumplir WCAG AA; test de contrato en ambos themes.
-- **Copy de errores unificado** al patrón de acción: "Name is required." → "Enter the project name."; "Choose a valid status." → "Choose a status from the list." (antes mezclaba dos voces).
-- **Empty state del public feed**: ahora con CTA ("Follow more people to fill this feed.").
-- **Jerarquía del sidebar**: Handbook movido a posición 2 (después de Getting started, antes de componentes).
-- **Renombrado de residuos**: "Loom UI" → "Gelium UI" en 4 docs raíz (MATERIAL-WEB-PROGRESS, prompts, roadmap).
+- **Wire contract migrated**: `loom:*` / `X-Loom-*` → `gelium:*` / `X-Gelium-*` (owner decision: the project is new, migrate now). The wire prefix now matches the product name.
+- **Prose readability**: measure 48rem (~90 chars) → **65ch**, `text-wrap: pretty` (no orphans), `text-wrap: balance` on headings, `hyphens: auto`, progressive `text-box-trim`.
+- **Vertical rhythm**: breadcrumb → title, provenance → title, h2 → h3 with bidirectional margins (previously one-directional).
+- **AA contrast**: Basecoat-light `fg-muted` corrected (4.35:1 → 4.75:1) for WCAG AA; contract test in both themes.
+- **Unified error copy** to the action pattern: "Name is required." → "Enter the project name."; "Choose a valid status." → "Choose a status from the list." (previously two voices).
+- **Public feed empty state**: now with a CTA ("Follow more people to fill this feed.").
+- **Sidebar hierarchy**: Handbook moved to position 2 (after Getting started, before components).
+- **Rename residues**: "Loom UI" → "Gelium UI" in 4 root docs (MATERIAL-WEB-PROGRESS, prompts, roadmap).
 
 ### Fixed
-- `dependency-metadata.md` claim stale sobre Phase I.
-- Roadmap sin marcadores de fase completada (Phase I y J ahora DONE).
+- `dependency-metadata.md` stale claim about Phase I.
+- Roadmap missing completed-phase markers (Phase I and J now DONE).
 
-### Enforced (nuevos tests de contrato)
-- `styles_readability_test.go`: 65ch, text-wrap, hyphens, text-box-trim, line-height ≥ 1.6, ritmo vertical, breadcrumb.
-- `styles_prose_contrast_test.go`: WCAG AA para prose en ambos themes.
-- `copy_contract_test.go`: patrón de acción en errores, empty states accionables, oraciones ≤ 25 palabras.
-- `content_name_that_ui_test.go`: secciones Name That UI (Alternative names + Agent prompt) en páginas servidas.
-- `handbook_test.go`: páginas del Handbook renderizan, en nav, en sitemap.
+### Enforced (new contract tests)
+- `styles_readability_test.go`: 65ch, text-wrap, hyphens, text-box-trim, line-height ≥ 1.6, vertical rhythm, breadcrumb.
+- `styles_prose_contrast_test.go`: WCAG AA prose in both themes.
+- `copy_contract_test.go`: action pattern in errors, actionable empty states, sentences ≤ 25 words.
+- `content_name_that_ui_test.go`: Name That UI sections (Alternative names + Agent prompt) on served pages.
+- `handbook_test.go`: Handbook pages render, in nav, in sitemap.
 
 ## [0.3.0] — 2026-08-14
 
 ### Added
-- **SDD completo del roadmap A-J**: verificación formal de las 10 fases (A-J) con pares RED→GREEN.
-- **Registry sync guards**: `registry_sync_test.go` — los registries (component, pattern, theme, dependency, agent-prompts, screen-composition) deben referenciar archivos reales.
-- **Landing mejorado**: FAQ (Base UI), claims con checkmarks (Naive UI), demo card visual (Basecoat), link a GitHub, BASE_URL documentado.
-- **Docs root explicador**: qué es Gelium UI (y qué NO es), Quick start en 4 pasos, temas explicados (Material, Basecoat, Base UI como vocabulario nunca runtime).
-- **Basecoat theme** (Phase I, PR #19) — theme completo, light + dark clase única.
+- **Full A–J roadmap SDD**: formal verification of the 10 phases (A–J) with RED→GREEN pairs.
+- **Registry sync guards**: `registry_sync_test.go` — registries (component, pattern, theme, dependency, agent-prompts, screen-composition) must reference real files.
+- **Improved landing**: FAQ (Base UI), claims with checkmarks (Naive UI), visual demo card (Basecoat), GitHub link, documented BASE_URL.
+- **Docs root explainer**: what Gelium UI is (and is NOT), 4-step Quick start, themes explained (Material, Basecoat, Base UI as vocabulary, never runtime).
+- **Basecoat theme** (Phase I, PR #19) — complete theme, light + dark single class.
 
 ### Changed
-- `index.md` cableado a `/docs` (estaba embebido pero sin ruta que lo sirviera).
-- Wire contract documentado como canónico (`gelium-ui-wire-compatibility.md` reescrito).
+- `index.md` wired to `/docs` (it was embedded but no route served it).
+- Wire contract documented as canonical (`gelium-ui-wire-compatibility.md` rewritten).
 
 ## [0.2.0] — 2026-08-13
 
 ### Added
-- **Theme mechanism** (Phase H, PR #18): selección por clase en el documento raíz (`<html>`), dark por ruta de clase única (sin `@media prefers-color-scheme`), themes swappables sin tocar markup.
-- **Screen recipes** (Phase G): Admin Resource, Ops Queue, Public Feed — patrones de composición.
-- **Public content patterns** (Phase F): 14 patrones de contenido con card slots.
-- **Server contracts**: GET+query estables, POST+303, 422 + header `X-Loom-Validation` (luego `X-Gelium-Validation`), `loom:toast` (luego `gelium:toast`).
+- **Theme mechanism** (Phase H, PR #18): class selection on the document root (`<html>`), dark via single-class route (no `@media prefers-color-scheme`), themes swappable without touching markup.
+- **Screen recipes** (Phase G): Admin Resource, Ops Queue, Public Feed — composition patterns.
+- **Public content patterns** (Phase F): 14 content patterns with card slots.
+- **Server contracts**: stable GET+query, POST+303, 422 + `X-Loom-Validation` header (later `X-Gelium-Validation`), `loom:toast` (later `gelium:toast`).
 
 ## [0.1.0] — 2026-08-12
 
 ### Added
-- **Núcleo de Gelium UI**: componentes server-rendered en Go + HTMX, cero JS de componentes.
-- **Arquitectura en 6 capas**: core tokens → themes → componentes → patrones → recipes → screens.
-- **Tokens `--ui-*`**: vocabulario de typography, color roles, spacing, elevation.
-- **Dos themes en bundle único**: Material (default, M3) + Basecoat.
-- **Contratos de acceso y verificación** (Phases A-D): native semantics, focus rings, aria-* en toda la superficie.
-- **Docs shell**: navegación, sidebar, breadcrumbs, búsqueda (deshabilitada), theme/scheme switchers.
+- **Gelium UI core**: server-rendered components in Go + HTMX, zero component JS.
+- **6-layer architecture**: core tokens → themes → components → patterns → recipes → screens.
+- **`--ui-*` tokens**: typography, color roles, spacing, elevation vocabulary.
+- **Two themes in one bundle**: Material (default, M3) + Basecoat.
+- **Access and verification contracts** (Phases A–D): native semantics, focus rings, aria-* across the whole surface.
+- **Docs shell**: navigation, sidebar, breadcrumbs, search (disabled), theme/scheme switchers.
 
+[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.5.3...HEAD
+[0.5.3]: https://github.com/cryptonahue/gelium-ui/releases
 [0.5.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.4.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.3.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.2.0]: https://github.com/cryptonahue/gelium-ui/releases
-[0.1.0]: https://github.com/cryptonahue/gelium-ui/releases
