@@ -28,8 +28,8 @@ func TestIconDocsRouteDogfoodsTrustedSVGContracts(t *testing.T) {
 			t.Errorf("icon docs are missing %q", contract)
 		}
 	}
-	if got := strings.Count(body, `viewBox="0 -960 960 960"`); got < 21 {
-		t.Errorf("icon docs must render the curated Material Symbols set, got %d glyphs, want >= 21", got)
+	if got := strings.Count(body, `viewBox="0 -960 960 960"`); got < 36 {
+		t.Errorf("icon docs must render the curated Material Symbols set, got %d glyphs, want >= 36", got)
 	}
 }
 
