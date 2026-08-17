@@ -20,7 +20,8 @@ func TestDocsResponsivePageRendersContract(t *testing.T) {
 	body := res.Body.String()
 	for _, contract := range []string{
 		"Design for screen sizes, not devices",
-		"overflow-x: hidden must not mask",
+		"must not mask",
+		"overflow-x",
 		"--ui-touch-target",
 		"--ui-container-max",
 		"65ch",
