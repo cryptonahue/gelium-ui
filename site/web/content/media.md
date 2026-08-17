@@ -6,6 +6,7 @@ Media is the figure system for non-image content: native audio players, transcri
 
 An audio figure with native controls and a transcript link.
 
+<div class="specimen-block">
 <figure class="ui-media ui-media-audio">
   <audio controls preload="metadata">
     <source src="/static/audio/launch-intro.mp3" type="audio/mpeg">
@@ -19,9 +20,11 @@ An audio figure with native controls and a transcript link.
   <h2 id="transcript-launch-heading">Transcript</h2>
   <div class="ui-transcript-content">Gelium UI ships with native HTML semantics and zero component JavaScript. This episode walks through the server-driven state contract, the token system, and the themes.</div>
 </section>
+</div>
 
 An embed that is not on the allowlist renders a consent boundary instead of the iframe.
 
+<div class="specimen-block">
 <figure class="ui-media ui-media-embed">
   <div class="ui-embed-boundary">
     <p>This optional embed is unavailable until the source is approved.</p>
@@ -29,6 +32,7 @@ An embed that is not on the allowlist renders a consent boundary instead of the 
   </div>
   <figcaption>Third-party embeds require an allowlisted source and explicit consent.</figcaption>
 </figure>
+</div>
 
 The specimens above follow the contracts the template `media.html` defines.
 

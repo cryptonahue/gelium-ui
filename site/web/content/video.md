@@ -6,6 +6,7 @@ Video is a responsive container for native video playback. Use it when a page em
 
 A 16:9 video with native controls, lazy loading, captions, and a fallback.
 
+<div class="specimen-block">
 <div class="ui-video">
   <video controls poster="/static/video/walkthrough-poster.jpg" loading="lazy" crossorigin="anonymous">
     <source src="/static/video/walkthrough.mp4" type="video/mp4">
@@ -13,14 +14,17 @@ A 16:9 video with native controls, lazy loading, captions, and a fallback.
     <p class="ui-video-fallback">Your browser does not support HTML video.</p>
   </video>
 </div>
+</div>
 
 The 4:3 variant keeps the same contract with a squarer ratio.
 
+<div class="specimen-block">
 <div class="ui-video ui-video--aspect-4-3">
   <video controls loading="lazy">
     <source src="/static/video/short.mp4" type="video/mp4">
     <p class="ui-video-fallback">Your browser does not support HTML video.</p>
   </video>
+</div>
 </div>
 
 The specimens above follow the contract the template `video.html` defines.

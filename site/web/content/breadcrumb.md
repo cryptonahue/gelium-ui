@@ -6,6 +6,7 @@ Breadcrumb is the canonical location trail: Home → section → page. Use it to
 
 This page renders the real `breadcrumb` template markup live:
 
+<div class="specimen-block">
 <nav aria-label="Breadcrumb">
   <ol class="ui-breadcrumb">
     <li class="ui-breadcrumb-item"><a href="/">Home</a></li>
@@ -13,6 +14,7 @@ This page renders the real `breadcrumb` template markup live:
     <li class="ui-breadcrumb-item"><span aria-current="page">Breadcrumb</span></li>
   </ol>
 </nav>
+</div>
 
 ## Guidance
 

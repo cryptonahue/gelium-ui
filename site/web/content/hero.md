@@ -6,6 +6,7 @@ Hero is the full-width promotional header of a landing page: a display title, a 
 
 This page renders the real `hero` template markup live:
 
+<div class="specimen-block">
 <section class="ui-hero">
   <div class="ui-hero-content">
     <p class="ui-hero-eyebrow">Gelium UI</p>
@@ -17,9 +18,11 @@ This page renders the real `hero` template markup live:
     </div>
   </div>
 </section>
+</div>
 
 With a background media layer the hero adds `ui-hero--has-media` and an absolute `ui-hero-media` layer behind the content:
 
+<div class="specimen-block">
 <section class="ui-hero ui-hero--has-media">
   <div class="ui-hero-media"><img src="/static/rich-article-image.svg" alt=""></div>
   <div class="ui-hero-content">
@@ -31,6 +34,7 @@ With a background media layer the hero adds `ui-hero--has-media` and an absolute
     </div>
   </div>
 </section>
+</div>
 
 ## Guidance
 

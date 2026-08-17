@@ -6,20 +6,25 @@ Image is the semantic figure pattern for content images: a real `<img>` with des
 
 A single content image with intrinsic dimensions and lazy loading.
 
+<div class="specimen-block">
 <figure class="ui-media ui-media-image">
   <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=60" alt="A mountain lake at dusk" width="1200" height="800" loading="lazy">
   <figcaption>Alpine lake at dusk — the day the trail opened.</figcaption>
 </figure>
+</div>
 
 An image with responsive sources and a fixed aspect fallback.
 
+<div class="specimen-block">
 <figure class="ui-media ui-media-image ui-media--aspect" style="--ui-media-aspect:16 / 9">
   <img src="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=60" alt="A mountain lake at dusk" width="1200" height="800" loading="lazy" srcset="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=800&q=60 800w, https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=60 1200w" sizes="(min-width: 60rem) 50vw, 100vw">
   <figcaption>Responsive sources let the browser pick the right file for the viewport.</figcaption>
 </figure>
+</div>
 
 A `<picture>` element serves modern formats with a fallback.
 
+<div class="specimen-block">
 <figure class="ui-media ui-media-picture">
   <picture>
     <source srcset="https://images.unsplash.com/photo-1500530855697-b586d89ba3ee?auto=format&fit=crop&w=1200&q=60&fm=webp" type="image/webp">
@@ -27,6 +32,7 @@ A `<picture>` element serves modern formats with a fallback.
   </picture>
   <figcaption>Picture sources use the image type marker so browsers skip what they cannot decode.</figcaption>
 </figure>
+</div>
 
 The specimens above follow the contracts the templates `image.html` defines (`image` and `picture`).
 

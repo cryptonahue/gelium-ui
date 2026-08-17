@@ -6,6 +6,7 @@ Newsletter is a zero-JavaScript subscription form for audience conversion. Use i
 
 The initial subscribe state, ready for a no-JS POST.
 
+<div class="specimen-block">
 <aside class="ui-newsletter" aria-labelledby="newsletter-title">
   <h2 id="newsletter-title" class="ui-newsletter-title">Stay in the loop</h2>
   <p class="ui-newsletter-description">Product updates and Gelium UI releases. No spam, unsubscribe anytime.</p>
@@ -19,9 +20,11 @@ The initial subscribe state, ready for a no-JS POST.
     </div>
   </form>
 </aside>
+</div>
 
 An invalid email re-renders the aside with an inline error, the submitted value preserved, and the input flagged.
 
+<div class="specimen-block">
 <aside class="ui-newsletter" aria-labelledby="newsletter-title">
   <h2 id="newsletter-title" class="ui-newsletter-title">Stay in the loop</h2>
   <p class="ui-newsletter-description">Product updates and Gelium UI releases. No spam, unsubscribe anytime.</p>
@@ -41,14 +44,17 @@ An invalid email re-renders the aside with an inline error, the submitted value 
     </div>
   </form>
 </aside>
+</div>
 
 A valid address replaces the form entirely with a persistent confirmation.
 
+<div class="specimen-block">
 <aside class="ui-newsletter" aria-labelledby="newsletter-title">
   <h2 id="newsletter-title" class="ui-newsletter-title">Stay in the loop</h2>
   <p class="ui-newsletter-description">Product updates and Gelium UI releases. No spam, unsubscribe anytime.</p>
   <p class="ui-newsletter-success" role="status">You're subscribed — watch your inbox for a confirmation email.</p>
 </aside>
+</div>
 
 The specimens above follow the contract the template `newsletter.html` defines and the data the server example in `internal/app/newsletter.go` renders.
 

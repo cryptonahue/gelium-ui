@@ -6,6 +6,7 @@ Split is a two-column editorial composition that pairs media with a body block a
 
 A split with media, an eyebrow, a title, copy, and one action.
 
+<div class="specimen-block">
 <section class="ui-split">
   <div class="ui-split-media">
     <img src="https://images.unsplash.com/photo-1441974231531-c6227db76b6e?auto=format&fit=crop&w=800&q=60" alt="Sunlight through a forest canopy" width="800" height="600" loading="lazy">
@@ -17,9 +18,11 @@ A split with media, an eyebrow, a title, copy, and one action.
     <div class="ui-split-action"><a class="ui-button ui-button-outline" href="/components/split"><span>Read the notes</span></a></div>
   </div>
 </section>
+</div>
 
 The media slot is optional: without it the body takes the full row instead of a half column.
 
+<div class="specimen-block">
 <section class="ui-split">
   <div class="ui-split-body">
     <p class="ui-split-eyebrow">Announcement</p>
@@ -28,6 +31,7 @@ The media slot is optional: without it the body takes the full row instead of a 
     <div class="ui-split-action"><a class="ui-button ui-button-primary" href="/components/split"><span>Read the release notes</span></a></div>
   </div>
 </section>
+</div>
 
 Both specimens above are the live markup the template `split.html` emits: an optional media slot followed by the body slots.
 

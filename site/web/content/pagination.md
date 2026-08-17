@@ -6,6 +6,7 @@ Pagination navigates a paginated result set: previous/next plus numbered pages. 
 
 This page renders the real `pagination` template markup live:
 
+<div class="specimen-block">
 <nav class="ui-pagination" aria-label="Pagination">
   <a class="ui-pagination-page" href="/recipes/ops-queue?page=2">Previous</a>
   <a class="ui-pagination-page" href="/recipes/ops-queue?page=1">1</a>
@@ -15,9 +16,11 @@ This page renders the real `pagination` template markup live:
   <a class="ui-pagination-page" href="/recipes/ops-queue?page=5">5</a>
   <a class="ui-pagination-page" href="/recipes/ops-queue?page=4">Next</a>
 </nav>
+</div>
 
 On the first or last page the boundary control becomes a disabled span instead of a link:
 
+<div class="specimen-block">
 <nav class="ui-pagination" aria-label="Pagination">
   <span class="ui-pagination-page ui-pagination-page--disabled" aria-disabled="true">Previous</span>
   <a class="ui-pagination-page" href="/recipes/ops-queue?page=1">1</a>
@@ -25,6 +28,7 @@ On the first or last page the boundary control becomes a disabled span instead o
   <a class="ui-pagination-page" href="/recipes/ops-queue?page=3">3</a>
   <span class="ui-pagination-page ui-pagination-page--disabled" aria-disabled="true">Next</span>
 </nav>
+</div>
 
 ## Guidance
 

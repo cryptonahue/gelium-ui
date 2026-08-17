@@ -6,13 +6,17 @@ Section heading is a typographic utility that labels a block of related content.
 
 A plain section heading spans the content column.
 
+<div class="specimen-block">
 <p class="ui-section-heading-eyebrow">Eyebrow</p>
 <h2 class="ui-section-heading">Features</h2>
+</div>
 
 A centered heading suits a landing block that should stay symmetric on wide screens.
 
+<div class="specimen-block">
 <p class="ui-section-heading-eyebrow">Eyebrow</p>
 <h2 class="ui-section-heading ui-section-heading--centered">Features</h2>
+</div>
 
 Both specimens above are the live markup the template `section-heading.html` emits: an optional eyebrow paragraph followed by the `h2` itself.
 
