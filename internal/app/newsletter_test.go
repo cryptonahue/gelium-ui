@@ -157,3 +157,49 @@ func TestNewsletterExampleIsNotAComponentRoute(t *testing.T) {
 		t.Error("home nav must not link the /examples/newsletter route")
 	}
 }
+
+func TestNewsletterDocsRouteDogfoodsZeroJSContract(t *testing.T) {
+	s := docsTestServer(t)
+	res := httptest.NewRecorder()
+	s.newsletterDocs(res, httptest.NewRequest(http.MethodGet, "/components/newsletter", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("newsletter docs status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<!doctype html>`,
+		`>Newsletter</h1>`,
+		`<aside class="ui-newsletter" aria-labelledby="newsletter-title">`,
+		`<h2 id="newsletter-title" class="ui-newsletter-title">Stay in the loop</h2>`,
+		`<form class="ui-newsletter-form" method="post" action="/examples/newsletter"`,
+		`<input class="ui-newsletter-input" id="newsletter-email" name="email" type="email" autocomplete="email" required`,
+		`<button class="ui-button ui-button-primary" type="submit"><span>Subscribe</span></button>`,
+		`ui-inline-alert ui-inline-alert--error`,
+		`aria-invalid="true" aria-describedby="newsletter-error" value="not-an-email"`,
+		`<p class="ui-newsletter-success" role="status">You're subscribed`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("newsletter docs are missing %q", contract)
+		}
+	}
+}
+
+func TestNewsletterDocsShowSuccessReplacesForm(t *testing.T) {
+	s := docsTestServer(t)
+	res := httptest.NewRecorder()
+	s.newsletterDocs(res, httptest.NewRequest(http.MethodGet, "/components/newsletter", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("newsletter docs status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	// The success specimen renders the confirmation instead of the form: the
+	// aside contains no email input in that state.
+	if !strings.Contains(body, `value="not-an-email"`) {
+		t.Error("newsletter docs 422 specimen must preserve the submitted value")
+	}
+	if strings.Count(body, `class="ui-newsletter-success"`) < 1 {
+		t.Error("newsletter docs must show the persistent success view specimen")
+	}
+}
