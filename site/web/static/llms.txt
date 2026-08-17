@@ -92,7 +92,7 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 - Responsive (viewports, not devices): /docs/responsive
 - Components: /components/{name} (demo-first: title → live demo → body)
 - Handbook: /docs/principles, /docs/screens, /docs/journeys, /docs/data-display, /docs/feedback, /docs/density, /docs/motion, /docs/ui-definition-of-done, /docs/agent-workflow, /docs/tokens, /docs/themes, /docs/server-contracts, /docs/accessibility, /docs/contributing, /docs/roadmap, /docs/browser-support, /docs/content-style, /docs/compare, /docs/forms, /docs/performance, /docs/responsive, /docs/patterns
-- Recipes: /recipes/admin-resource, /recipes/ops-queue, /recipes/public-feed
+- Recipes: /recipes/admin-resource, /recipes/ops-queue, /recipes/public-feed, /recipes/rich-article
 - Health: /healthz
 - Sitemap: /sitemap.xml
 - Robots: /robots.txt
@@ -105,7 +105,7 @@ Before inventing markup, fetch **/llms-ux.txt** (SURFACE + WF-SHAPE/BUILD/AUDIT/
 
 ## Components (npm templates + CSS)
 
-avatar, badge, banner, breadcrumb, button, callout, card, checkbox, chips, data-table, dialog, divider, elevation, empty-state, error-state, fab, feature-card, focus-ring, footer, hero, icon, icon-button, inline-alert, list, menu, navigation-bar, navigation-drawer, navigation-tab, newsletter, pagination, progress, radio, section-heading, segmented-button, select, skeleton, slider, split, switch, tabs, text-field, toast, tooltip, validation-summary, video
+avatar, badge, banner, breadcrumb, button, callout, card, checkbox, chips, data-table, dialog, divider, elevation, empty-state, error-state, fab, feature-card, focus-ring, footer, hero, icon, icon-button, image, inline-alert, list, media, menu, navigation-bar, navigation-drawer, navigation-tab, newsletter, pagination, progress, radio, section-heading, segmented-button, select, skeleton, slider, split, switch, tabs, text-field, toast, tooltip, validation-summary, video
 
 ## Stack
 

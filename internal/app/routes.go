@@ -43,6 +43,27 @@ func componentRoutes() []componentRoute {
 		{Path: "/components/navigation-drawer", Label: "Navigation drawer", Handler: (*server).navigationDrawerDocs},
 		{Path: "/components/data-table", Label: "Data table", Handler: (*server).dataTableDocs},
 		{Path: "/components/tooltip", Label: "Tooltip", Handler: (*server).tooltipDocs},
+		// Composition & content primitives (documented from lib/templates):
+		{Path: "/components/hero", Label: "Hero", Handler: (*server).heroDocs},
+		{Path: "/components/avatar", Label: "Avatar", Handler: (*server).avatarDocs},
+		{Path: "/components/breadcrumb", Label: "Breadcrumb", Handler: (*server).breadcrumbDocs},
+		{Path: "/components/footer", Label: "Footer", Handler: (*server).footerDocs},
+		{Path: "/components/pagination", Label: "Pagination", Handler: (*server).paginationDocs},
+		{Path: "/components/section-heading", Label: "Section heading", Handler: (*server).sectionHeadingDocs},
+		{Path: "/components/feature-card", Label: "Feature card", Handler: (*server).featureCardDocs},
+		{Path: "/components/split", Label: "Split", Handler: (*server).splitDocs},
+		{Path: "/components/image", Label: "Image", Handler: (*server).imageDocs},
+		{Path: "/components/media", Label: "Media", Handler: (*server).mediaDocs},
+		{Path: "/components/video", Label: "Video", Handler: (*server).videoDocs},
+		{Path: "/components/newsletter", Label: "Newsletter", Handler: (*server).newsletterDocs},
+		// Feedback & status primitives (the state patterns handbook pages name):
+		{Path: "/components/banner", Label: "Banner", Handler: (*server).bannerDocs},
+		{Path: "/components/inline-alert", Label: "Inline alert", Handler: (*server).inlineAlertDocs},
+		{Path: "/components/callout", Label: "Callout", Handler: (*server).calloutDocs},
+		{Path: "/components/skeleton", Label: "Skeleton", Handler: (*server).skeletonDocs},
+		{Path: "/components/empty-state", Label: "Empty state", Handler: (*server).emptyStateDocs},
+		{Path: "/components/error-state", Label: "Error state", Handler: (*server).errorStateDocs},
+		{Path: "/components/validation-summary", Label: "Validation summary", Handler: (*server).validationSummaryDocs},
 	}
 }
 

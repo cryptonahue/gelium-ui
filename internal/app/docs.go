@@ -322,6 +322,13 @@ var docsSections = []struct {
 			{Path: "/components/badge", Label: "Badge"},
 			{Path: "/components/card", Label: "Card"},
 			{Path: "/components/tooltip", Label: "Tooltip"},
+			{Path: "/components/banner", Label: "Banner"},
+			{Path: "/components/inline-alert", Label: "Inline alert"},
+			{Path: "/components/callout", Label: "Callout"},
+			{Path: "/components/skeleton", Label: "Skeleton"},
+			{Path: "/components/empty-state", Label: "Empty state"},
+			{Path: "/components/error-state", Label: "Error state"},
+			{Path: "/components/validation-summary", Label: "Validation summary"},
 		},
 	},
 	{
@@ -339,6 +346,24 @@ var docsSections = []struct {
 		Intro: "Server-side tables.",
 		Links: []navLink{
 			{Path: "/components/data-table", Label: "Data table"},
+		},
+	},
+	{
+		Title: "Composition & content",
+		Intro: "Page-level primitives: layout, brand, and editorial content.",
+		Links: []navLink{
+			{Path: "/components/hero", Label: "Hero"},
+			{Path: "/components/avatar", Label: "Avatar"},
+			{Path: "/components/breadcrumb", Label: "Breadcrumb"},
+			{Path: "/components/footer", Label: "Footer"},
+			{Path: "/components/pagination", Label: "Pagination"},
+			{Path: "/components/section-heading", Label: "Section heading"},
+			{Path: "/components/feature-card", Label: "Feature card"},
+			{Path: "/components/split", Label: "Split"},
+			{Path: "/components/image", Label: "Image"},
+			{Path: "/components/media", Label: "Media"},
+			{Path: "/components/video", Label: "Video"},
+			{Path: "/components/newsletter", Label: "Newsletter"},
 		},
 	},
 }
