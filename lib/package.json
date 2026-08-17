@@ -4,6 +4,7 @@
   "description": "Server-rendered UI components: Go + HTMX + Tailwind. HTML-first, 0-JS contract, themes by class. Components and styles, not a framework.",
   "license": "MIT",
   "private": false,
+  "type": "module",
   "sideEffects": [
     "*.css"
   ],
@@ -12,14 +13,41 @@
     "themes",
     "templates",
     "js",
-    "dist"
+    "dist",
+    "README.md"
   ],
   "exports": {
     ".": "./dist/gelium.css",
     "./styles/*": "./styles/*",
+    "./styles/index.css": "./styles/index.css",
     "./themes/*": "./themes/*",
     "./templates/*": "./templates/*",
     "./js/*": "./js/*",
-    "./dist/*": "./dist/*"
+    "./js/gelium.js": "./js/gelium.js",
+    "./dist/*": "./dist/*",
+    "./dist/gelium.css": "./dist/gelium.css",
+    "./package.json": "./package.json"
+  },
+  "keywords": [
+    "ui",
+    "components",
+    "htmx",
+    "tailwind",
+    "css",
+    "server-rendered",
+    "design-system",
+    "gelium"
+  ],
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/cryptonahue/gelium-ui.git",
+    "directory": "lib"
+  },
+  "homepage": "https://github.com/cryptonahue/gelium-ui#readme",
+  "bugs": {
+    "url": "https://github.com/cryptonahue/gelium-ui/issues"
+  },
+  "publishConfig": {
+    "access": "public"
   }
 }
