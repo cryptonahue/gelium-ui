@@ -799,6 +799,9 @@ func TestLlmsTxtServesAgentBrief(t *testing.T) {
 		"/docs/compare",
 		"theme-material",
 		"When NOT to use",
+		"/llms-ux.txt",
+		"/docs/screens",
+		"/docs/feedback",
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("llms.txt is missing %q", contract)

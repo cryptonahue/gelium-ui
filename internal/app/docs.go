@@ -202,6 +202,8 @@ func prevNextFor(activePath, themeSlug, scheme string) *prevNextView {
 // and the sitemap so the destinations can never drift.
 var handbookNavLinks = []navLink{
 	{Path: "/docs/information-architecture", Label: "Information architecture"},
+	{Path: "/docs/screens", Label: "Screens"},
+	{Path: "/docs/feedback", Label: "Feedback"},
 	{Path: "/docs/choose-the-right-control", Label: "Choose the right control"},
 	{Path: "/docs/forms", Label: "Forms"},
 	{Path: "/docs/compare", Label: "Why Gelium"},
@@ -328,6 +330,8 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "This hub orients you. The **sidebar** is the map: Handbook concepts and the full component reference stay there so this page does not repeat them.\n\n"
 	md += "## Start here\n\n"
 	md += "High-value entry points (not the full catalog):\n\n"
+	md += "- [Screens](/docs/screens) — screen types, hierarchy, nav patterns (sourced criteria).\n"
+	md += "- [Feedback](/docs/feedback) — toast vs summary vs banner vs empty (decision matrix).\n"
 	md += "- [Why Gelium](/docs/compare) — when to use Gelium vs React/headless kits, and explicit no-gos.\n"
 	md += "- [Forms contract](/docs/forms) — labels, `inputmode`/`type`, autocomplete, validate after interaction.\n"
 	md += "- [Themes](/docs/themes) — class-based direction; dark is a class route, not media-only.\n"
@@ -335,7 +339,8 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [Performance](/docs/performance) — ~50KB JS stance; CSS is the largest asset by design.\n"
 	md += "- [Responsive](/docs/responsive) — design for screen sizes, not devices.\n"
 	md += "- [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) — install the package consumers get.\n"
-	md += "- [Agent brief](/llms.txt) — machine-readable project summary.\n\n"
+	md += "- [Agent brief](/llms.txt) — machine-readable project summary.\n"
+	md += "- [Agent UX pack](/llms-ux.txt) — screen/feedback decision tables for LLMs.\n\n"
 	md += "## Use the sidebar\n\n"
 	md += "Every Handbook page and every component is already linked in the left nav (desktop) and the mobile docs menu. Jump from there for reference; come back here for the story and the start list.\n\n"
 	md += "## Try a full screen\n\n"
@@ -382,6 +387,18 @@ func (s *server) docsInformationArchitecture(w http.ResponseWriter, r *http.Requ
 // for picking the right input component per situation.
 func (s *server) docsChooseTheRightControl(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Choose the right control"}, "content/handbook-choose-the-right-control.md", "/docs/choose-the-right-control")
+}
+
+// docsScreens is GET /docs/screens — screen types, hierarchy, nav patterns,
+// and the build checklist adapted from GOV.UK / USWDS / M3 / NNG sources.
+func (s *server) docsScreens(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Screens"}, "content/handbook-screens.md", "/docs/screens")
+}
+
+// docsFeedback is GET /docs/feedback — decision matrix for toast vs
+// validation-summary vs banner vs empty/error/skeleton (sourced criteria).
+func (s *server) docsFeedback(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Feedback"}, "content/handbook-feedback.md", "/docs/feedback")
 }
 
 // docsForms is GET /docs/forms — the Forms contract handbook page: labels,

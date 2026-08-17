@@ -44,6 +44,7 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 | Layout utilities — `.ui-container`, `.ui-row-from-desktop`, prose measure ≤75ch (65ch) | ✅ Shipped |
 | Responsive chapter `/docs/responsive` — design for screen sizes, not devices | ✅ Shipped |
 | Docs hub `/docs` — orientation Start here (no sidebar catalog dump) | ✅ Shipped |
+| UX criteria `/docs/screens` + `/docs/feedback` (GOV.UK/USWDS/M3/NNG) + `/llms-ux.txt` agent pack | ✅ Shipped |
 
 ## What is next (ordered by value, owner reprioritizes freely)
 

@@ -1,0 +1,72 @@
+# Gelium UI — UX decision pack (for agents)
+
+Machine-oriented rules. Human narrative + sources: /docs/screens , /docs/feedback .
+Obey Forms (/docs/forms), Content style, Server contracts, Responsive. Stack: server HTML + gelium-ui CSS; JS optional.
+
+## MUST do before generating UI
+
+1. SCREEN TYPE: hub | list | detail | form | confirm | settings | queue | result
+2. USER JOB: one sentence
+3. ONE PRIMARY ACTION
+4. STATES: loading | empty | error | success
+5. CONTROLS: map via choose-the-right-control + forms contract
+6. SERVER: GET read; POST+303 mutate; 422+X-Gelium-Validation for field errors
+7. THEME: class theme-* on html
+8. NARROW: stack; min-width:0; no overflow-x:hidden on body
+
+## SCREEN types → building blocks
+
+| Type | Blocks |
+|---|---|
+| hub | title, short context, one primary button |
+| list | data-table OR list/card, filters, pagination, empty-state |
+| detail | title, status badge, body, secondary actions |
+| form | fields, validation-summary, primary+cancel |
+| confirm | dialog/confirm route, destructive button, cancel link |
+| settings | list rows, switch/select |
+| queue | list/table, badge, row POST actions |
+| result | success banner/alert, next links, optional toast |
+
+## FEEDBACK matrix (do not improvise)
+
+| Situation | Use | Never |
+|---|---|---|
+| Field validation | validation-summary + inline field errors + 422 | toast-only; banner for validation |
+| Save/send OK | toast and/or success on result page | error styles |
+| Hard failure | inline-alert/banner + retry | toast that vanishes if critical |
+| System-wide notice | layout banner | mix with field errors |
+| Empty list | empty-state + CTA | blank table |
+| Loading | skeleton | infinite full-page block |
+| Irreversible | confirm dialog/page + POST | toast-only delete |
+
+Sources (authoritative): GOV.UK error summary + notification banner when-not; USWDS alert vs site-alert; M3 snackbar vs dialog; NNG error timing/severity.
+
+## NAV quick rules
+
+| Need | Prefer |
+|---|---|
+| Section hierarchy 1–3 levels | side nav / drawer |
+| 3–5 app peers (small viewport) | navigation bar |
+| Same object, alternate views | tabs / segmented-button |
+| Long docs sections | on-this-page |
+
+USWDS: skip heavy side nav on tiny sites. M3: nav bar for few top-level views.
+
+## HIERARCHY
+
+Order: H1 title → context → primary action → main content → secondary.
+F-pattern (NNG): important info top/left; do not bury sole CTA under the fold of a long table.
+
+## COPY
+
+Errors = fix first ("Enter the name"). Toasts = verb+result. Empty = what/why/next. See content-style.
+
+## INSTALL
+
+npm i gelium-ui
+@import gelium-ui/dist/gelium.css;
+optional js/gelium.js for toast + 422 swap helper.
+
+## Human docs
+
+/docs/screens /docs/feedback /docs/forms /docs/compare /llms.txt

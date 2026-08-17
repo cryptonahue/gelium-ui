@@ -882,10 +882,13 @@ func New() http.Handler {
 	mux.HandleFunc("GET /sitemap.xml", s.sitemap)
 	mux.HandleFunc("GET /robots.txt", s.robots)
 	mux.HandleFunc("GET /llms.txt", s.llmsTxt)
+	mux.HandleFunc("GET /llms-ux.txt", s.llmsUXTxt)
 	mux.HandleFunc("GET /{$}", s.home)
 	mux.HandleFunc("GET /docs", s.docsIndex)
 	mux.HandleFunc("GET /docs/patterns", s.docsPatterns)
 	mux.HandleFunc("GET /docs/information-architecture", s.docsInformationArchitecture)
+	mux.HandleFunc("GET /docs/screens", s.docsScreens)
+	mux.HandleFunc("GET /docs/feedback", s.docsFeedback)
 	mux.HandleFunc("GET /docs/choose-the-right-control", s.docsChooseTheRightControl)
 	mux.HandleFunc("GET /docs/forms", s.docsForms)
 	mux.HandleFunc("GET /docs/compare", s.docsCompare)
@@ -993,7 +996,18 @@ func (s *server) robots(w http.ResponseWriter, r *http.Request) {
 // style). Content lives in the embedded static/llms.txt so it ships with the
 // docs binary and stays one file to edit.
 func (s *server) llmsTxt(w http.ResponseWriter, r *http.Request) {
-	asset, err := fs.ReadFile(s.assets, "static/llms.txt")
+	s.servePlainStatic(w, r, "static/llms.txt")
+}
+
+// llmsUXTxt serves /llms-ux.txt — dense screen/feedback decision tables for
+// agents (companion to the human handbook at /docs/screens and /docs/feedback).
+func (s *server) llmsUXTxt(w http.ResponseWriter, r *http.Request) {
+	s.servePlainStatic(w, r, "static/llms-ux.txt")
+}
+
+// servePlainStatic writes an embedded text asset as text/plain with no-cache.
+func (s *server) servePlainStatic(w http.ResponseWriter, r *http.Request, name string) {
+	asset, err := fs.ReadFile(s.assets, name)
 	if err != nil {
 		http.NotFound(w, r)
 		return
