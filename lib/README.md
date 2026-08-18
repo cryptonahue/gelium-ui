@@ -72,6 +72,25 @@ Copyable HTML partials live under `templates/` (e.g. `templates/button.html`). W
 | Token + class themes | A full app framework |
 | Optional small JS enhancements | Required hydration |
 
+## Agent guidance
+
+This package teaches LLM tools how to apply Gelium's good practices. When you
+write UI with an AI agent, point it at these:
+
+- `AGENTS.md` — the entry point: golden rules + how to read the guidance.
+- `skills/` — 7 actionable decision skills (tokens/themes, screen types, forms,
+  states, server contracts, a11y, definition-of-done + anti-slop).
+- `llms-ux.txt` — the compact decision-id pack (SURFACE / SCREEN / WF / DATA /
+  FEED / JOURNEY / MEDIA / SKEL) for fast agent lookup.
+
+Install into your agent's skill directory so the LLM loads it in any project:
+
+```bash
+bash node_modules/gelium-ui/install-agents.sh   # auto-detects hermes/cursor/claude
+```
+
+See `SKILLS.md` for the skill index.
+
 ## Monorepo
 
 This package is `lib/` in [gelium-ui](https://github.com/cryptonahue/gelium-ui). The docs site dogfoods it via npm workspaces.

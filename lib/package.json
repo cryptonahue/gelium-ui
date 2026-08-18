@@ -29,6 +29,12 @@
     "templates",
     "js",
     "dist",
+    "skills",
+    "AGENTS.md",
+    "SKILLS.md",
+    "llms.txt",
+    "llms-ux.txt",
+    "install-agents.sh",
     "README.md"
   ],
   "exports": {

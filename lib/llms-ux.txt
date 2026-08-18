@@ -1,0 +1,180 @@
+# Gelium UI — UX decision pack (for agents)
+
+Human: /docs/agent-workflow /docs/screens /docs/feedback /docs/journeys /docs/data-display /docs/patterns /docs/density /docs/motion /docs/content-style /docs/ui-definition-of-done
+Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT free-form aesthetic redesign.
+
+## MUST before generating UI
+
+0. SURFACE mode: Operate | Read | Persuade | Experience (Operate default for tools)
+1. USER JOB: one sentence
+2. SCREEN TYPE: hub | list | detail | form | confirm | settings | queue | result
+3. ONE PRIMARY ACTION
+4. JOURNEY-* if multi-step; DATA-* if collection
+5. STATES + FEED-*
+6. CONTROLS: forms + choose-the-right-control
+7. SERVER: GET read; POST+303; 422+X-Gelium-Validation
+8. THEME: theme-* on html (no one-off hex chrome)
+9. NARROW: stack; min-width:0; no overflow-x:hidden on body
+10. WF passes: BRIEF → SHAPE → BUILD → AUDIT → POLISH (stop; no endless loops)
+11. DoD: /docs/ui-definition-of-done
+12. If present: read consumer PRODUCT.md + DESIGN.md
+
+## SURFACE modes
+
+| Mode | Bias |
+|---|---|
+| Operate | task, scan, table/form — default admin/tools |
+| Read | 65ch prose, structure |
+| Persuade | one CTA, hub/start — still tokens not stock gradients |
+| Experience | artifact first — not fake CRUD |
+
+## WORKFLOW (WF-*)
+
+| ID | Do | Don't |
+|---|---|---|
+| WF-BRIEF | job, mode, constraints | skip straight to pretty CSS |
+| WF-SHAPE | list SCREEN/JOURNEY/DATA/FEED ids | write markup in shape |
+| WF-BUILD | partials + server | invent parallel design system |
+| WF-AUDIT | DoD + bash scripts/ux-detect.sh (monorepo) | claim pass without checks |
+| WF-POLISH | theme/spacing/copy one pass | redesign under polish |
+| WF-HARDEN | empty/error/edge | happy-path only |
+| WF-ONBOARD | first-run empty CTA | blank first screen |
+
+## ANTI-SLOP (Gelium-aware)
+
+Avoid: nested cards for simple forms; stock purple-blue heroes; icon-tile above every H1; gray on saturated fills; bounce motion; bolder-for-its-own-sake on Operate tables; new font per feature; layout tables for non-data.
+OK: Material/Basecoat stacks from theme; brand fonts if DESIGN.md says so.
+
+## SCREEN types → blocks
+
+| Type | Blocks |
+|---|---|
+| hub | title, short context, one primary button |
+| list | data-table OR list/card, filters, pagination, empty-state |
+| detail | title, status badge, body, secondary actions |
+| form | fields, validation-summary, primary+cancel |
+| confirm | dialog/confirm route, destructive button, cancel |
+| settings | list rows, switch/select |
+| queue | list/table, badge, row POST actions |
+| result | success banner/alert, next links, optional toast |
+
+## JOURNEY shapes
+
+| ID | Use |
+|---|---|
+| JOURNEY-START | hub + one CTA before work |
+| JOURNEY-LINEAR | ordered steps; Continue; back to prior GET |
+| JOURNEY-TASKLIST | long resumable multi-task (only if needed) |
+| JOURNEY-BRANCH | server 303 to different next by answer |
+| JOURNEY-CRUD | list ↔ detail ↔ form |
+| JOURNEY-QUEUE | work item actions |
+
+Landings: 422→same form (FEED-VAL); create→detail/list (FEED-OK-PAGE/TOAST); finish multi-step→result page not toast-only.
+
+## DATA display
+
+| ID | Use | Never |
+|---|---|---|
+| DATA-TABLE | compare many attrs / admin | layout/marketing |
+| DATA-LIST | title + few meta + row action | 8-column numeric compare |
+| DATA-CARDS | browse entities | dense reconciliation |
+| DATA-FEED | time-ordered activity | master data admin |
+| DATA-QUEUE | process work items | read-only catalog |
+| DATA-DESC | one record fields | hundreds of peers |
+
+Collections MUST implement FEED-LOAD-LIST, FEED-EMPTY, FEED-LOAD-FAIL (+ FEED-ROW/PARTIAL if actions).
+
+## FEEDBACK matrix (abbrev)
+
+| ID | Use | Never |
+|---|---|---|
+| FEED-VAL | summary+inline+422 | toast-only validation |
+| FEED-OK-TOAST | brief success in-flow | sole success on blank page |
+| FEED-OK-PAGE | success on result page | |
+| FEED-FAIL | banner/alert+retry | vanishing toast if critical |
+| FEED-EMPTY | empty-state+CTA | blank table |
+| FEED-LOAD-LIST | skeleton in list | full-app block every refetch |
+| FEED-ROW | error near row | toast-only row fail |
+| FEED-PARTIAL | counts+per-item | green toast "Done" |
+| FEED-CONFIRM | confirm+POST | toast-only delete |
+
+Full FEED-* list: /docs/feedback
+
+## NAV / DENSITY / MOTION
+
+Nav: side 1–3 levels; bar 3–5 peers; tabs=same object; breadcrumb depth≥2.
+Density: comfortable|cozy|compact — one per surface; keep --ui-touch-target.
+Motion: MOTION-NONE default; honor prefers-reduced-motion.
+
+## DOC structure (prose)
+
+| ID | Rule |
+|---|---|
+| DOC-H1 | One H1 per URL (page job) |
+| DOC-H2 | On-this-page worthy topic change; never skip H1→H3 |
+| DOC-H3 | Only inside an H2 |
+| DOC-LIST | ≥3 parallel items → list |
+| DOC-TABLE | Compare dimensions (when/when-not) |
+| DOC-QUOTE | Blockquote = cited source only, not flair |
+
+Handbook outline: H1 → lead → H2 Sources → H2 rules → H2 anti-patterns → H2 checklist → See also.
+Operate UI: one H1; do not stack marketing H2s on forms. Full: /docs/content-style
+
+## FOUNDATIONS (human docs)
+
+| ID | Rule |
+|---|---|
+| DOC-TYPE | Use `/docs/typography`; choose a `--ui-type-*` role, preserve its size/weight/line-height, and keep prose near 65ch. |
+| DOC-SPACE | Use `/docs/spacing`; compose with `--ui-space-1/2/3/4/6/8`, smaller inside groups and larger between groups. |
+| DOC-COLOR | Use `/docs/colors`; consume semantic `--ui-color-*` pairs, test focus/status in light and dark, and never use color alone. |
+| TYPE-ROLE | Theme overrides decomposed type tokens; consumers keep the alias. |
+| SPACE-SCALE | No feature-specific spacing scale; use the core scale and keep touch targets at `--ui-touch-target`. |
+| COLOR-FOCUS | Keep `--ui-color-focus-ring`, `--ui-focus-thickness`, and `--ui-focus-offset` visible on `:focus-visible`. |
+
+## MEDIA (server-rendered, native-first)
+
+| ID | Rule |
+|---|---|
+| MEDIA-IMAGE | Informative images require meaningful `alt`, intrinsic `width`/`height`, and lazy loading below the fold. |
+| MEDIA-RESPONSIVE | Use real `srcset`/`sizes` variants or a single source; never invent variants; preserve aspect-ratio fallback. |
+| MEDIA-AUDIO | Use native `audio[controls]`, typed sources, fallback text, and link an optional readable transcript. |
+| MEDIA-CAPTIONS | Video with meaningful audio gets a captions track; captions and transcript serve different jobs. |
+| MEDIA-EMBED | Render external iframes only across an explicit allowlist + consent boundary; otherwise show a canonical fallback. |
+| MEDIA-STATES | Reserve space for loading; provide recovery for error; explain empty media. |
+
+## DOMAIN SKELETONS
+
+| ID | Shape |
+|---|---|
+| SKEL-FORUM | list topics → thread → reply form |
+| SKEL-CATALOG | cards/list + detail + cart/checkout linear |
+| SKEL-ADMIN-RESOURCE | recipe admin-resource (+ on-page criteria bridge) |
+| SKEL-OPS-QUEUE | recipe ops-queue (+ criteria bridge) |
+| SKEL-SETTINGS | settings list + section forms |
+| SKEL-ONBOARDING | start → steps → result |
+
+Recipes show "Maps to Gelium criteria" (SKEL/FEED/DATA/JOURNEY). Patterns: /docs/patterns
+
+## TEMPLATES
+
+Consumer: /docs/templates/product · /docs/templates/design
+
+## RICH-ARTICLE
+
+| ID | Rule |
+|---|---|
+| RICH-STRUCTURE | One H1, eyebrow, lead, byline, then descriptive H2/H3 sections in a readable prose measure. |
+| RICH-MEDIA | Use local safe image/picture, native video with poster/captions/fallback, native audio with transcript, and no arbitrary external embeds. |
+| RICH-STATES | Show loading, empty, and error recovery paths as readable HTML, not spinner-only UI. |
+| RICH-DATA | Reuse list/feed and data-table primitives; keep tables internally scrollable on narrow screens. |
+| RICH-SEO | Demo/fixture routes stay noindex, nofollow while retaining accurate Article JSON-LD for inspection. |
+
+## SEO / AEO BOUNDARY
+
+One primary answer per page, answer-first lead, descriptive headings, and visible sources for sourced claims. `/llms.txt` and `/llms-ux.txt` are discovery aids, not ranking guarantees. The library owns semantic markup and media; the docs site owns Gelium metadata, canonical/robots/sitemap, social tags, and JSON-LD; consumers own BASE_URL/domain, brand, content facts, authors/dates, and social assets. Docs/blog may be indexable; recipes, demos, examples, and stateful surfaces stay noindex and out of the sitemap.
+
+## INSTALL
+
+npm i gelium-ui
+@import gelium-ui/dist/gelium.css;
+optional js/gelium.js
