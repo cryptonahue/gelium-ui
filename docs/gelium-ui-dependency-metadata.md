@@ -18,7 +18,7 @@ core (tokens --ui-* + base.css + tokens.css)
 
 **Regla de dirección**: core NO depende de componentes; componentes NO dependen de patterns; patterns NO dependen de recipes. Cada capa solo consume de las inferiores. Violar la dirección = un componente que reusa otro componente sin contrato (prohibido; la composición es responsabilidad de patterns/recipes).
 
-**Stack tecnológico fijo** (`gelium-ui-core.md`, `AI-COMPONENT-IMPLEMENTER-PROMPT.md` §1): Go `net/http` + `html/template`, CSS propio con tokens `--ui-*`, Tailwind solo como bundler, HTMX solo como enhancement, cero JS en el flujo principal.
+**Stack tecnológico fijo** (`gelium-ui-core.md`, `AI-COMPONENT-IMPLEMENTER-PROMPT.md` §2): Go `net/http` + `html/template`, CSS propio con tokens `--ui-*`, Tailwind solo como bundler, HTMX solo como enhancement, cero JS en el flujo principal.
 
 ## 2. Dependencias por componente
 

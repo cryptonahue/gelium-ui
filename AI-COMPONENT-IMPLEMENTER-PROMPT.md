@@ -1,672 +1,524 @@
-# Gelium UI — Prompt para implementar un componente con otra IA
+# Gelium UI — Component Implementation Prompt for AI agents
 
-Este documento es un prompt reusable. Copia desde “PROMPT COPIABLE”, completa los parámetros y entrégalo a la IA responsable de exactamente un componente.
+Reusable prompt for contributing **exactly one Gelium UI component** with an AI
+agent (Claude Code, OpenCode, Codex, Hermes, etc.). Copy from "COPYABLE PROMPT",
+fill the `{{...}}` placeholders, and hand it to the agent responsible for a single
+component.
 
-## Cómo usarlo
+If you only need fast, safe UI guidance for an existing project, you do not need
+this prompt — point the agent at the shipped guidance in the npm package:
+`AGENTS.md` (golden rules), `skills/` (7 decision skills), `llms-ux.txt` (full
+decision pack). This prompt is for **contributing a new component to Gelium UI
+itself**.
 
-1. Elegí un componente de `COMPONENT-ROADMAP.md`.
-2. Completá todos los placeholders de asignación `{{...}}`. El estado final lo elige el worker después de ejecutar.
-3. Asigná un modo de concurrencia y ownership explícito.
-4. No permitas que dos workers escriban el mismo archivo físico.
-5. Designá un único integrador para el checkout canónico.
-6. El worker termina con uno de los cuatro estados permitidos: `COMPLETE_AWAITING_USER_ACCEPTANCE`, `READY_FOR_INTEGRATION`, `BLOCKED` o `ABORTED_ON_DRIFT`; nunca declara “terminado” sin evidencia.
+## How to use it
 
-## Modos de concurrencia
+1. Pick a component from the canonical registry: `docs/gelium-ui-component-registry.md`.
+2. Fill every `{{...}}` assignment placeholder. The final status is chosen by the
+   worker after it finishes.
+3. Assign a concurrency mode and explicit ownership.
+4. Never let two workers write the same physical file.
+5. Designate a single integrator for the canonical checkout.
+6. The worker must end in exactly one of four allowed statuses
+   (`COMPLETE_AWAITING_USER_ACCEPTANCE`, `READY_FOR_INTEGRATION`, `BLOCKED`,
+   `ABORTED_ON_DRIFT`) and never declare "done" without evidence.
 
-- `SHARED_HANDOFF`: el worker sólo crea/edita archivos nuevos o exclusivos. Para archivos compartidos entrega patches; no los aplica.
-- `ISOLATED_PHYSICAL_WORKSPACE`: trabaja en una copia física autorizada, nunca en el checkout canónico. Entrega manifests y patches.
-- `EXCLUSIVE_INTEGRATION`: único modo que permite modificar archivos compartidos canónicos; requiere reserva literal vigente para cada path.
+## Concurrency modes
 
-Hoy la opción recomendada para varias IAs es investigación paralela + workspaces aislados + integración serial.
+- `SHARED_HANDOFF`: the worker only creates/edits new or exclusive files. For
+  shared files it hands off patches; it does not apply them.
+- `ISOLATED_PHYSICAL_WORKSPACE`: works in an authorized physical copy, never the
+  canonical checkout. Delivers manifests and patches.
+- `EXCLUSIVE_INTEGRATION`: the only mode allowed to modify canonical shared files;
+  requires a literal, current reservation for each path.
+
+Today the recommended shape for several AIs is parallel research + isolated
+workspaces + serial integration.
 
 ---
 
-# PROMPT COPIABLE
+# COPYABLE PROMPT
 
 ````text
-# Agente de componente Gelium UI — contrato operativo seguro
+# Gelium UI component agent — safe operational contract
 
-Implementa exactamente UN componente de Gelium UI siguiendo este contrato.
+Implement exactly ONE Gelium UI component under this contract.
 
-## 0. Parámetros
+## 0. Parameters
 
-COMPONENTE: {{COMPONENT_NAME}}
+COMPONENT: {{COMPONENT_NAME}}
 SLUG: {{COMPONENT_SLUG}}
-CATEGORÍA: {{CORE | LABS | GELIUM_ONLY}}
-VARIANTES REQUERIDAS: {{REQUIRED_VARIANTS}}
-ESTADOS REQUERIDOS: {{REQUIRED_STATES}}
-COMPORTAMIENTOS REQUERIDOS: {{REQUIRED_BEHAVIORS}}
-FLUJO SERVER/HTMX, SI APLICA: {{SERVER_FLOW_OR_NONE}}
-CRITERIOS ESPECÍFICOS DE ACEPTACIÓN: {{ACCEPTANCE_CRITERIA}}
-MATRIZ DE NAVEGADORES SOPORTADA: {{SUPPORTED_BROWSER_MATRIX}}
-FECHA/SNAPSHOT BASELINE WEB: {{WEB_BASELINE_SNAPSHOT_DATE}}
+CATEGORY: {{CORE | GELIUM_ONLY}}
+REQUIRED VARIANTS: {{REQUIRED_VARIANTS}}
+REQUIRED STATES: {{REQUIRED_STATES}}
+REQUIRED BEHAVIORS: {{REQUIRED_BEHAVIORS}}
+SERVER/HTMX FLOW, IF ANY: {{SERVER_FLOW_OR_NONE}}
+ACCEPTANCE CRITERIA: {{ACCEPTANCE_CRITERIA}}
+SUPPORTED BROWSER MATRIX: {{SUPPORTED_BROWSER_MATRIX}}
+WEB BASELINE SNAPSHOT DATE: {{WEB_BASELINE_SNAPSHOT_DATE}}
 
-REPOSITORIO CANÓNICO: D:\repos\gelium-ui
-MATERIAL WEB UPSTREAM: D:\repos\material-web-upstream
-FORK DE REFERENCIA: D:\repos\material-web-tailwind
-UPSTREAM SNAPSHOT ID PROVISTO POR COORDINADOR: {{UPSTREAM_SNAPSHOT_ID}}
-UPSTREAM MANIFEST/HASH PROVISTO: {{UPSTREAM_MANIFEST_OR_HASH}}
-ROADMAP: D:\repos\gelium-ui\COMPONENT-ROADMAP.md
-AUDITORÍA HISTÓRICA: D:\repos\gelium-ui\MATERIAL-WEB-PROGRESS.md
+CANONICAL REPOSITORY: {{CANONICAL_REPO_PATH}}
+COMPONENT REGISTRY: {{CANONICAL_REPO_PATH}}/docs/gelium-ui-component-registry.md
+AGENT GUIDANCE: {{CANONICAL_REPO_PATH}}/lib/AGENTS.md
+SKILLS: {{CANONICAL_REPO_PATH}}/lib/skills/*.md
+DECISION PACK: {{CANONICAL_REPO_PATH}}/lib/llms-ux.txt
 
-MODO ASIGNADO: {{SHARED_HANDOFF | ISOLATED_PHYSICAL_WORKSPACE | EXCLUSIVE_INTEGRATION}}
-WORKSPACE AUTORIZADO: {{AUTHORIZED_WORKSPACE_PATH}}
+ASSIGNED MODE: {{SHARED_HANDOFF | ISOLATED_PHYSICAL_WORKSPACE | EXCLUSIVE_INTEGRATION}}
+AUTHORIZED WORKSPACE: {{AUTHORIZED_WORKSPACE_PATH}}
 WORKER ID: {{WORKER_ID}}
-RESERVA ID: {{RESERVATION_ID}}
-PATHS POSEÍDOS: {{OWNED_PATHS}}
-PATHS PROHIBIDOS ADICIONALES: {{FORBIDDEN_PATHS_OR_NONE}}
+RESERVATION ID: {{RESERVATION_ID}}
+OWNED PATHS: {{OWNED_PATHS}}
+ADDITIONAL FORBIDDEN PATHS: {{FORBIDDEN_PATHS_OR_NONE}}
 BASELINE SHA-256: {{EXPECTED_HASHES_OR_NONE}}
-NUEVA VERSIÓN DE ASSETS PROPUESTA: {{NEW_ASSET_VERSION_OR_INTEGRATOR_OWNED}}
+PROPOSED NEW ASSET VERSION: {{NEW_ASSET_VERSION_OR_INTEGRATOR_OWNED}}
 
-No amplíes el alcance a un segundo componente. Registra necesidades transversales no indispensables como follow-up.
+Do not expand scope to a second component. Record non-essential cross-cutting
+needs as follow-ups.
 
-## 1. Resultado obligatorio
+## 1. Mandatory reading — read BEFORE you write
 
-Preserva por separado:
+Read in order, do not skip:
 
-1. anatomía visual Material;
-2. interacción y precedencia de estados;
-3. semántica y accesibilidad;
-4. comportamiento de datos/forms;
-5. arquitectura Gelium.
+1. `lib/AGENTS.md` — the golden rules that apply to every task.
+2. `lib/skills/` — every skill; they are short and actionable. Start with
+   `01-foundations.md`. Confirm compliance with `07-dod-and-antislop.md` before
+   calling anything done.
+3. `lib/llms-ux.txt` — the full decision pack (SURFACE / SCREEN / WF / DATA /
+   FEED / JOURNEY / MEDIA / SKEL ids).
+4. `docs/gelium-ui-component-registry.md` — the row and states for this component.
+5. `docs/gelium-ui-vocabulary.md` — the canonical meaning of the pattern(s) used.
+6. `README.md` and `lib/README.md` — product and package contract.
+7. Existing similar components: `internal/app/<x>.go` handler,
+   `lib/templates/<x>.html` partial, `lib/styles/<x>.css`, and the corresponding
+   `lib/styles_<x>_test.go`.
 
-Cambiar Lit/Web Components por HTML server-rendered NO autoriza simplificar el diseño Material, omitir estados ni alterar el contrato visual.
+Report the mode, ownership, protected paths, and port/process state (see §3)
+before producing anything.
 
-Stack objetivo:
+## 2. Immutable constraints
 
-- Go `net/http` y `html/template`;
-- `embed` y Markdown interno confiable;
-- Tailwind CSS 4 y CSS propio;
-- tokens públicos `--ui-*`;
-- HTMX local sólo como progressive enhancement;
-- HTML/CSS moderno antes que JavaScript.
+**Target stack (fixed):** Go `net/http` + `html/template`; server-rendered
+components; public `--ui-*` tokens; Tailwind CSS 4 as a bundler/optimizer only;
+HTMX only as progressive enhancement; modern HTML/CSS before JavaScript; zero JS
+in the main flow (a JS-disabled user completes the primary path). Reimplement the
+upstream contract; do not simplify the design, drop states, or alter the visual
+contract just because you switch from a web-component runtime to server-rendered
+HTML.
 
-## 2. Restricciones no negociables
+Do NOT use or introduce: React; Lit; Shadow DOM; Astro; `templ`; JSX; Custom
+Elements as a runtime requirement; CDN; unnecessary external dependencies; or
+component JavaScript without a demonstrated platform gap.
 
-NO uses ni introduzcas:
+Do not add JavaScript for convenience or to replace native semantics.
 
-- React;
-- Lit;
-- Shadow DOM;
-- Astro;
-- `templ`;
-- JSX;
-- Custom Elements como runtime obligatorio;
-- CDN;
-- dependencias externas innecesarias;
-- JavaScript del componente sin una brecha de plataforma demostrada.
+Do not init or use Git: no `git init`, status, diff, branches, commits,
+worktrees, stash, reset, checkout, fetch, pull or push.
 
-No agregues JavaScript por conveniencia ni para reemplazar semántica nativa.
+Do not read, print, request or modify: credentials, tokens, cookies, keys;
+`.env`; credential stores; Git/npm authentication.
 
-No inicialices ni uses Git:
+Read-only references: keep any reference checkout (e.g. Material Web upstream)
+read-only; never copy its CSS/code without reviewing provenance and license.
+Reimplement contracts; do not copy.
 
-- no `git init`, status, diff, branches, commits, worktrees, stash, reset, checkout, fetch, pull o push.
+Do not invent compatibility, paths, tests, reviews or results. Use `UNKNOWN`
+where appropriate.
 
-No leas, imprimas, solicites ni modifiques:
+## 3. Port and process safety
 
-- credenciales, tokens, cookies, claves;
-- `.env`;
-- credential stores;
-- autenticación Git/npm.
+The accepted app may be running on `:8787` and a built binary may exist
+(`cmd/gelium`). Absolute worker rules:
 
-Repositorios read-only:
+- never start anything on `:8787`;
+- never stop, restart or signal the `:8787` process;
+- never overwrite, rebuild, run or replace the production binary;
+- never kill another process;
+- never test changes against `:8787`;
+- use `:8788` exclusively for your smoke server, and only if it is free.
 
-- `D:\repos\material-web-upstream`;
-- `D:\repos\material-web-tailwind`;
-- `D:\repos\material-web-tailwind\material-tailwind`.
-
-Documentos protegidos, read-only salvo tarea explícita distinta:
-
-- `MATERIAL-WEB-PROGRESS.md`;
-- `PROMPT-MATERIAL-WEB-INVENTORY.md`;
-- `COMPONENT-ROADMAP.md`;
-- `AI-COMPONENT-IMPLEMENTER-PROMPT.md`.
-
-No inventes compatibilidad, rutas, tests, reviews ni resultados. Usa `UNKNOWN` cuando corresponda.
-
-## 3. Seguridad de procesos y puertos
-
-La app aceptada puede estar en `http://localhost:8787` y puede existir `gelium.exe`.
-
-Reglas absolutas del worker:
-
-- nunca inicies nada en `:8787`;
-- nunca detengas, reinicies o señales el proceso de `:8787`;
-- nunca sobrescribas, reconstruyas, ejecutes o reemplaces `gelium.exe`;
-- nunca mates un proceso ajeno;
-- no pruebes cambios contra `:8787`;
-- usa exclusivamente `:8788` para smoke y sólo si está libre.
-
-La terminal de Windows corre Bash/MSYS: usa sintaxis POSIX, no PowerShell.
-
-Inspección inicial read-only permitida:
+Inspect read-only before touching anything:
 
 ```bash
-netstat -ano | grep -E '[:.]8787[[:space:]]' || true
-netstat -ano | grep -E '[:.]8788[[:space:]]' || true
-tasklist.exe /FI "IMAGENAME eq gelium.exe" || true
+SS -ltnp | grep -E ':(8787|8788)[[:space:]]' || true
 curl -fsS --max-time 3 http://localhost:8787/healthz || true
 ```
 
-No derives acciones destructivas de esos resultados.
+Do not derive destructive actions from those results. For smoke, start
+`PORT=8788 go run ./cmd/gelium` with your tool's background-process capability,
+keep its session/process ID, and stop only that process when done. Do not use
+`&`, `nohup`, or orphan processes.
 
-Para smoke, inicia `PORT=8788 go run ./cmd/gelium` con la capacidad de procesos background de tu herramienta, conserva su session/process ID y detén únicamente ese proceso al finalizar. No uses `&`, `nohup` ni procesos huérfanos.
+If `:8788` is occupied by a process you did not start: do not kill it, do not
+reuse it, report `BLOCKED_PORT_8788`, and ask the coordinator.
 
-Si `:8788` está ocupado por un proceso que no iniciaste:
+## 4. Concurrency without Git
 
-1. no lo mates;
-2. no lo reutilices;
-3. reporta `BLOCKED_PORT_8788`;
-4. pide decisión al coordinador.
+### 4.1 Use only the assigned mode
 
-## 4. Concurrencia sin Git
+`SHARED_HANDOFF` — edit only new or exclusive files listed in `OWNED PATHS`. Do
+not edit shared files. For every shared change, deliver an integration manifest
+and textual patch. If integration is pending, end as `READY_FOR_INTEGRATION`,
+not `COMPLETE`.
 
-### 4.1 Usa sólo el modo asignado
+`ISOLATED_PHYSICAL_WORKSPACE` — work only in `AUTHORIZED WORKSPACE`. Do not write
+to the canonical checkout. Builds, tests and `:8788` happen in the isolated
+copy. Do not auto-copy results to canonical. Deliver a full manifest and
+reproducible patches.
 
-#### `SHARED_HANDOFF`
+`EXCLUSIVE_INTEGRATION` — list each shared file before writing it; verify every
+one appears literally in the reservation; capture baseline hashes; a component
+reservation does not imply global ownership; if a path's ownership is missing,
+do not edit it.
 
-- Sólo edita archivos nuevos o exclusivos listados en `PATHS POSEÍDOS`.
-- No edites archivos compartidos.
-- Para cada cambio compartido entrega un integration manifest y patch textual.
-- Si falta integración, termina como `READY_FOR_INTEGRATION`, no `COMPLETE`.
+### 4.2 Shared by default
 
-#### `ISOLATED_PHYSICAL_WORKSPACE`
-
-- Trabaja únicamente en `WORKSPACE AUTORIZADO`.
-- No escribas en `D:\repos\gelium-ui`.
-- Builds, tests y `:8788` ocurren en la copia aislada.
-- No copies automáticamente resultados al canónico.
-- Entrega manifest completo y patches reproducibles.
-
-#### `EXCLUSIVE_INTEGRATION`
-
-- Lista antes de escribir cada archivo compartido a modificar.
-- Verifica que todos aparezcan literalmente en la reserva.
-- Captura hashes baseline.
-- Una reserva del componente no implica ownership global.
-- Si falta ownership de un path, no lo edites.
-
-### 4.2 Compartidos por defecto
-
-Salvo reserva explícita, no edites concurrentemente:
+Unless explicitly reserved, do not edit concurrently:
 
 ```text
 internal/app/server.go
+internal/app/routes.go
+internal/app/docs.go
 internal/app/server_test.go
-web/templates/layout.html
-web/styles/app.css
-themes/theme-material/theme.css
-web/styles_contract_test.go
-web/static/app.css
-web/static/app.js
-web/static/htmx.min.js
-web/assets.go
+lib/styles/*.css  (regenerate dist, do not hand-edit the bundle)
+lib/dist/gelium.css
+lib/package.json
+lib/package-lock.json
+site/web/static/app.css
+site/web/static/app.js
+site/web/static/htmx.min.js
+site/web/assets.go
 README.md
 package.json
 package-lock.json
 go.mod
 go.sum
-cmd/gelium/main.go
-cmd/gelium/main_test.go
-gelium.exe
+cmd/gelium/*.go
 ```
 
-También son compartidos router/mux, page view central, navegación, registry, layout, bundles, índices y archivos generados.
+Router/mux, central page view, navigation, registry, layout, bundles, indexes and
+generated files are shared too.
 
-### 4.3 Ownership y drift
+### 4.3 Ownership and drift
 
-Antes de escribir, presenta:
+Before writing, present:
 
-| Ruta | Nueva/existente | Exclusiva/compartida | Owner | Reserva | Acción |
+| Path | New/existing | Exclusive/shared | Owner | Reservation | Action |
 |---|---|---|---|---|---|
 
-Para cada archivo existente autorizado:
-
-1. registra SHA-256 y tamaño;
-2. vuelve a calcular el hash inmediatamente antes de escribir;
-3. vuelve a comprobar antes del handoff;
-4. compara contra tu último estado conocido.
-
-En Bash/MSYS:
+For each authorized existing file: record SHA-256 and size; recompute the hash
+immediately before writing; recompute again before handoff; compare against your
+last known state.
 
 ```bash
 sha256sum path/to/file
 wc -c < path/to/file
 ```
 
-Si cambió sin una escritura tuya:
-
-- detente;
-- no sobrescribas ni fusiones automáticamente;
-- no reviertas trabajo ajeno;
-- conserva tu propuesta como handoff;
-- reporta `ABORTED_ON_DRIFT`, path, hash esperado y observado.
+If a file changed without your own write: stop; do not overwrite or auto-merge;
+do not revert others' work; keep your proposal as a handoff; report
+`ABORTED_ON_DRIFT` with path, expected and observed hash.
 
 ### 4.4 Integration manifest
 
-Para cada shared change no aplicado entrega:
+For each shared change you did not apply, deliver:
 
 ```text
-FILE: ruta
+FILE: path
 BASELINE_SHA256: hash
 OWNER_REQUIRED: integration-owner
-ANCHOR: texto estable y único
-PURPOSE: motivo
-DEPENDENCIES: contratos relacionados
+ANCHOR: stable, unique text
+PURPOSE: reason
+DEPENDENCIES: related contracts
 PATCH:
-...diff o bloque exacto...
+...diff or exact block...
 POSTCONDITION:
-...resultado esperado...
+...expected result...
 TESTS THAT PROVE IT:
-...tests/comandos...
+...tests/commands...
 ```
 
-`STALE_REBASE_REQUIRED` no es un estado final del worker: es una anotación que el coordinador aplica a un handoff previamente emitido cuando su baseline dejó de ser vigente. Si el worker detecta drift durante su ejecución, su estado final es `ABORTED_ON_DRIFT` y no genera un patch contra el baseline cambiado.
+`STALE_REBASE_REQUIRED` is not a final worker status: the coordinator applies it
+to a previously emitted handoff whose baseline went stale. If the worker detects
+drift during its run, its final status is `ABORTED_ON_DRIFT` and it generates no
+patch against the changed baseline.
 
-## 5. Descubrimiento obligatorio — todavía no escribas
+## 5. Required discovery — do not write yet
 
-1. Lee `README.md`, `COMPONENT-ROADMAP.md` y `MATERIAL-WEB-PROGRESS.md`.
-2. Inspecciona componentes Gelium existentes similares.
-3. Inspecciona Go, templates, tests, CSS, theme, docs, build y versión de assets relevantes.
-4. Reporta modo, ownership, paths protegidos y estado de puertos/procesos.
-5. Distingue hechos, inferencias, `UNKNOWN` y decisiones que requieren aprobación.
+1. Read `AGENTS.md`, the skills, `llms-ux.txt`, the component registry row, and
+   the vocabulary entry for the patterns used.
+2. Inspect existing similar Gelium components (handler, partial, CSS, tests).
+3. Inspect Go, templates, tests, CSS, theme, docs, build and relevant asset
+   versioning.
+4. Report mode, ownership, protected paths and port/process state.
+5. Distinguish facts, inferences, `UNKNOWN` and decisions needing approval.
 
-No escribas producción durante esta fase.
+Do not write production code during this phase.
 
-## 6. Evidencia Material upstream
+## 6. Upstream evidence
 
-No implementes desde memoria, capturas o resúmenes genéricos.
+Do not implement from memory, screenshots, or generic summaries. For the
+upstream component you are porting/contracting, locate literal paths for:
+documentation and demos; render/source; shared primitives; CSS; public tokens;
+hard-coded geometry; behavior/accessibility tests. Record exact paths, variants
+and states, anatomy, dimensions, spacing, type, colors, motion, keyboard/focus,
+ARIA, and proposed divergences. Use `UNKNOWN`/`BLOCKED` and ask the coordinator
+for a baseline when a required snapshot cannot be verified. Reference is not a
+runtime dependency; reimplement contracts, never blindly copy.
 
-Ubica rutas literales del componente concreto para:
+## 7. Mandatory platform-first audit
 
-1. documentación y demos;
-2. render/source;
-3. primitives compartidas;
-4. Sass/CSS;
-5. tokens públicos;
-6. geometría hard-coded;
-7. tests de comportamiento/accesibilidad.
+Before proposing JavaScript, build a table:
 
-Registra:
-
-- `UPSTREAM SNAPSHOT ID` provisto por el coordinador; no afirmes haber observado un commit mediante Git porque Git está prohibido;
-- verificación contra `UPSTREAM MANIFEST/HASH` cuando fue provisto;
-- si falta o no puede verificarse el snapshot requerido, usa `UNKNOWN`/`BLOCKED` y pide al coordinador un baseline;
-- rutas exactas;
-- variantes y estados;
-- anatomía, dimensiones, spacing, type, colors, motion;
-- teclado, foco, ARIA y dismissal;
-- qué pertenece a Lit/Shadow DOM y no se porta;
-- divergencias propuestas.
-
-Material Web es referencia, no dependencia runtime. Reimplementa contratos; no copies automáticamente CSS/código del fork sin revisar procedencia/licencia.
-
-## 7. Auditoría platform-first obligatoria
-
-Antes de proponer JavaScript crea:
-
-| Capacidad | HTML/CSS nativo | Compatibilidad actual | Baseline | No-JS | Gap real | Solución |
+| Capability | Native HTML/CSS | Current support | Baseline | No-JS | Real gap | Solution |
 |---|---|---|---|---|---|---|
 
-Audita según aplique:
+Audit as applicable: HTML elements/attributes; forms and navigation; CSS
+selectors/properties; Popover API, Invoker Commands, top layer, inertness and
+dismissal; keyboard and focus; anchor positioning; reduced motion and forced
+colors; RTL and responsive; server/network semantics; real browser probes.
+Sources in order: WHATWG/W3C; MDN; Browser Compat Data; Web Features/Baseline;
+real probe. Date and evaluate each capability against the provided
+`SUPPORTED BROWSER MATRIX` and `WEB BASELINE SNAPSHOT DATE`. If either is
+missing, mark the decision `UNKNOWN`/`BLOCKED` rather than silently picking a
+matrix, and never use a historical matrix as if it were current.
 
-- elementos/atributos HTML;
-- forms y navegación;
-- selectors/properties CSS;
-- Popover API, Invoker Commands, top layer, inertness y dismissal;
-- keyboard y focus;
-- anchor positioning;
-- reduced motion y forced colors;
-- RTL y responsive;
-- semántica server/network;
-- browser probes reales.
+JavaScript is accepted only if a functional gap remains that cannot be solved
+correctly with (1) semantic HTML, (2) declarative CSS, (3) server-rendered
+form/navigation, (4) HTMX as enhancement. If still necessary: document the exact
+gap; write a RED test first; use a minimal vanilla/framework-free module; keep a
+real no-JS flow; never make JS a requirement to read, navigate, submit or
+complete the main flow. For browsers without the modern primitive, use a real
+server-rendered route/page. Do not simulate modals, tabs, menus or validation
+with inaccessible CSS hacks.
 
-Fuentes, en orden:
+## 8. Specification before code
 
-1. WHATWG/W3C;
-2. MDN;
-3. Browser Compat Data;
-4. Web Features/Baseline;
-5. probe real.
+Produce a matrix:
 
-Incluye fecha y evalúa cada capacidad contra `MATRIZ DE NAVEGADORES SOPORTADA` y `FECHA/SNAPSHOT BASELINE WEB` provistos. Si falta alguno, no elijas silenciosamente una matriz: marca la decisión `UNKNOWN`/`BLOCKED`. No uses una matriz histórica como si fuera actual.
-
-JavaScript sólo se acepta si queda una brecha funcional imposible de resolver correctamente con:
-
-1. HTML semántico;
-2. CSS declarativo;
-3. formulario/navegación server-rendered;
-4. HTMX como enhancement.
-
-Si sigue siendo necesario:
-
-- documenta la brecha exacta;
-- escribe primero un test RED;
-- usa módulo vanilla/framework-free mínimo;
-- conserva flujo no-JS real;
-- no conviertas JS en requisito para leer, navegar, enviar o completar el flujo principal.
-
-Para navegadores sin la primitive moderna, usa una ruta/página server-rendered real. No simules modal, tabs, menú o validación con hacks CSS inaccesibles.
-
-## 8. Especificación antes de código
-
-Produce una matriz:
-
-| Feature | Contrato upstream | Estrategia Gelium | Test | Divergencia |
+| Feature | Upstream contract | Gelium strategy | Test | Divergence |
 |---|---|---|---|---|
 
-Debe cubrir:
+Cover: semantic root and anatomy; variants and states; combinations and
+precedence; rest/hover/focus-visible/active; disabled/loading/error/empty where
+applicable; keyboard and focus lifecycle; labels, names and descriptions; forms,
+values, submission and HTTP codes; no-JS and HTMX; light/dark, narrow/wide, RTL;
+reduced motion and forced colors; assets and trust boundaries. Any non-trivial
+divergence requires approval BEFORE implementation. Do not call an unverified
+approximation "parity".
 
-- raíz semántica y anatomía;
-- variants y states;
-- combinaciones y precedencia;
-- rest/hover/focus-visible/active;
-- disabled/loading/error/empty cuando aplican;
-- teclado y focus lifecycle;
-- labels, names y descriptions;
-- forms, values, submission y códigos HTTP;
-- no-JS y HTMX;
-- light/dark, narrow/wide, RTL;
-- reduced motion y forced colors;
-- assets y trust boundaries.
+## 9. Strict TDD
 
-Toda divergencia no trivial requiere aprobación ANTES de implementar. No llames paridad a una aproximación no verificada.
+Law: NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.
 
-## 9. TDD estricto
+Use vertical cycles, one per behavior: write a minimal test; run only that test;
+observe and log the expected RED; confirm it is not a typo/setup; implement the
+minimum; observe GREEN; run the related suite; refactor only in green; repeat.
+Do not write all tests and then all implementation. Keep this log:
 
-Ley:
-
-NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST.
-
-Usa ciclos verticales, uno por comportamiento:
-
-1. escribe test mínimo;
-2. ejecuta sólo ese test;
-3. observa y registra el RED esperado;
-4. confirma que no es typo/setup;
-5. implementa lo mínimo;
-6. observa GREEN;
-7. ejecuta suite relacionada;
-8. refactoriza sólo en verde;
-9. repite.
-
-No hagas todos los tests y después toda la implementación.
-
-Mantén este log:
-
-| Ciclo | Test | Comando RED | Fallo observado | Cambio GREEN | Comando GREEN | Resultado |
+| Cycle | Test | RED command | Observed failure | GREEN change | GREEN command | Result |
 |---|---|---|---|---|---|---|
 
-Si un test pasa al primer intento, no cuenta como RED; indica que el comportamiento ya existía o corrige el test. Nunca borres o reviertas trabajo ajeno.
+If a test passes on the first attempt it does not count as RED — the behavior
+already existed, or the test is wrong. Never delete or revert others' work.
 
-Comandos base:
+Base commands (run from the repo root):
 
 ```bash
-go test ./internal/app -run 'TestNombreExacto' -count=1 -v
+go test ./internal/app -run 'TestName' -count=1 -v
+go test ./lib/... -count=1
 go test ./... -count=1
 go vet ./...
 go mod verify
 ```
 
-Usa primero tests normales. Si Windows Application Control bloquea ejecutables temporales, reporta el bloqueo; sólo usa un `GOTMPDIR` interno si el coordinador lo autoriza. No borres `.tmp` automáticamente.
+## 10. Templates, attributes and trust
 
-## 10. Templates, atributos y trust
+Use `html/template` and concrete Go view models. Required: closed vocabularies
+for variant/type/command/placement; explicit defaults; real booleans for boolean
+attributes; escapable strings for text/values; individually emitted attributes;
+escaping/omission/invalid-input tests. Prohibited: `map[string]any` as API;
+attrs/raw HTML strings; dynamic `template.HTMLAttr`; caller-controlled arbitrary
+classes; user-controlled tag/attr names; `template.HTML` or `template.URL` over
+untrusted content. `template.HTML` only for trusted internal markup, with a trust
+boundary comment and tests. Decorative trusted SVG must carry
+`aria-hidden="true"` and `focusable="false"`; visible text provides the
+accessible name.
 
-Usa `html/template` y view models Go concretos.
+## 11. CSS, tokens and accessibility
 
-Obligatorio:
+Native elements before ARIA; never use `div`/`span` to replace controls; no
+redundant ARIA. All public tokens use `--ui-*`; Material mappings live in the
+theme. Do not add token families the slice does not need. Define explicit state
+precedence. Focus must not change geometry or cause layout shift; never remove
+outlines without an equivalent indicator. Test: light/dark; narrow/wide; RTL
+where applicable; reduced motion; forced colors; disabled and combined states;
+text/errors not communicated by color alone; contrast before claiming WCAG.
 
-- vocabularios cerrados para variant/type/command/placement;
-- defaults explícitos;
-- booleans reales para atributos booleanos;
-- strings escapables para texto/values;
-- atributos emitidos individualmente;
-- tests de escaping, omisión e inputs inválidos.
+## 12. Complete flow without JavaScript
 
-Prohibido:
+The agreed main flow must complete with JS/HTMX disabled within the supported
+matrix. Where applicable test: a real `href`; form `method`/`action`; a complete
+HTML response; preserved values/errors; the correct HTTP status; a return anchor;
+an equivalent server-rendered action. HTMX may receive fragments, but a non-HX
+branch must exist. Test normal requests and `HX-Request: true` separately. Do not
+claim "no JS" if it only renders, does not complete the action, depends solely on
+`hx-*`, or imitates semantics with CSS.
 
-- `map[string]any` como API;
-- attrs/raw HTML strings;
-- `template.HTMLAttr` dinámico;
-- clases arbitrarias del caller;
-- nombres de tags/attrs controlados por usuario;
-- `template.HTML` o `template.URL` sobre contenido no confiable.
+## 13. Dogfooded docs
 
-`template.HTML` sólo para markup interno confiable, con comentario de trust boundary y tests. SVG decorativo trusted debe incluir `aria-hidden="true"` y `focusable="false"`; el texto visible aporta el nombre accesible.
+Create the docs page for the component using the real implementation, never
+duplicated markup. In `site/web/content/<slug>.md` document: purpose and
+anatomy; variants/states; accessibility; no-JS behavior; HTMX if applicable;
+compatibility/Baseline; trust boundary; divergences; visual checklist. In
+`SHARED_HANDOFF`, route/nav/layout are delivered as an integration manifest.
 
-## 11. CSS, tokens y accesibilidad
+## 14. Build and assets
 
-- Elementos nativos antes que ARIA.
-- No uses `div`/`span` para reemplazar controles.
-- No añadas ARIA redundante.
-- Todos los tokens públicos usan `--ui-*`.
-- Los mappings Material viven en el theme.
-- No agregues familias de tokens que el slice no necesita.
-- Define precedencia explícita de estados.
-- El foco no debe cambiar geometría ni producir layout shift.
-- No elimines outlines sin indicador equivalente.
+Source CSS lives in `lib/styles/<slug>.css` (and is `@import`ed through the
+package manifest). The published bundle `lib/dist/gelium.css` is generated — do
+not hand-edit it; regenerate with the package build script and verify the output
+matches the source. Docs static assets (`site/web/`) are embedded; any embedded
+asset change requires a new versioned URL or content hash — `Cache-Control`
+alone is not enough. Test that HTML references the new version, the served CSS
+contains the component marker, package/docs/layout do not diverge, the build is
+reproducible, there is no CDN, and output matches source. Do not build the
+production binary.
 
-Prueba:
+## 15. Separate reviews
 
-- light/dark;
-- narrow/wide;
-- RTL cuando aplica;
-- reduced motion;
-- forced colors;
-- disabled y estados combinados;
-- texto/error no comunicado sólo por color;
-- contraste antes de afirmar WCAG.
+Gate A — Spec review: after green tests, review only against parameters, matrix,
+upstream, no-JS and acceptance. Mark each requirement `PASS | FAIL | BLOCKED |
+UNKNOWN` with path/test evidence. Fix FAIL with TDD and repeat to PASS.
 
-## 12. Flujo completo sin JavaScript
+Gate B — Quality review: only after Spec PASS, review security, escaping, trust,
+semantics, accessibility, CSS, maintainability, ownership/drift, scope, deps,
+assets, docs and test fragility. Fix Critical/Important with TDD and repeat to
+APPROVED. Use independent reviewers when your platform allows; otherwise declare
+the limitation and do not invent independent approval.
 
-El flujo principal acordado debe completarse con JS/HTMX deshabilitado dentro de la matriz soportada.
+## 16. Final verification
 
-Según el caso prueba:
-
-- `href` real;
-- form `method`/`action`;
-- respuesta HTML completa;
-- values/errors preservados;
-- status HTTP correcto;
-- anchor de retorno;
-- acción server-rendered equivalente.
-
-HTMX puede recibir fragments, pero debe existir rama no-HX. Testea requests normales y `HX-Request: true` por separado.
-
-No afirmes “sin JS” si sólo se ve, no completa la acción, depende exclusivamente de `hx-*` o imita semántica con CSS.
-
-## 13. Docs dogfoodeadas
-
-Crea `/components/{{COMPONENT_SLUG}}` usando la implementación real, nunca markup duplicado.
-
-Documenta:
-
-- propósito y anatomy;
-- variants/states;
-- accesibilidad;
-- comportamiento no-JS;
-- HTMX si aplica;
-- compatibilidad/Baseline;
-- trust boundary;
-- divergencias;
-- checklist visual.
-
-En `SHARED_HANDOFF`, route/nav/layout se entregan como integration manifest.
-
-## 14. Build y assets
-
-Source CSS: `web/styles/app.css` o el módulo componente asignado.
-Outputs actuales de `npm run build`:
-
-- `web/static/app.css` — compilado por Tailwind;
-- `web/static/htmx.min.js` — sobrescrito por `scripts/copy-htmx.mjs`.
-
-Sólo ejecuta `npm run build` si trabajas en copia aislada o tienes ownership exclusivo de TODOS los outputs reales del script y de cualquier archivo de versionado que deba cambiar. Poseer sólo `web/static/app.css` no autoriza la build completa. Nunca ejecutes build en `SHARED_HANDOFF`. Si sólo posees source CSS, entrega el build a la integration/build lane.
-
-Todo cambio de asset embebido requiere URL versionada nueva o content hash. `Cache-Control` solo no alcanza.
-
-Prueba:
-
-1. HTML referencia versión nueva;
-2. CSS servido contiene marker del componente;
-3. package/docs/layout no divergen;
-4. build reproducible;
-5. no CDN;
-6. output corresponde al source.
-
-No construyas `gelium.exe`.
-
-## 15. Reviews separadas
-
-### Gate A — Spec review
-
-Después de tests verdes revisa sólo contra parámetros, matriz, upstream, no-JS y aceptación. Marca cada requisito:
-
-`PASS | FAIL | BLOCKED | UNKNOWN`
-
-Incluye evidencia path/test. Corrige FAIL con TDD y repite hasta PASS.
-
-### Gate B — Quality review
-
-Sólo tras Spec PASS revisa seguridad, escaping, trust, semántica, accesibilidad, CSS, mantenibilidad, ownership/drift, scope, deps, assets, docs y fragilidad de tests.
-
-Corrige Critical/Important con TDD y repite hasta APPROVED.
-
-Usa reviewers independientes cuando tu plataforma lo permita. Si no, declara la limitación; no inventes aprobación independiente.
-
-## 16. Verificación final
-
-Si estás autorizado:
+If authorized:
 
 ```bash
-npm run build
+npm run build                 # from site/ (regenerates site/web/static assets)
+node scripts/build-lib-dist.mjs   # from repo root (regenerates lib/dist)
 go test ./... -count=1
 go vet ./...
 go mod verify
-node --check web/static/app.js
+node --check site/web/static/app.js
 ```
 
-No ocultes warnings. Si el build toca un path sin ownership, detente y reporta scope violation.
+Do not hide warnings. If the build touches a path without ownership, stop and
+report a scope violation.
 
-## 17. Smoke en :8788
+## 17. Smoke on :8788
 
-Sólo tras build/tests y desde workspace autorizado:
+Only after build/tests and from the authorized workspace: confirm `:8788` is
+free; start your own server in the background; wait for `/healthz`; test route,
+assets and version; test the non-HX flow; test HX if applicable; test
+status/headers; use a real browser and console; stop only your process.
+Validate light/dark, narrow/wide, keyboard, focus, disabled/error, reduced
+motion, forced colors where feasible, and visual comparison upstream. Never use
+`:8787` to test changes.
 
-1. confirma `:8788` libre;
-2. inicia servidor propio en background;
-3. espera `/healthz`;
-4. prueba ruta, assets y versión;
-5. prueba flujo no-HX;
-6. prueba HX si aplica;
-7. prueba status/headers;
-8. browser real y consola;
-9. detén exclusivamente tu proceso.
+## 18. User acceptance
 
-Valida light/dark, narrow/wide, teclado, focus, disabled/error, reduced motion, forced colors cuando sea viable y comparación visual upstream.
+Deliver an observable, specific checklist covering at least: anatomy and
+variants; rest/hover/focus/active; disabled/loading/error; keyboard/focus;
+no-JS; HTMX as enhancement; light/dark; narrow/wide/RTL; reduced
+motion/forced colors; console; real docs; versioned assets; confirmation that
+`:8787`/the production binary were not touched. Do not integrate another
+component or replace the stable app. Wait for explicit acceptance.
 
-Nunca uses `:8787` para probar cambios.
+## 19. Allowed final statuses
 
-## 18. Aceptación del usuario
+Use exactly one:
 
-Entrega checklist observable y específica. Como mínimo:
+- `COMPLETE_AWAITING_USER_ACCEPTANCE`: implementation and integration complete,
+  reviews and smoke approved;
+- `READY_FOR_INTEGRATION`: handoff ready, shared patches not yet applied;
+- `BLOCKED`: missing evidence, decision, ownership or port;
+- `ABORTED_ON_DRIFT`: a baseline changed concurrently.
 
-- anatomía y variantes;
-- rest/hover/focus/active;
-- disabled/loading/error;
-- keyboard/focus;
-- no-JS;
-- HTMX como enhancement;
-- light/dark;
-- narrow/wide/RTL;
-- reduced motion/forced colors;
-- consola;
-- docs reales;
-- asset versionado;
-- confirmación de que `:8787`/`gelium.exe` no fueron tocados.
+`SHARED_HANDOFF` cannot declare COMPLETE while patches remain.
 
-No integres otro componente ni reemplaces la app estable. Espera aceptación explícita.
+## 20. Mandatory delivery
 
-## 19. Estado final permitido
-
-Usa exactamente uno:
-
-- `COMPLETE_AWAITING_USER_ACCEPTANCE`: implementación e integración completas, reviews y smoke aprobados;
-- `READY_FOR_INTEGRATION`: handoff listo, shared patches aún no aplicados;
-- `BLOCKED`: falta evidencia, decisión, ownership o puerto;
-- `ABORTED_ON_DRIFT`: cambió un baseline concurrentemente.
-
-`SHARED_HANDOFF` no puede declarar COMPLETE si quedan patches.
-
-## 20. Entrega obligatoria
-
-### Estado
+### Status
 `[ONE_ALLOWED_STATUS_CHOSEN_BY_WORKER]`
 
-### Resumen
-Componente, alcance, modo y resultado.
+### Summary
+Component, scope, mode and result.
 
-### Seguridad de app
-Estado de `:8787`, `gelium.exe`, `:8788` y proceso propio.
+### App safety
+State of `:8787`, the production binary, `:8788`, and your own process.
 
-### Evidencia upstream
-Snapshot ID/manifest provistos, paths y divergencias.
+### Upstream evidence
+Snapshot/manifest provided, paths and divergences.
 
-### Auditoría platform-first
-Fecha, tabla y gap JS o “no requerido”.
+### Platform-first audit
+Date, table and JS gap, or "not required".
 
-### Ownership y drift
-Paths, reservas, hashes baseline/final y drift.
+### Ownership and drift
+Paths, reservations, baseline/final hashes and drift.
 
-### Log TDD
-Cada RED/GREEN con comandos y resultados reales.
+### TDD log
+Each RED/GREEN with real commands and results.
 
-### Archivos
-Separar creados, modificados, generados, propuestos no aplicados y protegidos verificados.
+### Files
+Separately list created, modified, generated, proposed-not-applied and
+protected-verified files.
 
 ### Integration manifest
-Patches para shared files no editados.
+Patches for shared files not edited.
 
 ### Reviews
-Spec y Quality con findings/resolución.
+Spec and Quality with findings and resolution.
 
-### Verificación
-Build, tests, vet, mod verify, smoke, browser, no-JS y HTMX.
+### Verification
+Build, tests, vet, mod verify, smoke, browser, no-JS and HTMX.
 
-### Checklist del usuario
-Casos observables.
+### User checklist
+Observable cases.
 
 ### Issues/blockers
-UNKNOWN, riesgos y trabajo pendiente.
+`UNKNOWN`, risks and pending work.
 
-### Confirmación
-Declara explícitamente: no Git, no credenciales, no CDN, no React/Lit/Shadow DOM/Astro/templ, no JS sin gap, upstream read-only, `:8787`/`gelium.exe` intactos, sin overwrite concurrente y sin resultados inventados.
+### Confirmation
+Explicitly declare: no Git, no credentials, no CDN, no React/Lit/Shadow
+DOM/Astro/templ, no JS without a gap, read-only references, `:8787`/production
+binary intact, no concurrent overwrite, no invented results.
 ````
 
-## Plantilla mínima de asignación
+## Minimal assignment template
 
 ```text
-COMPONENTE: Checkbox
+COMPONENT: Checkbox
 SLUG: checkbox
-CATEGORÍA: CORE
-VARIANTES REQUERIDAS: checked, unchecked, indeterminate si se aprueba
-ESTADOS REQUERIDOS: rest, hover, focus, pressed, disabled, error
-COMPORTAMIENTOS REQUERIDOS: label clickeable, form submit normal, keyboard nativo
-FLUJO SERVER/HTMX, SI APLICA: submit normal obligatorio; HTMX opcional
-CRITERIOS ESPECÍFICOS DE ACEPTACIÓN: completar tras auditoría upstream/platform-first
-MATRIZ DE NAVEGADORES SOPORTADA: {{COORDINATOR_MUST_DEFINE}}
-FECHA/SNAPSHOT BASELINE WEB: {{COORDINATOR_MUST_DEFINE}}
-UPSTREAM SNAPSHOT ID PROVISTO POR COORDINADOR: {{COORDINATOR_MUST_DEFINE}}
-UPSTREAM MANIFEST/HASH PROVISTO: {{COORDINATOR_MUST_DEFINE}}
-MODO ASIGNADO: SHARED_HANDOFF
-WORKSPACE AUTORIZADO: D:\repos\gelium-ui
+CATEGORY: CORE
+REQUIRED VARIANTS: checked, unchecked, indeterminate if approved
+REQUIRED STATES: rest, hover, focus, pressed, disabled, error
+REQUIRED BEHAVIORS: clickable label, normal form submit, native keyboard
+SERVER/HTMX FLOW, IF ANY: normal submit mandatory; HTMX optional
+ACCEPTANCE CRITERIA: complete after upstream/platform-first audit
+SUPPORTED BROWSER MATRIX: {{COORDINATOR_MUST_DEFINE}}
+WEB BASELINE SNAPSHOT DATE: {{COORDINATOR_MUST_DEFINE}}
+
+CANONICAL REPOSITORY: {{COORDINATOR_MUST_DEFINE}}
+ASSIGNED MODE: SHARED_HANDOFF
+AUTHORIZED WORKSPACE: {{COORDINATOR_MUST_DEFINE}}
 WORKER ID: checkbox-worker-01
-RESERVA ID: checkbox-exclusive-files-only
-PATHS POSEÍDOS: web/templates/checkbox.html, web/content/checkbox.md
-PATHS PROHIBIDOS ADICIONALES: todos los shared files; entregar patches
-BASELINE SHA-256: hashes provistos por integrador
-NUEVA VERSIÓN DE ASSETS PROPUESTA: integrator-owned
+RESERVATION ID: checkbox-exclusive-files-only
+OWNED PATHS: lib/templates/checkbox.html, lib/styles/checkbox.css, site/web/content/checkbox.md
+ADDITIONAL FORBIDDEN PATHS: all shared files; hand off patches
+BASELINE SHA-256: hashes provided by integrator
+PROPOSED NEW ASSET VERSION: integrator-owned
 ```
 
-## Nota de coordinación
+## Coordination note
 
-Mientras Gelium no complete la Wave P del roadmap, asignar dos componentes a dos IAs NO significa permitir dos escritores sobre `D:\repos\gelium-ui`. Los workers preparan contratos/artifacts en paralelo; un integrador único incorpora cada lane de forma serial.
+Until the Gelium roadmap Wave P completes, assigning two components to two AIs
+does NOT mean allowing two writers on the canonical checkout. Workers prepare
+contracts/artifacts in parallel; a single integrator incorporates each lane
+serially.
