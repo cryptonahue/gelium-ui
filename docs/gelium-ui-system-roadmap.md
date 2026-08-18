@@ -2,7 +2,7 @@
 
 > Roadmap superior del sistema Gelium UI. Define la arquitectura que convierte la colección de componentes Material en un sistema UI reutilizable para distintos proyectos server-rendered.
 >
-> Este documento es el roadmap de SISTEMA. El roadmap específico de componentes continúa en `COMPONENT-ROADMAP.md`; no se reemplaza ni se modifica aquí.
+> Este documento es el roadmap de SISTEMA. El inventario canónico y roadmap de componentes está en `docs/gelium-ui-component-registry.md`; no se reemplaza ni se modifica aquí.
 >
 > **Nota de naming**: los documentos del sistema usan el prefijo `gelium-ui-*` (renombrado desde `loom-ui-*` por decisión del mantenedor). `loom-ui` es solo la ruta física del repositorio, no branding.
 
@@ -32,7 +32,7 @@ No es solamente una colección de componentes Material: es un sistema UI reutili
 | Build Tailwind CSS 4 + HTMX local | Completado | `package.json`, `web/static/` |
 | Theme Material light/dark | Completado | `themes/theme-material/theme.css` |
 | Theme Basecoat light/dark (Phase I) | Completado | `themes/theme-basecoat/theme.css`, `themes/theme-basecoat/README.md` |
-| Componentes Material (contract Gelium) | 20+ entregados | `COMPONENT-ROADMAP.md`, `web/templates/`, tests |
+| Componentes Material (contract Gelium) | 20+ entregados | `docs/gelium-ui-component-registry.md`, `web/templates/`, tests |
 | Tokens públicos `--ui-*` | Parcial; no formalizado como contrato | `themes/theme-material/theme.css` |
 | Core agnóstico (desacoplado de Material) | **No existe todavía** | — |
 | Theme contract | **No existe todavía** | — |

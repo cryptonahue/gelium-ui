@@ -17,7 +17,7 @@ Every screen recipe, new component and content decision MUST be justified agains
 - The Material Gelium vocabulary is semantic-first: Card, List, Data table, Badge, Divider, Elevation, Focus ring exist to encode meaning, not style.
 - State layers are theme-aware `color-mix()` over `-fg` tokens, never decorative `rgb()` literals (`button.css:17-18`).
 
-**Evidence.** `web/styles/tokens.css` (semantic roles), `COMPONENT-ROADMAP.md`, `demo-whatsapp.css:403` documented as drift (hardcoded fallback defeats clarity).
+**Evidence.** `web/styles/tokens.css` (semantic roles), `docs/gelium-ui-component-registry.md`, `demo-whatsapp.css:403` documented as drift (hardcoded fallback defeats clarity).
 
 **Accessibility.** Decoration that carries meaning breaks forced-colors and screen readers; semantic HTML + tokens keeps meaning transport-independent.
 

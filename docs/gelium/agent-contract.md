@@ -33,8 +33,7 @@ component/recipe/theme/documentary workflows (`gelium-ui-agent-prompts.md`).
 6. **No client-side list state, no drag-and-drop, no JS for what a GET form
    solves** (anti-rules `composition-rules.md` §5).
 7. **Do not edit shared files** (`agent-prompts.md` §6) and do not modify
-   `docs/handoffs/*`, `AI-COMPONENT-IMPLEMENTER-PROMPT.md`,
-   `COMPONENT-ROADMAP.md`, `MATERIAL-WEB-PROGRESS.md`.
+   `docs/handoffs/*` and `AI-COMPONENT-IMPLEMENTER-PROMPT.md`.
 
 ## 3. Inputs the agent MUST read first
 

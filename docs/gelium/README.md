@@ -119,8 +119,7 @@ docs/gelium/
   artifacts only. No Go, CSS, templates or tests are added or modified.
 - WhatsApp demo implementation code. The WhatsApp chat pattern is referenced
   only as evidence for the Inbox/Conversation composition (`demo-whatsapp*`).
-- `docs/handoffs/*`, `AI-COMPONENT-IMPLEMENTER-PROMPT.md`,
-  `COMPONENT-ROADMAP.md`, `MATERIAL-WEB-PROGRESS.md` are not modified.
+- `docs/handoffs/*` and `AI-COMPONENT-IMPLEMENTER-PROMPT.md` are not modified.
 
 ## Validation performed
 
