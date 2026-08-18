@@ -61,13 +61,26 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 2.  Optional expansion    third theme · registry JSON runtime · iframe srcdoc demos ·
                           drawer menu upgrade · demo height presets · VT docs chapter ·
                           date-input pattern (3 inputs, inputmode numeric)
+3.  Docs localization     translate the internal spec docs (docs/gelium-ui-*.md,
+                          docs/handoffs/*) from Spanish to English. Blocked on the
+                          docs-spec split first: today the public site (/docs/*) and
+                          the package guidance (AGENTS.md, skills/) are English, but the
+                          internal specs they reference are Spanish, and contract tests
+                          currently pin Spanish anchors ("## 3. Patrones de estado",
+                          "Nombres alternativos", "Prompt para agentes"). Sequence:
+                          (a) split public vs internal docs (move internal specs to
+                          docs/internal/), (b) translate internal specs + their
+                          test anchors to English together so the build stays green.
 ```
 
-Items 0–2 are ordered by value, not by date, and the owner reprioritizes freely. The
+Items 0–3 are ordered by value, not by date, and the owner reprioritizes freely. The
 icon pack gallery (item 0) is a product feature: it turns the 7.8k-glyph Material
 Symbols source from a 38-icon curated allowlist into discoverable, consistent packs —
 not a 10-set visual casserole. Packs stay SVG server-rendered (themeable via
-`currentColor`), never icon-fonts.
+`currentColor`), never icon-fonts. Docs localization (item 3) is maintenance debt, not
+a feature: the public product is already fully English, but the internal specs it
+references are Spanish, so the translation work is gated behind a docs public/internal
+split and done together with the test anchors that currently pin the Spanish.
 
 ## How to read this page
 
