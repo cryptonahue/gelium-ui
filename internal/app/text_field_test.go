@@ -392,9 +392,9 @@ func TestTextFieldFormAndLocalScriptImplementHTMX422SwapContract(t *testing.T) {
 			t.Errorf("validation form is missing %s", attribute)
 		}
 	}
-	htmxIndex := strings.Index(body, `src="/static/htmx.min.js?v=0.5.3"`)
-	geliumIndex := strings.Index(body, `src="/static/gelium.js?v=0.5.3"`)
-	appIndex := strings.Index(body, `src="/static/app.js?v=0.5.3"`)
+	htmxIndex := strings.Index(body, `src="/static/htmx.min.js?v=0.5.4"`)
+	geliumIndex := strings.Index(body, `src="/static/gelium.js?v=0.5.4"`)
+	appIndex := strings.Index(body, `src="/static/app.js?v=0.5.4"`)
 	if htmxIndex < 0 || geliumIndex < 0 || appIndex < 0 || geliumIndex < htmxIndex || appIndex < geliumIndex {
 		t.Error("script order must be htmx → gelium.js (consumer) → app.js (chrome)")
 	}

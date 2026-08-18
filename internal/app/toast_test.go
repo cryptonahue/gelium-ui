@@ -67,7 +67,7 @@ func TestToastDocsRenderVariantsAndLiveRegion(t *testing.T) {
 		`name="type"`,
 		`hx-post="/examples/toast/demo"`,
 		`/components/toast`,
-		`?v=0.5.3`,
+		`?v=0.5.4`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("toast docs page is missing %q", contract)
