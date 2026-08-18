@@ -71,9 +71,19 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
                           (a) split public vs internal docs (move internal specs to
                           docs/internal/), (b) translate internal specs + their
                           test anchors to English together so the build stays green.
+4.  Bun toolchain          swap npm for Bun across the monorepo: `bun install`
+                          (fast, replaces package-lock.json with bun.lock),
+                          `bun run build` in root/site (tailwindcss CLI + .mjs
+                          scripts run natively), and `bun publish`/`bun pack` in
+                          scripts/publish-lib.sh. Bun 1.3.11 already on the
+                          dev machine. Tradeoffs to confirm before committing:
+                          CI/devs still on npm need the lockfile story; keep the
+                          Go bake/explore/embed untouched (build of Go binary is
+                          independent of JS toolchain). Do the switch on its own
+                          PR/worktree, not mixed with feature work.
 ```
 
-Items 0–3 are ordered by value, not by date, and the owner reprioritizes freely. The
+Items 0–4 are ordered by value, not by date, and the owner reprioritizes freely. The
 icon pack gallery (item 0) is a product feature: it turns the 7.8k-glyph Material
 Symbols source from a 38-icon curated allowlist into discoverable, consistent packs —
 not a 10-set visual casserole. Packs stay SVG server-rendered (themeable via
