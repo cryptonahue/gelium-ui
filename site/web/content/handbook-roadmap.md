@@ -53,14 +53,21 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 ## What is next (ordered by value, owner reprioritizes freely)
 
 ```text
+0.  Icon pack gallery      top icon SVG sets (Tabler, Lucide, Heroicons,
+                           Phosphor…) as opt-in `lib/icons/<pack>` packs,
+                           each with a searchable Tabler-style gallery on
+                           /docs/icon (clipboard copy, themeable currentColor)
 1.  SEO productization    BASE_URL configurable + real og.png (when there is a domain)
 2.  Optional expansion    third theme · registry JSON runtime · iframe srcdoc demos ·
-                         drawer menu upgrade · demo height presets · VT docs chapter ·
-                         date-input pattern (3 inputs, inputmode numeric)
+                          drawer menu upgrade · demo height presets · VT docs chapter ·
+                          date-input pattern (3 inputs, inputmode numeric)
 ```
 
-Items 12 are explicitly optional and wait for a real adoption signal before being
-picked up — no date, no promise.
+Items 0–2 are ordered by value, not by date, and the owner reprioritizes freely. The
+icon pack gallery (item 0) is a product feature: it turns the 7.8k-glyph Material
+Symbols source from a 38-icon curated allowlist into discoverable, consistent packs —
+not a 10-set visual casserole. Packs stay SVG server-rendered (themeable via
+`currentColor`), never icon-fonts.
 
 ## How to read this page
 
