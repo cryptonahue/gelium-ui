@@ -24,10 +24,12 @@ html[data-gelium-contract] {
 html,
 html[data-gelium-contract="gelium"] {
   --ui-button-resolved-min-height: max(var(--ui-touch-target), var(--ui-button-min-height, var(--ui-touch-target)));
+  --ui-field-resolved-height: max(var(--ui-touch-target), var(--ui-size-field, var(--ui-touch-target)));
 }
 
 html[data-gelium-contract="source"] {
   --ui-button-resolved-min-height: var(--ui-button-min-height, auto);
+  --ui-field-resolved-height: var(--ui-size-field, auto);
 }
 
 /* Explicit Native + Default for behavior resolves to none/none. It is a

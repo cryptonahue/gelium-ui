@@ -1,3 +1,8 @@
+/*
+ * Text field core. Material floating-label anatomy is the default. Reference
+ * and skin layers restyle via tokens; Base UI docs-inspired composition is
+ * selected with data-gelium-reference/skin=baseui without markup forks.
+ */
 @layer components {
   .ui-text-field {
     display: grid;
@@ -7,11 +12,12 @@
   .ui-text-field-control {
     position: relative;
     display: grid;
-    height: var(--ui-size-field);
+    height: var(--ui-field-resolved-height, var(--ui-size-field));
     box-sizing: border-box;
     border-radius: var(--ui-field-radius, var(--ui-radius-xs));
     color: var(--ui-field-label);
-    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
+    box-shadow: var(--ui-field-control-shadow, none);
+    transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard);
   }
   .ui-text-field-control > label {
     position: absolute;
@@ -45,7 +51,7 @@
     border-radius: inherit;
     background: transparent;
     color: var(--ui-color-fg);
-    font: var(--ui-type-body-lg);
+    font: var(--ui-field-input-font, var(--ui-type-body-lg));
     outline: 0;
   }
   .ui-text-field input { height: 100%; box-sizing: border-box; padding: var(--ui-field-padding-y, var(--ui-space-4)) var(--ui-field-padding-x, 1rem); }
@@ -72,7 +78,7 @@
   .ui-text-field textarea { min-height: var(--ui-text-field-textarea-min-height, 7rem); resize: vertical; }
   .ui-text-field-outlined .ui-text-field-control {
     border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-field-border);
-    background: var(--ui-color-surface);
+    background: var(--ui-field-outlined-bg, var(--ui-color-surface));
   }
   .ui-text-field-outlined .ui-text-field-control:focus-within {
     border-color: var(--ui-color-primary);
@@ -83,7 +89,7 @@
   .ui-text-field-outlined .ui-text-field-control:has(textarea:not(:placeholder-shown)) > label {
     top: 0;
     padding: 0 var(--ui-space-1);
-    background: var(--ui-color-surface);
+    background: var(--ui-field-outlined-label-bg, var(--ui-color-surface));
     transform: translate(-.25rem, -50%);
   }
   .ui-text-field-outlined .ui-text-field-control:dir(rtl):focus-within > label,
@@ -188,6 +194,113 @@
   }
   form:has(> .ui-text-field) { display: grid; width: min(100%, 24rem); gap: var(--ui-space-4); }
   form:has(> .ui-text-field) .ui-button { justify-self: start; }
+
+  /*
+   * Base UI docs-inspired composition (label above control). Edge is drawn with
+   * box-shadow so the native input stays borderless for forced-colors safety.
+   */
+  html[data-gelium-reference="baseui"] .ui-text-field,
+  html[data-gelium-skin="baseui"] .ui-text-field {
+    width: min(100%, var(--ui-text-field-max-width, 16rem));
+    gap: .25rem;
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field-control,
+  html[data-gelium-skin="baseui"] .ui-text-field-control {
+    display: flex;
+    flex-direction: column;
+    align-items: stretch;
+    height: auto;
+    min-height: 0;
+    gap: .25rem;
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+    border-radius: 0;
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field-control > label,
+  html[data-gelium-skin="baseui"] .ui-text-field-control > label,
+  html[data-gelium-reference="baseui"] .ui-text-field-control:focus-within > label,
+  html[data-gelium-skin="baseui"] .ui-text-field-control:focus-within > label,
+  html[data-gelium-reference="baseui"] .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  html[data-gelium-skin="baseui"] .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  html[data-gelium-reference="baseui"] .ui-text-field-outlined .ui-text-field-control:focus-within > label,
+  html[data-gelium-skin="baseui"] .ui-text-field-outlined .ui-text-field-control:focus-within > label,
+  html[data-gelium-reference="baseui"] .ui-text-field-outlined .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  html[data-gelium-skin="baseui"] .ui-text-field-outlined .ui-text-field-control:has(input:not(:placeholder-shown)) > label,
+  html[data-gelium-reference="baseui"] .ui-text-field-filled .ui-text-field-control:focus-within > label,
+  html[data-gelium-skin="baseui"] .ui-text-field-filled .ui-text-field-control:focus-within > label,
+  html[data-gelium-reference="baseui"] .ui-text-field-has-placeholder .ui-text-field-control > label,
+  html[data-gelium-skin="baseui"] .ui-text-field-has-placeholder .ui-text-field-control > label {
+    position: static;
+    inset: auto;
+    top: auto;
+    max-width: none;
+    padding: 0;
+    background: transparent;
+    transform: none;
+    font: var(--ui-field-label-font, 700 .875rem/1.25rem var(--ui-font-sans));
+    color: var(--ui-field-label, var(--ui-color-fg));
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field input,
+  html[data-gelium-skin="baseui"] .ui-text-field input,
+  html[data-gelium-reference="baseui"] .ui-text-field textarea,
+  html[data-gelium-skin="baseui"] .ui-text-field textarea {
+    height: var(--ui-field-resolved-height, var(--ui-size-field, 2rem));
+    min-height: var(--ui-field-resolved-height, var(--ui-size-field, 2rem));
+    border: 0;
+    border-radius: inherit;
+    background: var(--ui-field-input-bg, var(--ui-color-canvas));
+    box-shadow: inset 0 0 0 var(--ui-border-width-1) var(--ui-field-border, var(--ui-color-fg));
+    padding: 0 var(--ui-field-padding-x, .5rem);
+    font: var(--ui-field-input-font, 400 .875rem/1.25rem var(--ui-font-sans));
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field textarea,
+  html[data-gelium-skin="baseui"] .ui-text-field textarea {
+    height: auto;
+    min-height: var(--ui-text-field-textarea-min-height, 6rem);
+    padding: .5rem var(--ui-field-padding-x, .5rem);
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field input:focus-visible,
+  html[data-gelium-skin="baseui"] .ui-text-field input:focus-visible,
+  html[data-gelium-reference="baseui"] .ui-text-field textarea:focus-visible,
+  html[data-gelium-skin="baseui"] .ui-text-field textarea:focus-visible {
+    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+    outline-offset: var(--ui-field-focus-outline-offset, var(--ui-focus-offset));
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field-outlined .ui-text-field-control,
+  html[data-gelium-skin="baseui"] .ui-text-field-outlined .ui-text-field-control,
+  html[data-gelium-reference="baseui"] .ui-text-field-filled .ui-text-field-control,
+  html[data-gelium-skin="baseui"] .ui-text-field-filled .ui-text-field-control,
+  html[data-gelium-reference="baseui"] .ui-text-field-outlined .ui-text-field-control:focus-within,
+  html[data-gelium-skin="baseui"] .ui-text-field-outlined .ui-text-field-control:focus-within,
+  html[data-gelium-reference="baseui"] .ui-text-field-filled .ui-text-field-control:focus-within,
+  html[data-gelium-skin="baseui"] .ui-text-field-filled .ui-text-field-control:focus-within {
+    border: 0;
+    background: transparent;
+    box-shadow: none;
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field-has-placeholder input::placeholder,
+  html[data-gelium-skin="baseui"] .ui-text-field-has-placeholder input::placeholder,
+  html[data-gelium-reference="baseui"] .ui-text-field-has-placeholder textarea::placeholder,
+  html[data-gelium-skin="baseui"] .ui-text-field-has-placeholder textarea::placeholder {
+    color: var(--ui-field-placeholder, var(--ui-color-fg-muted));
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field-message,
+  html[data-gelium-skin="baseui"] .ui-text-field-message {
+    padding-inline: 0;
+  }
+  html[data-gelium-reference="baseui"] .ui-text-field-error-icon,
+  html[data-gelium-skin="baseui"] .ui-text-field-error-icon {
+    top: calc(0.25rem + 0.875rem + 0.25rem + (var(--ui-field-resolved-height, 2rem) / 2));
+  }
+
+  /* Basecoat focus ring (ring outside control) when tokens request it. */
+  html[data-gelium-reference="basecoat"] .ui-text-field-outlined .ui-text-field-control:focus-within,
+  html[data-gelium-skin="basecoat"] .ui-text-field-outlined .ui-text-field-control:focus-within,
+  html[data-gelium-skin^="basecoat-"] .ui-text-field-outlined .ui-text-field-control:focus-within {
+    border-color: var(--ui-field-focus-border, var(--ui-color-focus-ring));
+    box-shadow: var(--ui-field-focus-shadow, 0 0 0 3px color-mix(in srgb, var(--ui-color-focus-ring) 50%, transparent));
+  }
 }
 
 @media (max-width: 48rem) {

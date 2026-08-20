@@ -32,7 +32,7 @@ func TestTextFieldSourceCSSUsesThemeTokensAndAccessibleStates(t *testing.T) {
 func TestTextFieldSourceCSSBuildsMaterialContainerAndFloatingLabel(t *testing.T) {
 	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
 	for _, contract := range []string{
-		`.ui-text-field-control { position: relative; display: grid; height: var(--ui-size-field); box-sizing: border-box;`,
+		`.ui-text-field-control { position: relative; display: grid; height: var(--ui-field-resolved-height, var(--ui-size-field)); box-sizing: border-box;`,
 		`.ui-text-field-control > label { position: absolute;`,
 		`.ui-text-field-control:focus-within > label`,
 		`.ui-text-field-control:has(input:not(:placeholder-shown)) > label`,
@@ -67,7 +67,7 @@ func TestTextFieldSingleLineControlKeepsStableExternalHeight(t *testing.T) {
 	if controlRule == nil {
 		t.Fatal("source CSS is missing the base text-field control rule")
 	}
-	for _, contract := range []string{`(?:^|\s)height:\s*var\(--ui-size-field\)\s*;`, `box-sizing:\s*border-box\s*;`} {
+	for _, contract := range []string{`(?:^|\s)height:\s*var\(--ui-field-resolved-height,\s*var\(--ui-size-field\)\)\s*;`, `box-sizing:\s*border-box\s*;`} {
 		if !regexp.MustCompile(contract).MatchString(controlRule[1]) {
 			t.Errorf("base text-field control must match %q", contract)
 		}

@@ -192,3 +192,22 @@ func TestVercelSkinWinsOverBaseUIReferenceForButtonAnatomy(t *testing.T) {
 		t.Error("vercel skin must own dialog radius")
 	}
 }
+
+func TestFieldContractAndBaseUIDocsDensityAreCompiled(t *testing.T) {
+	compiled := compactCSS(t, compiledAppCSS(t))
+	for _, contract := range []string{
+		"--ui-field-resolved-height:max(var(--ui-touch-target),var(--ui-size-field,var(--ui-touch-target)))",
+		"--ui-field-resolved-height:var(--ui-size-field,auto)",
+		"height:var(--ui-field-resolved-height,var(--ui-size-field))",
+		"--ui-size-field:2rem",
+		"--ui-size-field:2.25rem",
+		"--ui-size-field:1.75rem",
+	} {
+		if !strings.Contains(compiled, contract) {
+			t.Errorf("field cascade contract missing %q", contract)
+		}
+	}
+	if !strings.Contains(compiled, "data-gelium-reference=baseui") || !strings.Contains(compiled, ".ui-text-field-control") {
+		t.Error("baseui text-field composition selectors must be present")
+	}
+}

@@ -66,11 +66,18 @@ html[data-gelium-skin="basecoat-rhea"] {
   --ui-button-text-active-shadow: none;
   --ui-button-disabled-opacity: .5;
   --ui-field-radius: .375rem;
-  --ui-field-padding-x: .75rem;
-  --ui-field-padding-y: .75rem;
+  --ui-field-padding-x: .625rem;
+  --ui-field-padding-y: .25rem;
   --ui-text-field-textarea-min-height: 6rem;
   --ui-text-field-error-icon-size: var(--ui-size-icon);
-  --ui-size-field: max(var(--ui-touch-target), 2.25rem);
+  --ui-size-field: 2.25rem;
+  --ui-field-outlined-bg: transparent;
+  --ui-field-outlined-border: var(--ui-border-width-1) solid var(--ui-color-border);
+  --ui-field-control-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+  --ui-field-focus-border: var(--ui-color-focus-ring);
+  --ui-field-focus-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-color-focus-ring) 50%, transparent);
+  --ui-field-label-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-field-input-font: 400 .875rem/1.25rem var(--ui-font-sans);
   --ui-select-height: var(--ui-size-field);
   --ui-select-radius: .375rem;
   --ui-select-radius-top: .375rem .375rem 0 0;
@@ -170,6 +177,8 @@ html[data-gelium-skin="basecoat-nova"] {
   --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
   --ui-icon-button-radius: .5rem;
   --ui-field-cascade-id: basecoat-nova-skin;
+  --ui-size-field: 2rem; /* denser pack */
+  --ui-field-radius: .5rem;
   --ui-select-cascade-id: basecoat-nova-skin;
   --ui-checkbox-cascade-id: basecoat-nova-skin;
   --ui-radio-cascade-id: basecoat-nova-skin;
@@ -202,6 +211,9 @@ html[data-gelium-skin="basecoat-maia"] {
   --ui-icon-button-radius: 1.5rem;
   --ui-field-cascade-id: basecoat-maia-skin;
   --ui-field-radius: 1rem;
+  --ui-size-field: 2.25rem;
+  --ui-field-outlined-bg: color-mix(in srgb, var(--ui-color-fg) 8%, var(--ui-color-canvas));
+  --ui-field-control-shadow: none;
   --ui-select-cascade-id: basecoat-maia-skin;
   --ui-select-radius: 1rem;
   --ui-select-radius-top: 1rem 1rem 0 0;
@@ -277,8 +289,11 @@ html[data-gelium-skin="basecoat-mira"] {
   --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 12%, transparent);
   --ui-icon-button-radius: .375rem;
   --ui-field-cascade-id: basecoat-mira-skin;
+  --ui-size-field: 1.75rem;
   --ui-field-radius: .375rem;
-  --ui-field-padding-y: .5rem;
+  --ui-field-padding-y: .125rem;
+  --ui-field-label-font: 500 .75rem/1.35 var(--ui-font-sans);
+  --ui-field-input-font: 400 .75rem/1.35 var(--ui-font-sans);
   --ui-select-cascade-id: basecoat-mira-skin;
   --ui-checkbox-cascade-id: basecoat-mira-skin;
   --ui-radio-cascade-id: basecoat-mira-skin;
@@ -352,7 +367,14 @@ html[data-gelium-skin="basecoat-sera"] {
   --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 8%, transparent);
   --ui-icon-button-radius: 0;
   --ui-field-cascade-id: basecoat-sera-skin;
+  --ui-size-field: 2.5rem;
   --ui-field-radius: 0;
+  --ui-field-outlined-border: 0 0 1px 0 solid var(--ui-color-border);
+  --ui-field-control-shadow: none;
+  --ui-field-focus-shadow: none;
+  --ui-field-focus-border: var(--ui-color-focus-ring);
+  --ui-field-label-font: 600 .75rem/1 var(--ui-font-sans);
+  --ui-field-label-weight: 600;
   --ui-select-cascade-id: basecoat-sera-skin;
   --ui-select-radius: 0;
   --ui-select-radius-top: 0;
