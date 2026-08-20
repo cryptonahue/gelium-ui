@@ -199,3 +199,27 @@ entró a la allowlist en Phase I junto a su `theme.css` y su import en `app.css`
 ---
 
 **Gate**: esta fase (A–C) cierra antes de Phase I (Basecoat). Un theme que requiera cambiar markup, clases, contratos o comportamiento no-JS es un cambio de core, no un theme, y se trata como tal.
+
+## 10. Theme Skin Contract (Accordion phase)
+
+La capa semántica también expone `--ui-focus-shadow` (siempre con el outline existente como fallback) y aliases de elevación: `--ui-shadow-border`, `--ui-shadow-card`, `--ui-shadow-menu`, `--ui-shadow-tooltip` y `--ui-shadow-dialog`. Los aliases `--ui-shadow-0..5` son retrocompatibles. La anatomía themeable incluye padding/radius/gap de button, radius/padding de field, padding de card, radius de icon-button y los detalles de checkbox, radio, switch, slider, progress y FAB documentados en `tokens.css`.
+
+El skin `theme-baseui` es **Base UI-inspired**, no código oficial de Base UI: una dirección neutral, headless/state-driven, de bajo ornamento. Para Accordion, el preset **Gelium Base UI docs-inspired reference** toma la dirección visual plana y de alto contraste de la documentación de Base UI, no un stylesheet del package (Base UI upstream sigue siendo headless/unstyled). Todos los skins comparten markup y contratos.
+
+### Accordion
+
+Accordion usa HTML nativo: `section.ui-accordion > details.ui-accordion-item > summary.ui-accordion-trigger + section.ui-accordion-panel`. Multiple es el default; `Open` es estado inicial server-rendered. No hay botón falso, runtime React ni JS requerido. HTMX puede mejorar una respuesta del servidor, pero no es requisito. No se simula `disabled`: `<summary>` no tiene atributo disabled nativo; la primera versión omite items deshabilitados. `hiddenUntilFound` tampoco se polyfillea: se conserva búsqueda/semántica nativa donde el navegador lo soporte.
+
+La estructura toma de Basecoat la combinación nativa details/summary, sin su bundle JS. Toma de Base UI la composición Root/Item/Header/Trigger/Panel y los estados multiple/open/closed/transition, sin copiar API o código React.
+
+La anatomía visual mínima documentada para cada **skin concreto** es completa:
+root (`display`, `direction`, `width`, `gap`, `max-width`, surface, border,
+radius, padding); item (border/divider, radius, surface, shadow); trigger
+(min-height, padding, font, alignment, border, radius y hover); icon
+(representación chevron/plus, tamaño, color y geometría); y panel (padding y
+font). Una skin concreta redefine todos esos tokens en
+`html[data-gelium-skin="…"]` dentro de `gelium.skin`; por eso nunca hereda la
+topología de `gelium.reference`. Solo `skin=none` permite que la referencia se
+vea directamente. Los defaults core siguen siendo fallbacks para consumidores
+que no carguen los adaptadores. El componente mantiene `:focus-visible`,
+`prefers-reduced-motion`, `forced-colors` y el mínimo de touch target.

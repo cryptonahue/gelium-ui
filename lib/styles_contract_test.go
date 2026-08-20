@@ -26,6 +26,7 @@ func sourceAppCSS(t *testing.T) string {
 	paths := []string{
 		"styles/tokens.css",
 		"styles/base.css",
+		"styles/accordion.css",
 		"styles/button.css",
 		"styles/text-field.css",
 		"styles/dialog.css",
@@ -456,14 +457,14 @@ func TestSizeTokensConsumedByComponents(t *testing.T) {
 // TestComponentSizeTokensDeclaredScoped proves every family that Phase B2
 // migrated declares at least one scoped component token in its own CSS file,
 // so consumers can override geometry at the component root. Presence only.
+// Tokens that Phase C made theme-overridable moved their default to :root
+// (tokens.css) and are consumed via a var() fallback — those are asserted
+// against the core :root without requiring a scoped declaration.
 func TestComponentSizeTokensDeclaredScoped(t *testing.T) {
+	// Still declared scoped at the component root (consumers may override
+	// there; no theme override needed for these structural/default values).
 	for file, token := range map[string]string{
-		"fab.css":          "--ui-fab-container-size:",
-		"button.css":       "--ui-button-padding-y:",
-		"text-field.css":   "--ui-text-field-textarea-min-height:",
-		"select.css":       "--ui-select-caret-reserve:",
 		"toast.css":        "--ui-toast-min-height:",
-		"switch.css":       "--ui-switch-handle-inset:",
 		"menu.css":         "--ui-menu-min-width:",
 		"data-table.css":   "--ui-data-table-checkbox-column-width:",
 		"empty-state.css":  "--ui-empty-state-icon-size:",
@@ -471,15 +472,39 @@ func TestComponentSizeTokensDeclaredScoped(t *testing.T) {
 		"callout.css":      "--ui-callout-icon-size:",
 		"inline-alert.css": "--ui-inline-alert-icon-size:",
 		"skeleton.css":     "--ui-skeleton-avatar-size:",
-		"tabs.css":         "--ui-tabs-height:",
-		"chips.css":        "--ui-chip-height:",
-		"dialog.css":       "--ui-dialog-min-width:",
-		"radio.css":        "--ui-radio-dot-size:",
-		"checkbox.css":     "--ui-checkbox-mark-size:",
 	} {
 		css := sourceComponentCSS(t, file)
 		if !strings.Contains(css, token) {
 			t.Errorf("%s must declare scoped component token %s", file, token)
+		}
+	}
+
+	// Phase C + behavior/reference/skin cascade: aesthetics moved to
+	// theme-overridable tokens with defaults in the core :root (tokens.css)
+	// and consumption via var(--ui-x, <fallback>) so html[data-gelium-*]
+	// adapters can win without being shadowed by component-root declarations.
+	tokens := repositoryFile(t, "lib", "styles", "tokens.css")
+	for file, token := range map[string]string{
+		"fab.css":         "--ui-fab-container-size",
+		"button.css":      "--ui-button-padding-y",
+		"icon-button.css": "--ui-icon-button-radius",
+		"text-field.css":  "--ui-text-field-textarea-min-height",
+		"select.css":      "--ui-select-caret-reserve",
+		"switch.css":      "--ui-switch-handle-inset",
+		"radio.css":       "--ui-radio-dot-size",
+		"checkbox.css":    "--ui-checkbox-mark-width",
+		"dialog.css":      "--ui-dialog-min-width",
+		"tabs.css":        "--ui-tabs-height",
+		"chips.css":       "--ui-chip-height",
+		"card.css":        "--ui-card-radius",
+		"badge.css":       "--ui-badge-size",
+	} {
+		if !strings.Contains(tokens, token+":") {
+			t.Errorf("core tokens.css must declare theme-overridable default %s:", token)
+		}
+		css := sourceComponentCSS(t, file)
+		if !strings.Contains(css, "var("+token+",") {
+			t.Errorf("%s must consume %s via a var() fallback (theme can override)", file, token)
 		}
 	}
 }

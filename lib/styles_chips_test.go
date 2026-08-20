@@ -11,7 +11,7 @@ func TestChipsPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 
 	for _, contract := range []string{
 		`.ui-chip {`,
-		`height: var(--ui-chip-height);`,
+		`height: var(--ui-chip-height, 2rem);`,
 		`border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border-strong);`,
 		`border-radius: var(--ui-radius-sm);`,
 		`font: var(--ui-type-label-lg);`,

@@ -1,5 +1,9 @@
 # Themes
 
+> Live specimens: a real kitchen-sink of every theme (buttons, fields, cards,
+> badges, toasts, dialog, form controls) rendered under the active direction.
+> → **[Theme gallery](/docs/themes/gallery)**
+
 Themes are visual directions over one markup surface: a theme changes `--ui-*` token values, never HTML, component anatomy, or server contracts.
 
 ## The layer model

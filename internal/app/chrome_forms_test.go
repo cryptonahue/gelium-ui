@@ -13,12 +13,16 @@ import (
 func TestChromeFormViewModels(t *testing.T) {
 	t.Run("theme select defaults to material", func(t *testing.T) {
 		sw := themeSwitcherFor(nil, "theme-material", "", "")
-		if sw.Label != "Theme" {
-			t.Errorf("Label = %q, want Theme", sw.Label)
+		if sw.Label != "Skin" {
+			t.Errorf("Label = %q, want Skin", sw.Label)
 		}
 		want := []themeOptionView{
 			{Label: "Material", Value: "material", Class: "theme-material", Selected: true},
 			{Label: "Basecoat", Value: "basecoat", Class: "theme-basecoat", Selected: false},
+			{Label: "Linear", Value: "linear", Class: "theme-linear", Selected: false},
+			{Label: "Vercel", Value: "vercel", Class: "theme-vercel", Selected: false},
+			{Label: "Base UI-inspired", Value: "baseui", Class: "theme-baseui", Selected: false},
+			{Label: "Alden", Value: "alden", Class: "theme-alden", Selected: false},
 		}
 		if len(sw.Options) != len(want) {
 			t.Fatalf("options = %d, want %d", len(sw.Options), len(want))
@@ -108,13 +112,22 @@ func TestChromeFormsPreserveEachOther(t *testing.T) {
 	}
 }
 
-// TestChromeFormsRenderSubmitButtons proves the 0-JS fallback: both chrome
-// forms ship a real submit button so theme/scheme switching works with no
-// JavaScript at all (the JS enhancement only hides it and submits on change).
+// TestChromeFormsRenderSubmitButtons proves each native GET control has an
+// explicit no-JS fallback: Recipe and Appearance both submit without scripts.
 func TestChromeFormsRenderSubmitButtons(t *testing.T) {
 	body := getOKBody(t, "/docs")
-	if got := strings.Count(body, `<button type="submit" class="ui-theme-switcher-submit">`); got != 2 {
-		t.Errorf("chrome submit buttons = %d, want 2 (theme + scheme forms)", got)
+	if got := strings.Count(body, `<button type="submit"`); got != 2 {
+		t.Errorf("chrome submit buttons = %d, want 2 (Recipe + Appearance)", got)
+	}
+	for _, contract := range []string{
+		`<form class="ui-recipe-switcher ui-recipe-switcher--compact" method="get" aria-label="Component recipe">`,
+		`<label for="docs-recipe-behavior">Behavior</label>`,
+		`<label for="docs-recipe-visual">Visual recipe</label>`,
+		`name="behavior"`, `name="visual"`, `value="basecoat"`, `Apply`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("recipe form missing %q", contract)
+		}
 	}
 }
 
@@ -142,7 +155,6 @@ func TestChromeIconsAreInlineSvgWithoutLibrary(t *testing.T) {
 	for _, contract := range []string{
 		`<svg class="ui-scheme-icon ui-scheme-icon-sun"`,
 		`<svg class="ui-scheme-icon ui-scheme-icon-moon"`,
-		`<svg class="ui-theme-switcher-icon"`,
 		`aria-hidden="true" focusable="false"`,
 	} {
 		if !strings.Contains(body, contract) {
@@ -151,21 +163,20 @@ func TestChromeIconsAreInlineSvgWithoutLibrary(t *testing.T) {
 	}
 }
 
-// TestChromeFormsCarryOptimisticContracts proves the chrome forms opt out of
-// the inherited body morph and emit the server-authority class mapping for the
-// optimistic preview: hx-swap="none" on both, and data-class on each theme
-// option mirroring the allowlisted themeDirection.Class from the catalog.
-func TestChromeFormsCarryOptimisticContracts(t *testing.T) {
-	body := getOKBody(t, "/docs?theme=basecoat&scheme=dark")
-	if got := strings.Count(body, `data-chrome-form hx-swap="none"`); got != 2 {
-		t.Errorf("chrome forms with hx-swap=none = %d, want 2", got)
-	}
+// TestRecipeFormCarriesOnlyClosedValues proves the new selector stays native
+// GET, offers only allowlisted values, and has no optimistic custom-JS contract.
+func TestRecipeFormCarriesOnlyClosedValues(t *testing.T) {
+	body := getOKBody(t, "/components/accordion?theme=basecoat&scheme=dark")
 	for _, contract := range []string{
-		`<option value="material" data-class="theme-material"`,
-		`<option value="basecoat" data-class="theme-basecoat"`,
+		`name="behavior"`, `value="native"`, `value="material"`, `value="baseui"`,
+		`name="visual"`, `value="default"`, `value="basecoat"`, `value="vercel"`,
+		`<input type="hidden" name="scheme" value="dark">`,
 	} {
 		if !strings.Contains(body, contract) {
-			t.Errorf("theme select is missing option contract %q", contract)
+			t.Errorf("recipe form missing closed-value contract %q", contract)
 		}
+	}
+	if strings.Contains(body, `hx-swap="none"`) || strings.Contains(body, `data-class=`) {
+		t.Error("native Recipe form must not depend on optimistic or class-mapping JavaScript")
 	}
 }

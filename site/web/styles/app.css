@@ -1,28 +1,41 @@
-@import "tailwindcss";
-@import "gelium-ui/themes/theme-material.css";
-@import "gelium-ui/themes/theme-basecoat.css";
-@import "gelium-ui/styles/index.css";
+@layer gelium.core, gelium.reference, gelium.skin, gelium.site;
+
+@import "tailwindcss" layer(gelium.core);
+@import "gelium-ui/styles/index.css" layer(gelium.core);
+@import "gelium-ui/themes/theme-material.css" layer(gelium.reference);
+@import "gelium-ui/themes/theme-basecoat.css" layer(gelium.reference);
+@import "gelium-ui/themes/theme-alden.css" layer(gelium.reference);
+@import "gelium-ui/themes/theme-linear.css" layer(gelium.reference);
+@import "gelium-ui/themes/theme-vercel.css" layer(gelium.reference);
+@import "gelium-ui/themes/theme-baseui.css" layer(gelium.reference);
+@import "./selection-contract.css" layer(gelium.reference);
+@import "./accordion-reference.css" layer(gelium.reference);
+@import "./component-reference.css" layer(gelium.reference);
+@import "./accordion-skin.css" layer(gelium.skin);
+@import "./component-skin.css" layer(gelium.skin);
+@import "./basecoat-pack-skins.css" layer(gelium.skin);
 /*
  * Theme bundle (Phase H mechanism): themes ship as themes/<name>/theme.css
  * with their own root selector (.theme-<name>, light + dark self-contained)
- * and are imported by the site entry BEFORE the lib manifest so the cascade
- * order is core defaults -> theme overrides -> components. Selection happens
- * at runtime by class on the document root ({{.ThemeClass}}, allowlisted
- * server-side): no JS, no rebuild. Add a theme by importing it here and
- * allowlisting its class in themeClass() (internal/app/server.go).
+ * and are imported after the core manifest so the cascade order is core
+ * defaults -> components -> theme overrides. Selection happens at runtime by
+ * class on the document root ({{.ThemeClass}}, allowlisted server-side): no
+ * JS, no rebuild. Add a theme by importing it here and allowlisting its class
+ * in themeClass() (internal/app/server.go).
  */
-@import "./examples.css";
-@import "./docs-shell.css";
-@import "./docs-chrome.css";
-@import "./docs-foundations.css";
-@import "./landing.css";
-@import "./blog.css";
-@import "./demo-whatsapp.css";
-@import "./recipe-admin-resource.css";
-@import "./recipe-ops-queue.css";
-@import "./recipe-public-feed.css";
-@import "./recipe-rich-article.css";
-@import "./recipe-criteria-bridge.css";
+@import "./examples.css" layer(gelium.site);
+@import "./docs-shell.css" layer(gelium.site);
+@import "./theme-gallery.css" layer(gelium.site);
+@import "./docs-chrome.css" layer(gelium.site);
+@import "./docs-foundations.css" layer(gelium.site);
+@import "./landing.css" layer(gelium.site);
+@import "./blog.css" layer(gelium.site);
+@import "./demo-whatsapp.css" layer(gelium.site);
+@import "./recipe-admin-resource.css" layer(gelium.site);
+@import "./recipe-ops-queue.css" layer(gelium.site);
+@import "./recipe-public-feed.css" layer(gelium.site);
+@import "./recipe-rich-article.css" layer(gelium.site);
+@import "./recipe-criteria-bridge.css" layer(gelium.site);
 
 @source "../templates";
 @source "../content";

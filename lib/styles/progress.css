@@ -36,20 +36,19 @@
      technique as .ui-button-spinner) that sweeps via the shared ui-spin
      keyframes. It is a decorative span inside a role="status" wrapper, so
      the state is announced without JavaScript; the ring itself stays
-     aria-hidden. Size and stroke are scoped --ui-progress-circular-* tokens
-     so consumers can resize the ring without new theme tokens. */
+     aria-hidden. Size and stroke are --ui-progress-circular-* tokens
+     (theme-overridable, core defaults in tokens.css) so consumers can resize
+     the ring without new theme tokens. */
   .ui-progress--circular {
-    --ui-progress-circular-size: var(--ui-size-item);
-    --ui-progress-circular-stroke: 4px;
     display: inline-flex;
     justify-self: start;
     width: auto;
   }
   .ui-progress-circle {
     box-sizing: border-box;
-    width: var(--ui-progress-circular-size);
-    height: var(--ui-progress-circular-size);
-    border: var(--ui-progress-circular-stroke) solid var(--ui-progress-track);
+    width: var(--ui-progress-circular-size, var(--ui-size-item));
+    height: var(--ui-progress-circular-size, var(--ui-size-item));
+    border: var(--ui-progress-circular-stroke, 4px) solid var(--ui-progress-track);
     border-top-color: var(--ui-progress-indicator);
     border-radius: var(--ui-radius-full);
     animation: ui-spin .8s linear infinite;

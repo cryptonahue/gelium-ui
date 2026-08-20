@@ -160,25 +160,17 @@ func (s *server) renderBlog(w http.ResponseWriter, r *http.Request, data pageVie
 	}
 	data.Nav = homeLandingNav()
 
-	themeSlug := ""
-	if q := themeFromRequest(r); q != "" {
-		data.ThemeClass = q
-		themeSlug = themeSlugFromClass(q)
-	} else {
-		data.ThemeClass = themeClass(data.ThemeClass)
-	}
-	scheme := schemeFromRequest(r)
-	applyDocumentRootScheme(&data, scheme)
+	selection := applyDocumentSelection(&data, r)
+	execution := accordionExecutionFromRequest(r)
+	navigation := navigationSelectionFor(r, routePath)
 
-	// Same 0-JS theme + appearance controls as the docs, in the site header.
-	data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass, themeSlug, scheme)
-	data.SchemeSwitcher = schemeSwitcherFor(r, themeSlug, scheme)
+	// The compact Recipe form is native GET; ordinary blog navigation keeps only
+	// incoming legacy chrome and does not publish canonical recipe fields.
+	data.RecipeSwitcher = recipeSwitcherFor(r, selection, execution, true, "site-recipe")
+	data.SchemeSwitcher = schemeSwitcherForNavigation(selection, execution, navigation)
 
-	// Rewrite compact nav hrefs so theme/scheme survive header clicks.
-	if themeSlug != "" || normalizeScheme(scheme) != "" {
-		for i := range data.Nav {
-			data.Nav[i].Path = chromeHref(data.Nav[i].Path, themeSlug, scheme)
-		}
+	for i := range data.Nav {
+		data.Nav[i].Path = navigation.href(data.Nav[i].Path)
 	}
 
 	var page bytes.Buffer

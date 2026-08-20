@@ -226,6 +226,18 @@
     background: var(--ui-color-surface);
     box-shadow: var(--ui-shadow-1);
   }
+  /* Accordion owns its own surface/border anatomy. Keep the docs frame
+     neutral so reference/skin direction is not double-carded by chrome. */
+  .component-preview.accordion-preview {
+    display: block;
+    align-items: stretch;
+    gap: 0;
+    padding: 1.25rem;
+    border-color: color-mix(in srgb, var(--ui-color-border) 70%, transparent);
+    border-radius: var(--ui-radius-md);
+    background: var(--ui-color-canvas);
+    box-shadow: none;
+  }
   .component-preview > * {
     min-width: 0;
   }

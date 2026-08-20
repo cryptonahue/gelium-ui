@@ -93,8 +93,6 @@
     position: relative;
   }
   .ui-slider--ticks {
-    --ui-slider-tick-width: 2px;
-    --ui-slider-tick-interval: 1.5rem;
     --ui-slider-tick: var(--ui-slider-inactive);
   }
   .ui-slider--ticks::before {
@@ -106,7 +104,7 @@
        the track spans from (handle-size - track-height) to handle-size. */
     top: calc(var(--ui-slider-handle-size) - var(--ui-slider-track-height));
     height: var(--ui-slider-track-height);
-    background-image: repeating-linear-gradient(to right, var(--ui-slider-tick) 0 var(--ui-slider-tick-width), transparent var(--ui-slider-tick-width) var(--ui-slider-tick-interval));
+    background-image: repeating-linear-gradient(to right, var(--ui-slider-tick) 0 var(--ui-slider-tick-width, 2px), transparent var(--ui-slider-tick-width, 2px) var(--ui-slider-tick-interval, 1.5rem));
     pointer-events: none;
   }
   .ui-slider--ticks:has(input:disabled)::before { opacity: 0; }
@@ -116,10 +114,6 @@
      custom property that drives the WebKit fill — so it sits over the handle
      in both the no-JS flow (served value) and the enhanced flow (live
      value). Shown while the handle is focused or pressed. */
-  .ui-slider--value-label {
-    --ui-slider-value-bubble-bg: var(--ui-color-primary);
-    --ui-slider-value-bubble-fg: var(--ui-color-primary-fg);
-  }
   .ui-slider--value-label::after {
     content: attr(data-value);
     position: absolute;
@@ -130,8 +124,8 @@
     min-width: 1.5rem;
     padding: 0 var(--ui-space-2);
     border-radius: var(--ui-radius-full);
-    background: var(--ui-slider-value-bubble-bg);
-    color: var(--ui-slider-value-bubble-fg);
+    background: var(--ui-slider-value-bubble-bg, var(--ui-color-primary));
+    color: var(--ui-slider-value-bubble-fg, var(--ui-color-primary-fg));
     font: var(--ui-type-label-sm);
     line-height: 1.5rem;
     text-align: center;
@@ -169,7 +163,7 @@
      notches cut into the track, and the bubble becomes a solid CanvasText
      chip with Canvas ink, so both variants survive without color. */
   .ui-slider--ticks::before {
-    background-image: repeating-linear-gradient(to right, Canvas 0 var(--ui-slider-tick-width), transparent var(--ui-slider-tick-width) var(--ui-slider-tick-interval));
+    background-image: repeating-linear-gradient(to right, Canvas 0 var(--ui-slider-tick-width, 2px), transparent var(--ui-slider-tick-width, 2px) var(--ui-slider-tick-interval, 1.5rem));
     forced-color-adjust: auto;
   }
   .ui-slider--value-label::after {

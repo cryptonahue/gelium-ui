@@ -15,7 +15,8 @@
       <span>View source</span>
     </a>
     <a class="docs-topbar-version" href="/docs/changelog{{.DocsNav.ChromeQuery}}" title="Library version — see the changelog">{{.DocsNav.Version}}</a>
-    {{if .ThemeSwitcher}}{{template "theme-switcher" .ThemeSwitcher}}{{end}}
+    <a class="docs-topbar-theme" href="/docs/themes/gallery{{.DocsNav.ChromeQuery}}">Theme Gallery</a>
+    {{if .RecipeSwitcher}}{{if .RecipeSwitcher.RenderInTopbar}}{{template "recipe-switcher" .RecipeSwitcher}}{{end}}{{end}}
     {{if .SchemeSwitcher}}{{template "color-scheme-switcher" .SchemeSwitcher}}{{end}}
   </div>
 </header>

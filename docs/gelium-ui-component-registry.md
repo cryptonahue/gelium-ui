@@ -35,6 +35,7 @@ Cada entrada de la tabla maestra ($2) declara:
 
 | Componente | Clase raíz | Template | CSS | Route | Handler | Tokens clave | Estados | Variantes | Categoría |
 |---|---|---|---|---|---|---|---|---|---|
+| Accordion | `.ui-accordion` | `accordion.html` | `accordion.css` | `/components/accordion` | `accordion.go` | `--ui-accordion-*`, `--ui-focus-shadow`, `--ui-shadow-card` | native open/closed, multiple, focus-visible, reduced-motion, forced-colors | `<details>/<summary>`; no-JS; disabled omitido | F |
 | Elevation | `.ui-elevation-{0..5}` | `elevation.html` | `elevation.css` | `/components/elevation` | `elevation.go` | `--ui-shadow-0..5`, `--ui-radius-md` | rest | 6 niveles | F |
 | Focus ring | `.ui-focus-ring` | `focus-ring.html` | `focus-ring.css` | `/components/focus-ring` | `focus_ring.go` | `--ui-focus-*`, `--ui-color-focus-ring` | focus-visible | none | F |
 | Icon | (SVG inline) | `icon.html` | `icon.css` | `/components/icon` | `icon.go` | `--ui-color-fg-muted`, `--ui-color-primary`, `--ui-size-icon` | none | decorative `aria-hidden` | F |

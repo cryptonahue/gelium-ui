@@ -156,7 +156,7 @@ func TestMobileTokensReachCompiledBundle(t *testing.T) {
 
 func TestMobileTokensWiredIntoComponents(t *testing.T) {
 	for file, needle := range map[string]string{
-		"styles/button.css":                "min-height: var(--ui-touch-target);",
+		"styles/button.css":                "min-height: var(--ui-button-resolved-min-height, max(var(--ui-touch-target), var(--ui-button-min-height, var(--ui-touch-target))));",
 		"styles/icon-button.css":           "width: var(--ui-touch-target); height: var(--ui-touch-target);",
 		"styles/recipe-admin-resource.css": "max-width: var(--ui-container-max);",
 	} {

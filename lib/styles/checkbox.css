@@ -5,19 +5,6 @@
      and the checked chevron from --ui-checkbox-* tokens. All paints are
      token-driven so states survive light and dark schemes. */
   .ui-checkbox {
-    /* Check glyph box (width × height), not the control: the ::after chevron
-       is a rotated 6×11 border-L. The pair value documents the glyph box; it
-       is NOT consumed by width/height (each takes a single length), so the
-       component reads the two dimensions through the pair contract below. */
-    --ui-checkbox-mark-size: 6px 11px;
-    --ui-checkbox-mark-width: 6px;
-    --ui-checkbox-mark-height: 11px;
-    /* Indeterminate dash geometry: a 10x2 bar replaces the chevron when the
-       input's indeterminate IDL property is true (set by the browser or by
-       script for tri-state selections, e.g. a partial chips filter). Pure
-       CSS selects the state; no component JavaScript. */
-    --ui-checkbox-indeterminate-width: 10px;
-    --ui-checkbox-indeterminate-height: 2px;
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -29,9 +16,9 @@
   .ui-checkbox:active:not(:disabled) input[type="checkbox"] { transform: scale(.92); }
   .ui-checkbox input[type="checkbox"] {
     appearance: none;
-    width: var(--ui-checkbox-size);
-    height: var(--ui-checkbox-size);
-    border-radius: var(--ui-checkbox-radius);
+    width: var(--ui-checkbox-size, 18px);
+    height: var(--ui-checkbox-size, 18px);
+    border-radius: var(--ui-checkbox-radius, 2px);
     border: var(--ui-checkbox-outline-width) solid var(--ui-checkbox-outline);
     margin: 0;
     flex: none;
@@ -52,8 +39,8 @@
   .ui-checkbox input:indeterminate + .ui-checkbox-mark { opacity: 1; }
   .ui-checkbox input:indeterminate { background: var(--ui-checkbox-container); border-color: transparent; }
   .ui-checkbox input:indeterminate + .ui-checkbox-mark::after {
-    width: var(--ui-checkbox-indeterminate-width);
-    height: var(--ui-checkbox-indeterminate-height);
+    width: var(--ui-checkbox-indeterminate-width, 10px);
+    height: var(--ui-checkbox-indeterminate-height, 2px);
     border: 0;
     background: var(--ui-checkbox-icon);
     transform: none;
@@ -75,18 +62,18 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--ui-checkbox-size);
-    height: var(--ui-checkbox-size);
+    width: var(--ui-checkbox-size, 18px);
+    height: var(--ui-checkbox-size, 18px);
     opacity: 0;
     pointer-events: none;
   }
   .ui-checkbox-mark::after {
     content: "";
     box-sizing: border-box;
-    width: var(--ui-checkbox-mark-width);
-    height: var(--ui-checkbox-mark-height);
-    border-right: 2px solid var(--ui-checkbox-icon);
-    border-bottom: 2px solid var(--ui-checkbox-icon);
+    width: var(--ui-checkbox-mark-width, 6px);
+    height: var(--ui-checkbox-mark-height, 11px);
+    border-right: var(--ui-checkbox-mark-stroke, 2px) solid var(--ui-checkbox-icon);
+    border-bottom: var(--ui-checkbox-mark-stroke, 2px) solid var(--ui-checkbox-icon);
     transform: rotate(45deg);
     transform-origin: center;
   }

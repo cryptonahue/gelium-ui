@@ -1,5 +1,5 @@
 {{define "layout"}}<!doctype html>
-<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}" data-gelium-reference="{{or .Reference "none"}}" data-gelium-skin="{{or .Skin "none"}}" data-gelium-contract="{{or .Contract "gelium"}}" data-gelium-scheme="{{or .Scheme "system"}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">
@@ -19,6 +19,7 @@
   {{if .Meta.OGImage}}<meta name="twitter:image" content="{{.Meta.OGImage}}">{{end}}{{end}}
   {{if .Meta.JSONLD}}<script type="application/ld+json">{{.Meta.JSONLD}}</script>{{end}}
   <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
+  {{themePreloadFonts .ThemeClass .AssetsVersion}}
   <meta name="htmx-config" content="{&quot;history&quot;:true,&quot;defaultFocusScroll&quot;:false,&quot;morphSkip&quot;:[&quot;[data-htmx-preserve]&quot;],&quot;morphIgnore&quot;:[&quot;data-htmx-powered&quot;,&quot;data-gelium-preserve&quot;]}" />
   <script defer src="/static/htmx.min.js?v={{.AssetsVersion}}"></script>
   <script defer src="/static/gelium.js?v={{.AssetsVersion}}"></script>
@@ -48,7 +49,7 @@
     <a class="brand" href="/">Gelium UI</a>
     <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
     <div class="site-header-end">
-      {{if .ThemeSwitcher}}{{template "theme-switcher" .ThemeSwitcher}}{{end}}
+      {{if .RecipeSwitcher}}{{if .RecipeSwitcher.RenderInTopbar}}{{template "recipe-switcher" .RecipeSwitcher}}{{end}}{{end}}
       {{if .SchemeSwitcher}}{{template "color-scheme-switcher" .SchemeSwitcher}}{{end}}
     </div>
   </header>
@@ -60,6 +61,8 @@
       {{if .Provenance.Published}}Published <time datetime="{{.Provenance.Published}}">{{.Provenance.Published}}</time>{{end}}{{if .Provenance.Modified}} · Updated <time datetime="{{.Provenance.Modified}}">{{.Provenance.Modified}}</time>{{end}}
       {{if .Provenance.Version}} · v{{.Provenance.Version}}{{end}}{{if .Provenance.LicenseURL}} · <a href="{{.Provenance.LicenseURL}}" rel="license">MIT License</a>{{end}}{{if .Provenance.Source}} · Source: {{.Provenance.Source}}{{end}}
     </p>{{end}}{{if .H1}}{{.H1}}{{end}}
+    {{if .RecipeSwitcher}}{{if not .RecipeSwitcher.RenderInTopbar}}{{template "recipe-switcher" .RecipeSwitcher}}{{end}}{{end}}
+    {{if .AccordionDemo}}<section class="component-preview accordion-preview" aria-label="Accordion example">{{template "accordion-demo" .AccordionDemo}}</section>{{end}}
     {{if .Buttons}}<section class="component-preview" aria-label="Button examples">{{range .Buttons}}{{template "button" .}}{{end}}</section>{{end}}
     {{if .TextFields}}<section class="component-preview text-field-preview" aria-label="Text field examples">{{range .TextFields}}{{template "text-field" .}}{{end}}</section>{{end}}
     {{if .ValidationForm}}<section class="component-preview" aria-label="Text field validation example" id="validation-example">{{template "validation-form" .ValidationForm}}</section>{{end}}
@@ -99,7 +102,7 @@
     {{if .DataTableDemo}}<section class="component-preview data-table-preview" aria-label="Data table examples">{{template "data-table-demo" .DataTableDemo}}</section>{{end}}
     {{if .TooltipDemo}}<section class="component-preview" aria-label="Tooltip examples">{{template "tooltip-demo" .TooltipDemo}}</section>{{end}}
     {{if .Newsletter}}<section class="component-preview newsletter-preview" aria-label="Newsletter example">{{template "newsletter" .Newsletter}}</section>{{end}}
-    {{.Content}}{{if .Examples}}<h2>Examples</h2>{{range .Examples}}
+    {{.Content}}{{if .ThemeGallery}}{{template "theme-gallery" .ThemeGallery}}{{end}}{{if .Examples}}<h2>Examples</h2>{{range .Examples}}
     <section class="example-block">
       <h3>{{.Name}}</h3>
       <p>{{.Desc}}</p>

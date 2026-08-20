@@ -9,16 +9,16 @@
     justify-content: center;
     box-sizing: border-box;
     flex: none;
-    width: var(--ui-badge-size);
-    height: var(--ui-badge-size);
+    width: var(--ui-badge-size, 6px);
+    height: var(--ui-badge-size, 6px);
     border-radius: var(--ui-radius-full);
     background: var(--ui-badge-container);
     color: var(--ui-badge-fg);
   }
   .ui-badge-large {
     width: auto;
-    min-width: var(--ui-badge-large-size);
-    height: var(--ui-badge-large-size);
+    min-width: var(--ui-badge-large-size, 16px);
+    height: var(--ui-badge-large-size, 16px);
     padding-inline: var(--ui-space-1);
     font: var(--ui-type-label-sm);
     line-height: 1rem;

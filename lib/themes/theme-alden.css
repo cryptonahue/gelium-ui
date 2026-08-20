@@ -1,0 +1,514 @@
+/*
+ * Gelium UI Alden theme (font-pack reference).
+ *
+ * Visual direction: "serene clinic on warm parchment" — an editorial
+ * healthcare register: 98% achromatic warm canvas, eerie-quiet, with exactly
+ * two chromatic accents (a whisper-soft sky blue used as an in-line highlight,
+ * and a muted sage green reserved for the primary action). Type mixes a
+ * geometric sans (Inter) for UI with a contemporary serif (Source Serif 4)
+ * reserved for the largest editorial headlines.
+ *
+ * Reference: Refero style "Alden" (styles.refero.design) — the reference font
+ * (Stk bureau Sans/Serif Book Trial) is commercial, so the substitutes the
+ * reference itself recommends are used: Inter (sans) and Source Serif 4
+ * (display serif). Both are SIL OFL, self-hosted, subsetted to latin +
+ * latin-ext, in lib/fonts/. Audit follows docs/handoffs/basecoat-audit.md;
+ * contract: docs/gelium-ui-font-contract.md + docs/gelium-ui-theme-contract.md.
+ *
+ * The @font-face rules below are self-hosted and bundled via lib.Assets
+ * (fonts/*). The <link rel="preload"> for the body weight (Inter 400 latin) is
+ * emitted automatically by layout.html via themePreloadFonts for this theme.
+ */
+
+/* ── Font faces (subsetted latin + latin-ext, WOFF2, display swap) ──────────── */
+
+/* Inter — workhorse sans (Alden's reference substitute for Stk bureau Sans). */
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/theme-alden-inter-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/theme-alden-inter-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/fonts/theme-alden-inter-500-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 500;
+  font-display: swap;
+  src: url("/static/fonts/theme-alden-inter-500-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/fonts/theme-alden-inter-600-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Inter";
+  font-style: normal;
+  font-weight: 600;
+  font-display: swap;
+  src: url("/static/fonts/theme-alden-inter-600-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/* Source Serif 4 — display serif (Alden's reference substitute for Stk bureau
+   Serif), reserved for the largest editorial headlines / pull quotes only. */
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/theme-alden-source-serif-4-400-latin.woff2") format("woff2");
+  unicode-range: U+0000-00FF, U+0131, U+0152-0153, U+02BB-02BC, U+02C6, U+02DA, U+02DC, U+0304, U+0308, U+0329, U+2000-206F, U+20AC, U+2122, U+2191, U+2193, U+2212, U+2215, U+FEFF, U+FFFD;
+}
+@font-face {
+  font-family: "Source Serif 4";
+  font-style: normal;
+  font-weight: 400;
+  font-display: swap;
+  src: url("/static/fonts/theme-alden-source-serif-4-400-latin-ext.woff2") format("woff2");
+  unicode-range: U+0100-02BA, U+02BD-02C5, U+02C7-02CC, U+02CE-02D7, U+02DD-02FF, U+0304, U+0308, U+0329, U+1D00-1DBF, U+1E00-1E9F, U+1EF2-1EFF, U+2020, U+20A0-20AB, U+20AD-20C0, U+2113, U+2C60-2C7F, U+A720-A7FF;
+}
+
+/*
+ * Fallback metric overrides (anti-CLS, per gelium-ui-font-contract §3.B.6).
+ * Before the real font loads, the browser lays out using these system
+ * fallbacks at the SAME metrics as the real font, so the swap causes no
+ * layout shift. Size-adjusts approximate the x-height/aspect delta between
+ * the real font and its fallback.
+ *   Inter   → Arial/system-ui (serif fallback for display: Georgia/Times)
+ *   Metrics from the downloaded woff2: Inter ascent 96.88% / descent 24.12%,
+ *   Source Serif 4 ascent 103.60% / descent 33.50%.
+ */
+@font-face {
+  font-family: "Alden Sans Fallback";
+  src: local("Arial"), local("Helvetica Neue"), local("system-ui");
+  size-adjust: 99%;
+  ascent-override: 97.86%;
+  descent-override: 24.36%;
+  line-gap-override: 0%;
+}
+@font-face {
+  font-family: "Alden Display Fallback";
+  src: local("Georgia"), local("Times New Roman");
+  size-adjust: 100%;
+  ascent-override: 103.60%;
+  descent-override: 33.50%;
+  line-gap-override: 0%;
+}
+
+/* ── Alden theme (light) ────────────────────────────────────────────────────── */
+.theme-alden {
+  color-scheme: light;
+
+  /* Color — 98% achromatic warm-paper editorial register. Color is
+     punctuation, not decoration: two chromatic accents only. */
+  --ui-color-canvas: #ffffff;            /* Paper White — dominant canvas & cards */
+  --ui-color-surface: #f3f1eb;           /* Parchment Cream — alternate surface */
+  --ui-color-surface-container: #f3f1eb; /* Parchment Cream — raised chips/backdrop */
+  --ui-color-fg: #28262a;                /* Ink Black (faint plum, softer than #000) */
+  --ui-color-fg-muted: #4a4a4c;          /* Graphite — secondary text & captions */
+  --ui-color-primary: #c8dfaa;           /* Sage Action — the only saturated fill (CTA) */
+  --ui-color-primary-fg: #28262a;        /* Ink on sage */
+  --ui-color-secondary: #97cde5;         /* Sky Highlight — in-line word accent */
+  --ui-color-secondary-fg: #28262a;      /* Ink on sky */
+  --ui-color-code-string: #2f6b4f;
+  --ui-color-border: #dddcdd;            /* Fog Border — hairline dividers/badges */
+  --ui-color-border-strong: #cbcbcb;     /* Silver — mid dividers */
+  --ui-color-danger: #b91c1c;            /* AA solid (Alden is achromatic; danger stays conservative) */
+  --ui-color-danger-fg: #ffffff;
+  --ui-color-focus-ring: #4a4a4c;        /* Graphite — AA non-text focus step */
+
+  --ui-color-success: #2e7d32;
+  --ui-color-success-fg: #ffffff;
+  --ui-color-warning: #b9930a;
+  --ui-color-warning-fg: #6a4b00;
+  --ui-color-warning-container: #fff3d6;
+  --ui-color-info: #4f5d75;
+  --ui-color-info-fg: #ffffff;
+  --ui-color-danger-container: #fddcdc;
+  --ui-color-scrim: rgb(0 0 0 / .24);
+
+  /* Component token families (matrix §matrix: every theme must define each).
+     Alden keeps basecoat's anatomy and derives colors from the warm palette;
+     geometry matches the basecoat/base Material register (16px cards, pill
+     badges, 4px checkbox/radio). */
+  --ui-divider-color: var(--ui-color-border);
+  --ui-divider-thickness: 1px;
+
+  --ui-card-radius: 16px;
+  --ui-card-container-elevated: #ffffff;
+  --ui-card-container-filled: #f3f1eb;
+  --ui-card-container-outlined: #ffffff;
+  --ui-card-outline-color: var(--ui-color-border);
+
+  --ui-badge-size: 6px;
+  --ui-badge-large-size: 16px;
+  --ui-badge-container: var(--ui-color-danger);
+  --ui-badge-fg: var(--ui-color-danger-fg);
+
+  --ui-checkbox-size: 16px;
+  --ui-checkbox-radius: 4px;
+  --ui-checkbox-outline-width: var(--ui-border-width-2);
+  --ui-checkbox-outline: var(--ui-color-fg-muted);
+  --ui-checkbox-hover-outline: var(--ui-color-fg);
+  --ui-checkbox-container: var(--ui-color-primary);
+  --ui-checkbox-icon: var(--ui-color-primary-fg);
+  --ui-checkbox-error: var(--ui-color-danger);
+  --ui-checkbox-checked-disabled-container: var(--ui-color-fg);
+
+  --ui-radio-size: 16px;
+  --ui-radio-radius: 50%;
+  --ui-radio-outline-width: var(--ui-border-width-2);
+  --ui-radio-outline: var(--ui-color-fg-muted);
+  --ui-radio-hover-outline: var(--ui-color-fg);
+  --ui-radio-checked: var(--ui-color-primary);
+  --ui-radio-disabled: var(--ui-color-fg);
+
+  --ui-switch-width: 32px;
+  --ui-switch-height: 18.4px;
+  --ui-switch-radius: var(--ui-radius-full);
+  --ui-switch-outline-width: var(--ui-border-width-2);
+  --ui-switch-track: var(--ui-color-primary);
+  --ui-switch-track-unselected: #e5e2da;
+  --ui-switch-track-outline: var(--ui-color-border-strong);
+  --ui-switch-handle: #ffffff;
+  --ui-switch-handle-selected: #ffffff;
+  --ui-switch-handle-size: 16px;
+  --ui-switch-handle-selected-size: 16px;
+  --ui-switch-handle-pressed-size: 16px;
+  --ui-switch-disabled-track-opacity: .5;
+  --ui-switch-disabled-handle-opacity: .5;
+  --ui-switch-disabled-handle: #ffffff;
+
+  --ui-progress-track-height: 6px;
+  --ui-progress-radius: var(--ui-radius-full);
+  --ui-progress-track: var(--ui-color-surface);
+  --ui-progress-indicator: var(--ui-color-primary);
+
+  --ui-slider-track-height: 6px;
+  --ui-slider-track-radius: var(--ui-radius-full);
+  --ui-slider-handle-size: 16px;
+  --ui-slider-handle-pressed-size: 16px;
+  --ui-slider-active: var(--ui-color-primary);
+  --ui-slider-inactive: var(--ui-color-surface);
+  --ui-slider-handle: var(--ui-color-primary);
+  --ui-slider-handle-elevation: var(--ui-shadow-1);
+  --ui-slider-disabled: var(--ui-color-fg);
+  --ui-slider-disabled-opacity: var(--ui-state-disabled-opacity);
+
+  --ui-fab-primary-container: var(--ui-color-primary);
+  --ui-fab-primary-fg: var(--ui-color-primary-fg);
+  --ui-fab-surface-container: var(--ui-color-surface);
+  --ui-fab-surface-fg: var(--ui-color-fg);
+  --ui-fab-secondary-container: var(--ui-color-secondary);
+  --ui-fab-secondary-fg: var(--ui-color-secondary-fg);
+  --ui-fab-container-shape: 16px;
+  --ui-fab-container-shape-small: 12px;
+  --ui-fab-container-shape-large: 24px;
+  --ui-fab-extended-shape: 100px;
+  --ui-fab-icon-size: 24px;
+  --ui-fab-icon-size-large: 36px;
+  --ui-fab-icon-size-extended: 28px;
+  --ui-fab-extension-gap: var(--ui-space-3);
+
+  --ui-select-height: var(--ui-size-field);
+  --ui-select-radius: 8px;
+  --ui-select-radius-top: 8px 8px 0 0;
+  --ui-select-caret: var(--ui-color-fg-muted);
+  --ui-select-fg: var(--ui-color-fg);
+  --ui-select-label: var(--ui-color-fg-muted);
+  --ui-select-outline: var(--ui-field-border);
+  --ui-select-container-filled: var(--ui-color-surface);
+  --ui-select-hover-outline: var(--ui-color-fg);
+  --ui-select-focus: var(--ui-color-primary);
+  --ui-select-error: var(--ui-field-error);
+  --ui-select-disabled-opacity: var(--ui-state-disabled-opacity);
+  --ui-select-list-bg: #ffffff;
+  --ui-select-list-fg: var(--ui-color-fg);
+
+  /* Density — Alden is compact/editorial, tighter than Material's generous
+     register. These ARE theme-overridable (Material ships 2.5rem control /
+     3.5rem field / 48px touch; Alden steps down while keeping >=44px touch
+     for the WCAG targe-size floor). */
+  --ui-size-control: 2.25rem;
+  --ui-size-field: 3rem;
+  --ui-size-icon: 1.25rem;
+  --ui-size-icon-sm: 1rem;
+  --ui-size-track: 6px;
+  --ui-touch-target: 44px;
+
+  /* Component anatomy (editorial identity) — Alden shapes controls with its
+     own silhouette via the theme-overridable anatomy tokens (cascade fix).
+     min-height stays on --ui-touch-target (44px floor, WCAG 2.5.8); only
+     padding/radius/gap are re-proportioned. */
+  --ui-button-padding-y: .5rem;
+  --ui-button-padding-x: 1.25rem;
+  --ui-button-gap: var(--ui-space-2);
+  --ui-button-radius: 12px;               /* sharper than Material's pill */
+  --ui-button-spinner-size: 1rem;
+  --ui-icon-button-radius: 12px;          /* square icon buttons, match buttons */
+  --ui-field-radius: 8px;                 /* generous, editorial vs Material 4px */
+  --ui-field-padding-x: 1.25rem;          /* wider gutters in fields */
+  --ui-field-padding-y: var(--ui-space-4);
+  --ui-field-textarea-min-height: 7rem;
+  --ui-card-padding: 1.5rem;              /* cards breathe */
+  --ui-switch-handle-inset: 7px;          /* slightly larger handle proportion */
+  --ui-slider-tick-width: 2px;
+  --ui-slider-tick-interval: 1.5rem;
+  --ui-progress-circular-stroke: 3px;     /* thinner, elegant circular ring */
+  --ui-select-caret-reserve: 2.5rem;
+  /* FAB — small floors at 44px (WCAG 2.5.8); never lower. */
+  --ui-fab-container-size: 56px;
+  --ui-fab-container-size-small: 44px;
+  --ui-fab-container-size-large: 96px;
+  --ui-fab-extended-height: 48px;
+  --ui-fab-extended-padding-inline: 1.25rem;
+
+  /* Texture — flat surfaces, very soft card edges (16px), fully pill buttons
+     (Alden radius system: smallUI 4, cards 16, images 24, badges 30, buttons 100). */
+  --ui-radius-none: 0;
+  --ui-radius-xs: 4px;
+  --ui-radius-sm: 8px;
+  --ui-radius-md: 16px;
+  --ui-radius-lg: 24px;
+  --ui-radius-full: 100px;               /* pill buttons */
+
+  /* Card radius — editorial soft (Material uses 12px; Alden sits at 16px for
+     a warmer, less technical feel). */
+  --ui-card-radius: 16px;
+
+  /* Elevation — Alden is deliberately flat: elevation is nearly absent. */
+  --ui-shadow-0: none;
+  --ui-shadow-1: 0 1px 2px rgb(40 38 42 / .04);
+  --ui-shadow-2: 0 2px 6px rgb(40 38 42 / .06);
+  --ui-shadow-3: 0 4px 8px rgb(40 38 42 / .06);
+  --ui-shadow-4: 0 8px 12px rgb(40 38 42 / .08);
+  --ui-shadow-5: 0 12px 20px rgb(40 38 42 / .10);
+
+  /* Motion — calm, clinical. */
+  --ui-motion-short: 150ms;
+  --ui-motion-long: 400ms;
+  --ui-easing-standard: cubic-bezier(.2, 0, 0, 1);
+
+  /* State layers — quiet: hover is barely-there on an achromatic system. */
+  --ui-state-hover-opacity: .06;
+  --ui-state-focus-opacity: .10;
+  --ui-state-pressed-opacity: .08;
+  --ui-state-selected-opacity: .06;
+  --ui-state-disabled-opacity: .38;
+
+  /* Text field — Alden editorial input: hairline border, transparent on paper. */
+  --ui-field-container: #ffffff;
+  --ui-field-border: #dddcdd;
+  --ui-field-border-hover: #cbcbcb;
+  --ui-field-label: #4a4a4c;
+  --ui-field-error: #b91c1c;
+
+  /* Dialog / Toast — soft parchment popovers, flat. */
+  --ui-dialog-container: #f3f1eb;
+  --ui-dialog-fg: #28262a;
+  --ui-dialog-body: #4a4a4c;
+  --ui-dialog-scrim: rgb(0 0 0 / .24);
+  --ui-toast-container: #f3f1eb;
+  --ui-toast-fg: #28262a;
+  --ui-toast-action: #28262a;
+  --ui-toast-radius: 12px;
+  --ui-toast-icon-info: var(--ui-color-info);
+  --ui-toast-icon-success: var(--ui-color-success);
+  --ui-toast-icon-warning: var(--ui-color-warning);
+  --ui-color-toast-icon-error: #b91c1c;
+  --ui-toast-icon-error: var(--ui-color-toast-icon-error);
+
+  /* Fonts — self-hosted Inter (sans) + Source Serif 4 (display). The display
+     serif is reserved for the largest editorial statements only (contract
+     §3.C.10: never in body/caption). */
+  --ui-font-sans: "Inter", "Alden Sans Fallback", ui-sans-serif, system-ui, -apple-system, "Segoe UI", Roboto, "Helvetica Neue", Arial, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --ui-font-mono: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  /* --ui-font-display is Alden's new optional token: the serif for headlines. */
+  --ui-font-display: "Source Serif 4", "Alden Display Fallback", Georgia, "Times New Roman", serif;
+
+  /* Typescale — Alden editorial: negative tracking for density on the sans;
+     the display serif is reserved for the largest statements AND the
+     section headlines (h2-level), giving the editorial register its voice.
+     Body/caption always stay on the sans (contract §3.C.10). */
+  --ui-type-display-lg-size: 3.5rem;
+  --ui-type-display-lg-weight: 400;
+  --ui-type-display-lg-line-height: 1.0;
+  --ui-type-display-lg-letter-spacing: -0.04em;
+  --ui-type-display-lg-family: var(--ui-font-display);
+  --ui-type-display-sm-size: 2.25rem;
+  --ui-type-display-sm-weight: 400;
+  --ui-type-display-sm-line-height: 1.0;
+  --ui-type-display-sm-letter-spacing: -0.03em;
+  --ui-type-display-sm-family: var(--ui-font-display);
+  --ui-type-headline-sm-size: 1.75rem;
+  --ui-type-headline-sm-weight: 400;
+  --ui-type-headline-sm-line-height: 1.2;
+  --ui-type-headline-sm-letter-spacing: -0.01em;
+  --ui-type-headline-sm-family: var(--ui-font-display);
+  --ui-type-title-lg-size: 1.25rem;
+  --ui-type-title-lg-weight: 500;
+  --ui-type-title-lg-line-height: 1.4;
+  --ui-type-title-lg-letter-spacing: -0.01em;
+  --ui-type-title-lg-family: var(--ui-font-sans);
+  --ui-type-title-md-size: 1rem;
+  --ui-type-title-md-weight: 500;
+  --ui-type-title-md-line-height: 1.5;
+  --ui-type-title-md-letter-spacing: -0.01em;
+  --ui-type-title-md-family: var(--ui-font-sans);
+  --ui-type-body-lg-size: 1rem;
+  --ui-type-body-lg-weight: 400;
+  --ui-type-body-lg-line-height: 1.5;
+  --ui-type-body-lg-letter-spacing: -0.02em;
+  --ui-type-body-lg-family: var(--ui-font-sans);
+  --ui-type-body-md-size: 1rem;
+  --ui-type-body-md-weight: 400;
+  --ui-type-body-md-line-height: 1.5;
+  --ui-type-body-md-letter-spacing: -0.02em;
+  --ui-type-body-md-family: var(--ui-font-sans);
+  --ui-type-body-sm-size: .875rem;
+  --ui-type-body-sm-weight: 400;
+  --ui-type-body-sm-line-height: 1.5;
+  --ui-type-body-sm-letter-spacing: -0.01em;
+  --ui-type-body-sm-family: var(--ui-font-sans);
+  --ui-type-label-lg-size: .875rem;
+  --ui-type-label-lg-weight: 600;
+  --ui-type-label-lg-line-height: 1.25;
+  --ui-type-label-lg-letter-spacing: 0.02em;
+  --ui-type-label-lg-family: var(--ui-font-sans);
+  --ui-type-label-md-size: .875rem;
+  --ui-type-label-md-weight: 500;
+  --ui-type-label-md-line-height: 1.25;
+  --ui-type-label-md-letter-spacing: 0.02em;
+  --ui-type-label-md-family: var(--ui-font-sans);
+  --ui-type-label-sm-size: .75rem;
+  --ui-type-label-sm-weight: 500;
+  --ui-type-label-sm-line-height: 1;
+  --ui-type-label-sm-letter-spacing: 0.02em;
+  --ui-type-label-sm-family: var(--ui-font-sans);
+  --ui-type-dialog-headline-size: 1.5rem;
+  --ui-type-dialog-headline-weight: 400;
+  --ui-type-dialog-headline-line-height: 1.3;
+  --ui-type-dialog-headline-letter-spacing: -0.02em;
+  --ui-type-dialog-headline-family: var(--ui-font-sans);
+  --ui-type-dialog-body-size: .875rem;
+  --ui-type-dialog-body-weight: 400;
+  --ui-type-dialog-body-line-height: 1.4;
+  --ui-type-dialog-body-letter-spacing: -0.01em;
+  --ui-type-dialog-body-family: var(--ui-font-sans);
+}
+
+/* ── Alden theme (dark) ─────────────────────────────────────────────────────── */
+.theme-alden.theme-dark,
+.theme-alden.dark,
+.theme-alden[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Color — inverted: warm ink canvas, parchment becomes the elevated surface,
+     the two chromatic accents survive unchanged as punctuation. */
+  --ui-color-canvas: #1a191c;            /* deep warm ink — the quiet default */
+  --ui-color-surface: #242226;           /* one step above canvas for content */
+  --ui-color-surface-container: #2b292e; /* raised chips / code backdrop */
+  --ui-color-fg: #f3f1eb;                /* Parchment Cream — primary text */
+  --ui-color-fg-muted: #a9a5ae;          /* softer parchment — secondary text */
+  --ui-color-primary: #c8dfaa;           /* Sage Action (unchanged) */
+  --ui-color-primary-fg: #1a191c;        /* ink on sage */
+  --ui-color-secondary: #97cde5;         /* Sky Highlight (unchanged) */
+  --ui-color-secondary-fg: #1a191c;
+  --ui-color-code-string: #81c995;
+  --ui-color-border: #3a363d;            /* warm hairline dividers */
+  --ui-color-border-strong: #55505a;     /* stronger warm divider */
+  --ui-color-danger: #f87171;            /* AA on ink */
+  --ui-color-danger-fg: #1a191c;
+  --ui-color-focus-ring: #a9a5ae;
+
+  --ui-color-success: #81c995;
+  --ui-color-success-fg: #00391f;
+  --ui-color-warning: #fdd663;
+  --ui-color-warning-fg: #3a3100;
+  --ui-color-warning-container: #3a3100;
+  --ui-color-info: #93c5fd;
+  --ui-color-info-fg: #1e3a8a;
+  --ui-color-danger-container: #7f1d1d;
+  --ui-color-scrim: rgb(0 0 0 / .50);
+
+  --ui-field-container: #242226;
+  --ui-field-border: #3a363d;
+  --ui-field-border-hover: #55505a;
+  --ui-field-label: #a9a5ae;
+  --ui-field-error: #f87171;
+
+  --ui-dialog-container: #2b292e;
+  --ui-dialog-fg: #f3f1eb;
+  --ui-dialog-body: #a9a5ae;
+  --ui-dialog-scrim: rgb(0 0 0 / .50);
+  --ui-toast-container: #2b292e;
+  --ui-toast-fg: #f3f1eb;
+  --ui-toast-action: #f3f1eb;
+  --ui-toast-radius: 12px;
+  --ui-color-toast-icon-info: #93c5fd;
+  --ui-color-toast-icon-success: #81c995;
+  --ui-color-toast-icon-warning: #fdd663;
+  --ui-color-toast-icon-error: #f87171;
+  --ui-toast-icon-info: var(--ui-color-toast-icon-info);
+  --ui-toast-icon-success: var(--ui-color-toast-icon-success);
+  --ui-toast-icon-warning: var(--ui-color-toast-icon-warning);
+  --ui-toast-icon-error: var(--ui-color-toast-icon-error);
+
+  /* Direct dark redefinitions (matrix: card/switch/progress/fab/select own no
+     derived-colors list, so they must re-declare a family token directly). */
+  --ui-card-container-elevated: #2b292e;
+  --ui-card-container-filled: #242226;
+  --ui-card-container-outlined: #2b292e;
+  --ui-card-outline-color: var(--ui-color-border);
+
+  --ui-switch-track-unselected: var(--ui-color-border);
+  --ui-switch-handle: #f3f1eb;
+  --ui-switch-handle-selected: #f3f1eb;
+  --ui-switch-disabled-handle: #f3f1eb;
+
+  --ui-progress-track: var(--ui-color-surface);
+  --ui-slider-inactive: var(--ui-color-surface);
+
+  --ui-fab-surface-container: var(--ui-color-surface);
+  --ui-fab-surface-fg: var(--ui-color-fg-muted);
+  --ui-fab-secondary-container: var(--ui-color-surface-container);
+  --ui-fab-secondary-fg: var(--ui-color-fg);
+
+  --ui-select-container-filled: var(--ui-color-surface);
+  --ui-select-list-bg: #2b292e;
+  --ui-select-list-fg: var(--ui-color-fg);
+
+  /* Focus geometry — explicit per theme (shared token, contract §3.1). */
+  --ui-focus-thickness: 3px;
+  --ui-focus-offset: 2px;
+  --ui-accordion-radius: var(--ui-radius-md);
+  --ui-accordion-border: #d8d2c7;
+  --ui-accordion-surface: #f3f1eb;
+  --ui-accordion-trigger-padding-x: 1.25rem;
+  --ui-accordion-trigger-padding-y: .875rem;
+  --ui-accordion-panel-padding-x: 1.25rem;
+  --ui-accordion-panel-padding-y: 1rem;
+}

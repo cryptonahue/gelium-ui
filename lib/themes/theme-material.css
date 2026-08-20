@@ -355,5 +355,23 @@
   --ui-fab-surface-fg: #cac4d0;
   --ui-fab-secondary-container: #4a4458;
   --ui-fab-secondary-fg: #e8def8;
-
+  /* Accordion — MUI Expansion Panel-inspired surface treatment. Material
+     Web has no official Accordion; this preserves native details behavior. */
+  --ui-accordion-root-radius: 0;
+  --ui-accordion-root-border: 0;
+  --ui-accordion-root-surface: transparent;
+  --ui-accordion-radius: 4px;
+  --ui-accordion-border: transparent;
+  --ui-accordion-surface: #f7f2fa;
+  --ui-accordion-shadow: 0 2px 1px -1px rgb(0 0 0 / .20), 0 1px 1px rgb(0 0 0 / .14), 0 1px 3px rgb(0 0 0 / .12);
+  --ui-accordion-open-shadow: 0 3px 1px -2px rgb(0 0 0 / .20), 0 2px 2px rgb(0 0 0 / .14), 0 1px 5px rgb(0 0 0 / .12);
+  --ui-accordion-trigger-min-height: 3rem;
+  --ui-accordion-trigger-gap: 1rem;
+  --ui-accordion-trigger-padding-x: 1rem;
+  --ui-accordion-trigger-padding-y: .75rem;
+  --ui-accordion-panel-padding-top: .125rem;
+  --ui-accordion-panel-padding-x: 1rem;
+  --ui-accordion-panel-padding-y: 1rem;
+  --ui-accordion-icon-size: 1.5rem;
+  --ui-accordion-icon-rotation: 180deg;
 }

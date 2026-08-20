@@ -14,9 +14,9 @@ func TestSwitchPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 		`gap: var(--ui-space-2);`,
 		`input[type="checkbox"] {`,
 		`appearance: none;`,
-		`width: var(--ui-switch-width);`,
-		`height: var(--ui-switch-height);`,
-		`border-radius: var(--ui-switch-radius);`,
+		`width: var(--ui-switch-width, 52px);`,
+		`height: var(--ui-switch-height, 32px);`,
+		`border-radius: var(--ui-switch-radius, var(--ui-radius-full));`,
 		`border: var(--ui-switch-outline-width) solid var(--ui-switch-track-outline);`,
 		`input:checked + .ui-switch-track {`,
 		`background: var(--ui-switch-track);`,
@@ -91,7 +91,7 @@ func TestEmbeddedCompiledCSSIncludesSwitchContracts(t *testing.T) {
 	css := compiledAppCSS(t)
 	for _, contract := range []string{
 		`.ui-switch`,
-		`var(--ui-switch-width)`,
+		`var(--ui-switch-width`,
 		`var(--ui-switch-track-outline)`,
 		`@media (forced-colors:active)`,
 	} {

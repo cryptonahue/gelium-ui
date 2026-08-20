@@ -8,19 +8,15 @@
      an inset state layer of the label color, matching the other Material
      controls. */
   .ui-chip {
-    --ui-chip-height: 2rem;
-    --ui-chip-remove-size: 1.5rem;
-    --ui-chip-remove-icon-size: var(--ui-size-icon-sm);
-    --ui-chip-selected-icon-size: .5625rem;
     position: relative;
     box-sizing: border-box;
     display: inline-flex;
     align-items: center;
-    height: var(--ui-chip-height);
+    height: var(--ui-chip-height, 2rem);
     padding-inline: var(--ui-space-4);
     gap: var(--ui-space-2);
     border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border-strong);
-    border-radius: var(--ui-radius-sm);
+    border-radius: var(--ui-chip-radius, var(--ui-radius-sm));
     background: transparent;
     color: var(--ui-color-fg-muted);
     font: var(--ui-type-label-lg);
@@ -92,8 +88,8 @@
   .ui-chip-filter .ui-chip-selected-icon {
     position: relative;
     z-index: 1;
-    width: var(--ui-chip-selected-icon-size);
-    height: var(--ui-chip-selected-icon-size);
+    width: var(--ui-chip-selected-icon-size, .5625rem);
+    height: var(--ui-chip-selected-icon-size, .5625rem);
     flex: none;
     opacity: 0;
     transform: scale(0);
@@ -135,8 +131,8 @@
     align-items: center;
     justify-content: center;
     align-self: center;
-    width: var(--ui-chip-remove-size);
-    height: var(--ui-chip-remove-size);
+    width: var(--ui-chip-remove-size, 1.5rem);
+    height: var(--ui-chip-remove-size, 1.5rem);
     margin-inline: .5rem .625rem;
     padding: 0;
     border: none;
@@ -147,7 +143,7 @@
     flex: none;
     transition: background-color var(--ui-motion-short) var(--ui-easing-standard);
   }
-  .ui-chip-remove .ui-icon { width: var(--ui-chip-remove-icon-size); height: var(--ui-chip-remove-icon-size); }
+  .ui-chip-remove .ui-icon { width: var(--ui-chip-remove-icon-size, var(--ui-size-icon-sm)); height: var(--ui-chip-remove-icon-size, var(--ui-size-icon-sm)); }
   .ui-chip-remove:hover { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-hover-opacity) * 100%), transparent); }
   .ui-chip-remove:active { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
   .ui-chip-remove:focus-visible {

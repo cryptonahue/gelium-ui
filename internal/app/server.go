@@ -5,6 +5,7 @@ import (
 	"context"
 	"encoding/json"
 	"encoding/xml"
+	"fmt"
 	"html/template"
 	"io/fs"
 	"mime"
@@ -38,6 +39,73 @@ type themeDirection struct {
 	Class string
 	Slug  string
 	Label string
+	// Fonts are the self-hosted webfonts this theme ships, emitted as
+	// <link rel="preload"> in the document <head> so the browser discovers
+	// them early (the @font-face src alone would fetch them too late,
+	// causing FOUT + CLS). Relative to /static/fonts/<theme>/.
+	Fonts []themeFont
+}
+
+// themeFont is one self-hosted webfont file a theme ships (served from
+// /static/fonts/). File is the flat idempotent filename (e.g.
+// "theme-alden-inter-400-latin.woff2"); Name is the display family label.
+// Preload marks files the <head> should preload: only the above-the-fold body
+// weight(s) — never every weight — so preloads don't compete with the LCP
+// resource (contract §3.A.4 + §B.7, caps preloads). A font referenced by the
+// theme's @font-face but not preloaded is still servable: it loads on demand
+// via font-display: swap.
+type themeFont struct {
+	// File is the flat font filename served under /static/fonts/. Globally
+	// idempotent across themes via the <theme-class>-<file> convention.
+	File string
+	// Name is the display family label (e.g. "Alden Sans").
+	Name string
+	// Preload true → layout.html emits this font in <head> preload links.
+	Preload bool
+}
+
+// fontPreloadHref returns the absolute static path for a theme font file.
+func (f themeFont) preloadHref() string {
+	return "/static/fonts/" + f.File
+}
+
+// themeFontsFor returns the resolved theme's font set by theme class, or nil
+// if the class is not allowlisted (falls back to the default theme's fonts,
+// if any).
+func themeFontsFor(themeClass string) []themeFont {
+	for _, t := range availableThemes {
+		if themeClass == t.Class {
+			return t.Fonts
+		}
+	}
+	for _, t := range availableThemes {
+		if defaultThemeClass == t.Class {
+			return t.Fonts
+		}
+	}
+	return nil
+}
+
+// themePreloadFonts renders the <link rel="preload"> markup for the resolved
+// theme class, or the empty string when the theme ships no fonts. Used by the
+// layout <head> via the template func of the same name. The href is
+// cache-busted by AssetsVersion at render time by the caller (layout passes
+// the version through the func's second argument).
+func themePreloadFonts(themeClass string, version string) template.HTML {
+	fonts := themeFontsFor(themeClass)
+	if len(fonts) == 0 {
+		return ""
+	}
+	var b bytes.Buffer
+	for _, f := range fonts {
+		if !f.Preload {
+			continue
+		}
+		fmt.Fprintf(&b,
+			`<link rel="preload" as="font" href="%s?v=%s" type="font/woff2" crossorigin>`,
+			f.preloadHref(), template.HTMLEscapeString(version))
+	}
+	return template.HTML(b.String())
 }
 
 // availableThemes is the product catalog of visual directions. Order is the
@@ -45,6 +113,27 @@ type themeDirection struct {
 var availableThemes = []themeDirection{
 	{Class: "theme-material", Slug: "material", Label: "Material"},
 	{Class: "theme-basecoat", Slug: "basecoat", Label: "Basecoat"},
+	{Class: "theme-linear", Slug: "linear", Label: "Linear"},
+	{Class: "theme-vercel", Slug: "vercel", Label: "Vercel"},
+	{Class: "theme-baseui", Slug: "baseui", Label: "Base UI-inspired"},
+	{
+		Class: "theme-alden", Slug: "alden", Label: "Alden",
+		// Self-hosted fonts shipped in lib/fonts/ (WOFF2, subsetted latin +
+		// latin-ext). The full set declared here is servable (the theme's
+		// @font-face references all of them). Only the body weight is
+		// preloaded (Preload: true) to avoid competing with LCP; the serif
+		// display and heavier weights load on demand via font-display: swap.
+		Fonts: []themeFont{
+			{File: "theme-alden-inter-400-latin.woff2", Name: "Inter 400 latin", Preload: true},
+			{File: "theme-alden-inter-400-latin-ext.woff2", Name: "Inter 400 latin-ext", Preload: true},
+			{File: "theme-alden-inter-500-latin.woff2", Name: "Inter 500 latin"},
+			{File: "theme-alden-inter-500-latin-ext.woff2", Name: "Inter 500 latin-ext"},
+			{File: "theme-alden-inter-600-latin.woff2", Name: "Inter 600 latin"},
+			{File: "theme-alden-inter-600-latin-ext.woff2", Name: "Inter 600 latin-ext"},
+			{File: "theme-alden-source-serif-4-400-latin.woff2", Name: "Source Serif 4 latin"},
+			{File: "theme-alden-source-serif-4-400-latin-ext.woff2", Name: "Source Serif 4 latin-ext"},
+		},
+	},
 }
 
 // themeOptionView is one <option> in the native theme direction select.
@@ -55,13 +144,54 @@ type themeOptionView struct {
 	Selected bool
 }
 
-// themeSwitcherView is server-driven chrome for swapping visual direction: a
-// native <select> inside a 0-JS GET form. Scheme carries the current ?scheme=
-// so a hidden input preserves light/dark when the theme changes.
+// themeSwitcherView is retained only for backwards-compatible test and
+// integration callers. The product UI uses recipeSwitcherView below; legacy
+// ?theme= links remain accepted by resolveDocumentSelection.
 type themeSwitcherView struct {
-	Label   string // accessible product label: "Theme"
+	Label   string // accessible product label: "Skin" (name=theme remains compatible)
 	Options []themeOptionView
 	Scheme  string
+	// Resolved selection is surfaced as read-only metadata while legacy ?theme=
+	// remains the native compatibility control during Phase 1.
+	Reference string
+	Skin      string
+}
+
+type profileOptionView struct {
+	Label    string
+	Value    string
+	Selected bool
+}
+
+// recipeOptionView is one safe visual recipe. A recipe maps the one visible
+// visual select back to the reference/skin architecture on the server; users
+// never have to combine low-level selectors themselves.
+type recipeOptionView struct {
+	Label    string
+	Value    string
+	Selected bool
+}
+
+// recipeSwitcherView is the native, no-JS Recipe form. Visual is deliberately
+// a single control even though its resolved result has independent Reference
+// and Skin concerns. A valid visual submission is canonicalized by the server
+// to behavior/reference/skin/scheme/execution (and never emits legacy theme).
+type recipeSwitcherView struct {
+	ID      string
+	Compact bool
+	// RenderInTopbar is the single placement decision: compact selectors belong
+	// to chrome; full selectors belong once in the primary article.
+	RenderInTopbar bool
+	Behavior       string
+	Visual         string
+	Scheme         string
+	Execution      string
+	Contract       string
+	Behaviors      []profileOptionView
+	Visuals        []recipeOptionView
+	Executions     []profileOptionView
+	Contracts      []profileOptionView
+	Summary        string
 }
 
 // schemeSwitcherView is server-driven chrome for the light/dark control: a
@@ -69,9 +199,15 @@ type themeSwitcherView struct {
 // form. Checked maps to ?scheme=dark; unchecked to ?scheme=light. Theme
 // carries the current ?theme= slug so a hidden input preserves direction.
 type schemeSwitcherView struct {
-	Label   string // accessible product label: "Appearance"
-	Theme   string
-	Checked bool
+	Label     string // accessible product label: "Appearance"
+	Checked   bool
+	Selection documentSelection
+	Execution accordionExecution
+	// Theme preserves the public legacy appearance form contract when the
+	// request arrived through ?theme=. Canonical is only true in recipe/gallery
+	// contexts, where appearance must retain the resolved recipe instead.
+	Theme     string
+	Canonical bool
 }
 
 // themeContextKey carries the theme selected via the ?theme= query parameter
@@ -80,6 +216,404 @@ type themeContextKey struct{}
 
 // schemeContextKey carries the color scheme selected via ?scheme=light|dark.
 type schemeContextKey struct{}
+type referenceContextKey struct{}
+type skinContextKey struct{}
+type contractContextKey struct{}
+
+// canonicalSelectionContextKey preserves whether this request arrived through
+// the explicit Recipe/canonical contract. Native + none + none is neutral only
+// when selected explicitly; ordinary pages retain the legacy Material fallback.
+type canonicalSelectionContextKey struct{}
+
+// referencePreset is Gelium's visual baseline. It is deliberately separate
+// from behavior: it supplies only token direction, never interaction policy.
+type referencePreset string
+
+const (
+	referenceNone     referencePreset = "none"
+	referenceMaterial referencePreset = "material"
+	referenceBasecoat referencePreset = "basecoat"
+	referenceBaseUI   referencePreset = "baseui"
+)
+
+// productSkin is a product-owned visual overlay. `none` intentionally means
+// no overlay; it is an allowlisted value, not an omitted/untrusted attribute.
+type productSkin string
+
+const (
+	skinNone         productSkin = "none"
+	skinMaterial     productSkin = "material"
+	skinBasecoat     productSkin = "basecoat" // Vega default pack
+	skinBasecoatNova productSkin = "basecoat-nova"
+	skinBasecoatMaia productSkin = "basecoat-maia"
+	skinBasecoatLyra productSkin = "basecoat-lyra"
+	skinBasecoatMira productSkin = "basecoat-mira"
+	skinBasecoatLuma productSkin = "basecoat-luma"
+	skinBasecoatSera productSkin = "basecoat-sera"
+	skinBasecoatRhea productSkin = "basecoat-rhea"
+	skinBaseUI       productSkin = "baseui"
+	skinAlden        productSkin = "alden"
+	skinLinear       productSkin = "linear"
+	skinVercel       productSkin = "vercel"
+)
+
+type documentSelection struct {
+	Behavior  accordionBehavior
+	Reference referencePreset
+	Skin      productSkin
+	Scheme    string
+	Contract  selectionContract
+	Canonical bool
+}
+
+// selectionContract decides whether Gelium platform floors apply on top of
+// reference/skin anatomy. Default is gelium; source is an explicit opt-in for
+// third-party-faithful density. Product/site tokens can still override either.
+type selectionContract string
+
+const (
+	contractGelium selectionContract = "gelium"
+	contractSource selectionContract = "source"
+)
+
+type visualRecipe struct {
+	Value     string
+	Label     string
+	Reference string
+	Skin      productSkin
+}
+
+// visualRecipes is the public two-select vocabulary. Basecoat style packs
+// (Vega default + Nova/Maia/…) and product skins win over reference. Material
+// and Base UI neutral are explicit reference presets; Base UI neutral is
+// Gelium-authored and never claims to ship Base UI package CSS.
+var visualRecipes = []visualRecipe{
+	{Value: "default", Label: "Default for behavior", Reference: "auto", Skin: skinNone},
+	{Value: "material", Label: "Material visual", Reference: string(referenceMaterial), Skin: skinNone},
+	{Value: "basecoat", Label: "Basecoat Vega", Reference: "auto", Skin: skinBasecoat},
+	{Value: "basecoat-nova", Label: "Basecoat Nova", Reference: "auto", Skin: skinBasecoatNova},
+	{Value: "basecoat-maia", Label: "Basecoat Maia", Reference: "auto", Skin: skinBasecoatMaia},
+	{Value: "basecoat-lyra", Label: "Basecoat Lyra", Reference: "auto", Skin: skinBasecoatLyra},
+	{Value: "basecoat-mira", Label: "Basecoat Mira", Reference: "auto", Skin: skinBasecoatMira},
+	{Value: "basecoat-luma", Label: "Basecoat Luma", Reference: "auto", Skin: skinBasecoatLuma},
+	{Value: "basecoat-sera", Label: "Basecoat Sera", Reference: "auto", Skin: skinBasecoatSera},
+	{Value: "basecoat-rhea", Label: "Basecoat Rhea", Reference: "auto", Skin: skinBasecoatRhea},
+	{Value: "baseui", Label: "Base UI neutral", Reference: string(referenceBaseUI), Skin: skinNone},
+	{Value: "vercel", Label: "Vercel", Reference: "auto", Skin: skinVercel},
+	{Value: "alden", Label: "Alden", Reference: "auto", Skin: skinAlden},
+	{Value: "linear", Label: "Linear", Reference: "auto", Skin: skinLinear},
+}
+
+func visualRecipeByValue(value string) (visualRecipe, bool) {
+	for _, recipe := range visualRecipes {
+		if recipe.Value == strings.ToLower(strings.TrimSpace(value)) {
+			return recipe, true
+		}
+	}
+	return visualRecipe{}, false
+}
+
+func normalizeReference(raw string) (referencePreset, bool) {
+	switch strings.ToLower(strings.TrimSpace(raw)) {
+	case "", "auto", "default":
+		return "", true // resolved against behavior below
+	case string(referenceNone):
+		return referenceNone, true
+	case string(referenceMaterial):
+		return referenceMaterial, true
+	case string(referenceBasecoat):
+		return referenceBasecoat, true
+	case string(referenceBaseUI):
+		return referenceBaseUI, true
+	default:
+		return "", false
+	}
+}
+
+func normalizeSkin(raw string) (productSkin, bool) {
+	switch strings.ToLower(strings.TrimSpace(raw)) {
+	case "", string(skinNone):
+		return skinNone, true
+	case string(skinMaterial):
+		return skinMaterial, true
+	case string(skinBasecoat):
+		return skinBasecoat, true
+	case string(skinBasecoatNova):
+		return skinBasecoatNova, true
+	case string(skinBasecoatMaia):
+		return skinBasecoatMaia, true
+	case string(skinBasecoatLyra):
+		return skinBasecoatLyra, true
+	case string(skinBasecoatMira):
+		return skinBasecoatMira, true
+	case string(skinBasecoatLuma):
+		return skinBasecoatLuma, true
+	case string(skinBasecoatSera):
+		return skinBasecoatSera, true
+	case string(skinBasecoatRhea):
+		return skinBasecoatRhea, true
+	case string(skinBaseUI):
+		return skinBaseUI, true
+	case string(skinAlden):
+		return skinAlden, true
+	case string(skinLinear):
+		return skinLinear, true
+	case string(skinVercel):
+		return skinVercel, true
+	default:
+		return "", false
+	}
+}
+
+func normalizeContract(raw string) selectionContract {
+	switch strings.ToLower(strings.TrimSpace(raw)) {
+	case string(contractSource):
+		return contractSource
+	default:
+		return contractGelium
+	}
+}
+
+func isBasecoatFamilySkin(skin productSkin) bool {
+	s := string(skin)
+	return s == string(skinBasecoat) || strings.HasPrefix(s, "basecoat-")
+}
+
+func defaultReferenceForBehavior(behavior accordionBehavior) referencePreset {
+	switch behavior {
+	case accordionBehaviorMaterial:
+		return referenceMaterial
+	case accordionBehaviorBasecoat:
+		return referenceBasecoat
+	case accordionBehaviorBaseUI:
+		return referenceBaseUI
+	default:
+		return referenceNone
+	}
+}
+
+// canonicalSelectionRequested accepts only valid canonical inputs. Malformed
+// query noise must not turn a legacy/default document into a neutral document.
+func canonicalSelectionRequested(q url.Values) bool {
+	if q.Has("behavior") {
+		switch strings.ToLower(strings.TrimSpace(q.Get("behavior"))) {
+		case string(accordionBehaviorNative), string(accordionBehaviorMaterial), string(accordionBehaviorBasecoat), string(accordionBehaviorBaseUI):
+			return true
+		}
+	}
+	if q.Has("execution") {
+		switch strings.ToLower(strings.TrimSpace(q.Get("execution"))) {
+		case string(accordionExecutionNative), string(accordionExecutionHTMX):
+			return true
+		}
+	}
+	if q.Has("reference") {
+		if _, ok := normalizeReference(q.Get("reference")); ok {
+			return true
+		}
+	}
+	if q.Has("skin") {
+		if _, ok := normalizeSkin(q.Get("skin")); ok {
+			return true
+		}
+	}
+	if q.Has("contract") {
+		switch strings.ToLower(strings.TrimSpace(q.Get("contract"))) {
+		case string(contractGelium), string(contractSource):
+			return true
+		}
+	}
+	return false
+}
+
+// resolveDocumentSelection is the single server-side resolver for public
+// selection parameters. Legacy ?theme= is mapped per visual concern first;
+// explicit reference/skin values then override only their own concern.
+func resolveDocumentSelection(q url.Values) documentSelection {
+	s := documentSelection{
+		Behavior: normalizeAccordionBehavior(q.Get("behavior")),
+		Skin:     skinNone,
+		Scheme:   normalizeScheme(q.Get("scheme")),
+		Contract: normalizeContract(q.Get("contract")),
+	}
+	legacySource := false
+	if legacy, ok := themeBySlugOrClass(q.Get("theme")); ok {
+		legacySource = true
+		switch legacy.Slug {
+		case "material":
+			s.Reference = referenceMaterial
+		case "basecoat":
+			s.Reference = referenceBasecoat
+		case "baseui":
+			s.Reference = referenceBaseUI
+		default:
+			s.Skin = productSkin(legacy.Slug)
+		}
+	}
+	if q.Has("reference") {
+		if ref, ok := normalizeReference(q.Get("reference")); ok {
+			s.Reference = ref
+		}
+	}
+	if q.Has("skin") {
+		if skin, ok := normalizeSkin(q.Get("skin")); ok {
+			s.Skin = skin
+		}
+	}
+	if s.Reference == "" {
+		s.Reference = defaultReferenceForBehavior(s.Behavior)
+	}
+	s.Canonical = !legacySource && canonicalSelectionRequested(q)
+	return s
+}
+
+// canonicalReferenceValue preserves the intentional "Default for behavior"
+// contract across links. The resolver still exposes the effective preset in
+// data-gelium-reference; only the URL uses auto where it is semantically true.
+func canonicalReferenceValue(s documentSelection) string {
+	if s.Skin == skinNone && s.Reference == defaultReferenceForBehavior(s.Behavior) {
+		return "auto"
+	}
+	return string(s.Reference)
+}
+
+func canonicalSelectionQuery(s documentSelection, execution accordionExecution) string {
+	q := url.Values{}
+	q.Set("behavior", string(normalizeAccordionBehavior(string(s.Behavior))))
+	q.Set("reference", canonicalReferenceValue(s))
+	q.Set("skin", string(s.Skin))
+	if scheme := normalizeScheme(s.Scheme); scheme != "" {
+		q.Set("scheme", scheme)
+	}
+	// Only emit non-default contract to keep ordinary URLs short.
+	if normalizeContract(string(s.Contract)) == contractSource {
+		q.Set("contract", string(contractSource))
+	}
+	q.Set("execution", string(normalizeAccordionExecution(string(execution))))
+	return q.Encode()
+}
+
+func canonicalSelectionHref(path string, s documentSelection, execution accordionExecution) string {
+	return path + "?" + canonicalSelectionQuery(s, execution)
+}
+
+// navigationSelection describes which *source* of selection is safe to carry
+// into links. Legacy selection is intentionally kept in legacy theme/scheme
+// form across ordinary IA. Canonical recipe fields only propagate inside the
+// recipe and gallery surfaces; every other page leaves canonical selection at
+// the document where the Recipe form submitted it instead of spraying a new
+// public query contract across the existing site.
+type navigationSelection struct {
+	themeSlug string
+	scheme    string
+	canonical bool
+	selection documentSelection
+	execution accordionExecution
+}
+
+func recipeNavigationContext(path string) bool {
+	return path == "/components/accordion" || path == "/docs/themes/gallery"
+}
+
+func navigationSelectionFor(r *http.Request, path string) navigationSelection {
+	if r == nil || r.URL == nil {
+		return navigationSelection{}
+	}
+	q := r.URL.Query()
+	n := navigationSelection{scheme: normalizeScheme(q.Get("scheme"))}
+	if theme, ok := themeBySlugOrClass(q.Get("theme")); ok {
+		n.themeSlug = theme.Slug
+		return n
+	}
+	if !recipeNavigationContext(path) {
+		return n
+	}
+	if q.Has("behavior") || q.Has("reference") || q.Has("skin") || q.Has("execution") {
+		n.canonical = true
+		n.selection = resolveDocumentSelection(q)
+		n.execution = normalizeAccordionExecution(q.Get("execution"))
+	}
+	return n
+}
+
+func (n navigationSelection) href(path string) string {
+	if n.canonical {
+		return canonicalSelectionHref(path, n.selection, n.execution)
+	}
+	return chromeHref(path, n.themeSlug, n.scheme)
+}
+
+func (n navigationSelection) query() string {
+	if n.canonical {
+		return "?" + canonicalSelectionQuery(n.selection, n.execution)
+	}
+	return chromeQuery(n.themeSlug, n.scheme)
+}
+
+func (n navigationSelection) hasLegacyChrome() bool {
+	return n.themeSlug != "" || n.scheme != ""
+}
+
+func (s documentSelection) legacyThemeClass() string {
+	// The explicit Native "Default for behavior" is Gelium neutral, not an
+	// implicit Material adapter. The same resolved values from no selection or
+	// malformed legacy input retain the historical default class below.
+	if s.Canonical && s.Reference == referenceNone && s.Skin == skinNone {
+		return ""
+	}
+	if s.Skin != skinNone {
+		// Basecoat style packs share the Basecoat color theme sheet; pack
+		// differences live in data-gelium-skin anatomy tokens.
+		if isBasecoatFamilySkin(s.Skin) {
+			return "theme-basecoat"
+		}
+		return "theme-" + string(s.Skin)
+	}
+	if s.Reference != referenceNone {
+		return "theme-" + string(s.Reference)
+	}
+	return defaultThemeClass
+}
+
+func referenceFromRequest(r *http.Request) referencePreset {
+	if r == nil {
+		return referenceNone
+	}
+	if v, ok := r.Context().Value(referenceContextKey{}).(referencePreset); ok {
+		return v
+	}
+	return referenceNone
+}
+
+func skinFromRequest(r *http.Request) productSkin {
+	if r == nil {
+		return skinNone
+	}
+	if v, ok := r.Context().Value(skinContextKey{}).(productSkin); ok {
+		return v
+	}
+	return skinNone
+}
+
+func contractFromRequest(r *http.Request) selectionContract {
+	if r == nil {
+		return contractGelium
+	}
+	if v, ok := r.Context().Value(contractContextKey{}).(selectionContract); ok {
+		return normalizeContract(string(v))
+	}
+	return contractGelium
+}
+
+func canonicalSelectionFromRequest(r *http.Request) bool {
+	if r == nil {
+		return false
+	}
+	if v, ok := r.Context().Value(canonicalSelectionContextKey{}).(bool); ok {
+		return v
+	}
+	return false
+}
 
 // themeFromRequest returns the theme selected by ?theme= if present and valid,
 // otherwise the empty string (so callers fall back to themeClass("") → default).
@@ -125,20 +659,41 @@ func themeBySlugOrClass(raw string) (themeDirection, bool) {
 	return themeDirection{}, false
 }
 
-// themeQueryMiddleware validates optional ?theme= and ?scheme= query params
-// and stores allowlisted values in the request context. Unknown values are ignored.
+// themeQueryMiddleware resolves every public selection at the server boundary.
+// Unknown values cannot cross into templates, classes, or document attributes.
 func themeQueryMiddleware(next http.Handler) http.Handler {
 	return http.HandlerFunc(func(w http.ResponseWriter, r *http.Request) {
-		ctx := r.Context()
-		if raw := r.URL.Query().Get("theme"); raw != "" {
-			if dir, ok := themeBySlugOrClass(raw); ok {
-				ctx = context.WithValue(ctx, themeContextKey{}, dir.Class)
+		// The single visual <select> sends a short-lived `visual` recipe value.
+		// Native HTML cannot change two independent input names from one select;
+		// canonicalize it at the server boundary so the browser ends on a stable
+		// behavior/reference/skin/scheme/execution URL with no legacy ?theme=.
+		if recipe, ok := visualRecipeByValue(r.URL.Query().Get("visual")); ok {
+			q := url.Values{}
+			q.Set("behavior", string(normalizeAccordionBehavior(r.URL.Query().Get("behavior"))))
+			q.Set("reference", recipe.Reference)
+			q.Set("skin", string(recipe.Skin))
+			if scheme := normalizeScheme(r.URL.Query().Get("scheme")); scheme != "" {
+				q.Set("scheme", scheme)
 			}
+			if normalizeContract(r.URL.Query().Get("contract")) == contractSource {
+				q.Set("contract", string(contractSource))
+			}
+			q.Set("execution", string(normalizeAccordionExecution(r.URL.Query().Get("execution"))))
+			target := r.URL.Path + "?" + q.Encode()
+			http.Redirect(w, r, target, http.StatusSeeOther)
+			return
 		}
-		if raw := r.URL.Query().Get("scheme"); raw != "" {
-			if s := normalizeScheme(raw); s != "" {
-				ctx = context.WithValue(ctx, schemeContextKey{}, s)
-			}
+		selection := resolveDocumentSelection(r.URL.Query())
+		ctx := context.WithValue(r.Context(), referenceContextKey{}, selection.Reference)
+		ctx = context.WithValue(ctx, skinContextKey{}, selection.Skin)
+		ctx = context.WithValue(ctx, canonicalSelectionContextKey{}, selection.Canonical)
+		ctx = context.WithValue(ctx, schemeContextKey{}, selection.Scheme)
+		ctx = context.WithValue(ctx, contractContextKey{}, selection.Contract)
+		ctx = context.WithValue(ctx, accordionBehaviorContextKey{}, selection.Behavior)
+		ctx = context.WithValue(ctx, accordionExecutionContextKey{}, normalizeAccordionExecution(r.URL.Query().Get("execution")))
+		// Retain ThemeClass only as a legacy selector adapter during migration.
+		if class := selection.legacyThemeClass(); class != "" {
+			ctx = context.WithValue(ctx, themeContextKey{}, class)
 		}
 		next.ServeHTTP(w, r.WithContext(ctx))
 	})
@@ -173,7 +728,7 @@ func requestPath(r *http.Request) string {
 
 // chromeQuery builds the closed-vocabulary query string for docs chrome links.
 // Only allowlisted theme + scheme keys are emitted (never arbitrary request query).
-func chromeQuery(themeSlug, scheme string) string {
+func chromeQuery(themeSlug, scheme string, profiles ...string) string {
 	q := url.Values{}
 	if themeSlug != "" {
 		if t, ok := themeBySlugOrClass(themeSlug); ok {
@@ -183,6 +738,16 @@ func chromeQuery(themeSlug, scheme string) string {
 	if s := normalizeScheme(scheme); s != "" {
 		q.Set("scheme", s)
 	}
+	if len(profiles) > 0 {
+		if b := normalizeAccordionBehavior(profiles[0]); b != accordionBehaviorNative || strings.EqualFold(strings.TrimSpace(profiles[0]), string(accordionBehaviorNative)) {
+			q.Set("behavior", string(b))
+		}
+	}
+	if len(profiles) > 1 {
+		if e := normalizeAccordionExecution(profiles[1]); e != accordionExecutionNative || strings.EqualFold(strings.TrimSpace(profiles[1]), string(accordionExecutionNative)) {
+			q.Set("execution", string(e))
+		}
+	}
 	enc := q.Encode()
 	if enc == "" {
 		return ""
@@ -191,8 +756,8 @@ func chromeQuery(themeSlug, scheme string) string {
 }
 
 // chromeHref is path + allowlisted theme/scheme query for shell navigation.
-func chromeHref(path, themeSlug, scheme string) string {
-	return path + chromeQuery(themeSlug, scheme)
+func chromeHref(path, themeSlug, scheme string, profiles ...string) string {
+	return path + chromeQuery(themeSlug, scheme, profiles...)
 }
 
 // themeSwitcherFor builds the direction switcher for the current request.
@@ -216,7 +781,95 @@ func themeSwitcherFor(r *http.Request, currentClass, themeSlug, scheme string) *
 			Selected: t.Class == current,
 		})
 	}
-	return &themeSwitcherView{Label: "Theme", Options: opts, Scheme: normalizeScheme(scheme)}
+	return &themeSwitcherView{
+		Label: "Skin", Options: opts, Scheme: normalizeScheme(scheme),
+		Reference: string(referenceFromRequest(r)), Skin: string(skinFromRequest(r)),
+	}
+}
+
+func visualForSelection(r *http.Request, s documentSelection) string {
+	// A valid legacy direction has a specific visual intent even where its
+	// resolved reference happens to match a behavior default.
+	if r != nil {
+		if legacy, ok := themeBySlugOrClass(r.URL.Query().Get("theme")); ok {
+			if _, exists := visualRecipeByValue(legacy.Slug); exists {
+				return legacy.Slug
+			}
+		}
+	}
+	if s.Skin != skinNone {
+		if _, ok := visualRecipeByValue(string(s.Skin)); ok {
+			return string(s.Skin)
+		}
+	}
+	switch s.Reference {
+	case referenceMaterial:
+		if s.Behavior != accordionBehaviorMaterial {
+			return "material"
+		}
+	case referenceBaseUI:
+		if s.Behavior != accordionBehaviorBaseUI {
+			return "baseui"
+		}
+	case referenceBasecoat:
+		if s.Behavior != accordionBehaviorBasecoat {
+			return "basecoat"
+		}
+	}
+	return "default"
+}
+
+func behaviorLabel(b accordionBehavior) string {
+	for _, option := range recipeBehaviorOptions(b) {
+		if option.Selected {
+			return option.Label
+		}
+	}
+	return "Native"
+}
+
+func recipeBehaviorOptions(b accordionBehavior) []profileOptionView {
+	return []profileOptionView{
+		{Label: "Native", Value: "native", Selected: b == accordionBehaviorNative},
+		{Label: "Material", Value: "material", Selected: b == accordionBehaviorMaterial},
+		{Label: "Basecoat", Value: "basecoat", Selected: b == accordionBehaviorBasecoat},
+		{Label: "Base UI", Value: "baseui", Selected: b == accordionBehaviorBaseUI},
+	}
+}
+
+func recipeSwitcherFor(r *http.Request, selection documentSelection, execution accordionExecution, compact bool, id string) *recipeSwitcherView {
+	b := normalizeAccordionBehavior(string(selection.Behavior))
+	e := normalizeAccordionExecution(string(execution))
+	c := normalizeContract(string(selection.Contract))
+	visual := visualForSelection(r, documentSelection{Behavior: b, Reference: selection.Reference, Skin: selection.Skin, Scheme: selection.Scheme, Contract: c})
+	visuals := make([]recipeOptionView, 0, len(visualRecipes))
+	visualLabel := "Default for behavior"
+	for _, recipe := range visualRecipes {
+		selected := recipe.Value == visual
+		if selected {
+			visualLabel = recipe.Label
+		}
+		visuals = append(visuals, recipeOptionView{Label: recipe.Label, Value: recipe.Value, Selected: selected})
+	}
+	executionLabel := "Native baseline"
+	if e == accordionExecutionHTMX {
+		executionLabel = "HTMX optional enhancement"
+	}
+	contractLabel := "Gelium defaults"
+	if c == contractSource {
+		contractLabel = "Source-faithful density"
+	}
+	return &recipeSwitcherView{
+		ID: id, Compact: compact, RenderInTopbar: compact, Behavior: string(b), Visual: visual,
+		Scheme: normalizeScheme(selection.Scheme), Execution: string(e), Contract: string(c),
+		Behaviors: recipeBehaviorOptions(b), Visuals: visuals,
+		Executions: []profileOptionView{{Label: "Native baseline", Value: "native", Selected: e == accordionExecutionNative}, {Label: "HTMX optional server enhancement", Value: "htmx", Selected: e == accordionExecutionHTMX}},
+		Contracts: []profileOptionView{
+			{Label: "Gelium defaults (touch floors)", Value: string(contractGelium), Selected: c == contractGelium},
+			{Label: "Source-faithful density", Value: string(contractSource), Selected: c == contractSource},
+		},
+		Summary: behaviorLabel(b) + " behavior · " + visualLabel + " · " + contractLabel + " · " + executionLabel,
+	}
 }
 
 // schemeSwitcherFor builds the Light/Dark appearance control: a native switch
@@ -225,10 +878,24 @@ func themeSwitcherFor(r *http.Request, currentClass, themeSlug, scheme string) *
 // cleared checkbox submits nothing). The hidden theme input keeps the current
 // ?theme= slug. No scheme yet = light (matches default light tokens).
 func schemeSwitcherFor(r *http.Request, themeSlug, scheme string) *schemeSwitcherView {
+	selection := resolveDocumentSelection(url.Values{"theme": []string{themeSlug}, "scheme": []string{scheme}})
+	switcher := schemeSwitcherForSelection(selection, accordionExecutionNative)
+	switcher.Theme = themeSlug
+	return switcher
+}
+
+func schemeSwitcherForNavigation(selection documentSelection, execution accordionExecution, navigation navigationSelection) *schemeSwitcherView {
+	switcher := schemeSwitcherForSelection(selection, execution)
+	switcher.Theme = navigation.themeSlug
+	switcher.Canonical = navigation.canonical
+	return switcher
+}
+
+func schemeSwitcherForSelection(selection documentSelection, execution accordionExecution) *schemeSwitcherView {
 	return &schemeSwitcherView{
-		Label:   "Appearance",
-		Theme:   themeSlug,
-		Checked: normalizeScheme(scheme) == "dark",
+		Label: "Appearance", Selection: selection,
+		Execution: normalizeAccordionExecution(string(execution)),
+		Checked:   normalizeScheme(selection.Scheme) == "dark",
 	}
 }
 
@@ -236,7 +903,8 @@ func schemeSwitcherFor(r *http.Request, themeSlug, scheme string) *schemeSwitche
 // dark → append theme-dark (class route). light → data-theme="light" so the
 // prefers-color-scheme media block's :not([data-theme="light"]) guard skips.
 func applyDocumentRootScheme(data *pageView, scheme string) {
-	switch normalizeScheme(scheme) {
+	data.Scheme = normalizeScheme(scheme)
+	switch data.Scheme {
 	case "dark":
 		if !strings.Contains(data.ThemeClass, "theme-dark") {
 			data.ThemeClass = strings.TrimSpace(data.ThemeClass + " theme-dark")
@@ -247,6 +915,26 @@ func applyDocumentRootScheme(data *pageView, scheme string) {
 	default:
 		data.DataTheme = ""
 	}
+}
+
+// applyDocumentSelection writes the resolved visual contract to a page view.
+// ThemeClass remains a temporary selector adapter for legacy theme sheets; the
+// data-gelium-* attributes are the stable Phase-1 selection contract.
+func applyDocumentSelection(data *pageView, r *http.Request) documentSelection {
+	selection := documentSelection{
+		Behavior:  accordionBehaviorFromRequest(r),
+		Reference: referenceFromRequest(r),
+		Skin:      skinFromRequest(r),
+		Scheme:    schemeFromRequest(r),
+		Contract:  contractFromRequest(r),
+		Canonical: canonicalSelectionFromRequest(r),
+	}
+	data.Reference = string(selection.Reference)
+	data.Skin = string(selection.Skin)
+	data.Contract = string(normalizeContract(string(selection.Contract)))
+	data.ThemeClass = selection.legacyThemeClass()
+	applyDocumentRootScheme(data, selection.Scheme)
+	return selection
 }
 
 // bannerView is the server-driven view model for the page-level BANNER slot
@@ -314,6 +1002,23 @@ func breadcrumbWithChrome(bc *breadcrumbView, themeSlug, scheme string) *breadcr
 			continue
 		}
 		it.Href = chromeHref(it.Href, themeSlug, scheme)
+	}
+	return out
+}
+
+// breadcrumbWithSelection is the recipe-aware variant for docs shell links.
+func breadcrumbWithSelection(bc *breadcrumbView, selection documentSelection, execution accordionExecution) *breadcrumbView {
+	if bc == nil {
+		return nil
+	}
+	out := &breadcrumbView{Items: make([]breadcrumbItem, len(bc.Items))}
+	copy(out.Items, bc.Items)
+	for i := range out.Items {
+		item := &out.Items[i]
+		if item.Current || item.Href == "" || item.Href == "/" || strings.Contains(item.Href, "?") {
+			continue
+		}
+		item.Href = canonicalSelectionHref(item.Href, selection, execution)
 	}
 	return out
 }
@@ -839,6 +1544,13 @@ type pageView struct {
 	// API reference sections. Empty on non-pilot pages.
 	ContentRest template.HTML
 	ThemeClass  string
+	// Reference and Skin are resolved, closed-vocabulary document metadata.
+	// They never contain raw query values; `none` is emitted explicitly.
+	Reference string
+	Skin      string
+	// Contract is gelium (default floors) or source (third-party-faithful density).
+	Contract string
+	Scheme   string
 	// Provenance is the article provenance line (version, license, source,
 	// dates) rendered inside the article on component pages only.
 	Provenance *provenanceView
@@ -856,9 +1568,11 @@ type pageView struct {
 	// pattern), derived from the SAME ordered model as the sidebar. nil on
 	// non-shell routes and on first/last IA boundaries.
 	PrevNext *prevNextView
-	// ThemeSwitcher is the native-select ?theme= chrome (0-JS GET form). On
-	// shell routes it lives in the topbar; on legacy header routes it may sit
-	// in the site-header.
+	// RecipeSwitcher is the two-select native GET control. It is compact in
+	// chrome and full on the gallery and Accordion documentation page.
+	RecipeSwitcher *recipeSwitcherView
+	// ThemeSwitcher is a retired compatibility view kept so older internal
+	// callers compile; templates intentionally no longer render it.
 	ThemeSwitcher *themeSwitcherView
 	// SchemeSwitcher is the native Light/Dark switch (docs topbar / site header).
 	SchemeSwitcher *schemeSwitcherView
@@ -915,6 +1629,8 @@ type pageView struct {
 	DataTableDemo        *dataTableDemo
 	TooltipDemo          *tooltipDemo
 	Newsletter           *newsletterView
+	ThemeGallery         *themeGalleryView
+	AccordionDemo        *accordionView
 }
 
 type server struct {
@@ -928,7 +1644,15 @@ type server struct {
 // construction (registry_sync enforces the boundary), so the merge is a plain
 // superset; a collision would fail loudly here instead of silently shadowing.
 func buildTemplates() *template.Template {
-	tmpl := template.New("geliumui")
+	tmpl := template.New("geliumui").Funcs(template.FuncMap{
+		// themePreloadFonts emits self-hosted font <link rel="preload">
+		// tags for the resolved theme class (empty string when the theme
+		// ships no fonts). AssetsVersion is threaded through so font hrefs
+		// participate in the same cache-busting as app.css.
+		"themePreloadFonts": func(themeClass, version string) template.HTML {
+			return themePreloadFonts(themeClass, version)
+		},
+	})
 	template.Must(tmpl.ParseFS(webassets.Assets, "templates/*.html"))
 	template.Must(tmpl.ParseFS(lib.LibAssets, "templates/*.html"))
 	return tmpl
@@ -983,6 +1707,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/responsive", s.docsResponsive)
 	mux.HandleFunc("GET /docs/media", s.docsMedia)
 	mux.HandleFunc("GET /docs/themes", s.docsThemes)
+	mux.HandleFunc("GET /docs/themes/gallery", s.docsThemeGallery)
 	mux.HandleFunc("GET /docs/tokens", s.docsTokens)
 	mux.HandleFunc("GET /docs/typography", s.docsTypography)
 	mux.HandleFunc("GET /docs/spacing", s.docsSpacing)
@@ -1049,6 +1774,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /recipes/rich-article", s.recipeRichArticle)
 	mux.HandleFunc("POST /recipes/public-feed/{id}/react", s.recipePublicFeedReact)
 	mux.HandleFunc("POST /recipes/public-feed/refresh", s.recipePublicFeedRefresh)
+	mux.HandleFunc("GET /static/fonts/{file}", s.fontAsset)
 	mux.HandleFunc("GET /static/{path...}", s.staticAsset)
 	// 404 catch-all: any unknown GET path falls back to the styled ERROR STATE
 	// page (the mux gives the more specific patterns above priority). Post-only
@@ -1262,20 +1988,14 @@ func (s *server) renderErrorPage(w http.ResponseWriter, r *http.Request, status 
 	// r is nil for a few legacy helpers (recipe not-found) whose routes never
 	// use the shell; they keep the flat header path unchanged.
 	if r != nil {
-		themeSlug := ""
-		if q := themeFromRequest(r); q != "" {
-			data.ThemeClass = q
-			themeSlug = themeSlugFromClass(q)
-		} else {
-			data.ThemeClass = themeClass(data.ThemeClass)
-		}
-		scheme := schemeFromRequest(r)
-		applyDocumentRootScheme(&data, scheme)
+		selection := applyDocumentSelection(&data, r)
 		if usesDocsShell(routePath) {
-			nav := docsNavFor(routePath, themeSlug, scheme)
+			execution := accordionExecutionFromRequest(r)
+			navigation := navigationSelectionFor(r, routePath)
+			nav := docsNavForNavigation(routePath, navigation)
 			data.DocsNav = &nav
-			data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass, themeSlug, scheme)
-			data.SchemeSwitcher = schemeSwitcherFor(r, themeSlug, scheme)
+			data.RecipeSwitcher = recipeSwitcherFor(r, selection, execution, true, "docs-recipe")
+			data.SchemeSwitcher = schemeSwitcherForNavigation(selection, execution, navigation)
 			data.Nav = nil
 		}
 	}
@@ -1286,6 +2006,44 @@ func (s *server) renderErrorPage(w http.ResponseWriter, r *http.Request, status 
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")
 	w.WriteHeader(status)
 	_, _ = w.Write(page.Bytes())
+}
+
+// fontAsset serves a self-hosted, embedded webfont file (WOFF2) from the lib
+// theme-font bundle, bypassing the site static tree so fonts travel with the
+// theme in lib/fonts/ (self-hosted, no CDN). Only whitelisted theme fonts
+// referenced by availableThemes are servable: a font path is allowed only if
+// some allowlisted theme ships a font with that exact filename (this keeps the
+// /static/fonts namespace closed and prevents arbitrary asset reads).
+func (s *server) fontAsset(w http.ResponseWriter, r *http.Request) {
+	file := r.PathValue("file")
+	if file == "" || !strings.HasSuffix(file, ".woff2") || !themeShipsFontFile(file) {
+		http.NotFound(w, r)
+		return
+	}
+	// fonts/<file> maps 1:1 onto the flat lib embed glob fonts/*.
+	asset, err := fs.ReadFile(lib.LibAssets, "fonts/"+file)
+	if err != nil {
+		http.NotFound(w, r)
+		return
+	}
+	w.Header().Set("Content-Type", "font/woff2")
+	w.Header().Set("Cache-Control", "no-cache")
+	w.WriteHeader(http.StatusOK)
+	_, _ = w.Write(asset)
+}
+
+// themeShipsFontFile reports whether some allowlisted theme declares a font
+// with the given flat filename. Guards the /static/fonts/ namespace against
+// arbitrary reads.
+func themeShipsFontFile(file string) bool {
+	for _, t := range availableThemes {
+		for _, f := range t.Fonts {
+			if f.File == file {
+				return true
+			}
+		}
+	}
+	return false
 }
 
 func (s *server) staticAsset(w http.ResponseWriter, r *http.Request) {
@@ -1498,31 +2256,25 @@ func (s *server) renderMarkdownStatus(w http.ResponseWriter, r *http.Request, da
 		}
 		data.Examples = examples
 	}
-	// Document-root theme selection (Phase H): a valid ?theme= query overrides
-	// the handler default; otherwise the handler value (or the default) wins.
-	themeSlug := ""
-	if q := themeFromRequest(r); q != "" {
-		data.ThemeClass = q
-		themeSlug = themeSlugFromClass(q)
-	} else {
-		data.ThemeClass = themeClass(data.ThemeClass)
-	}
-	scheme := schemeFromRequest(r)
-	applyDocumentRootScheme(&data, scheme)
-	// Docs shell chrome: grouped sidebar + topbar on /docs and /components/*.
-	// Theme + appearance switchers live in the topbar on shell routes.
-	// Sidebar + breadcrumb hrefs carry allowlisted theme/scheme query so IA
-	// navigation does not silently reset direction or light/dark.
+	// Resolve the independent document contract once, before building chrome.
+	selection := applyDocumentSelection(&data, r)
+	// Docs shell navigation preserves legacy chrome where it arrived as legacy;
+	// canonical recipe values only remain inside the recipe/gallery surfaces.
 	if usesDocsShell(routePath) {
-		nav := docsNavFor(routePath, themeSlug, scheme)
+		execution := accordionExecutionFromRequest(r)
+		navigation := navigationSelectionFor(r, routePath)
+		nav := docsNavForNavigation(routePath, navigation)
 		data.DocsNav = &nav
-		data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass, themeSlug, scheme)
-		data.SchemeSwitcher = schemeSwitcherFor(r, themeSlug, scheme)
-		if pn := prevNextFor(routePath, themeSlug, scheme); pn != nil {
+		fullRecipe := routePath == "/docs/themes/gallery" || routePath == "/components/accordion"
+		data.RecipeSwitcher = recipeSwitcherFor(r, selection, execution, !fullRecipe, "docs-recipe")
+		data.SchemeSwitcher = schemeSwitcherForNavigation(selection, execution, navigation)
+		if pn := prevNextForNavigation(routePath, navigation); pn != nil {
 			data.PrevNext = pn
 		}
-		if data.Breadcrumb != nil {
-			data.Breadcrumb = breadcrumbWithChrome(data.Breadcrumb, themeSlug, scheme)
+		// Existing breadcrumb compatibility applies only to legacy chrome. Canonical
+		// recipe queries never turn ordinary IA anchors into recipe URLs.
+		if data.Breadcrumb != nil && navigation.hasLegacyChrome() {
+			data.Breadcrumb = breadcrumbWithChrome(data.Breadcrumb, navigation.themeSlug, navigation.scheme)
 		}
 	}
 	if err := s.templates.ExecuteTemplate(&page, "layout", data); err != nil {

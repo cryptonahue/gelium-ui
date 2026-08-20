@@ -1,7 +1,5 @@
 @layer components {
   .ui-text-field {
-    --ui-text-field-textarea-min-height: 7rem;
-    --ui-text-field-error-icon-size: var(--ui-size-icon);
     display: grid;
     width: min(100%, 24rem);
     gap: 0;
@@ -11,7 +9,7 @@
     display: grid;
     height: var(--ui-size-field);
     box-sizing: border-box;
-    border-radius: var(--ui-radius-xs);
+    border-radius: var(--ui-field-radius, var(--ui-radius-xs));
     color: var(--ui-field-label);
     transition: border-color var(--ui-motion-short) var(--ui-easing-standard), background-color var(--ui-motion-short) var(--ui-easing-standard);
   }
@@ -19,7 +17,7 @@
     position: absolute;
     z-index: 1;
     top: 50%;
-    inset-inline-start: 1rem;
+    inset-inline-start: var(--ui-field-padding-x, 1rem);
     max-width: calc(100% - 2rem);
     overflow: hidden;
     color: var(--ui-field-label);
@@ -50,9 +48,9 @@
     font: var(--ui-type-body-lg);
     outline: 0;
   }
-  .ui-text-field input { height: 100%; box-sizing: border-box; padding: var(--ui-space-4) var(--ui-space-4); }
-  .ui-text-field textarea { padding: var(--ui-space-6) var(--ui-space-4) var(--ui-space-2); }
-  .ui-text-field-filled .ui-text-field input { padding: var(--ui-space-6) var(--ui-space-4) var(--ui-space-2); }
+  .ui-text-field input { height: 100%; box-sizing: border-box; padding: var(--ui-field-padding-y, var(--ui-space-4)) var(--ui-field-padding-x, 1rem); }
+  .ui-text-field textarea { padding: var(--ui-space-6) var(--ui-field-padding-x, 1rem) var(--ui-space-2); }
+  .ui-text-field-filled .ui-text-field input { padding: var(--ui-space-6) var(--ui-field-padding-x, 1rem) var(--ui-space-2); }
   .ui-text-field input::placeholder,
   .ui-text-field textarea::placeholder { color: transparent; }
   .ui-text-field-error input,
@@ -61,17 +59,17 @@
   .ui-text-field-error-icon {
     position: absolute;
     top: 50%;
-    inset-inline-end: 1rem;
-    width: var(--ui-text-field-error-icon-size);
-    height: var(--ui-text-field-error-icon-size);
+    inset-inline-end: var(--ui-field-padding-x, 1rem);
+    width: var(--ui-text-field-error-icon-size, var(--ui-size-icon));
+    height: var(--ui-text-field-error-icon-size, var(--ui-size-icon));
     color: var(--ui-field-error);
     fill: currentColor;
     pointer-events: none;
     transform: translateY(-50%);
   }
   .ui-text-field-control:has(textarea:placeholder-shown):not(:focus-within) > label { top: 1rem; transform: none; }
-  .ui-text-field-control:has(textarea) { height: auto; min-height: var(--ui-text-field-textarea-min-height); }
-  .ui-text-field textarea { min-height: var(--ui-text-field-textarea-min-height); resize: vertical; }
+  .ui-text-field-control:has(textarea) { height: auto; min-height: var(--ui-text-field-textarea-min-height, 7rem); }
+  .ui-text-field textarea { min-height: var(--ui-text-field-textarea-min-height, 7rem); resize: vertical; }
   .ui-text-field-outlined .ui-text-field-control {
     border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-field-border);
     background: var(--ui-color-surface);
@@ -95,7 +93,7 @@
   }
   .ui-text-field-filled .ui-text-field-control {
     border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-field-border);
-    border-radius: var(--ui-radius-xs) var(--ui-radius-xs) var(--ui-radius-none) var(--ui-radius-none);
+    border-radius: var(--ui-field-radius, var(--ui-radius-xs)) var(--ui-field-radius, var(--ui-radius-xs)) var(--ui-radius-none) var(--ui-radius-none);
     background: var(--ui-field-container);
   }
   .ui-text-field-filled .ui-text-field-control:focus-within {

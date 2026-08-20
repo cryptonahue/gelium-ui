@@ -132,6 +132,30 @@ func docsNavFor(activePath, themeSlug, scheme string) docsNavView {
 	}
 }
 
+// docsNavForNavigation preserves the source vocabulary of the active selection:
+// legacy theme/scheme links stay legacy, while recipe fields stay canonical only
+// inside recipe/gallery contexts selected by navigationSelectionFor.
+func docsNavForNavigation(activePath string, selection navigationSelection) docsNavView {
+	nav := docsNavFor(activePath, selection.themeSlug, selection.scheme)
+	if selection.canonical {
+		for gi := range nav.Groups {
+			for li := range nav.Groups[gi].Links {
+				link := &nav.Groups[gi].Links[li]
+				link.Href = selection.href(link.Path)
+			}
+		}
+		nav.SearchIndex = buildSearchIndex(nav.Groups)
+	}
+	nav.ChromeQuery = selection.query()
+	return nav
+}
+
+// docsNavForSelection remains available to focused callers that explicitly
+// request canonical recipe links.
+func docsNavForSelection(activePath string, selection documentSelection, execution accordionExecution) docsNavView {
+	return docsNavForNavigation(activePath, navigationSelection{canonical: true, selection: selection, execution: execution})
+}
+
 // searchIndexEntry is one destination in the client-side docs search index.
 type searchIndexEntry struct {
 	Title string `json:"title"`
@@ -200,6 +224,31 @@ func prevNextFor(activePath, themeSlug, scheme string) *prevNextView {
 	return nil
 }
 
+// prevNextForNavigation follows the same source-aware rule as docsNavForNavigation.
+func prevNextForNavigation(activePath string, selection navigationSelection) *prevNextView {
+	ordered := orderedDocsNav()
+	for i, link := range ordered {
+		if link.Path != activePath {
+			continue
+		}
+		out := &prevNextView{}
+		if i > 0 {
+			out.Prev = &prevNextLink{Href: selection.href(ordered[i-1].Path), Label: ordered[i-1].Label}
+		}
+		if i < len(ordered)-1 {
+			out.Next = &prevNextLink{Href: selection.href(ordered[i+1].Path), Label: ordered[i+1].Label}
+		}
+		return out
+	}
+	return nil
+}
+
+// prevNextForSelection remains available to focused callers that explicitly
+// request canonical recipe links.
+func prevNextForSelection(activePath string, selection documentSelection, execution accordionExecution) *prevNextView {
+	return prevNextForNavigation(activePath, navigationSelection{canonical: true, selection: selection, execution: execution})
+}
+
 // handbookSection is one scannable handbook tier in the docs sidebar.
 type handbookSection struct {
 	Title string
@@ -231,6 +280,7 @@ var handbookSections = []handbookSection{
 		Title: "System",
 		Links: []navLink{
 			{Path: "/docs/themes", Label: "Themes"},
+			{Path: "/docs/themes/gallery", Label: "Theme Gallery"},
 			{Path: "/docs/tokens", Label: "Tokens"},
 			{Path: "/docs/typography", Label: "Typography"},
 			{Path: "/docs/spacing", Label: "Spacing"},

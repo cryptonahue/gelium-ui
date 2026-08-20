@@ -15,5 +15,6 @@
   </select>
   <input type="hidden" name="scheme" value="{{.Scheme}}">
   <button type="submit" class="ui-theme-switcher-submit">Apply</button>
+  <span class="ui-theme-switcher-selection" aria-label="Resolved visual selection" data-gelium-reference="{{or .Reference "none"}}" data-gelium-skin="{{or .Skin "none"}}">Reference: {{or .Reference "none"}} · Skin: {{or .Skin "none"}}</span>
 </form>
 {{end}}

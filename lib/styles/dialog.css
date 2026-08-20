@@ -1,18 +1,15 @@
 @layer components {
   .ui-dialog {
-    --ui-dialog-min-width: 280px;
-    --ui-dialog-min-height: 140px;
-    --ui-dialog-max-width: 560px;
-    min-width: var(--ui-dialog-min-width);
-    min-height: var(--ui-dialog-min-height);
-    max-width: min(var(--ui-dialog-max-width), calc(100% - 48px));
-    max-height: min(var(--ui-dialog-max-width), calc(100% - 48px));
+    min-width: var(--ui-dialog-min-width, 280px);
+    min-height: var(--ui-dialog-min-height, 140px);
+    max-width: min(var(--ui-dialog-max-width, 560px), calc(100% - 48px));
+    max-height: min(var(--ui-dialog-max-width, 560px), calc(100% - 48px));
     width: fit-content;
     height: fit-content;
     margin: auto;
     overflow: auto;
     border: 0;
-    border-radius: var(--ui-dialog-radius);
+    border-radius: var(--ui-dialog-radius, 28px);
     padding: 0;
     background: var(--ui-dialog-container);
     color: var(--ui-dialog-fg);
@@ -49,11 +46,10 @@
      no overlay, no focus trap — the trigger is a real link and Confirm a real
      form POST, so the flow works in every browser with zero component JS. */
   .ui-dialog-page {
-    --ui-dialog-max-width: 560px;
-    width: min(100%, var(--ui-dialog-max-width));
+    width: min(100%, var(--ui-dialog-max-width, 560px));
     box-sizing: border-box;
     margin: 0;
-    border-radius: var(--ui-dialog-radius);
+    border-radius: var(--ui-dialog-radius, 28px);
     background: var(--ui-dialog-container);
     color: var(--ui-dialog-fg);
   }

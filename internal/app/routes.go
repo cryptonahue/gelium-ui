@@ -15,6 +15,7 @@ type componentRoute struct {
 // componentRoutes is ordered: navigation order and route registration order.
 func componentRoutes() []componentRoute {
 	return []componentRoute{
+		{Path: "/components/accordion", Label: "Accordion", Handler: (*server).accordionDocs},
 		{Path: "/components/button", Label: "Button", Handler: (*server).buttonDocs},
 		{Path: "/components/text-field", Label: "Text field", Handler: (*server).textFieldDocs},
 		{Path: "/components/dialog", Label: "Dialog", Handler: (*server).dialogDocs},

@@ -45,9 +45,9 @@ func TestDialogSourceCSSImplementsMaterialGeometryStatesAndProgressiveMotion(t *
 	css := sourceAppCSS(t)
 	compact := regexp.MustCompile(`\s+`).ReplaceAllString(css, " ")
 	for _, contract := range []string{
-		`.ui-dialog {`, `min-width: var(--ui-dialog-min-width);`, `min-height: var(--ui-dialog-min-height);`,
-		`max-width: min(var(--ui-dialog-max-width), calc(100% - 48px));`, `max-height: min(var(--ui-dialog-max-width), calc(100% - 48px));`,
-		`width: fit-content;`, `height: fit-content;`, `margin: auto;`, `border-radius: var(--ui-dialog-radius);`,
+		`.ui-dialog {`, `min-width: var(--ui-dialog-min-width, 280px);`, `min-height: var(--ui-dialog-min-height, 140px);`,
+		`max-width: min(var(--ui-dialog-max-width, 560px), calc(100% - 48px));`, `max-height: min(var(--ui-dialog-max-width, 560px), calc(100% - 48px));`,
+		`width: fit-content;`, `height: fit-content;`, `margin: auto;`, `border-radius: var(--ui-dialog-radius, 28px);`,
 		`background: var(--ui-dialog-container);`, `color: var(--ui-dialog-fg);`,
 		`.ui-dialog-headline { margin: 0; padding: var(--ui-space-6) var(--ui-space-6) 0; font: var(--ui-type-dialog-headline);`,
 		`.ui-dialog-content { padding: var(--ui-space-6); color: var(--ui-dialog-body); font: var(--ui-type-dialog-body);`,

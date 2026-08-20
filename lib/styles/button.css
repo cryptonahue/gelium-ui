@@ -1,50 +1,141 @@
 @layer components {
   .ui-button {
-    --ui-button-padding-y: .625rem;
-    --ui-button-spinner-size: 1rem;
     position: relative;
     display: inline-flex;
-    min-height: var(--ui-touch-target);
+    /* Visual presets may request denser heights; Gelium contract keeps the touch floor. */
+    min-height: var(--ui-button-resolved-min-height, max(var(--ui-touch-target), var(--ui-button-min-height, var(--ui-touch-target))));
     align-items: center;
     justify-content: center;
-    gap: var(--ui-space-2);
-    border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent;
-    border-radius: var(--ui-radius-full);
-    padding: var(--ui-button-padding-y) var(--ui-space-6);
-    font: var(--ui-type-label-lg);
+    gap: var(--ui-button-gap, var(--ui-space-2));
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-button-border-color, transparent);
+    border-radius: var(--ui-button-radius, var(--ui-radius-full));
+    padding: var(--ui-button-padding-y, .625rem) var(--ui-button-padding-x, var(--ui-space-6));
+    font: var(--ui-button-font, var(--ui-type-label-lg));
+    letter-spacing: var(--ui-button-letter-spacing, normal);
+    text-transform: var(--ui-button-text-transform, none);
     text-decoration: none;
     cursor: pointer;
-    transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard);
+    background: var(--ui-button-bg, transparent);
+    color: var(--ui-button-fg, inherit);
+    box-shadow: var(--ui-button-shadow, none);
+    transition:
+      background-color var(--ui-motion-short) var(--ui-easing-standard),
+      border-color var(--ui-motion-short) var(--ui-easing-standard),
+      color var(--ui-motion-short) var(--ui-easing-standard),
+      box-shadow var(--ui-motion-short) var(--ui-easing-standard);
   }
-  .ui-button:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent); }
-  .ui-button:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
-  .ui-button-secondary:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent); }
-  .ui-button-secondary:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
-  .ui-button-outline:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent); }
-  .ui-button-outline:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary) calc(var(--ui-state-pressed-opacity) * 100%), transparent); }
+  .ui-button:hover:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--ui-button-hover-bg, var(--ui-button-bg, transparent));
+    border-color: var(--ui-button-hover-border-color, var(--ui-button-border-color, transparent));
+    color: var(--ui-button-hover-fg, var(--ui-button-fg, inherit));
+    box-shadow: var(
+      --ui-button-hover-shadow,
+      inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)
+    );
+  }
+  .ui-button:active:not(:disabled):not([aria-disabled="true"]) {
+    background: var(--ui-button-active-bg, var(--ui-button-hover-bg, var(--ui-button-bg, transparent)));
+    border-color: var(--ui-button-active-border-color, var(--ui-button-hover-border-color, var(--ui-button-border-color, transparent)));
+    color: var(--ui-button-active-fg, var(--ui-button-hover-fg, var(--ui-button-fg, inherit)));
+    box-shadow: var(
+      --ui-button-active-shadow,
+      inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent)
+    );
+  }
   .ui-button:focus-visible {
-    outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
-    outline-offset: var(--ui-focus-offset);
+    outline: var(--ui-button-focus-outline, var(--ui-focus-thickness) solid var(--ui-color-focus-ring));
+    outline-offset: var(--ui-button-focus-offset, var(--ui-focus-offset));
+    border-color: var(--ui-button-focus-border-color, var(--ui-button-border-color, transparent));
   }
-  .ui-button-primary { background: var(--ui-color-primary); color: var(--ui-color-primary-fg); }
-  .ui-button-secondary { background: var(--ui-color-secondary); color: var(--ui-color-secondary-fg); }
-  .ui-button-outline { border-color: var(--ui-color-border-strong); background: transparent; color: var(--ui-color-primary); }
-  .ui-button-text { background: transparent; color: var(--ui-color-primary); }
-  .ui-button-text:hover:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent);
+  .ui-button-primary {
+    --ui-button-bg: var(--ui-button-primary-bg, var(--ui-color-primary));
+    --ui-button-fg: var(--ui-button-primary-fg, var(--ui-color-primary-fg));
+    --ui-button-border-color: var(--ui-button-primary-border, transparent);
+    --ui-button-hover-bg: var(--ui-button-primary-hover-bg, var(--ui-button-primary-bg, var(--ui-color-primary)));
+    --ui-button-hover-border-color: var(--ui-button-primary-hover-border, var(--ui-button-primary-border, transparent));
+    --ui-button-hover-fg: var(--ui-button-primary-hover-fg, var(--ui-button-primary-fg, var(--ui-color-primary-fg)));
+    --ui-button-hover-shadow: var(
+      --ui-button-primary-hover-shadow,
+      inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)
+    );
+    --ui-button-active-bg: var(--ui-button-primary-active-bg, var(--ui-button-primary-hover-bg, var(--ui-button-primary-bg, var(--ui-color-primary))));
+    --ui-button-active-border-color: var(--ui-button-primary-active-border, var(--ui-button-primary-hover-border, var(--ui-button-primary-border, transparent)));
+    --ui-button-active-fg: var(--ui-button-primary-active-fg, var(--ui-button-primary-hover-fg, var(--ui-button-primary-fg, var(--ui-color-primary-fg))));
+    --ui-button-active-shadow: var(
+      --ui-button-primary-active-shadow,
+      inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent)
+    );
   }
-  .ui-button-text:active:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+  .ui-button-secondary {
+    --ui-button-bg: var(--ui-button-secondary-bg, var(--ui-color-secondary));
+    --ui-button-fg: var(--ui-button-secondary-fg, var(--ui-color-secondary-fg));
+    --ui-button-border-color: var(--ui-button-secondary-border, transparent);
+    --ui-button-hover-bg: var(--ui-button-secondary-hover-bg, var(--ui-button-secondary-bg, var(--ui-color-secondary)));
+    --ui-button-hover-border-color: var(--ui-button-secondary-hover-border, var(--ui-button-secondary-border, transparent));
+    --ui-button-hover-fg: var(--ui-button-secondary-hover-fg, var(--ui-button-secondary-fg, var(--ui-color-secondary-fg)));
+    --ui-button-hover-shadow: var(
+      --ui-button-secondary-hover-shadow,
+      inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)
+    );
+    --ui-button-active-bg: var(--ui-button-secondary-active-bg, var(--ui-button-secondary-hover-bg, var(--ui-button-secondary-bg, var(--ui-color-secondary))));
+    --ui-button-active-border-color: var(--ui-button-secondary-active-border, var(--ui-button-secondary-hover-border, var(--ui-button-secondary-border, transparent)));
+    --ui-button-active-fg: var(--ui-button-secondary-active-fg, var(--ui-button-secondary-hover-fg, var(--ui-button-secondary-fg, var(--ui-color-secondary-fg))));
+    --ui-button-active-shadow: var(
+      --ui-button-secondary-active-shadow,
+      inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent)
+    );
   }
-  .ui-button:disabled, .ui-button[aria-disabled="true"] {
-    opacity: var(--ui-state-disabled-opacity);
+  .ui-button-outline {
+    --ui-button-bg: var(--ui-button-outline-bg, transparent);
+    --ui-button-fg: var(--ui-button-outline-fg, var(--ui-color-primary));
+    --ui-button-border-color: var(--ui-button-outline-border, var(--ui-color-border-strong));
+    --ui-button-hover-bg: var(--ui-button-outline-hover-bg, var(--ui-button-outline-bg, transparent));
+    --ui-button-hover-border-color: var(--ui-button-outline-hover-border, var(--ui-button-outline-border, var(--ui-color-border-strong)));
+    --ui-button-hover-fg: var(--ui-button-outline-hover-fg, var(--ui-button-outline-fg, var(--ui-color-primary)));
+    --ui-button-hover-shadow: var(
+      --ui-button-outline-hover-shadow,
+      inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent)
+    );
+    --ui-button-active-bg: var(--ui-button-outline-active-bg, var(--ui-button-outline-hover-bg, var(--ui-button-outline-bg, transparent)));
+    --ui-button-active-border-color: var(--ui-button-outline-active-border, var(--ui-button-outline-hover-border, var(--ui-button-outline-border, var(--ui-color-border-strong))));
+    --ui-button-active-fg: var(--ui-button-outline-active-fg, var(--ui-button-outline-hover-fg, var(--ui-button-outline-fg, var(--ui-color-primary))));
+    --ui-button-active-shadow: var(
+      --ui-button-outline-active-shadow,
+      inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary) calc(var(--ui-state-pressed-opacity) * 100%), transparent)
+    );
+  }
+  .ui-button-text {
+    --ui-button-bg: var(--ui-button-text-bg, transparent);
+    --ui-button-fg: var(--ui-button-text-fg, var(--ui-color-primary));
+    --ui-button-border-color: var(--ui-button-text-border, transparent);
+    --ui-button-hover-bg: var(--ui-button-text-hover-bg, var(--ui-button-text-bg, transparent));
+    --ui-button-hover-border-color: var(--ui-button-text-hover-border, transparent);
+    --ui-button-hover-fg: var(--ui-button-text-hover-fg, var(--ui-button-text-fg, var(--ui-color-primary)));
+    --ui-button-hover-shadow: var(
+      --ui-button-text-hover-shadow,
+      inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent)
+    );
+    --ui-button-active-bg: var(--ui-button-text-active-bg, var(--ui-button-text-hover-bg, transparent));
+    --ui-button-active-border-color: var(--ui-button-text-active-border, transparent);
+    --ui-button-active-fg: var(--ui-button-text-active-fg, var(--ui-button-text-hover-fg, var(--ui-button-text-fg, var(--ui-color-primary))));
+    --ui-button-active-shadow: var(
+      --ui-button-text-active-shadow,
+      inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-pressed-opacity) * 100%), transparent)
+    );
+  }
+  .ui-button:disabled,
+  .ui-button[aria-disabled="true"] {
+    color: var(--ui-button-disabled-fg, var(--ui-button-fg, inherit));
+    border-color: var(--ui-button-disabled-border, var(--ui-button-border-color, transparent));
+    background: var(--ui-button-disabled-bg, var(--ui-button-bg, transparent));
+    opacity: var(--ui-button-disabled-opacity, var(--ui-state-disabled-opacity));
     cursor: not-allowed;
     box-shadow: none;
   }
   .ui-button svg { flex: none; }
   .ui-button-spinner {
-    width: var(--ui-button-spinner-size);
-    height: var(--ui-button-spinner-size);
+    width: var(--ui-button-spinner-size, 1rem);
+    height: var(--ui-button-spinner-size, 1rem);
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: 999px;

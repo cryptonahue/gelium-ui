@@ -33,7 +33,7 @@ func TestComponentRegistrySyncsWithTemplates(t *testing.T) {
 	// Non-component templates: shell/layout, docs shell chrome, demos,
 	// recipes, and theme switchers are NOT registry components — they are
 	// pages/shell and are excluded from the component registry contract.
-	shellPrefixes := []string{"demo-", "docs-", "recipe-"}
+	shellPrefixes := []string{"demo-", "docs-", "recipe-", "theme-gallery"}
 	var missing []string
 	for _, p := range partials {
 		name := filepath.Base(p)

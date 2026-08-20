@@ -14,9 +14,9 @@ func TestRadioPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 		`gap: var(--ui-space-2);`,
 		`input[type="radio"] {`,
 		`appearance: none;`,
-		`width: var(--ui-radio-size);`,
-		`height: var(--ui-radio-size);`,
-		`border-radius: var(--ui-radio-radius);`,
+		`width: var(--ui-radio-size, 20px);`,
+		`height: var(--ui-radio-size, 20px);`,
+		`border-radius: var(--ui-radio-radius, 50%);`,
 		`border: var(--ui-radio-outline-width) solid var(--ui-radio-outline);`,
 		`input:checked + .ui-radio-mark {`,
 		`background: var(--ui-radio-checked);`,
@@ -88,7 +88,7 @@ func TestEmbeddedCompiledCSSIncludesRadioContracts(t *testing.T) {
 	css := compiledAppCSS(t)
 	for _, contract := range []string{
 		`.ui-radio`,
-		`var(--ui-radio-size)`,
+		`var(--ui-radio-size`,
 		`var(--ui-radio-outline)`,
 		`@media (forced-colors:active)`,
 	} {

@@ -14,9 +14,9 @@ func TestCheckboxPrimitiveCSSMapsNativeControlAndStates(t *testing.T) {
 		`gap: var(--ui-space-2);`,
 		`input[type="checkbox"] {`,
 		`appearance: none;`,
-		`width: var(--ui-checkbox-size);`,
-		`height: var(--ui-checkbox-size);`,
-		`border-radius: var(--ui-checkbox-radius);`,
+		`width: var(--ui-checkbox-size, 18px);`,
+		`height: var(--ui-checkbox-size, 18px);`,
+		`border-radius: var(--ui-checkbox-radius, 2px);`,
 		`border: var(--ui-checkbox-outline-width) solid var(--ui-checkbox-outline);`,
 		`input:checked + .ui-checkbox-mark {`,
 		`input:checked ~ .ui-checkbox-label {`,
@@ -97,7 +97,7 @@ func TestEmbeddedCompiledCSSIncludesCheckboxContracts(t *testing.T) {
 	css := compiledAppCSS(t)
 	for _, contract := range []string{
 		`.ui-checkbox`,
-		`var(--ui-checkbox-size)`,
+		`var(--ui-checkbox-size`,
 		`var(--ui-checkbox-outline)`,
 		`@media (forced-colors:active)`,
 	} {

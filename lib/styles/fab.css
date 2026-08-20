@@ -7,11 +7,6 @@
      container color. Icon-only FABs carry their accessible name in aria-label;
      extended FABs add visible text. */
   .ui-fab {
-    --ui-fab-container-size: 56px;
-    --ui-fab-container-size-small: 40px;
-    --ui-fab-container-size-large: 96px;
-    --ui-fab-extended-height: 48px;
-    --ui-fab-extended-padding-inline: 1.25rem;
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -31,20 +26,20 @@
     height: var(--ui-fab-icon-size);
   }
   .ui-fab-medium {
-    width: var(--ui-fab-container-size);
-    height: var(--ui-fab-container-size);
+    width: var(--ui-fab-container-size, 56px);
+    height: var(--ui-fab-container-size, 56px);
     border-radius: var(--ui-fab-container-shape);
     box-shadow: var(--ui-shadow-3);
   }
   .ui-fab-small {
-    width: var(--ui-fab-container-size-small);
-    height: var(--ui-fab-container-size-small);
+    width: var(--ui-fab-container-size-small, 44px);
+    height: var(--ui-fab-container-size-small, 44px);
     border-radius: var(--ui-fab-container-shape-small);
     box-shadow: var(--ui-shadow-3);
   }
   .ui-fab-large {
-    width: var(--ui-fab-container-size-large);
-    height: var(--ui-fab-container-size-large);
+    width: var(--ui-fab-container-size-large, 96px);
+    height: var(--ui-fab-container-size-large, 96px);
     border-radius: var(--ui-fab-container-shape-large);
     box-shadow: var(--ui-shadow-3);
   }
@@ -56,8 +51,8 @@
   /* Extended FAB: taller target with a visible label and optional leading icon.
      The container is a rounded pill whose label uses the label-large type. */
   .ui-fab-extended {
-    height: var(--ui-fab-extended-height);
-    padding-inline: var(--ui-fab-extended-padding-inline);
+    height: var(--ui-fab-extended-height, 48px);
+    padding-inline: var(--ui-fab-extended-padding-inline, 1.25rem);
     gap: var(--ui-fab-extension-gap);
     border-radius: var(--ui-fab-extended-shape);
     box-shadow: var(--ui-shadow-3);
