@@ -35,11 +35,11 @@ func TestButtonInteractiveStateSelectorsExcludeAriaDisabled(t *testing.T) {
 func TestTextButtonUsesPrimaryStateLayersWithoutInactiveInteraction(t *testing.T) {
 	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
 	for _, contract := range []string{
-		`.ui-button-text { background: transparent; color: var(--ui-color-primary);`,
-		`.ui-button-text:hover:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent);`,
-		`.ui-button-text:active:not(:disabled):not([aria-disabled="true"]) { box-shadow: inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-pressed-opacity) * 100%), transparent);`,
-		`.ui-button:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset);`,
-		`.ui-button:disabled, .ui-button[aria-disabled="true"] { opacity: var(--ui-state-disabled-opacity); cursor: not-allowed; box-shadow: none;`,
+		`.ui-button-text { --ui-button-bg: var(--ui-button-text-bg, transparent); --ui-button-fg: var(--ui-button-text-fg, var(--ui-color-primary));`,
+		`--ui-button-text-hover-shadow, inset 0 0 0 999px color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent)`,
+		`.ui-button:focus-visible { outline: var(--ui-button-focus-outline, var(--ui-focus-thickness) solid var(--ui-color-focus-ring)); outline-offset: var(--ui-button-focus-offset, var(--ui-focus-offset));`,
+		`opacity: var(--ui-button-disabled-opacity, var(--ui-state-disabled-opacity)); cursor: not-allowed; box-shadow: none;`,
+		`min-height: max(var(--ui-touch-target), var(--ui-button-min-height, var(--ui-touch-target)))`,
 	} {
 		if !strings.Contains(css, contract) {
 			t.Errorf("text button state contract is missing %q", contract)

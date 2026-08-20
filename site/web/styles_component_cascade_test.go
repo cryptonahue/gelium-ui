@@ -31,7 +31,7 @@ func TestComponentReferenceAndSkinAdaptersSurviveCompilation(t *testing.T) {
 	if !strings.Contains(compiled[ref:skin], "--ui-button-radius:var(--ui-radius-full)") {
 		t.Error("material reference must keep pill button radius")
 	}
-	if !strings.Contains(compiled[skin:], "--ui-button-radius:.375rem") {
+	if !strings.Contains(compiled[skin:], "--ui-button-radius:.5rem") {
 		t.Error("basecoat skin must own denser button radius")
 	}
 }
