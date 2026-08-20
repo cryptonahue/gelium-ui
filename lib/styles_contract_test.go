@@ -472,9 +472,6 @@ func TestComponentSizeTokensDeclaredScoped(t *testing.T) {
 		"callout.css":      "--ui-callout-icon-size:",
 		"inline-alert.css": "--ui-inline-alert-icon-size:",
 		"skeleton.css":     "--ui-skeleton-avatar-size:",
-		"tabs.css":         "--ui-tabs-height:",
-		"chips.css":        "--ui-chip-height:",
-		"dialog.css":       "--ui-dialog-min-width:",
 	} {
 		css := sourceComponentCSS(t, file)
 		if !strings.Contains(css, token) {
@@ -482,20 +479,25 @@ func TestComponentSizeTokensDeclaredScoped(t *testing.T) {
 		}
 	}
 
-	// Phase C: aesthetics (padding/radius/gap/glyph) moved to theme-overridable
-	// tokens with defaults in the core :root (tokens.css) and consumption via
-	// var(--ui-x, <fallback>) in the component. Assert the default exists in the
-	// core tokens `:root` so themes have a canonical value to override, and that
-	// the component consumes it through a var() fallback.
+	// Phase C + behavior/reference/skin cascade: aesthetics moved to
+	// theme-overridable tokens with defaults in the core :root (tokens.css)
+	// and consumption via var(--ui-x, <fallback>) so html[data-gelium-*]
+	// adapters can win without being shadowed by component-root declarations.
 	tokens := repositoryFile(t, "lib", "styles", "tokens.css")
 	for file, token := range map[string]string{
-		"fab.css":        "--ui-fab-container-size",
-		"button.css":     "--ui-button-padding-y",
-		"text-field.css": "--ui-text-field-textarea-min-height",
-		"select.css":     "--ui-select-caret-reserve",
-		"switch.css":     "--ui-switch-handle-inset",
-		"radio.css":      "--ui-radio-dot-size",
-		"checkbox.css":   "--ui-checkbox-mark-width",
+		"fab.css":         "--ui-fab-container-size",
+		"button.css":      "--ui-button-padding-y",
+		"icon-button.css": "--ui-icon-button-radius",
+		"text-field.css":  "--ui-text-field-textarea-min-height",
+		"select.css":      "--ui-select-caret-reserve",
+		"switch.css":      "--ui-switch-handle-inset",
+		"radio.css":       "--ui-radio-dot-size",
+		"checkbox.css":    "--ui-checkbox-mark-width",
+		"dialog.css":      "--ui-dialog-min-width",
+		"tabs.css":        "--ui-tabs-height",
+		"chips.css":       "--ui-chip-height",
+		"card.css":        "--ui-card-radius",
+		"badge.css":       "--ui-badge-size",
 	} {
 		if !strings.Contains(tokens, token+":") {
 			t.Errorf("core tokens.css must declare theme-overridable default %s:", token)

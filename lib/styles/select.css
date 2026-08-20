@@ -18,10 +18,10 @@
   .ui-select select {
     appearance: none;
     width: 100%;
-    height: var(--ui-select-height);
+    height: var(--ui-select-height, var(--ui-size-field));
     box-sizing: border-box;
     padding: 1rem var(--ui-select-caret-reserve, 2.5rem) 0 var(--ui-field-padding-x, 1rem);
-    border-radius: var(--ui-select-radius);
+    border-radius: var(--ui-select-radius, 4px);
     background: transparent;
     color: var(--ui-select-fg);
     font: var(--ui-type-body-lg);
@@ -50,7 +50,7 @@
     background: var(--ui-select-container-filled);
     border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent;
     border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);
-    border-radius: var(--ui-select-radius-top);
+    border-radius: var(--ui-select-radius-top, 4px 4px 0 0);
   }
   .ui-select-filled select:focus-visible { border-bottom-color: var(--ui-select-focus); }
   .ui-select-outlined select {

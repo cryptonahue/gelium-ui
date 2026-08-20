@@ -11,7 +11,7 @@
     flex-direction: column;
     align-items: stretch;
     position: relative;
-    border-radius: var(--ui-card-radius);
+    border-radius: var(--ui-card-radius, 12px);
     padding: var(--ui-card-padding, var(--ui-space-4));
     min-width: 0;
     color: var(--ui-color-fg);

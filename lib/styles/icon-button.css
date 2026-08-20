@@ -7,7 +7,7 @@
     align-items: center;
     justify-content: center;
     border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent;
-    border-radius: var(--ui-radius-full);
+    border-radius: var(--ui-icon-button-radius, var(--ui-radius-full));
     padding: 0;
     flex: none;
     cursor: pointer;

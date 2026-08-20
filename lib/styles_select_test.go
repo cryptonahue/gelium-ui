@@ -14,8 +14,8 @@ func TestSelectPrimitiveCSSMapsNativeVariantsAndStates(t *testing.T) {
 		`gap: 0;`,
 		`.ui-select select {`,
 		`appearance: none;`,
-		`height: var(--ui-select-height);`,
-		`border-radius: var(--ui-select-radius);`,
+		`height: var(--ui-select-height, var(--ui-size-field));`,
+		`border-radius: var(--ui-select-radius, 4px);`,
 		`.ui-select-filled select { background: var(--ui-select-container-filled); border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent; border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);`,
 		`.ui-select-outlined select { background: transparent; border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);`,
 		`.ui-select select:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset);`,
@@ -98,7 +98,7 @@ func TestEmbeddedCompiledCSSIncludesSelectContracts(t *testing.T) {
 	css := compiledAppCSS(t)
 	for _, contract := range []string{
 		`.ui-select`,
-		`var(--ui-select-height)`,
+		`var(--ui-select-height`,
 		`var(--ui-select-outline)`,
 		`@media (forced-colors:active)`,
 	} {

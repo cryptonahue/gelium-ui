@@ -12,7 +12,7 @@
        the selected-handle size minus twice the inset, i.e.
        (track − handle) − 2×inset = 52 − 24 − 12 = 16px with the Material
        defaults — the old magic 12px was exactly 2×inset. */
-    --ui-switch-handle-travel: calc(var(--ui-switch-width) - var(--ui-switch-handle-selected-size) - 2 * var(--ui-switch-handle-inset, 6px));
+    --ui-switch-handle-travel: calc(var(--ui-switch-width, 52px) - var(--ui-switch-handle-selected-size, 24px) - 2 * var(--ui-switch-handle-inset, 6px));
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -23,9 +23,9 @@
   .ui-switch:hover { --ui-switch-track-outline: var(--ui-color-fg); }
   .ui-switch input[type="checkbox"] {
     appearance: none;
-    width: var(--ui-switch-width);
-    height: var(--ui-switch-height);
-    border-radius: var(--ui-switch-radius);
+    width: var(--ui-switch-width, 52px);
+    height: var(--ui-switch-height, 32px);
+    border-radius: var(--ui-switch-radius, var(--ui-radius-full));
     border: var(--ui-switch-outline-width) solid var(--ui-switch-track-outline);
     margin: 0;
     flex: none;
@@ -40,14 +40,14 @@
   .ui-switch input:checked { border-color: transparent; }
   .ui-switch input:checked + .ui-switch-track { background: var(--ui-switch-track); }
   .ui-switch input:checked ~ .ui-switch-handle {
-    width: var(--ui-switch-handle-selected-size);
-    height: var(--ui-switch-handle-selected-size);
+    width: var(--ui-switch-handle-selected-size, 24px);
+    height: var(--ui-switch-handle-selected-size, 24px);
     background: var(--ui-switch-handle-selected);
     transform: translateY(-50%) translateX(var(--ui-switch-handle-travel));
   }
   .ui-switch input:active:not(:disabled) ~ .ui-switch-handle {
-    width: var(--ui-switch-handle-pressed-size);
-    height: var(--ui-switch-handle-pressed-size);
+    width: var(--ui-switch-handle-pressed-size, 28px);
+    height: var(--ui-switch-handle-pressed-size, 28px);
   }
   .ui-switch input:disabled { cursor: not-allowed; }
   .ui-switch input:disabled + .ui-switch-track { opacity: var(--ui-switch-disabled-track-opacity); }
@@ -57,10 +57,10 @@
     position: absolute;
     inset-inline-start: 0;
     top: 50%;
-    width: var(--ui-switch-width);
-    height: var(--ui-switch-height);
+    width: var(--ui-switch-width, 52px);
+    height: var(--ui-switch-height, 32px);
     box-sizing: border-box;
-    border-radius: var(--ui-switch-radius);
+    border-radius: var(--ui-switch-radius, var(--ui-radius-full));
     border: var(--ui-switch-outline-width) solid var(--ui-switch-track-outline);
     background: var(--ui-switch-track-unselected);
     pointer-events: none;
@@ -71,8 +71,8 @@
     position: absolute;
     inset-inline-start: var(--ui-switch-handle-inset, 6px);
     top: 50%;
-    width: var(--ui-switch-handle-size);
-    height: var(--ui-switch-handle-size);
+    width: var(--ui-switch-handle-size, 16px);
+    height: var(--ui-switch-handle-size, 16px);
     border-radius: var(--ui-radius-full);
     background: var(--ui-switch-handle);
     pointer-events: none;

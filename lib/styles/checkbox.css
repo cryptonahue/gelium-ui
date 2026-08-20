@@ -16,9 +16,9 @@
   .ui-checkbox:active:not(:disabled) input[type="checkbox"] { transform: scale(.92); }
   .ui-checkbox input[type="checkbox"] {
     appearance: none;
-    width: var(--ui-checkbox-size);
-    height: var(--ui-checkbox-size);
-    border-radius: var(--ui-checkbox-radius);
+    width: var(--ui-checkbox-size, 18px);
+    height: var(--ui-checkbox-size, 18px);
+    border-radius: var(--ui-checkbox-radius, 2px);
     border: var(--ui-checkbox-outline-width) solid var(--ui-checkbox-outline);
     margin: 0;
     flex: none;
@@ -62,8 +62,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--ui-checkbox-size);
-    height: var(--ui-checkbox-size);
+    width: var(--ui-checkbox-size, 18px);
+    height: var(--ui-checkbox-size, 18px);
     opacity: 0;
     pointer-events: none;
   }

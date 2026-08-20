@@ -11,13 +11,13 @@ func TestBadgePrimitiveCSSMapsSizesAndNotColorOnly(t *testing.T) {
 
 	for _, contract := range []string{
 		`.ui-badge {`,
-		`width: var(--ui-badge-size);`,
-		`height: var(--ui-badge-size);`,
+		`width: var(--ui-badge-size, 6px);`,
+		`height: var(--ui-badge-size, 6px);`,
 		`background: var(--ui-badge-container);`,
 		`border-radius: var(--ui-radius-full);`,
 		`.ui-badge-large {`,
-		`min-width: var(--ui-badge-large-size);`,
-		`height: var(--ui-badge-large-size);`,
+		`min-width: var(--ui-badge-large-size, 16px);`,
+		`height: var(--ui-badge-large-size, 16px);`,
 		`color: var(--ui-badge-fg);`,
 	} {
 		if !strings.Contains(css, contract) {

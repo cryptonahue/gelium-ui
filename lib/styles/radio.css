@@ -16,9 +16,9 @@
   .ui-radio:active:not(:disabled) input[type="radio"] { transform: scale(.92); }
   .ui-radio input[type="radio"] {
     appearance: none;
-    width: var(--ui-radio-size);
-    height: var(--ui-radio-size);
-    border-radius: var(--ui-radio-radius);
+    width: var(--ui-radio-size, 20px);
+    height: var(--ui-radio-size, 20px);
+    border-radius: var(--ui-radio-radius, 50%);
     border: var(--ui-radio-outline-width) solid var(--ui-radio-outline);
     margin: 0;
     flex: none;
@@ -48,8 +48,8 @@
     display: flex;
     align-items: center;
     justify-content: center;
-    width: var(--ui-radio-size);
-    height: var(--ui-radio-size);
+    width: var(--ui-radio-size, 20px);
+    height: var(--ui-radio-size, 20px);
     opacity: 0;
     pointer-events: none;
   }

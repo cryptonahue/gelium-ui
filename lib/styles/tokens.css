@@ -203,6 +203,31 @@
   --ui-fab-extended-padding-inline: 1.25rem;
   /* Icon button */
   --ui-icon-button-radius: var(--ui-radius-full);
+  /* Select geometry (colors remain theme-owned) */
+  --ui-select-height: var(--ui-size-field);
+  --ui-select-radius: 4px;
+  --ui-select-radius-top: 4px 4px 0 0;
+  /* Dialog geometry */
+  --ui-dialog-min-width: 280px;
+  --ui-dialog-min-height: 140px;
+  --ui-dialog-max-width: 560px;
+  --ui-dialog-radius: 28px;
+  /* Tabs geometry */
+  --ui-tabs-height: 48px;
+  --ui-tabs-stacked-height: 64px;
+  --ui-tabs-indicator-height: 3px;
+  --ui-tabs-indicator-height-secondary: 2px;
+  /* Chip geometry */
+  --ui-chip-height: 2rem;
+  --ui-chip-radius: var(--ui-radius-sm);
+  --ui-chip-remove-size: 1.5rem;
+  --ui-chip-remove-icon-size: var(--ui-size-icon-sm);
+  --ui-chip-selected-icon-size: .5625rem;
+  /* Card radius default (themes/skins override) */
+  --ui-card-radius: 12px;
+  /* Badge geometry */
+  --ui-badge-size: 6px;
+  --ui-badge-large-size: 16px;
 
   /* Fonts — neutral defaults so every typescale token below stays resolvable
      in an unthemed document; themes override these under their own class. */

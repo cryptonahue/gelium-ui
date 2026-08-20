@@ -12,7 +12,7 @@ func TestCardPrimitiveCSSMapsVariantsToThemeTokens(t *testing.T) {
 
 	for _, contract := range []string{
 		`.ui-card {`,
-		`border-radius: var(--ui-card-radius);`,
+		`border-radius: var(--ui-card-radius, 12px);`,
 		`.ui-card-elevated { background: var(--ui-card-container-elevated); box-shadow: var(--ui-shadow-1);`,
 		`.ui-card-filled { background: var(--ui-card-container-filled);`,
 		`.ui-card-outlined { background: var(--ui-card-container-outlined); border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-card-outline-color);`,

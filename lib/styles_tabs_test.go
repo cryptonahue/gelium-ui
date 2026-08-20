@@ -18,7 +18,7 @@ func TestTabsPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 		`.ui-tabs-item {`,
 		`flex: 1;`,
 		`.ui-tab {`,
-		`height: var(--ui-tabs-height);`,
+		`height: var(--ui-tabs-height, 48px);`,
 		`padding: 0 var(--ui-space-4);`,
 		`gap: var(--ui-space-2);`,
 		`font-weight: 500;`,
@@ -29,12 +29,12 @@ func TestTabsPrimitiveCSSMapsMaterialAnatomy(t *testing.T) {
 		`.ui-tab-stacked {`,
 		`flex-direction: column;`,
 		`gap: 2px;`,
-		`height: var(--ui-tabs-stacked-height);`,
+		`height: var(--ui-tabs-stacked-height, 64px);`,
 		`.ui-tab-icon {`,
 		`width: var(--ui-size-icon);`,
 		`height: var(--ui-size-icon);`,
 		`.ui-tab-indicator {`,
-		`height: var(--ui-tabs-indicator-height);`,
+		`height: var(--ui-tabs-indicator-height, 3px);`,
 		`border-radius: 3px 3px 0 0;`,
 		`var(--ui-color-primary)`,
 	} {
@@ -49,7 +49,7 @@ func TestTabsVariantAndSelectionSelectors(t *testing.T) {
 
 	for _, contract := range []string{
 		`.ui-tab-secondary .ui-tab-indicator {`,
-		`height: var(--ui-tabs-indicator-height-secondary);`,
+		`height: var(--ui-tabs-indicator-height-secondary, 2px);`,
 		`border-radius: 0;`,
 		`.ui-tab[aria-current="page"] .ui-tab-indicator { opacity: 1;`,
 		`.ui-tab[aria-current="page"] {`,
