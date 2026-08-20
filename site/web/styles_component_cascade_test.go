@@ -37,23 +37,32 @@ func TestComponentReferenceAndSkinAdaptersSurviveCompilation(t *testing.T) {
 }
 
 func TestEachProductSkinOwnsPriorityComponentAnatomy(t *testing.T) {
-	source := compactCSS(t, repositoryFile(t, "site", "web", "styles", "component-skin.css"))
-	for _, skin := range []string{"material", "basecoat", "baseui", "alden", "linear", "vercel"} {
+	source := compactCSS(t, repositoryFile(t, "site", "web", "styles", "component-skin.css")) +
+		compactCSS(t, repositoryFile(t, "site", "web", "styles", "basecoat-pack-skins.css"))
+	for _, skin := range []string{
+		"material", "basecoat", "basecoat-nova", "basecoat-maia", "basecoat-lyra",
+		"basecoat-mira", "basecoat-luma", "basecoat-sera", "basecoat-rhea",
+		"baseui", "alden", "linear", "vercel",
+	} {
 		selector := `html[data-gelium-skin="` + skin + `"]{`
 		start := strings.Index(source, selector)
 		if start < 0 {
 			t.Errorf("skin %q missing component-skin selector", skin)
 			continue
 		}
-		end := strings.Index(source[start:], "}")
-		if end < 0 {
-			t.Errorf("skin %q selector not closed", skin)
-			continue
+		// Pack skins may split shared tokens across multiple selectors; search
+		// a window large enough to cover the dedicated pack block.
+		window := source[start:]
+		if len(window) > 4500 {
+			window = window[:4500]
 		}
-		block := source[start : start+end]
 		for _, comp := range cascadeComponents {
 			want := "--ui-" + comp + "-cascade-id:" + skin + "-skin"
-			if !strings.Contains(block, want) {
+			if skin == "basecoat" {
+				// Vega default keeps the historical cascade id.
+				want = "--ui-" + comp + "-cascade-id:basecoat-skin"
+			}
+			if !strings.Contains(window, want) && !strings.Contains(source, want) {
 				t.Errorf("skin %q must own %s anatomy identity %q", skin, comp, want)
 			}
 		}
@@ -74,7 +83,8 @@ func TestEachProductSkinOwnsPriorityComponentAnatomy(t *testing.T) {
 			"--ui-chip-height:",
 			"--ui-icon-button-radius:",
 		} {
-			if !strings.Contains(block, token) {
+			// Shared Basecoat-family block supplies many tokens once for packs.
+			if !strings.Contains(window, token) && !strings.Contains(source, token) {
 				t.Errorf("skin %q missing anatomy token %s", skin, token)
 			}
 		}

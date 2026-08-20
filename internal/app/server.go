@@ -238,13 +238,20 @@ const (
 type productSkin string
 
 const (
-	skinNone     productSkin = "none"
-	skinMaterial productSkin = "material"
-	skinBasecoat productSkin = "basecoat"
-	skinBaseUI   productSkin = "baseui"
-	skinAlden    productSkin = "alden"
-	skinLinear   productSkin = "linear"
-	skinVercel   productSkin = "vercel"
+	skinNone         productSkin = "none"
+	skinMaterial     productSkin = "material"
+	skinBasecoat     productSkin = "basecoat" // Vega default pack
+	skinBasecoatNova productSkin = "basecoat-nova"
+	skinBasecoatMaia productSkin = "basecoat-maia"
+	skinBasecoatLyra productSkin = "basecoat-lyra"
+	skinBasecoatMira productSkin = "basecoat-mira"
+	skinBasecoatLuma productSkin = "basecoat-luma"
+	skinBasecoatSera productSkin = "basecoat-sera"
+	skinBasecoatRhea productSkin = "basecoat-rhea"
+	skinBaseUI       productSkin = "baseui"
+	skinAlden        productSkin = "alden"
+	skinLinear       productSkin = "linear"
+	skinVercel       productSkin = "vercel"
 )
 
 type documentSelection struct {
@@ -262,14 +269,21 @@ type visualRecipe struct {
 	Skin      productSkin
 }
 
-// visualRecipes is the public two-select vocabulary. Basecoat/Vercel/Alden/
-// Linear are product skin overlays (and therefore win the reference layer).
-// Material and Base UI neutral are explicit reference presets; Base UI neutral
-// is Gelium-authored and never claims to ship Base UI's CSS.
+// visualRecipes is the public two-select vocabulary. Basecoat style packs
+// (Vega default + Nova/Maia/…) and product skins win over reference. Material
+// and Base UI neutral are explicit reference presets; Base UI neutral is
+// Gelium-authored and never claims to ship Base UI package CSS.
 var visualRecipes = []visualRecipe{
 	{Value: "default", Label: "Default for behavior", Reference: "auto", Skin: skinNone},
 	{Value: "material", Label: "Material visual", Reference: string(referenceMaterial), Skin: skinNone},
-	{Value: "basecoat", Label: "Basecoat visual", Reference: "auto", Skin: skinBasecoat},
+	{Value: "basecoat", Label: "Basecoat Vega", Reference: "auto", Skin: skinBasecoat},
+	{Value: "basecoat-nova", Label: "Basecoat Nova", Reference: "auto", Skin: skinBasecoatNova},
+	{Value: "basecoat-maia", Label: "Basecoat Maia", Reference: "auto", Skin: skinBasecoatMaia},
+	{Value: "basecoat-lyra", Label: "Basecoat Lyra", Reference: "auto", Skin: skinBasecoatLyra},
+	{Value: "basecoat-mira", Label: "Basecoat Mira", Reference: "auto", Skin: skinBasecoatMira},
+	{Value: "basecoat-luma", Label: "Basecoat Luma", Reference: "auto", Skin: skinBasecoatLuma},
+	{Value: "basecoat-sera", Label: "Basecoat Sera", Reference: "auto", Skin: skinBasecoatSera},
+	{Value: "basecoat-rhea", Label: "Basecoat Rhea", Reference: "auto", Skin: skinBasecoatRhea},
 	{Value: "baseui", Label: "Base UI neutral", Reference: string(referenceBaseUI), Skin: skinNone},
 	{Value: "vercel", Label: "Vercel", Reference: "auto", Skin: skinVercel},
 	{Value: "alden", Label: "Alden", Reference: "auto", Skin: skinAlden},
@@ -310,6 +324,20 @@ func normalizeSkin(raw string) (productSkin, bool) {
 		return skinMaterial, true
 	case string(skinBasecoat):
 		return skinBasecoat, true
+	case string(skinBasecoatNova):
+		return skinBasecoatNova, true
+	case string(skinBasecoatMaia):
+		return skinBasecoatMaia, true
+	case string(skinBasecoatLyra):
+		return skinBasecoatLyra, true
+	case string(skinBasecoatMira):
+		return skinBasecoatMira, true
+	case string(skinBasecoatLuma):
+		return skinBasecoatLuma, true
+	case string(skinBasecoatSera):
+		return skinBasecoatSera, true
+	case string(skinBasecoatRhea):
+		return skinBasecoatRhea, true
 	case string(skinBaseUI):
 		return skinBaseUI, true
 	case string(skinAlden):
@@ -321,6 +349,11 @@ func normalizeSkin(raw string) (productSkin, bool) {
 	default:
 		return "", false
 	}
+}
+
+func isBasecoatFamilySkin(skin productSkin) bool {
+	s := string(skin)
+	return s == string(skinBasecoat) || strings.HasPrefix(s, "basecoat-")
 }
 
 func defaultReferenceForBehavior(behavior accordionBehavior) referencePreset {
@@ -491,6 +524,11 @@ func (s documentSelection) legacyThemeClass() string {
 		return ""
 	}
 	if s.Skin != skinNone {
+		// Basecoat style packs share the Basecoat color theme sheet; pack
+		// differences live in data-gelium-skin anatomy tokens.
+		if isBasecoatFamilySkin(s.Skin) {
+			return "theme-basecoat"
+		}
 		return "theme-" + string(s.Skin)
 	}
 	if s.Reference != referenceNone {

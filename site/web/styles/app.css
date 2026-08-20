@@ -13,6 +13,7 @@
 @import "./component-reference.css" layer(gelium.reference);
 @import "./accordion-skin.css" layer(gelium.skin);
 @import "./component-skin.css" layer(gelium.skin);
+@import "./basecoat-pack-skins.css" layer(gelium.skin);
 /*
  * Theme bundle (Phase H mechanism): themes ship as themes/<name>/theme.css
  * with their own root selector (.theme-<name>, light + dark self-contained)

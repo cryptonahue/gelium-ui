@@ -1,0 +1,407 @@
+/*
+ * Basecoat style packs as Gelium product skins.
+ *
+ * Evidence: basecoat-css@1.0.2 (docs/audit/packages/basecoat-css-1.0.2.tgz)
+ *   dist/styles/{vega,nova,maia,lyra,mira,luma,sera,rhea}.css
+ *
+ * Gelium skin=basecoat remains the default Vega pack. Additional packs are
+ * first-class skins so the Recipe visual select can expose real Basecoat
+ * family differences — Basecoat's base layer alone is intentionally thin;
+ * style packs own the visible anatomy.
+ *
+ * No Basecoat classes/runtime. Touch floor stays >=44px via core max().
+ */
+
+/* Shared non-button anatomy for every Basecoat-family pack. */
+html[data-gelium-skin="basecoat-nova"],
+html[data-gelium-skin="basecoat-maia"],
+html[data-gelium-skin="basecoat-lyra"],
+html[data-gelium-skin="basecoat-mira"],
+html[data-gelium-skin="basecoat-luma"],
+html[data-gelium-skin="basecoat-sera"],
+html[data-gelium-skin="basecoat-rhea"] {
+  --ui-accordion-item-overlap: 0;
+  --ui-button-min-height: var(--ui-touch-target);
+  --ui-button-padding-y: 0;
+  --ui-button-spinner-size: 1rem;
+  --ui-button-focus-outline: none;
+  --ui-button-focus-offset: 0;
+  --ui-button-focus-border-color: var(--ui-color-focus-ring);
+  --ui-button-shadow: none;
+  --ui-button-primary-bg: var(--ui-color-primary);
+  --ui-button-primary-fg: var(--ui-color-primary-fg);
+  --ui-button-primary-border: transparent;
+  --ui-button-primary-hover-bg: color-mix(in oklab, var(--ui-color-primary) 80%, transparent);
+  --ui-button-primary-hover-border: transparent;
+  --ui-button-primary-hover-fg: var(--ui-color-primary-fg);
+  --ui-button-primary-hover-shadow: none;
+  --ui-button-primary-active-bg: color-mix(in oklab, var(--ui-color-primary) 70%, transparent);
+  --ui-button-primary-active-border: transparent;
+  --ui-button-primary-active-fg: var(--ui-color-primary-fg);
+  --ui-button-primary-active-shadow: none;
+  --ui-button-secondary-bg: var(--ui-color-secondary);
+  --ui-button-secondary-fg: var(--ui-color-secondary-fg);
+  --ui-button-secondary-border: transparent;
+  --ui-button-secondary-hover-bg: color-mix(in oklch, var(--ui-color-secondary), var(--ui-color-fg) 5%);
+  --ui-button-secondary-hover-border: transparent;
+  --ui-button-secondary-hover-fg: var(--ui-color-secondary-fg);
+  --ui-button-secondary-hover-shadow: none;
+  --ui-button-secondary-active-bg: color-mix(in oklch, var(--ui-color-secondary), var(--ui-color-fg) 10%);
+  --ui-button-secondary-active-border: transparent;
+  --ui-button-secondary-active-fg: var(--ui-color-secondary-fg);
+  --ui-button-secondary-active-shadow: none;
+  --ui-button-outline-fg: var(--ui-color-fg);
+  --ui-button-outline-border: var(--ui-color-border);
+  --ui-button-outline-hover-fg: var(--ui-color-fg);
+  --ui-button-outline-active-fg: var(--ui-color-fg);
+  --ui-button-text-bg: transparent;
+  --ui-button-text-fg: var(--ui-color-fg);
+  --ui-button-text-border: transparent;
+  --ui-button-text-hover-border: transparent;
+  --ui-button-text-hover-fg: var(--ui-color-fg);
+  --ui-button-text-hover-shadow: none;
+  --ui-button-text-active-border: transparent;
+  --ui-button-text-active-fg: var(--ui-color-fg);
+  --ui-button-text-active-shadow: none;
+  --ui-button-disabled-opacity: .5;
+  --ui-field-radius: .375rem;
+  --ui-field-padding-x: .75rem;
+  --ui-field-padding-y: .75rem;
+  --ui-text-field-textarea-min-height: 6rem;
+  --ui-text-field-error-icon-size: var(--ui-size-icon);
+  --ui-size-field: max(var(--ui-touch-target), 2.25rem);
+  --ui-select-height: var(--ui-size-field);
+  --ui-select-radius: .375rem;
+  --ui-select-radius-top: .375rem .375rem 0 0;
+  --ui-select-caret-reserve: 2.25rem;
+  --ui-checkbox-size: 16px;
+  --ui-checkbox-radius: 4px;
+  --ui-checkbox-outline-width: var(--ui-border-width-2);
+  --ui-checkbox-mark-width: 5px;
+  --ui-checkbox-mark-height: 9px;
+  --ui-checkbox-mark-stroke: 2px;
+  --ui-checkbox-indeterminate-width: 8px;
+  --ui-checkbox-indeterminate-height: 2px;
+  --ui-radio-size: 16px;
+  --ui-radio-radius: 50%;
+  --ui-radio-outline-width: var(--ui-border-width-2);
+  --ui-radio-dot-size: 8px;
+  --ui-switch-width: 32px;
+  --ui-switch-height: 18.4px;
+  --ui-switch-radius: var(--ui-radius-full);
+  --ui-switch-outline-width: var(--ui-border-width-2);
+  --ui-switch-handle-size: 16px;
+  --ui-switch-handle-selected-size: 16px;
+  --ui-switch-handle-pressed-size: 16px;
+  --ui-switch-handle-inset: 1.2px;
+  --ui-dialog-min-width: 280px;
+  --ui-dialog-min-height: 140px;
+  --ui-dialog-max-width: 560px;
+  --ui-dialog-radius: .75rem;
+  --ui-tabs-height: 44px;
+  --ui-tabs-stacked-height: 56px;
+  --ui-tabs-indicator-height: 2px;
+  --ui-tabs-indicator-height-secondary: 2px;
+  --ui-card-radius: .75rem;
+  --ui-card-padding: var(--ui-space-4);
+  --ui-badge-size: 6px;
+  --ui-badge-large-size: 16px;
+  --ui-chip-height: 1.75rem;
+  --ui-chip-radius: var(--ui-radius-full);
+  --ui-chip-remove-size: 1.25rem;
+  /* Accordion pack default = Basecoat flat list; packs may override radius. */
+  --ui-accordion-item-overlap: 0;
+  --ui-accordion-root-display: flex;
+  --ui-accordion-root-direction: column;
+  --ui-accordion-root-width: 100%;
+  --ui-accordion-root-gap: 0;
+  --ui-accordion-root-max-width: none;
+  --ui-accordion-root-surface: transparent;
+  --ui-accordion-root-border: 0;
+  --ui-accordion-root-radius: 0;
+  --ui-accordion-root-padding: 0;
+  --ui-accordion-item-border: 0;
+  --ui-accordion-item-divider-border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
+  --ui-accordion-item-radius: 0;
+  --ui-accordion-item-surface: transparent;
+  --ui-accordion-item-shadow: none;
+  --ui-accordion-item-open-shadow: none;
+  --ui-accordion-trigger-min-height: var(--ui-touch-target);
+  --ui-accordion-trigger-padding-x: 0;
+  --ui-accordion-trigger-padding-y: var(--ui-space-4);
+  --ui-accordion-trigger-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-accordion-trigger-align: flex-start;
+  --ui-accordion-trigger-border: var(--ui-border-width-1) solid transparent;
+  --ui-accordion-trigger-radius: .375rem;
+  --ui-accordion-trigger-hover-surface: transparent;
+  --ui-accordion-trigger-hover-decoration: underline;
+  --ui-accordion-icon-flex: 0 0 1rem;
+  --ui-accordion-icon-width: 1rem;
+  --ui-accordion-icon-height: 1rem;
+  --ui-accordion-icon-margin-inline-start: auto;
+  --ui-accordion-icon-size: 1rem;
+  --ui-accordion-icon-color: var(--ui-color-fg-muted);
+  --ui-accordion-chevron-display: block;
+  --ui-accordion-plus-display: none;
+  --ui-accordion-icon-rotation: 180deg;
+  --ui-accordion-panel-padding-top: 0;
+  --ui-accordion-panel-padding-x: 0;
+  --ui-accordion-panel-padding-y: var(--ui-space-4);
+  --ui-accordion-panel-font: 400 .875rem/1.25rem var(--ui-font-sans);
+}
+
+/* Nova: denser default (h-8), rounded-lg, outline without shadow-xs. */
+html[data-gelium-skin="basecoat-nova"] {
+  --ui-button-cascade-id: basecoat-nova-skin;
+  --ui-button-padding-x: .625rem;
+  --ui-button-gap: .375rem;
+  --ui-button-radius: .5rem;
+  --ui-button-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-button-outline-bg: var(--ui-color-canvas);
+  --ui-button-outline-hover-bg: var(--ui-color-surface);
+  --ui-button-outline-hover-border: var(--ui-color-border);
+  --ui-button-outline-hover-shadow: none;
+  --ui-button-outline-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
+  --ui-button-outline-active-border: var(--ui-color-border);
+  --ui-button-outline-active-shadow: none;
+  --ui-button-text-hover-bg: var(--ui-color-surface);
+  --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
+  --ui-icon-button-radius: .5rem;
+  --ui-field-cascade-id: basecoat-nova-skin;
+  --ui-select-cascade-id: basecoat-nova-skin;
+  --ui-checkbox-cascade-id: basecoat-nova-skin;
+  --ui-radio-cascade-id: basecoat-nova-skin;
+  --ui-switch-cascade-id: basecoat-nova-skin;
+  --ui-dialog-cascade-id: basecoat-nova-skin;
+  --ui-tabs-cascade-id: basecoat-nova-skin;
+  --ui-card-cascade-id: basecoat-nova-skin;
+  --ui-badge-cascade-id: basecoat-nova-skin;
+  --ui-chip-cascade-id: basecoat-nova-skin;
+  --ui-accordion-cascade-id: basecoat-nova-skin;
+  --ui-accordion-trigger-radius: .5rem;
+}
+
+/* Maia: pill/4xl radius, slightly roomier horizontal padding. */
+html[data-gelium-skin="basecoat-maia"] {
+  --ui-button-cascade-id: basecoat-maia-skin;
+  --ui-button-padding-x: .75rem;
+  --ui-button-gap: .375rem;
+  --ui-button-radius: 1.5rem;
+  --ui-button-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-button-outline-bg: color-mix(in srgb, var(--ui-color-fg) 8%, var(--ui-color-canvas));
+  --ui-button-outline-hover-bg: color-mix(in srgb, var(--ui-color-fg) 14%, var(--ui-color-canvas));
+  --ui-button-outline-hover-border: var(--ui-color-border);
+  --ui-button-outline-hover-shadow: none;
+  --ui-button-outline-active-bg: color-mix(in srgb, var(--ui-color-fg) 18%, var(--ui-color-canvas));
+  --ui-button-outline-active-border: var(--ui-color-border);
+  --ui-button-outline-active-shadow: none;
+  --ui-button-text-hover-bg: color-mix(in srgb, var(--ui-color-fg) 8%, transparent);
+  --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 14%, transparent);
+  --ui-icon-button-radius: 1.5rem;
+  --ui-field-cascade-id: basecoat-maia-skin;
+  --ui-field-radius: 1rem;
+  --ui-select-cascade-id: basecoat-maia-skin;
+  --ui-select-radius: 1rem;
+  --ui-select-radius-top: 1rem 1rem 0 0;
+  --ui-checkbox-cascade-id: basecoat-maia-skin;
+  --ui-radio-cascade-id: basecoat-maia-skin;
+  --ui-switch-cascade-id: basecoat-maia-skin;
+  --ui-dialog-cascade-id: basecoat-maia-skin;
+  --ui-dialog-radius: 1.25rem;
+  --ui-tabs-cascade-id: basecoat-maia-skin;
+  --ui-card-cascade-id: basecoat-maia-skin;
+  --ui-card-radius: 1.25rem;
+  --ui-badge-cascade-id: basecoat-maia-skin;
+  --ui-chip-cascade-id: basecoat-maia-skin;
+  --ui-chip-radius: 1.5rem;
+  --ui-accordion-cascade-id: basecoat-maia-skin;
+  --ui-accordion-trigger-radius: 1rem;
+}
+
+/* Lyra: square, denser type (text-xs), tighter ring. */
+html[data-gelium-skin="basecoat-lyra"] {
+  --ui-button-cascade-id: basecoat-lyra-skin;
+  --ui-button-padding-x: .625rem;
+  --ui-button-gap: .375rem;
+  --ui-button-radius: 0;
+  --ui-button-font: 500 .75rem/1.25rem var(--ui-font-sans);
+  --ui-button-outline-bg: var(--ui-color-canvas);
+  --ui-button-outline-hover-bg: var(--ui-color-surface);
+  --ui-button-outline-hover-border: var(--ui-color-border);
+  --ui-button-outline-hover-shadow: none;
+  --ui-button-outline-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
+  --ui-button-outline-active-border: var(--ui-color-border);
+  --ui-button-outline-active-shadow: none;
+  --ui-button-text-hover-bg: var(--ui-color-surface);
+  --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
+  --ui-icon-button-radius: 0;
+  --ui-field-cascade-id: basecoat-lyra-skin;
+  --ui-field-radius: 0;
+  --ui-select-cascade-id: basecoat-lyra-skin;
+  --ui-select-radius: 0;
+  --ui-select-radius-top: 0;
+  --ui-checkbox-cascade-id: basecoat-lyra-skin;
+  --ui-checkbox-radius: 0;
+  --ui-radio-cascade-id: basecoat-lyra-skin;
+  --ui-switch-cascade-id: basecoat-lyra-skin;
+  --ui-dialog-cascade-id: basecoat-lyra-skin;
+  --ui-dialog-radius: 0;
+  --ui-tabs-cascade-id: basecoat-lyra-skin;
+  --ui-card-cascade-id: basecoat-lyra-skin;
+  --ui-card-radius: 0;
+  --ui-badge-cascade-id: basecoat-lyra-skin;
+  --ui-chip-cascade-id: basecoat-lyra-skin;
+  --ui-chip-radius: 0;
+  --ui-accordion-cascade-id: basecoat-lyra-skin;
+  --ui-accordion-trigger-radius: 0;
+}
+
+/* Mira: compact h-7 density, smaller type. */
+html[data-gelium-skin="basecoat-mira"] {
+  --ui-button-cascade-id: basecoat-mira-skin;
+  --ui-button-padding-x: .5rem;
+  --ui-button-gap: .25rem;
+  --ui-button-radius: .375rem;
+  --ui-button-font: 500 .75rem/1.35 var(--ui-font-sans);
+  --ui-button-outline-bg: transparent;
+  --ui-button-outline-hover-bg: color-mix(in srgb, var(--ui-color-fg) 10%, var(--ui-color-canvas));
+  --ui-button-outline-hover-border: var(--ui-color-border);
+  --ui-button-outline-hover-shadow: none;
+  --ui-button-outline-active-bg: color-mix(in srgb, var(--ui-color-fg) 14%, var(--ui-color-canvas));
+  --ui-button-outline-active-border: var(--ui-color-border);
+  --ui-button-outline-active-shadow: none;
+  --ui-button-text-hover-bg: color-mix(in srgb, var(--ui-color-fg) 8%, transparent);
+  --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 12%, transparent);
+  --ui-icon-button-radius: .375rem;
+  --ui-field-cascade-id: basecoat-mira-skin;
+  --ui-field-radius: .375rem;
+  --ui-field-padding-y: .5rem;
+  --ui-select-cascade-id: basecoat-mira-skin;
+  --ui-checkbox-cascade-id: basecoat-mira-skin;
+  --ui-radio-cascade-id: basecoat-mira-skin;
+  --ui-switch-cascade-id: basecoat-mira-skin;
+  --ui-dialog-cascade-id: basecoat-mira-skin;
+  --ui-tabs-cascade-id: basecoat-mira-skin;
+  --ui-card-cascade-id: basecoat-mira-skin;
+  --ui-badge-cascade-id: basecoat-mira-skin;
+  --ui-chip-cascade-id: basecoat-mira-skin;
+  --ui-chip-height: 1.5rem;
+  --ui-accordion-cascade-id: basecoat-mira-skin;
+  --ui-accordion-trigger-font: 500 .75rem/1.25rem var(--ui-font-sans);
+  --ui-accordion-panel-font: 400 .75rem/1.25rem var(--ui-font-sans);
+}
+
+/* Luma: soft pill like Maia, transparent dark outline treatment. */
+html[data-gelium-skin="basecoat-luma"] {
+  --ui-button-cascade-id: basecoat-luma-skin;
+  --ui-button-padding-x: .75rem;
+  --ui-button-gap: .375rem;
+  --ui-button-radius: 1.5rem;
+  --ui-button-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-button-outline-bg: var(--ui-color-canvas);
+  --ui-button-outline-hover-bg: var(--ui-color-surface);
+  --ui-button-outline-hover-border: var(--ui-color-border);
+  --ui-button-outline-hover-shadow: none;
+  --ui-button-outline-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
+  --ui-button-outline-active-border: var(--ui-color-border);
+  --ui-button-outline-active-shadow: none;
+  --ui-button-text-hover-bg: var(--ui-color-surface);
+  --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
+  --ui-icon-button-radius: 1.5rem;
+  --ui-field-cascade-id: basecoat-luma-skin;
+  --ui-field-radius: 1rem;
+  --ui-select-cascade-id: basecoat-luma-skin;
+  --ui-select-radius: 1rem;
+  --ui-select-radius-top: 1rem 1rem 0 0;
+  --ui-checkbox-cascade-id: basecoat-luma-skin;
+  --ui-radio-cascade-id: basecoat-luma-skin;
+  --ui-switch-cascade-id: basecoat-luma-skin;
+  --ui-dialog-cascade-id: basecoat-luma-skin;
+  --ui-dialog-radius: 1.25rem;
+  --ui-tabs-cascade-id: basecoat-luma-skin;
+  --ui-card-cascade-id: basecoat-luma-skin;
+  --ui-card-radius: 1.25rem;
+  --ui-badge-cascade-id: basecoat-luma-skin;
+  --ui-chip-cascade-id: basecoat-luma-skin;
+  --ui-chip-radius: 1.5rem;
+  --ui-accordion-cascade-id: basecoat-luma-skin;
+  --ui-accordion-trigger-radius: 1rem;
+}
+
+/* Sera: square, uppercase tracking, taller default, wider padding. */
+html[data-gelium-skin="basecoat-sera"] {
+  --ui-button-cascade-id: basecoat-sera-skin;
+  --ui-button-padding-x: 1.5rem;
+  --ui-button-gap: .375rem;
+  --ui-button-radius: 0;
+  --ui-button-font: 600 .75rem/1 var(--ui-font-sans);
+  --ui-button-letter-spacing: .1em;
+  --ui-button-text-transform: uppercase;
+  --ui-button-outline-bg: transparent;
+  --ui-button-outline-hover-bg: var(--ui-color-surface);
+  --ui-button-outline-hover-border: var(--ui-color-border);
+  --ui-button-outline-hover-shadow: none;
+  --ui-button-outline-active-bg: color-mix(in srgb, var(--ui-color-fg) 8%, var(--ui-color-canvas));
+  --ui-button-outline-active-border: var(--ui-color-border);
+  --ui-button-outline-active-shadow: none;
+  --ui-button-text-hover-bg: var(--ui-color-surface);
+  --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 8%, transparent);
+  --ui-icon-button-radius: 0;
+  --ui-field-cascade-id: basecoat-sera-skin;
+  --ui-field-radius: 0;
+  --ui-select-cascade-id: basecoat-sera-skin;
+  --ui-select-radius: 0;
+  --ui-select-radius-top: 0;
+  --ui-checkbox-cascade-id: basecoat-sera-skin;
+  --ui-checkbox-radius: 0;
+  --ui-radio-cascade-id: basecoat-sera-skin;
+  --ui-switch-cascade-id: basecoat-sera-skin;
+  --ui-dialog-cascade-id: basecoat-sera-skin;
+  --ui-dialog-radius: 0;
+  --ui-tabs-cascade-id: basecoat-sera-skin;
+  --ui-card-cascade-id: basecoat-sera-skin;
+  --ui-card-radius: 0;
+  --ui-badge-cascade-id: basecoat-sera-skin;
+  --ui-chip-cascade-id: basecoat-sera-skin;
+  --ui-chip-radius: 0;
+  --ui-accordion-cascade-id: basecoat-sera-skin;
+  --ui-accordion-trigger-radius: 0;
+  --ui-accordion-trigger-font: 600 .75rem/1.25rem var(--ui-font-sans);
+}
+
+/* Rhea: soft 2xl radius, slightly compact height intent. */
+html[data-gelium-skin="basecoat-rhea"] {
+  --ui-button-cascade-id: basecoat-rhea-skin;
+  --ui-button-padding-x: .75rem;
+  --ui-button-gap: .375rem;
+  --ui-button-radius: 1rem;
+  --ui-button-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-button-outline-bg: var(--ui-color-canvas);
+  --ui-button-outline-hover-bg: var(--ui-color-surface);
+  --ui-button-outline-hover-border: var(--ui-color-border);
+  --ui-button-outline-hover-shadow: none;
+  --ui-button-outline-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
+  --ui-button-outline-active-border: var(--ui-color-border);
+  --ui-button-outline-active-shadow: none;
+  --ui-button-text-hover-bg: var(--ui-color-surface);
+  --ui-button-text-active-bg: color-mix(in srgb, var(--ui-color-fg) 6%, var(--ui-color-canvas));
+  --ui-icon-button-radius: 1rem;
+  --ui-field-cascade-id: basecoat-rhea-skin;
+  --ui-field-radius: .75rem;
+  --ui-select-cascade-id: basecoat-rhea-skin;
+  --ui-select-radius: .75rem;
+  --ui-select-radius-top: .75rem .75rem 0 0;
+  --ui-checkbox-cascade-id: basecoat-rhea-skin;
+  --ui-radio-cascade-id: basecoat-rhea-skin;
+  --ui-switch-cascade-id: basecoat-rhea-skin;
+  --ui-dialog-cascade-id: basecoat-rhea-skin;
+  --ui-dialog-radius: 1rem;
+  --ui-tabs-cascade-id: basecoat-rhea-skin;
+  --ui-card-cascade-id: basecoat-rhea-skin;
+  --ui-card-radius: 1rem;
+  --ui-badge-cascade-id: basecoat-rhea-skin;
+  --ui-chip-cascade-id: basecoat-rhea-skin;
+  --ui-chip-radius: 1rem;
+  --ui-accordion-cascade-id: basecoat-rhea-skin;
+  --ui-accordion-trigger-radius: .75rem;
+}

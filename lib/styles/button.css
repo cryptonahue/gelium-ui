@@ -11,6 +11,8 @@
     border-radius: var(--ui-button-radius, var(--ui-radius-full));
     padding: var(--ui-button-padding-y, .625rem) var(--ui-button-padding-x, var(--ui-space-6));
     font: var(--ui-button-font, var(--ui-type-label-lg));
+    letter-spacing: var(--ui-button-letter-spacing, normal);
+    text-transform: var(--ui-button-text-transform, none);
     text-decoration: none;
     cursor: pointer;
     background: var(--ui-button-bg, transparent);
