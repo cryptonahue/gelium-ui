@@ -51,7 +51,7 @@ func TestExplicitNativeDefaultRendersNeutralRootWithoutLegacyMaterial(t *testing
 		t.Fatalf("status = %d", res.Code)
 	}
 	body := res.Body.String()
-	if !strings.Contains(body, `data-gelium-reference="none" data-gelium-skin="none" data-gelium-scheme="dark"`) {
+	if !strings.Contains(body, `data-gelium-reference="none" data-gelium-skin="none" data-gelium-contract="gelium" data-gelium-scheme="dark"`) {
 		t.Fatalf("native default must render its resolved neutral attributes: %s", htmlClassSnippet(body))
 	}
 	if strings.Contains(body, `theme-material`) {
@@ -181,11 +181,11 @@ func TestDefaultAndInvalidSelectionsKeepMaterialClass(t *testing.T) {
 func TestDocumentSelectionRendersOnlySafeResolvedAttributes(t *testing.T) {
 	server := New()
 	for _, tt := range []struct{ path, want string }{
-		{"/components/accordion?theme=material", `class="theme-material" data-gelium-reference="material" data-gelium-skin="none" data-gelium-scheme="system"`},
-		{"/components/accordion?behavior=material&reference=material&skin=basecoat&execution=native", `class="theme-basecoat" data-gelium-reference="material" data-gelium-skin="basecoat" data-gelium-scheme="system"`},
-		{"/components/accordion?behavior=baseui&reference=baseui&skin=vercel&execution=native", `class="theme-vercel" data-gelium-reference="baseui" data-gelium-skin="vercel" data-gelium-scheme="system"`},
-		{"/components/accordion?behavior=basecoat&reference=basecoat&skin=alden&execution=htmx&scheme=dark", `class="theme-alden theme-dark" data-gelium-reference="basecoat" data-gelium-skin="alden" data-gelium-scheme="dark" data-theme="dark"`},
-		{"/components/accordion?reference=%22%20onload%3Dalert(1)&skin=%3Cscript%3E&scheme=evil", `data-gelium-reference="none" data-gelium-skin="none" data-gelium-scheme="system"`},
+		{"/components/accordion?theme=material", `class="theme-material" data-gelium-reference="material" data-gelium-skin="none" data-gelium-contract="gelium" data-gelium-scheme="system"`},
+		{"/components/accordion?behavior=material&reference=material&skin=basecoat&execution=native", `class="theme-basecoat" data-gelium-reference="material" data-gelium-skin="basecoat" data-gelium-contract="gelium" data-gelium-scheme="system"`},
+		{"/components/accordion?behavior=baseui&reference=baseui&skin=vercel&execution=native", `class="theme-vercel" data-gelium-reference="baseui" data-gelium-skin="vercel" data-gelium-contract="gelium" data-gelium-scheme="system"`},
+		{"/components/accordion?behavior=basecoat&reference=basecoat&skin=alden&execution=htmx&scheme=dark", `class="theme-alden theme-dark" data-gelium-reference="basecoat" data-gelium-skin="alden" data-gelium-contract="gelium" data-gelium-scheme="dark" data-theme="dark"`},
+		{"/components/accordion?reference=%22%20onload%3Dalert(1)&skin=%3Cscript%3E&scheme=evil", `data-gelium-reference="none" data-gelium-skin="none" data-gelium-contract="gelium" data-gelium-scheme="system"`},
 	} {
 		t.Run(tt.path, func(t *testing.T) {
 			res := httptest.NewRecorder()

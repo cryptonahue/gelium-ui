@@ -241,7 +241,7 @@ func TestLayoutRendersThemeClassOnHTMLElement(t *testing.T) {
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/", nil))
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<html lang="en" class="theme-material" data-gelium-reference="none" data-gelium-skin="none" data-gelium-scheme="system">`,
+		`<html lang="en" class="theme-material" data-gelium-reference="none" data-gelium-skin="none" data-gelium-contract="gelium" data-gelium-scheme="system">`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("home does not render the server-driven theme class %q", contract)

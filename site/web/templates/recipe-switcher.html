@@ -2,8 +2,8 @@
   Recipe selector: one native GET form, deliberately independent of JavaScript.
   `visual` is a short-lived safe recipe key because one select cannot set both
   reference and skin. The middleware resolves it and redirects to a canonical
-  behavior/reference/skin/scheme/execution URL. The hidden reference/skin fields
-  document the canonical form shape and avoid any legacy `theme` conflict.
+  behavior/reference/skin/scheme/contract/execution URL. The hidden reference/skin
+  fields document the canonical form shape and avoid any legacy `theme` conflict.
 */}}
 {{define "recipe-switcher"}}
 <form class="ui-recipe-switcher{{if .Compact}} ui-recipe-switcher--compact{{else}} ui-recipe-switcher--full{{end}}" method="get" aria-label="Component recipe">
@@ -27,9 +27,15 @@
       <input type="hidden" name="scheme" value="{{.Scheme}}">
       {{if .Compact}}
       <input type="hidden" name="execution" value="{{.Execution}}">
+      <input type="hidden" name="contract" value="{{.Contract}}">
       {{else}}
       <details class="ui-recipe-switcher-advanced">
         <summary>Advanced</summary>
+        <p>Contract controls Gelium platform floors (for example touch targets). Source-faithful keeps third-party skin density; product CSS can still override either mode.</p>
+        <label for="{{.ID}}-contract">Contract</label>
+        <select id="{{.ID}}-contract" name="contract">
+          {{range .Contracts}}<option value="{{.Value}}"{{if .Selected}} selected{{end}}>{{.Label}}</option>{{end}}
+        </select>
         <p>Execution does not change behavior. HTMX is optional server enhancement; native details remains the baseline.</p>
         <label for="{{.ID}}-execution">Execution</label>
         <select id="{{.ID}}-execution" name="execution">
@@ -41,6 +47,6 @@
     </div>
   </fieldset>
   <p class="ui-recipe-switcher-summary">{{.Summary}}</p>
-  {{if not .Compact}}<p class="ui-recipe-switcher-help">Visual mapping: Default uses <code>reference=auto</code> + <code>skin=none</code>; Material and Base UI neutral use Gelium reference presets; Basecoat, Vercel, Alden, and Linear use product skin overlays. Base UI neutral is not official Base UI CSS.</p>{{end}}
+  {{if not .Compact}}<p class="ui-recipe-switcher-help">Visual mapping: Default uses <code>reference=auto</code> + <code>skin=none</code>; Material and Base UI neutral use Gelium reference presets; Basecoat packs, Vercel, Alden, and Linear use product skin overlays. Base UI neutral is not official Base UI CSS. Contract defaults to Gelium floors; <code>contract=source</code> opts into source-faithful density.</p>{{end}}
 </form>
 {{end}}

@@ -18,7 +18,7 @@ func TestThemeClassRenderedAndServedCSSCarriesRootSelector(t *testing.T) {
 	New().ServeHTTP(htmlRes, httptest.NewRequest(http.MethodGet, "/", nil))
 	body := htmlRes.Body.String()
 	for _, contract := range []string{
-		`<html lang="en" class="theme-material" data-gelium-reference="none" data-gelium-skin="none" data-gelium-scheme="system">`,
+		`<html lang="en" class="theme-material" data-gelium-reference="none" data-gelium-skin="none" data-gelium-contract="gelium" data-gelium-scheme="system">`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("home does not render the server-driven theme class %q", contract)
@@ -52,7 +52,7 @@ func TestBasecoatThemeClassRenderedAndServedCSSCarriesRootSelector(t *testing.T)
 	if err := tmpl.ExecuteTemplate(&page, "layout", data); err != nil {
 		t.Fatalf("execute layout with theme-basecoat: %v", err)
 	}
-	if !strings.Contains(page.String(), `<html lang="en" class="theme-basecoat" data-gelium-reference="none" data-gelium-skin="none" data-gelium-scheme="system">`) {
+	if !strings.Contains(page.String(), `<html lang="en" class="theme-basecoat" data-gelium-reference="none" data-gelium-skin="none" data-gelium-contract="gelium" data-gelium-scheme="system">`) {
 		t.Error("layout must render the requested class on the document root")
 	}
 

@@ -74,10 +74,10 @@ html[data-gelium-reference="basecoat"] {
   /*
    * Basecoat button anatomy from basecoat-css@1.0.2 CDN bundle
    * (docs/audit/packages/basecoat-css-1.0.2.tgz → basecoat.cdn.css .btn rules).
-   * Default size uses spacing*9 (2.25rem); Gelium keeps >=44px touch floor.
+   * Default size uses spacing*9 (2.25rem); Gelium contract may still floor.
    * No Basecoat runtime/classes — token translation only.
    */
-  --ui-button-min-height: var(--ui-touch-target);
+  --ui-button-min-height: 2.25rem;
   --ui-button-padding-y: 0;
   --ui-button-padding-x: .625rem;
   --ui-button-gap: .375rem;
@@ -199,7 +199,7 @@ html[data-gelium-reference="baseui"] {
    * CSS Modules demo). Official package is headless; this is Gelium-authored
    * docs-inspired CSS. Docs height is 2rem; Gelium keeps >=44px touch floor.
    */
-  --ui-button-min-height: var(--ui-touch-target);
+  --ui-button-min-height: 2rem; /* docs CSS Modules demo height; contract may floor */
   --ui-button-padding-y: 0;
   --ui-button-padding-x: .75rem;
   --ui-button-gap: .5rem;

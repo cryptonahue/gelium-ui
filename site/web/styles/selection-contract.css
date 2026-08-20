@@ -1,8 +1,9 @@
 /*
  * Phase 1 cascade contract. Selection is resolved by the server and emitted as
- * data-gelium-reference / data-gelium-skin on <html>. Existing .theme-* sheets
- * remain legacy selector adapters while they are migrated into dedicated
- * reference and skin layers. No component behavior CSS belongs here.
+ * data-gelium-reference / data-gelium-skin / data-gelium-contract on <html>.
+ * Existing .theme-* sheets remain legacy selector adapters while they are
+ * migrated into dedicated reference and skin layers. No component behavior CSS
+ * belongs here.
  *
  * Layer order is declared by app.css:
  *   core -> reference -> skin -> site
@@ -10,8 +11,23 @@
  * adapters move from the legacy .theme-* selector into this layer (Phase 2).
  */
 html[data-gelium-reference],
-html[data-gelium-skin] {
+html[data-gelium-skin],
+html[data-gelium-contract] {
   /* Deliberate no-op selector: compiled CSS retains the server contract. */
+}
+
+/*
+ * Platform contract for control density.
+ * gelium (default): enforce touch floors over skin-authored min sizes.
+ * source: use skin/reference min sizes as authored; product/site may still override.
+ */
+html,
+html[data-gelium-contract="gelium"] {
+  --ui-button-resolved-min-height: max(var(--ui-touch-target), var(--ui-button-min-height, var(--ui-touch-target)));
+}
+
+html[data-gelium-contract="source"] {
+  --ui-button-resolved-min-height: var(--ui-button-min-height, auto);
 }
 
 /* Explicit Native + Default for behavior resolves to none/none. It is a

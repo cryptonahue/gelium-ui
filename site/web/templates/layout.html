@@ -1,5 +1,5 @@
 {{define "layout"}}<!doctype html>
-<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}" data-gelium-reference="{{or .Reference "none"}}" data-gelium-skin="{{or .Skin "none"}}" data-gelium-scheme="{{or .Scheme "system"}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}" data-gelium-reference="{{or .Reference "none"}}" data-gelium-skin="{{or .Skin "none"}}" data-gelium-contract="{{or .Contract "gelium"}}" data-gelium-scheme="{{or .Scheme "system"}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
 <head>
   <meta charset="utf-8">
   <meta name="viewport" content="width=device-width, initial-scale=1, viewport-fit=cover">

@@ -21,7 +21,8 @@ html[data-gelium-skin="basecoat-luma"],
 html[data-gelium-skin="basecoat-sera"],
 html[data-gelium-skin="basecoat-rhea"] {
   --ui-accordion-item-overlap: 0;
-  --ui-button-min-height: var(--ui-touch-target);
+  /* Source-faithful default pack height (Vega h-9). Gelium contract still floors. */
+  --ui-button-min-height: 2.25rem;
   --ui-button-padding-y: 0;
   --ui-button-spinner-size: 1rem;
   --ui-button-focus-outline: none;
@@ -153,6 +154,7 @@ html[data-gelium-skin="basecoat-rhea"] {
 /* Nova: denser default (h-8), rounded-lg, outline without shadow-xs. */
 html[data-gelium-skin="basecoat-nova"] {
   --ui-button-cascade-id: basecoat-nova-skin;
+  --ui-button-min-height: 2rem; /* h-8 */
   --ui-button-padding-x: .625rem;
   --ui-button-gap: .375rem;
   --ui-button-radius: .5rem;
@@ -259,6 +261,7 @@ html[data-gelium-skin="basecoat-lyra"] {
 /* Mira: compact h-7 density, smaller type. */
 html[data-gelium-skin="basecoat-mira"] {
   --ui-button-cascade-id: basecoat-mira-skin;
+  --ui-button-min-height: 1.75rem; /* h-7 */
   --ui-button-padding-x: .5rem;
   --ui-button-gap: .25rem;
   --ui-button-radius: .375rem;
@@ -331,6 +334,7 @@ html[data-gelium-skin="basecoat-luma"] {
 /* Sera: square, uppercase tracking, taller default, wider padding. */
 html[data-gelium-skin="basecoat-sera"] {
   --ui-button-cascade-id: basecoat-sera-skin;
+  --ui-button-min-height: 2.5rem; /* h-10 */
   --ui-button-padding-x: 1.5rem;
   --ui-button-gap: .375rem;
   --ui-button-radius: 0;

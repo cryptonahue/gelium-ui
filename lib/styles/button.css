@@ -2,8 +2,8 @@
   .ui-button {
     position: relative;
     display: inline-flex;
-    /* Visual presets may request denser heights; Gelium keeps the touch floor. */
-    min-height: max(var(--ui-touch-target), var(--ui-button-min-height, var(--ui-touch-target)));
+    /* Visual presets may request denser heights; Gelium contract keeps the touch floor. */
+    min-height: var(--ui-button-resolved-min-height, max(var(--ui-touch-target), var(--ui-button-min-height, var(--ui-touch-target))));
     align-items: center;
     justify-content: center;
     gap: var(--ui-button-gap, var(--ui-space-2));

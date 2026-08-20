@@ -72,7 +72,7 @@ html[data-gelium-skin="material"] {
 
 html[data-gelium-skin="basecoat"] {
   --ui-button-cascade-id: basecoat-skin; /* Vega default pack */
-  --ui-button-min-height: var(--ui-touch-target);
+  --ui-button-min-height: 2.25rem; /* h-9 source density */
   --ui-button-padding-y: 0;
   --ui-button-padding-x: .625rem;
   --ui-button-gap: .375rem;
@@ -188,7 +188,7 @@ html[data-gelium-skin="basecoat"] {
 
 html[data-gelium-skin="baseui"] {
   --ui-button-cascade-id: baseui-skin;
-  --ui-button-min-height: var(--ui-touch-target);
+  --ui-button-min-height: 2rem;
   --ui-button-padding-y: 0;
   --ui-button-padding-x: .75rem;
   --ui-button-gap: .5rem;

@@ -4,7 +4,7 @@
 
 Current release: **v0.5.3** — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) published; monorepo `lib/` + `site/` dogfood; HTMX 4; on-this-page rail; prev/next pagination; demo-first docs; mobile foundations (touch targets, safe areas, reduced motion, overflow containment).
 
-Gelium UI is a server-rendered component library: semantic HTML, copyable components, token-driven `--ui-*` themes, Tailwind CSS 4 and HTMX served locally. No CDN, no client framework, no hydration. JavaScript is progressive enhancement — everything works without it.
+Gelium UI is a **Themeable**, open-code, server-rendered component library: semantic HTML, copyable components, token-driven `--ui-*` themes, Tailwind CSS 4 and HTMX served locally. No CDN, no client framework, no hydration. JavaScript is progressive enhancement — everything works without it.
 
 ## Install (consumer)
 
@@ -27,29 +27,124 @@ Or pick themes + source styles in your own Tailwind entry:
 @import "gelium-ui/styles/index.css";
 ```
 
-Optional progressive-enhancement JS (toast, 422 validation swap, slider fill, view-transition guard):
+Optional progressive-enhancement JS (toast, 422 validation swap, slider fill,
+view-transition guard):
 
 ```html
 <script defer src="node_modules/gelium-ui/js/gelium.js"></script>
 ```
 
-Theme selection is a class on the document root, e.g. `<html class="theme-material">` (add `theme-dark` / `data-theme="dark"` for dark). Copyable HTML partials live under `node_modules/gelium-ui/templates/`.
+Theme selection can still use a class on the document root, e.g.
+`<html class="theme-material">` (add `theme-dark` / `data-theme="dark"` for
+dark). Copyable HTML partials live under `node_modules/gelium-ui/templates/`.
 
-Package page: [npmjs.com/package/gelium-ui](https://www.npmjs.com/package/gelium-ui) · consumer README inside the package.
+Package page: [npmjs.com/package/gelium-ui](https://www.npmjs.com/package/gelium-ui)
+· consumer README inside the package.
 
-## Dos audiencias
+## Architecture (selection model)
 
-- **Instalar y usar** (desarrollador o LLM): `npm install gelium-ui` — CSS, themes, templates, `dist/gelium.css`, `js/gelium.js`. El handler Go embebido es el modo avanzado (docs demo).
-- **Contribuir** (este repo): monorepo npm-workspaces — `lib/` es el paquete publicado, `site/` lo importa por nombre de paquete (dogfooding).
+Gelium separates concerns so one component can combine systems without forks:
 
-## Requisitos
+```text
+Core
+  semantic HTML, a11y, tokens, no-JS baseline
 
-- Go 1.24 o posterior.
-- Node.js 20 o posterior con npm.
+Behavior
+  interaction policy only (native | material | basecoat | baseui)
 
-## Setup y build reproducible (contribuidor)
+Reference visual preset
+  default visual direction of a reference system
+  (material | basecoat | baseui | none)
 
-Desde la raíz del proyecto:
+Product skin
+  overlay that wins over reference
+  (basecoat Vega/Nova/Maia/…, baseui, alden, linear, vercel, …)
+
+Contract
+  gelium  → platform floors (default; e.g. touch ≥44px)
+  source  → third-party-faithful density from the active skin/reference
+
+Site / product
+  always can override tokens on top
+```
+
+### Public query / root attrs
+
+```text
+?behavior=basecoat
+&reference=auto
+&skin=basecoat-mira
+&contract=source
+&scheme=dark
+&execution=native
+```
+
+Root attributes (resolved server-side, allowlisted):
+
+```html
+<html
+  class="theme-basecoat"
+  data-gelium-reference="basecoat"
+  data-gelium-skin="basecoat-mira"
+  data-gelium-contract="source"
+  data-gelium-scheme="dark">
+```
+
+Legacy `?theme=` remains compatible.
+
+### Contract
+
+| Value | Meaning |
+| --- | --- |
+| `gelium` (default) | Gelium platform rules win over denser source sizes |
+| `source` | Use skin/reference authored density; product CSS may still override |
+
+Example: Basecoat Mira wants ~`h-7`. With `contract=gelium` the button stays
+≥ touch target. With `contract=source` the pack density can show, and a site
+token can still raise it again.
+
+Recipe UI exposes Contract under **Advanced**.
+
+### Basecoat style packs
+
+Basecoat’s real look lives in style packs, not only `base`:
+
+| Gelium skin | Basecoat pack |
+| --- | --- |
+| `basecoat` | Vega (default) |
+| `basecoat-nova` | Nova |
+| `basecoat-maia` | Maia |
+| `basecoat-lyra` | Lyra |
+| `basecoat-mira` | Mira |
+| `basecoat-luma` | Luma |
+| `basecoat-sera` | Sera |
+| `basecoat-rhea` | Rhea |
+
+Color foundations still use `.theme-basecoat`. Pack differences are anatomy
+tokens under `data-gelium-skin`. Evidence packages live in
+`docs/audit/packages/`.
+
+### Base UI note
+
+Official `@base-ui/react` is headless (no visual CSS). Gelium’s Base UI visuals
+are **docs-inspired / Gelium-authored**, never claimed as official package CSS.
+
+## Two audiences
+
+- **Install and use** (developer or LLM): `npm install gelium-ui` — CSS, themes,
+  templates, `dist/gelium.css`, `js/gelium.js`. The embedded Go handler is the
+  advanced demo mode.
+- **Contribute** (this repo): npm workspaces monorepo — `lib/` is the published
+  package, `site/` imports it by package name (dogfooding).
+
+## Requirements
+
+- Go 1.24 or later.
+- Node.js 20 or later with npm.
+
+## Setup and reproducible build (contributor)
+
+From the project root:
 
 ```bash
 npm install
@@ -57,9 +152,14 @@ go mod download
 npm run build
 ```
 
-`npm run build` (raíz) encadena: build del site (`tailwindcss` sobre `site/web/styles/app.css` → `site/web/static/app.css`, copia de `htmx.min.js` e iconos) + build del dist de la librería (`lib/styles/dist-entry.css` → `lib/dist/gelium.css`) + copia de `lib/js/gelium.js` → `site/web/static/gelium.js`. Los artefactos finales dentro de `site/web/static/` y `lib/dist/` se mantienen como artefactos de build y son embebidos en el binario Go mediante `embed`.
+`npm run build` (root) chains: site build (`tailwindcss` on
+`site/web/styles/app.css` → `site/web/static/app.css`, copy `htmx.min.js` and
+icons) + library dist (`lib/styles/dist-entry.css` → `lib/dist/gelium.css`) +
+copy `lib/js/gelium.js` → `site/web/static/gelium.js`. Final artifacts under
+`site/web/static/` and `lib/dist/` are build artifacts embedded by the Go binary
+via `embed`.
 
-## Tests y checks (gates)
+## Tests and checks (gates)
 
 ```bash
 go test ./internal/... ./site/... ./lib/...
@@ -69,57 +169,67 @@ git diff --check
 gofmt -l internal site lib
 ```
 
-NUNCA uses `go test ./...`: el árbol incluye paquetes con imports pre-split que los gates excluyen a propósito. Los tests usan `httptest` y verifican handlers, forms URL-encoded, HTTP 422/200, render Markdown, contratos HTML/ARIA de componentes, integración HTMX, CSS/tokens y assets embebidos sin snapshots completos.
+Do **not** use bare `go test ./...` if the tree includes intentionally excluded
+pre-split packages. Tests use `httptest` and verify handlers, URL-encoded forms,
+HTTP 422/200, Markdown render, component HTML/ARIA contracts, HTMX integration,
+CSS/tokens, and embedded assets without full-page snapshots.
 
-## Estructura real
+## Real structure
 
 ```text
 gelium-ui/
-├── lib/                        ← paquete npm publicable (gelium-ui)
+├── lib/                        ← publishable npm package (gelium-ui)
 │   ├── assets.go               (//go:embed templates + styles → geliumui/lib)
-│   ├── version.go              (AssetsVersion: cache-bust centralizado)
+│   ├── version.go              (AssetsVersion: centralized cache-bust)
 │   ├── package.json            (exports map, files, sideEffects)
-│   ├── dist/gelium.css         (bundle prebuilt: preflight + themes + componentes)
-│   ├── js/gelium.js            (consumer JS: toast, 422 contract, view transitions, slider)
-│   ├── styles/                 (tokens.css, base.css foundation, 47 componentes, index.css manifest)
-│   ├── templates/              (45 partials de componentes)
-│   ├── themes/                 (theme-material.css, theme-basecoat.css — flat)
-│   └── *_test.go               (suites de contrato de los componentes)
-├── site/                       ← consumidor de demostración (docs, landing, recipes)
-│   ├── package.json            (depende de gelium-ui@0.5.3 por nombre de paquete)
+│   ├── dist/gelium.css         (prebuilt bundle: preflight + themes + components)
+│   ├── js/gelium.js            (consumer JS: toast, 422 contract, VT, slider)
+│   ├── styles/                 (tokens, base, components, index manifest)
+│   ├── templates/              (component partials)
+│   ├── themes/                 (material, basecoat, baseui, alden, linear, vercel)
+│   └── *_test.go               (component contract suites)
+├── site/                       ← demo consumer (docs, landing, recipes)
+│   ├── package.json            (depends on gelium-ui by package name)
 │   └── web/
-│       ├── assets.go           (//go:embed templates + content + static → geliumui/site/web)
-│       ├── content/            (44 markdown docs)
-│       ├── static/             (app.css compilado, gelium.js copiado, app.js chrome, search.js)
-│       ├── styles/             (app.css entry, docs-shell.css, docs-chrome.css, +8 site css)
-│       └── templates/          (15 shell/landing/recipes templates)
-├── internal/app/               (handler Go completo: docs server)
+│       ├── assets.go           (//go:embed templates + content + static)
+│       ├── content/            (markdown docs)
+│       ├── static/             (compiled app.css, gelium.js, chrome JS)
+│       ├── styles/             (app entry, selection/reference/skin adapters, docs chrome)
+│       └── templates/          (shell / landing / recipe chrome)
+├── internal/app/               (full Go docs server + selection resolver)
+├── docs/                       (contracts, audits, package evidence)
 ├── scripts/                    (copy-htmx, copy-icons, copy-lib-js, build-lib-dist)
-├── go.mod                      (module geliumui — queda en la raíz)
+├── go.mod                      (module geliumui)
 └── package.json                (workspaces: ["lib", "site"])
 ```
 
-### Separación librería vs docs
+### Library vs docs separation
 
-- `lib/` = el paquete reutilizable: componentes (`ui-*`), tokens, themes, consumer JS y dist prebuilt. Un consumidor instala esto.
-- `site/` = el primer consumidor: shell de docs, landing, recipes, blog. Importa la librería POR NOMBRE DE PAQUETE (`@import "gelium-ui/styles/index.css"`, `gelium-ui/themes/*.css`) — el mismo contrato que un consumidor externo (dogfooding).
-- `internal/app` = el handler Go que sirve el site (embed dual: `geliumui/site/web` + `geliumui/lib`).
+- `lib/` = reusable package: `ui-*` components, tokens, themes, consumer JS, dist.
+- `site/` = first consumer: docs shell, landing, recipes, blog. Imports the library
+  **by package name** — the same contract external consumers get.
+- `internal/app` = Go handler serving the site (dual embed: `geliumui/site/web` +
+  `geliumui/lib`).
 
-### Nota sobre `embed`
+### Note on `embed`
 
-Go no permite que una directiva `//go:embed` lea rutas padre con `..`. Por eso hay DOS embeds: `lib/assets.go` (templates + styles de la librería) y `site/web/assets.go` (templates + content + static del site). `buildTemplates()` mergea ambos con `template.ParseFS` — los nombres son disjuntos por construcción (collision-guard test).
+Go `//go:embed` cannot read parent paths with `..`. There are two embeds:
+`lib/assets.go` and `site/web/assets.go`. `buildTemplates()` merges both with
+`template.ParseFS` — names are disjoint by construction (collision-guard test).
 
 ### Cache-bust
 
-La versión de cache-bust de assets es UN SOLO valor: `lib.AssetsVersion` (0.5.3), renderizado como `?v={{.AssetsVersion}}` en los templates. El test de coherencia pincha que la versión npm == constant y prohíbe `?v=` hardcodeado. Bumpéalo cuando cambie un asset estático.
+Asset cache-bust is a single value: `lib.AssetsVersion`, rendered as
+`?v={{.AssetsVersion}}`. Coherence tests pin npm version == constant and forbid
+hardcoded `?v=`. Bump it when a static asset changes.
 
-## Ejecutar
+## Run
 
 ```bash
-go run ./cmd/gelium        # sirve en :8787 (PORT=3000 para otro puerto)
+go run ./cmd/gelium        # serves on :8787 (PORT=3000 for another port)
 ```
 
-El sitio de documentación también se sirve desde tu propia aplicación usando `internal/app.New()`:
+You can also mount the docs site from your own app with `internal/app.New()`:
 
 ```go
 package main
@@ -138,15 +248,21 @@ func main() {
 
 ## Wire contract (`gelium:*` / `X-Gelium-*`)
 
-Los contratos wire server-driven usan el prefijo del producto: `gelium:toast`
-(evento HX-Trigger + `#gelium-toast-region`) y el header `X-Gelium-Validation: true`.
-El hook HTMX servido (`lib/js/gelium.js`) y los tests los fijan como canónicos.
-Referencia canónica: [`docs/gelium-ui-wire-compatibility.md`](docs/gelium-ui-wire-compatibility.md).
+Server-driven wire contracts use the product prefix: `gelium:toast`
+(HX-Trigger event + `#gelium-toast-region`) and header
+`X-Gelium-Validation: true`. The served HTMX hook (`lib/js/gelium.js`) and tests
+pin these as canonical.
+Reference: [`docs/gelium-ui-wire-compatibility.md`](docs/gelium-ui-wire-compatibility.md).
 
-## Alcance
+## Scope
 
-El alcance actual incluye 47 componentes open-code (Button, Text field, Dialog, Toast, Data table, Chips, Navigation, …) con demos server-rendered, dos themes (`theme-material`, `theme-basecoat`) y un form HTMX de validación server-side. No incorpora Lit, Shadow DOM, Astro, `templ`, SQLite, SSE, CLI ni un registry de terceros.
+Current scope includes open-code components (Button, Text field, Dialog, Toast,
+Data table, Chips, Navigation, Accordion, …) with server-rendered demos, multiple
+visual directions (Material, Basecoat packs, Base UI-inspired, Alden, Linear,
+Vercel), selection architecture (behavior/reference/skin/contract), and
+server-side HTMX validation patterns. It does not ship Lit, Shadow DOM, Astro,
+`templ`, SQLite, SSE, a CLI, or a third-party component registry runtime.
 
-## Licencia
+## License
 
-Gelium UI se distribuye bajo la [licencia MIT](LICENSE).
+Gelium UI is distributed under the [MIT license](LICENSE).

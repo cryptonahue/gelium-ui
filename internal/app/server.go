@@ -186,9 +186,11 @@ type recipeSwitcherView struct {
 	Visual         string
 	Scheme         string
 	Execution      string
+	Contract       string
 	Behaviors      []profileOptionView
 	Visuals        []recipeOptionView
 	Executions     []profileOptionView
+	Contracts      []profileOptionView
 	Summary        string
 }
 
@@ -216,6 +218,7 @@ type themeContextKey struct{}
 type schemeContextKey struct{}
 type referenceContextKey struct{}
 type skinContextKey struct{}
+type contractContextKey struct{}
 
 // canonicalSelectionContextKey preserves whether this request arrived through
 // the explicit Recipe/canonical contract. Native + none + none is neutral only
@@ -259,8 +262,19 @@ type documentSelection struct {
 	Reference referencePreset
 	Skin      productSkin
 	Scheme    string
+	Contract  selectionContract
 	Canonical bool
 }
+
+// selectionContract decides whether Gelium platform floors apply on top of
+// reference/skin anatomy. Default is gelium; source is an explicit opt-in for
+// third-party-faithful density. Product/site tokens can still override either.
+type selectionContract string
+
+const (
+	contractGelium selectionContract = "gelium"
+	contractSource selectionContract = "source"
+)
 
 type visualRecipe struct {
 	Value     string
@@ -351,6 +365,15 @@ func normalizeSkin(raw string) (productSkin, bool) {
 	}
 }
 
+func normalizeContract(raw string) selectionContract {
+	switch strings.ToLower(strings.TrimSpace(raw)) {
+	case string(contractSource):
+		return contractSource
+	default:
+		return contractGelium
+	}
+}
+
 func isBasecoatFamilySkin(skin productSkin) bool {
 	s := string(skin)
 	return s == string(skinBasecoat) || strings.HasPrefix(s, "basecoat-")
@@ -394,6 +417,12 @@ func canonicalSelectionRequested(q url.Values) bool {
 			return true
 		}
 	}
+	if q.Has("contract") {
+		switch strings.ToLower(strings.TrimSpace(q.Get("contract"))) {
+		case string(contractGelium), string(contractSource):
+			return true
+		}
+	}
 	return false
 }
 
@@ -401,7 +430,12 @@ func canonicalSelectionRequested(q url.Values) bool {
 // selection parameters. Legacy ?theme= is mapped per visual concern first;
 // explicit reference/skin values then override only their own concern.
 func resolveDocumentSelection(q url.Values) documentSelection {
-	s := documentSelection{Behavior: normalizeAccordionBehavior(q.Get("behavior")), Skin: skinNone, Scheme: normalizeScheme(q.Get("scheme"))}
+	s := documentSelection{
+		Behavior: normalizeAccordionBehavior(q.Get("behavior")),
+		Skin:     skinNone,
+		Scheme:   normalizeScheme(q.Get("scheme")),
+		Contract: normalizeContract(q.Get("contract")),
+	}
 	legacySource := false
 	if legacy, ok := themeBySlugOrClass(q.Get("theme")); ok {
 		legacySource = true
@@ -450,6 +484,10 @@ func canonicalSelectionQuery(s documentSelection, execution accordionExecution) 
 	q.Set("skin", string(s.Skin))
 	if scheme := normalizeScheme(s.Scheme); scheme != "" {
 		q.Set("scheme", scheme)
+	}
+	// Only emit non-default contract to keep ordinary URLs short.
+	if normalizeContract(string(s.Contract)) == contractSource {
+		q.Set("contract", string(contractSource))
 	}
 	q.Set("execution", string(normalizeAccordionExecution(string(execution))))
 	return q.Encode()
@@ -557,6 +595,16 @@ func skinFromRequest(r *http.Request) productSkin {
 	return skinNone
 }
 
+func contractFromRequest(r *http.Request) selectionContract {
+	if r == nil {
+		return contractGelium
+	}
+	if v, ok := r.Context().Value(contractContextKey{}).(selectionContract); ok {
+		return normalizeContract(string(v))
+	}
+	return contractGelium
+}
+
 func canonicalSelectionFromRequest(r *http.Request) bool {
 	if r == nil {
 		return false
@@ -627,6 +675,9 @@ func themeQueryMiddleware(next http.Handler) http.Handler {
 			if scheme := normalizeScheme(r.URL.Query().Get("scheme")); scheme != "" {
 				q.Set("scheme", scheme)
 			}
+			if normalizeContract(r.URL.Query().Get("contract")) == contractSource {
+				q.Set("contract", string(contractSource))
+			}
 			q.Set("execution", string(normalizeAccordionExecution(r.URL.Query().Get("execution"))))
 			target := r.URL.Path + "?" + q.Encode()
 			http.Redirect(w, r, target, http.StatusSeeOther)
@@ -637,6 +688,7 @@ func themeQueryMiddleware(next http.Handler) http.Handler {
 		ctx = context.WithValue(ctx, skinContextKey{}, selection.Skin)
 		ctx = context.WithValue(ctx, canonicalSelectionContextKey{}, selection.Canonical)
 		ctx = context.WithValue(ctx, schemeContextKey{}, selection.Scheme)
+		ctx = context.WithValue(ctx, contractContextKey{}, selection.Contract)
 		ctx = context.WithValue(ctx, accordionBehaviorContextKey{}, selection.Behavior)
 		ctx = context.WithValue(ctx, accordionExecutionContextKey{}, normalizeAccordionExecution(r.URL.Query().Get("execution")))
 		// Retain ThemeClass only as a legacy selector adapter during migration.
@@ -788,7 +840,8 @@ func recipeBehaviorOptions(b accordionBehavior) []profileOptionView {
 func recipeSwitcherFor(r *http.Request, selection documentSelection, execution accordionExecution, compact bool, id string) *recipeSwitcherView {
 	b := normalizeAccordionBehavior(string(selection.Behavior))
 	e := normalizeAccordionExecution(string(execution))
-	visual := visualForSelection(r, documentSelection{Behavior: b, Reference: selection.Reference, Skin: selection.Skin, Scheme: selection.Scheme})
+	c := normalizeContract(string(selection.Contract))
+	visual := visualForSelection(r, documentSelection{Behavior: b, Reference: selection.Reference, Skin: selection.Skin, Scheme: selection.Scheme, Contract: c})
 	visuals := make([]recipeOptionView, 0, len(visualRecipes))
 	visualLabel := "Default for behavior"
 	for _, recipe := range visualRecipes {
@@ -802,12 +855,20 @@ func recipeSwitcherFor(r *http.Request, selection documentSelection, execution a
 	if e == accordionExecutionHTMX {
 		executionLabel = "HTMX optional enhancement"
 	}
+	contractLabel := "Gelium defaults"
+	if c == contractSource {
+		contractLabel = "Source-faithful density"
+	}
 	return &recipeSwitcherView{
 		ID: id, Compact: compact, RenderInTopbar: compact, Behavior: string(b), Visual: visual,
-		Scheme: normalizeScheme(selection.Scheme), Execution: string(e),
+		Scheme: normalizeScheme(selection.Scheme), Execution: string(e), Contract: string(c),
 		Behaviors: recipeBehaviorOptions(b), Visuals: visuals,
 		Executions: []profileOptionView{{Label: "Native baseline", Value: "native", Selected: e == accordionExecutionNative}, {Label: "HTMX optional server enhancement", Value: "htmx", Selected: e == accordionExecutionHTMX}},
-		Summary:    behaviorLabel(b) + " behavior · " + visualLabel + " · " + executionLabel,
+		Contracts: []profileOptionView{
+			{Label: "Gelium defaults (touch floors)", Value: string(contractGelium), Selected: c == contractGelium},
+			{Label: "Source-faithful density", Value: string(contractSource), Selected: c == contractSource},
+		},
+		Summary: behaviorLabel(b) + " behavior · " + visualLabel + " · " + contractLabel + " · " + executionLabel,
 	}
 }
 
@@ -865,10 +926,12 @@ func applyDocumentSelection(data *pageView, r *http.Request) documentSelection {
 		Reference: referenceFromRequest(r),
 		Skin:      skinFromRequest(r),
 		Scheme:    schemeFromRequest(r),
+		Contract:  contractFromRequest(r),
 		Canonical: canonicalSelectionFromRequest(r),
 	}
 	data.Reference = string(selection.Reference)
 	data.Skin = string(selection.Skin)
+	data.Contract = string(normalizeContract(string(selection.Contract)))
 	data.ThemeClass = selection.legacyThemeClass()
 	applyDocumentRootScheme(data, selection.Scheme)
 	return selection
@@ -1485,7 +1548,9 @@ type pageView struct {
 	// They never contain raw query values; `none` is emitted explicitly.
 	Reference string
 	Skin      string
-	Scheme    string
+	// Contract is gelium (default floors) or source (third-party-faithful density).
+	Contract string
+	Scheme   string
 	// Provenance is the article provenance line (version, license, source,
 	// dates) rendered inside the article on component pages only.
 	Provenance *provenanceView
