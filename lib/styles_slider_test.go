@@ -22,7 +22,7 @@ func TestSliderPrimitiveCSSMapsNativeRangeAndStates(t *testing.T) {
 		`var(--ui-slider-handle-pressed-size)`,
 		`input[type="range"]:disabled {`,
 		`.ui-slider--ticks {`,
-		`var(--ui-slider-tick-interval)`,
+		`var(--ui-slider-tick-interval,`,
 		`repeating-linear-gradient(to right, var(--ui-slider-tick)`,
 		`.ui-slider--value-label {`,
 		`attr(data-value)`,

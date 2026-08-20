@@ -1,0 +1,140 @@
+/*
+ * Accordion reference presets. These are token-only visual adapters: behavior
+ * remains on native details/summary and never selects an aesthetic.
+ */
+html[data-gelium-reference="material"] {
+  --ui-accordion-cascade-id: material-reference;
+  --ui-accordion-root-radius: 0;
+  --ui-accordion-root-border: 0;
+  --ui-accordion-root-surface: transparent;
+  --ui-accordion-radius: 4px;
+  --ui-accordion-border: transparent;
+  --ui-accordion-surface: var(--ui-color-surface);
+  --ui-accordion-shadow: var(--ui-shadow-1);
+  --ui-accordion-open-shadow: var(--ui-shadow-2);
+  --ui-accordion-trigger-min-height: 48px;
+  --ui-accordion-trigger-gap: var(--ui-space-4);
+  --ui-accordion-trigger-padding-x: var(--ui-space-4);
+  --ui-accordion-trigger-padding-y: .75rem;
+  --ui-accordion-panel-padding-top: .125rem;
+  --ui-accordion-panel-padding-x: var(--ui-space-4);
+  --ui-accordion-panel-padding-y: var(--ui-space-4);
+  --ui-accordion-icon-size: 1.5rem;
+  --ui-accordion-chevron-display: block;
+  --ui-accordion-plus-display: none;
+  --ui-accordion-icon-rotation: 180deg;
+}
+
+/* The legacy Material dark theme selector has two class selectors and carries
+ * its historical light Accordion literal. The two attributes plus document-root
+ * selector safely outrank it, then resolve the reference surface through the
+ * active dark color token. This stays below the later skin layer, so a concrete
+ * skin still owns its full anatomy. */
+html[data-gelium-reference="material"][data-gelium-scheme="dark"] {
+  --ui-accordion-surface: var(--ui-color-surface);
+}
+
+/* Audited Basecoat/Vega values, translated without Basecoat runtime/classes.
+ * Its denser source has no min-height; Gelium retains the >=44px core floor. */
+html[data-gelium-reference="basecoat"] {
+  --ui-accordion-cascade-id: basecoat-reference;
+  --ui-accordion-root-display: flex;
+  --ui-accordion-root-direction: column;
+  --ui-accordion-root-width: 100%;
+  --ui-accordion-root-gap: 0;
+  --ui-accordion-root-max-width: none;
+  --ui-accordion-root-radius: 0;
+  --ui-accordion-root-border: 0;
+  --ui-accordion-root-surface: transparent;
+  --ui-accordion-item-border: 0;
+  --ui-accordion-item-divider-border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
+  --ui-accordion-radius: 0;
+  --ui-accordion-surface: transparent;
+  --ui-accordion-shadow: none;
+  --ui-accordion-open-shadow: none;
+  --ui-accordion-trigger-min-height: var(--ui-touch-target);
+  --ui-accordion-trigger-align: flex-start;
+  --ui-accordion-trigger-padding-x: 0;
+  --ui-accordion-trigger-padding-y: var(--ui-space-4);
+  --ui-accordion-trigger-border: var(--ui-border-width-1) solid transparent;
+  --ui-accordion-trigger-radius: .375rem;
+  --ui-accordion-trigger-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-accordion-trigger-hover-surface: transparent;
+  --ui-accordion-trigger-hover-decoration: underline;
+  --ui-accordion-focus-outline: none;
+  --ui-accordion-focus-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-color-focus-ring) 50%, transparent);
+  --ui-accordion-icon-flex: 0 0 1rem;
+  --ui-accordion-icon-width: 1rem;
+  --ui-accordion-icon-height: 1rem;
+  --ui-accordion-icon-margin-inline-start: auto;
+  --ui-accordion-icon-size: 1rem;
+  --ui-accordion-icon-color: var(--ui-color-fg-muted);
+  --ui-accordion-chevron-display: block;
+  --ui-accordion-plus-display: none;
+  --ui-accordion-icon-rotation: 180deg;
+  --ui-accordion-panel-padding-top: 0;
+  --ui-accordion-panel-padding-x: 0;
+  --ui-accordion-panel-padding-y: var(--ui-space-4);
+  --ui-accordion-panel-font: 400 .875rem/1.25rem var(--ui-font-sans);
+}
+
+/*
+ * Base UI publishes no visual CSS. This is Gelium's Base UI docs-inspired
+ * reference preset: a translation of the documentation accordion's flat,
+ * high-contrast disclosure direction, never official package CSS.
+ *
+ * Visual direction (docs site, not package CSS):
+ * - one contiguous bordered list (collapsed item borders)
+ * - square corners, no outer card chrome, no elevation
+ * - closed "+" that rotates 45deg to an x-like open state
+ * - touch floor remains >=44px via core max()
+ */
+html[data-gelium-reference="baseui"] {
+  --ui-accordion-cascade-id: baseui-reference;
+  --ui-accordion-root-display: flex;
+  --ui-accordion-root-direction: column;
+  --ui-accordion-root-width: 100%;
+  --ui-accordion-root-gap: var(--ui-space-4);
+  --ui-accordion-root-max-width: 40rem;
+  --ui-accordion-root-surface: transparent;
+  --ui-accordion-root-border: 0;
+  --ui-accordion-root-radius: 0;
+  --ui-accordion-root-padding: 0;
+  --ui-accordion-border: var(--ui-color-fg);
+  --ui-accordion-surface: transparent;
+  --ui-accordion-shadow: none;
+  --ui-accordion-open-shadow: none;
+  --ui-accordion-radius: 0;
+  --ui-accordion-item-border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-fg);
+  --ui-accordion-item-divider-border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-fg);
+  --ui-accordion-item-overlap: calc(-1 * var(--ui-border-width-1));
+  --ui-accordion-item-radius: 0;
+  --ui-accordion-item-surface: transparent;
+  --ui-accordion-item-shadow: none;
+  --ui-accordion-item-open-shadow: none;
+  --ui-accordion-open-border: var(--ui-color-fg);
+  --ui-accordion-trigger-min-height: var(--ui-touch-target);
+  --ui-accordion-trigger-gap: var(--ui-space-4);
+  --ui-accordion-trigger-padding-x: 1rem;
+  --ui-accordion-trigger-padding-y: .75rem;
+  --ui-accordion-trigger-font: 500 .9375rem/1.25rem var(--ui-font-sans);
+  --ui-accordion-trigger-align: center;
+  --ui-accordion-trigger-border: 0;
+  --ui-accordion-trigger-radius: 0;
+  --ui-accordion-trigger-hover-surface: transparent;
+  --ui-accordion-trigger-hover-decoration: none;
+  --ui-accordion-icon-flex: 0 0 1rem;
+  --ui-accordion-icon-width: 1rem;
+  --ui-accordion-icon-height: 1rem;
+  --ui-accordion-icon-margin-inline-start: auto;
+  --ui-accordion-icon-size: 1.125rem;
+  --ui-accordion-icon-color: currentColor;
+  --ui-accordion-chevron-display: none;
+  --ui-accordion-plus-display: inline;
+  --ui-accordion-icon-rotation: 45deg;
+  --ui-accordion-panel-padding-top: 0;
+  --ui-accordion-panel-padding-x: 1rem;
+  --ui-accordion-panel-padding-y: .875rem;
+  --ui-accordion-panel-font: 400 .875rem/1.375rem var(--ui-font-sans);
+  --ui-accordion-panel-color: var(--ui-color-fg);
+}

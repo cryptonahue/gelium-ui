@@ -1,16 +1,14 @@
 @layer components {
   .ui-button {
-    --ui-button-padding-y: .625rem;
-    --ui-button-spinner-size: 1rem;
     position: relative;
     display: inline-flex;
     min-height: var(--ui-touch-target);
     align-items: center;
     justify-content: center;
-    gap: var(--ui-space-2);
+    gap: var(--ui-button-gap, var(--ui-space-2));
     border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent;
-    border-radius: var(--ui-radius-full);
-    padding: var(--ui-button-padding-y) var(--ui-space-6);
+    border-radius: var(--ui-button-radius, var(--ui-radius-full));
+    padding: var(--ui-button-padding-y, .625rem) var(--ui-button-padding-x, var(--ui-space-6));
     font: var(--ui-type-label-lg);
     text-decoration: none;
     cursor: pointer;
@@ -43,8 +41,8 @@
   }
   .ui-button svg { flex: none; }
   .ui-button-spinner {
-    width: var(--ui-button-spinner-size);
-    height: var(--ui-button-spinner-size);
+    width: var(--ui-button-spinner-size, 1rem);
+    height: var(--ui-button-spinner-size, 1rem);
     border: 2px solid currentColor;
     border-right-color: transparent;
     border-radius: 999px;

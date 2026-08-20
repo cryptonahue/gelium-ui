@@ -66,6 +66,7 @@
   /* Focus indicator */
   --ui-focus-thickness: 3px;
   --ui-focus-offset: 2px;
+  --ui-focus-shadow: 0 0 0 3px color-mix(in srgb, var(--ui-color-focus-ring) 28%, transparent);
 
   /* Border — width/style scale. Only values with real consumers. width-1 backs
      the real borders of button, icon-button, select, text-field, card, chips,
@@ -93,6 +94,11 @@
   --ui-shadow-3: 0 4px 8px rgb(0 0 0 / .16), 0 2px 4px rgb(0 0 0 / .12);
   --ui-shadow-4: 0 8px 12px rgb(0 0 0 / .16), 0 3px 6px rgb(0 0 0 / .12);
   --ui-shadow-5: 0 12px 20px rgb(0 0 0 / .18), 0 4px 8px rgb(0 0 0 / .12);
+  --ui-shadow-border: 0 0 0 1px var(--ui-color-border);
+  --ui-shadow-card: var(--ui-shadow-1);
+  --ui-shadow-menu: var(--ui-shadow-3);
+  --ui-shadow-tooltip: var(--ui-shadow-2);
+  --ui-shadow-dialog: var(--ui-shadow-5);
 
   /* Motion — base duration and easing. short is the ubiquitous interaction
      duration; long backs the dialog/navigation-drawer [open] entrance
@@ -147,6 +153,56 @@
      fluid steps are introduced here. */
   --ui-touch-target: 44px;
   --ui-container-max: 64rem;
+
+  /* Component anatomy defaults — the *aesthetic* geometry that a theme may
+     override under its own class (same mechanism as the size family). These
+     are pure silhouette (padding, radius, glyph, gap), never accessibility
+     floors: touch-target, floating-label geometry, and native semantics stay
+     in the core and are not listed here. The component CSS consumes these via
+     a var() fallback so a theme class value on the document root wins over the
+     fallback (cascade contract, Phase C). Material keeps these defaults; a
+     directional theme (Basecoat/Alden/…) overrides the ones defining its own
+     register. */
+  /* Button */
+  --ui-button-padding-y: .625rem;
+  --ui-button-padding-x: var(--ui-space-6);
+  --ui-button-gap: var(--ui-space-2);
+  --ui-button-radius: var(--ui-radius-full);
+  --ui-button-spinner-size: 1rem;
+  /* Field */
+  --ui-field-radius: var(--ui-radius-xs);
+  --ui-field-padding-x: 1rem;
+  --ui-field-padding-y: var(--ui-space-4);
+  --ui-text-field-textarea-min-height: 7rem;
+  --ui-text-field-error-icon-size: var(--ui-size-icon);
+  /* Card */
+  --ui-card-padding: var(--ui-space-4);
+  /* Checkbox */
+  --ui-checkbox-mark-width: 6px;
+  --ui-checkbox-mark-height: 11px;
+  --ui-checkbox-mark-stroke: 2px;
+  --ui-checkbox-indeterminate-width: 10px;
+  --ui-checkbox-indeterminate-height: 2px;
+  /* Radio */
+  --ui-radio-dot-size: 10px;
+  /* Switch */
+  --ui-switch-handle-inset: 6px;
+  /* Select */
+  --ui-select-caret-reserve: 2.5rem;
+  /* Slider */
+  --ui-slider-tick-width: 2px;
+  --ui-slider-tick-interval: 1.5rem;
+  /* Progress (circular) */
+  --ui-progress-circular-size: var(--ui-size-item);
+  --ui-progress-circular-stroke: 4px;
+  /* FAB — note: -small floors at 44px (WCAG 2.5.8); themes must not lower it. */
+  --ui-fab-container-size: 56px;
+  --ui-fab-container-size-small: 44px;
+  --ui-fab-container-size-large: 96px;
+  --ui-fab-extended-height: 48px;
+  --ui-fab-extended-padding-inline: 1.25rem;
+  /* Icon button */
+  --ui-icon-button-radius: var(--ui-radius-full);
 
   /* Fonts — neutral defaults so every typescale token below stays resolvable
      in an unthemed document; themes override these under their own class. */

@@ -12,7 +12,7 @@
     align-items: stretch;
     position: relative;
     border-radius: var(--ui-card-radius);
-    padding: var(--ui-space-4);
+    padding: var(--ui-card-padding, var(--ui-space-4));
     min-width: 0;
     color: var(--ui-color-fg);
     text-align: start;

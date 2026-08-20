@@ -282,7 +282,7 @@ func TestThemeMatrixStateCoverageIsTokenDriven(t *testing.T) {
 					if !strings.Contains(css, st.selector) {
 						t.Errorf("%s.css must contain selector %q for state %q", comp.cssFile, st.selector, st.state)
 					}
-					if !strings.Contains(css, "var("+st.token+")") {
+					if !strings.Contains(css, "var("+st.token+")") && !strings.Contains(css, "var("+st.token+",") {
 						t.Errorf("%s.css must drive state %q with token %s (no literals)", comp.cssFile, st.state, st.token)
 					}
 				})

@@ -1,0 +1,15 @@
+{{define "accordion"}}
+<section class="ui-accordion ui-accordion--behavior-{{.Behavior}} ui-accordion--execution-{{.Execution}}" data-behavior="{{.Behavior}}" data-execution="{{.Execution}}"{{if .ID}} id="{{.ID}}"{{end}}{{if .Heading}} aria-labelledby="{{.ID}}-heading"{{else if .Label}} aria-label="{{.Label}}"{{end}}>
+  {{if .Heading}}<h2 class="ui-accordion-heading" id="{{.ID}}-heading">{{.Heading}}</h2>{{end}}
+  {{range .Items}}
+  <details class="ui-accordion-item"{{if .Open}} open{{end}}{{if and (not $.Multiple) $.Name}} name="{{$.Name}}"{{end}}{{if .Value}} data-value="{{.Value}}"{{end}}>
+    <summary class="ui-accordion-trigger"{{if .TriggerID}} id="{{.TriggerID}}"{{end}}{{if .PanelID}} aria-controls="{{.PanelID}}"{{end}}><span>{{.Heading}}</span><span class="ui-accordion-icon" aria-hidden="true"><svg class="ui-accordion-icon-chevron" viewBox="0 0 24 24" focusable="false"><path d="m6 9 6 6 6-6"/></svg><span class="ui-accordion-icon-plus">+</span></span></summary>
+    <section class="ui-accordion-panel"{{if .PanelID}} id="{{.PanelID}}"{{end}}{{if .TriggerID}} aria-labelledby="{{.TriggerID}}"{{end}}>{{.Body}}</section>
+  </details>
+  {{end}}
+</section>
+{{end}}
+
+{{define "accordion-demo"}}
+{{template "accordion" .}}
+{{end}}

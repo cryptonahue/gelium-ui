@@ -425,4 +425,29 @@
   --ui-fab-surface-fg: #a3a3a3;
   --ui-fab-secondary-container: #262626;
   --ui-fab-secondary-fg: #fafafa;
+  /* Accordion — exact Vega component/style-pack anatomy. The root is a full-
+     width flex column; only non-last details receive a bottom border. */
+  --ui-accordion-root-radius: 0;
+  --ui-accordion-root-border: 0;
+  --ui-accordion-root-surface: transparent;
+  --ui-accordion-root-padding: 0;
+  /* Compatibility names retained for the component token contract; the
+     Basecoat profile intentionally does not consume card/item surfaces. */
+  --ui-accordion-border: var(--ui-color-border);
+  --ui-accordion-surface: transparent;
+  --ui-accordion-shadow: none;
+  --ui-accordion-radius: 0;
+  --ui-accordion-item-border: 0;
+  --ui-accordion-trigger-min-height: 0;
+  --ui-accordion-trigger-radius: .375rem;
+  --ui-accordion-trigger-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-accordion-trigger-padding-y: 1rem;
+  --ui-accordion-focus-width: 3px;
+  --ui-accordion-panel-font: 400 .875rem/1.25rem var(--ui-font-sans);
+  --ui-accordion-panel-padding-top: 0;
+  --ui-accordion-panel-padding-y: 1rem;
+  --ui-accordion-icon-size: 1rem;
+  --ui-accordion-icon-color: var(--ui-color-fg-muted);
+  --ui-accordion-disabled-opacity: .5;
+  --ui-accordion-icon-rotation: 180deg;
 }

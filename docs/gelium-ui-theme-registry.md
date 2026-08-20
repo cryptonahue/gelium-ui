@@ -2,7 +2,7 @@
 
 > Registry de themes del sistema Gelium UI.
 > Fase J del system roadmap (`docs/gelium-ui-system-roadmap.md`).
-> Fuentes de autoridad: `docs/gelium-ui-theme-contract.md` (contrato), `docs/gelium-ui-theme-implementation-guide.md` (procedimiento), `docs/handoffs/theme-architecture-audit.md` (auditoría), `docs/handoffs/basecoat-audit.md` (referencia Basecoat).
+> Fuentes de autoridad: `docs/gelium-ui-theme-contract.md` (contrato), `docs/gelium-ui-theme-implementation-guide.md` (procedimiento), `docs/handoffs/theme-architecture-audit.md` (auditoría), `docs/handoffs/basecoat-audit.md` (referencia Basecoat). Las **fuentes webfont** de un theme siguen `docs/gelium-ui-font-contract.md` (mecanismo `lib/fonts/` + estándar de calidad).
 
 ---
 

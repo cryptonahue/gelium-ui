@@ -6,8 +6,8 @@ package lib
 import "embed"
 
 // LibAssets is the embed file system carrying the component library sources.
-// The templates and styles live next to this declaration so //go:embed works
-// for both in-tree and external consumers.
+// The templates, styles, and fonts live next to this declaration so
+// //go:embed works for both in-tree and external consumers.
 //
-//go:embed templates/*.html styles/*.css
+//go:embed templates/*.html styles/*.css fonts/*
 var LibAssets embed.FS

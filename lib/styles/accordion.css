@@ -1,0 +1,99 @@
+/* Native details/summary accordion. Visual values are inherited tokens. */
+.ui-accordion {
+  display: var(--ui-accordion-root-display, grid);
+  flex-direction: var(--ui-accordion-root-direction, initial);
+  width: var(--ui-accordion-root-width, auto);
+  gap: var(--ui-accordion-root-gap, var(--ui-space-2));
+  max-width: var(--ui-accordion-root-max-width, 48rem);
+  border-radius: var(--ui-accordion-root-radius, 0);
+  border: var(--ui-accordion-root-border, 0);
+  background: var(--ui-accordion-root-surface, transparent);
+  padding: var(--ui-accordion-root-padding, 0);
+}
+.ui-accordion-item {
+  overflow: clip;
+  border: var(--ui-accordion-item-border, var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-accordion-border, var(--ui-color-border)));
+  border-radius: var(--ui-accordion-item-radius, var(--ui-accordion-radius, var(--ui-radius-md)));
+  background: var(--ui-accordion-item-surface, var(--ui-accordion-surface, var(--ui-color-surface)));
+  box-shadow: var(--ui-accordion-item-shadow, var(--ui-accordion-shadow, var(--ui-shadow-card, var(--ui-shadow-0))));
+  transition: box-shadow var(--ui-accordion-motion, var(--ui-motion-short)) var(--ui-easing-standard), border-color var(--ui-accordion-motion, var(--ui-motion-short)) var(--ui-easing-standard), background-color var(--ui-accordion-motion, var(--ui-motion-short)) var(--ui-easing-standard);
+}
+/* Optional collapsed-border stacking for contiguous disclosure lists. */
+.ui-accordion-item + .ui-accordion-item {
+  margin-block-start: var(--ui-accordion-item-overlap, 0);
+}
+.ui-accordion-item:not(:last-child) {
+  border-bottom: var(--ui-accordion-item-divider-border, 0);
+}
+.ui-accordion-item[open] {
+  border-color: var(--ui-accordion-open-border, var(--ui-accordion-border, var(--ui-color-border)));
+  box-shadow: var(--ui-accordion-item-open-shadow, var(--ui-accordion-open-shadow, var(--ui-accordion-item-shadow, var(--ui-accordion-shadow, var(--ui-shadow-card, var(--ui-shadow-0))))));
+}
+.ui-accordion-trigger {
+  display: flex;
+  align-items: var(--ui-accordion-trigger-align, center);
+  justify-content: space-between;
+  gap: var(--ui-accordion-trigger-gap, var(--ui-space-4));
+  /* A visual preset may be dense, but cannot lower Gelium's native control floor. */
+  min-height: max(var(--ui-touch-target), var(--ui-accordion-trigger-min-height, var(--ui-touch-target)));
+  padding-block: var(--ui-accordion-trigger-padding-y, var(--ui-space-4));
+  padding-inline: var(--ui-accordion-trigger-padding-x, var(--ui-space-4));
+  cursor: pointer;
+  border: var(--ui-accordion-trigger-border, 0);
+  border-radius: var(--ui-accordion-trigger-radius, 0);
+  font: var(--ui-accordion-trigger-font, var(--ui-type-title-md));
+  text-align: var(--ui-accordion-trigger-text-align, start);
+  list-style: none;
+  transition: var(--ui-accordion-trigger-transition, background-color var(--ui-accordion-motion, var(--ui-motion-short)) var(--ui-easing-standard));
+}
+.ui-accordion-trigger::-webkit-details-marker { display: none; }
+.ui-accordion-trigger::marker { content: ""; }
+.ui-accordion-trigger:focus-visible {
+  outline: var(--ui-accordion-focus-outline, var(--ui-focus-thickness) solid var(--ui-color-focus-ring));
+  outline-offset: var(--ui-accordion-focus-offset, var(--ui-focus-offset));
+  box-shadow: var(--ui-accordion-focus-shadow, var(--ui-focus-shadow, 0 0 0 var(--ui-focus-thickness) color-mix(in srgb, var(--ui-color-focus-ring) 28%, transparent)));
+}
+.ui-accordion-trigger:hover {
+  background: var(--ui-accordion-trigger-hover-surface, color-mix(in srgb, var(--ui-color-primary) calc(var(--ui-state-hover-opacity) * 100%), transparent));
+  text-decoration: var(--ui-accordion-trigger-hover-decoration, none);
+}
+.ui-accordion-icon {
+  flex: var(--ui-accordion-icon-flex, 0 0 var(--ui-accordion-icon-size, 1.25rem));
+  width: var(--ui-accordion-icon-width, auto);
+  height: var(--ui-accordion-icon-height, auto);
+  margin-inline-start: var(--ui-accordion-icon-margin-inline-start, 0);
+  line-height: 1;
+  text-align: center;
+  color: var(--ui-accordion-icon-color, currentColor);
+  transition: transform var(--ui-accordion-motion, var(--ui-motion-short)) var(--ui-easing-standard);
+}
+.ui-accordion-icon svg {
+  display: var(--ui-accordion-chevron-display, block);
+  width: var(--ui-accordion-icon-size, 1.25rem);
+  height: var(--ui-accordion-icon-size, 1.25rem);
+  fill: none;
+  stroke: currentColor;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  stroke-width: 2;
+}
+.ui-accordion-icon-plus {
+  display: var(--ui-accordion-plus-display, none);
+  font-size: var(--ui-accordion-icon-size, 1.25rem);
+  line-height: 1;
+}
+.ui-accordion-item[open] .ui-accordion-icon { transform: rotate(var(--ui-accordion-icon-rotation, 180deg)); }
+.ui-accordion-panel {
+  padding-block: var(--ui-accordion-panel-padding-top, 0) var(--ui-accordion-panel-padding-y, var(--ui-space-4));
+  padding-inline: var(--ui-accordion-panel-padding-x, var(--ui-space-4));
+  color: var(--ui-accordion-panel-color, var(--ui-color-fg-muted));
+  font: var(--ui-accordion-panel-font, var(--ui-type-body-md));
+}
+@media (prefers-reduced-motion: reduce) {
+  .ui-accordion-item, .ui-accordion-icon, .ui-accordion-trigger { transition: none; }
+}
+@media (forced-colors: active) {
+  .ui-accordion-item { border-color: CanvasText; forced-color-adjust: auto; }
+  .ui-accordion-trigger:focus-visible { outline-color: Highlight; box-shadow: none; }
+  .ui-accordion-trigger:hover { background: Canvas; }
+}

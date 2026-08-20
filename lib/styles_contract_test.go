@@ -26,6 +26,7 @@ func sourceAppCSS(t *testing.T) string {
 	paths := []string{
 		"styles/tokens.css",
 		"styles/base.css",
+		"styles/accordion.css",
 		"styles/button.css",
 		"styles/text-field.css",
 		"styles/dialog.css",
@@ -456,14 +457,14 @@ func TestSizeTokensConsumedByComponents(t *testing.T) {
 // TestComponentSizeTokensDeclaredScoped proves every family that Phase B2
 // migrated declares at least one scoped component token in its own CSS file,
 // so consumers can override geometry at the component root. Presence only.
+// Tokens that Phase C made theme-overridable moved their default to :root
+// (tokens.css) and are consumed via a var() fallback — those are asserted
+// against the core :root without requiring a scoped declaration.
 func TestComponentSizeTokensDeclaredScoped(t *testing.T) {
+	// Still declared scoped at the component root (consumers may override
+	// there; no theme override needed for these structural/default values).
 	for file, token := range map[string]string{
-		"fab.css":          "--ui-fab-container-size:",
-		"button.css":       "--ui-button-padding-y:",
-		"text-field.css":   "--ui-text-field-textarea-min-height:",
-		"select.css":       "--ui-select-caret-reserve:",
 		"toast.css":        "--ui-toast-min-height:",
-		"switch.css":       "--ui-switch-handle-inset:",
 		"menu.css":         "--ui-menu-min-width:",
 		"data-table.css":   "--ui-data-table-checkbox-column-width:",
 		"empty-state.css":  "--ui-empty-state-icon-size:",
@@ -474,12 +475,34 @@ func TestComponentSizeTokensDeclaredScoped(t *testing.T) {
 		"tabs.css":         "--ui-tabs-height:",
 		"chips.css":        "--ui-chip-height:",
 		"dialog.css":       "--ui-dialog-min-width:",
-		"radio.css":        "--ui-radio-dot-size:",
-		"checkbox.css":     "--ui-checkbox-mark-size:",
 	} {
 		css := sourceComponentCSS(t, file)
 		if !strings.Contains(css, token) {
 			t.Errorf("%s must declare scoped component token %s", file, token)
+		}
+	}
+
+	// Phase C: aesthetics (padding/radius/gap/glyph) moved to theme-overridable
+	// tokens with defaults in the core :root (tokens.css) and consumption via
+	// var(--ui-x, <fallback>) in the component. Assert the default exists in the
+	// core tokens `:root` so themes have a canonical value to override, and that
+	// the component consumes it through a var() fallback.
+	tokens := repositoryFile(t, "lib", "styles", "tokens.css")
+	for file, token := range map[string]string{
+		"fab.css":        "--ui-fab-container-size",
+		"button.css":     "--ui-button-padding-y",
+		"text-field.css": "--ui-text-field-textarea-min-height",
+		"select.css":     "--ui-select-caret-reserve",
+		"switch.css":     "--ui-switch-handle-inset",
+		"radio.css":      "--ui-radio-dot-size",
+		"checkbox.css":   "--ui-checkbox-mark-width",
+	} {
+		if !strings.Contains(tokens, token+":") {
+			t.Errorf("core tokens.css must declare theme-overridable default %s:", token)
+		}
+		css := sourceComponentCSS(t, file)
+		if !strings.Contains(css, "var("+token+",") {
+			t.Errorf("%s must consume %s via a var() fallback (theme can override)", file, token)
 		}
 	}
 }

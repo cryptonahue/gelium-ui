@@ -78,8 +78,8 @@ func TestTextFieldSingleLineControlKeepsStableExternalHeight(t *testing.T) {
 
 	for _, pattern := range []string{
 		`(?s)\.ui-text-field input\s*\{[^}]*height:\s*100%\s*;[^}]*box-sizing:\s*border-box\s*;`,
-		`(?s)\.ui-text-field-control:has\(textarea\)\s*\{[^}]*height:\s*auto\s*;[^}]*min-height:\s*var\(--ui-text-field-textarea-min-height\)\s*;`,
-		`(?s)\.ui-text-field textarea\s*\{[^}]*min-height:\s*var\(--ui-text-field-textarea-min-height\)\s*;[^}]*resize:\s*vertical\s*;`,
+		`(?s)\.ui-text-field-control:has\(textarea\)\s*\{[^}]*height:\s*auto\s*;[^}]*min-height:\s*var\(--ui-text-field-textarea-min-height,`,
+		`(?s)\.ui-text-field textarea\s*\{[^}]*min-height:\s*var\(--ui-text-field-textarea-min-height,[^}]*resize:\s*vertical\s*;`,
 	} {
 		if !regexp.MustCompile(pattern).MatchString(css) {
 			t.Errorf("stable text-field sizing contract is missing pattern %q", pattern)
@@ -139,9 +139,15 @@ func TestTextFieldForcedColorsStylesIntegratedControlWithoutNativeDoubleBorder(t
 			t.Errorf("forced-colors text-field contract is missing %q", contract)
 		}
 	}
-	inputBorder := regexp.MustCompile(`(?s)\.ui-text-field (?:input|textarea)[^{]*\{[^}]*\bborder(?:-[a-z]+)?:`)
-	if inputBorder.MatchString(forcedColorsCSS) {
-		t.Error("forced colors must not add a second border to the native input or textarea")
+	nativeInputRule := regexp.MustCompile(`(?s)\.ui-text-field (?:input|textarea)\s*\{([^}]*)\}`)
+	borderProperty := regexp.MustCompile(`\bborder(?:-[a-z]+)?:`)
+	for _, match := range nativeInputRule.FindAllStringSubmatch(forcedColorsCSS, -1) {
+		body := strings.ReplaceAll(match[1], "border: 0;", "")
+		body = strings.ReplaceAll(body, "border: none;", "")
+		body = strings.ReplaceAll(body, "border-radius: inherit;", "")
+		if borderProperty.MatchString(body) {
+			t.Error("forced colors must not add a second border to the native input or textarea")
+		}
 	}
 }
 
@@ -192,9 +198,11 @@ func TestTextFieldDisabledStateAppliesMaterialOpacityPerPart(t *testing.T) {
 func TestTextFieldTrailingSlotAndFloatingLabelUseLogicalRTLGeometry(t *testing.T) {
 	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
 	for _, contract := range []string{
-		`.ui-text-field-control > label { position: absolute; z-index: 1; top: 50%; inset-inline-start: 1rem;`,
+		`.ui-text-field-control > label { position: absolute; z-index: 1; top: 50%; inset-inline-start: var(--ui-field-padding-x,`,
 		`.ui-text-field-error .ui-text-field-control > label { max-width: calc(100% - 3.5rem);`,
-		`.ui-text-field-error-icon { position: absolute; top: 50%; inset-inline-end: 1rem; width: var(--ui-text-field-error-icon-size); height: var(--ui-text-field-error-icon-size);`,
+		`.ui-text-field-error-icon { position: absolute; top: 50%; inset-inline-end:`,
+		`var(--ui-field-padding-x,`,
+		`width: var(--ui-text-field-error-icon-size,`,
 		`.ui-text-field-error input, .ui-text-field-error textarea { padding-inline-end: 3.5rem;`,
 		`.ui-text-field-control:dir(rtl) > label { transform-origin: right top;`,
 		`.ui-text-field-outlined .ui-text-field-control:dir(rtl):focus-within > label`,
@@ -272,7 +280,9 @@ func TestTextFieldErrorFocusAndHoverKeepErrorIndicatorForBothVariants(t *testing
 func TestTextFieldSupportingMessageUsesMaterialTypographyAndSpacing(t *testing.T) {
 	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceAppCSS(t), " ")
 	for _, contract := range []string{
-		`.ui-text-field { --ui-text-field-textarea-min-height: 7rem; --ui-text-field-error-icon-size: var(--ui-size-icon); display: grid; width: min(100%, 24rem); gap: 0;`,
+		`.ui-text-field { display: grid; width: min(100%, 24rem); gap: 0;`,
+		`min-height: var(--ui-text-field-textarea-min-height,`,
+		`width: var(--ui-text-field-error-icon-size,`,
 		`.ui-text-field-message { margin: 0; padding: var(--ui-space-1) var(--ui-space-4) 0; color: var(--ui-color-fg-muted); font: var(--ui-type-body-sm);`,
 	} {
 		if !strings.Contains(css, contract) {

@@ -1,0 +1,39 @@
+/*
+ * Phase 1 cascade contract. Selection is resolved by the server and emitted as
+ * data-gelium-reference / data-gelium-skin on <html>. Existing .theme-* sheets
+ * remain legacy selector adapters while they are migrated into dedicated
+ * reference and skin layers. No component behavior CSS belongs here.
+ *
+ * Layer order is declared by app.css:
+ *   core -> reference -> skin -> site
+ * A product skin will therefore win over a reference preset once its token
+ * adapters move from the legacy .theme-* selector into this layer (Phase 2).
+ */
+html[data-gelium-reference],
+html[data-gelium-skin] {
+  /* Deliberate no-op selector: compiled CSS retains the server contract. */
+}
+
+/* Explicit Native + Default for behavior resolves to none/none. It is a
+ * Gelium-neutral preset, not an implicit Material fallback. The complete
+ * resolved-selection scope leaves concrete skins as the final visual layer. */
+html[data-gelium-reference="none"][data-gelium-skin="none"][data-gelium-scheme="dark"] {
+  color-scheme: dark;
+  --ui-color-canvas: #121212;
+  --ui-color-surface: #1e1e1e;
+  --ui-color-surface-container: #282828;
+  --ui-color-fg: #f5f5f5;
+  --ui-color-fg-muted: #c7c7c7;
+  --ui-color-primary: #e0e0e0;
+  --ui-color-primary-fg: #1c1c1c;
+  --ui-color-secondary: #343434;
+  --ui-color-secondary-fg: #f5f5f5;
+  --ui-color-border: #5f5f5f;
+  --ui-color-border-strong: #bdbdbd;
+  --ui-color-focus-ring: #d6d6d6;
+  --ui-accordion-cascade-id: neutral-reference;
+  --ui-accordion-border: var(--ui-color-border);
+  --ui-accordion-surface: var(--ui-color-surface);
+  --ui-accordion-shadow: var(--ui-shadow-1);
+  --ui-accordion-open-shadow: var(--ui-shadow-2);
+}

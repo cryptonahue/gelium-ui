@@ -16,7 +16,14 @@ import (
 // if it exists in neither. This mirrors the dual buildTemplates() used by New().
 func parseTestTemplates(t *testing.T, patterns ...string) *template.Template {
 	t.Helper()
-	tmpl := template.New("test")
+	// The layout <head> calls themePreloadFonts; the helper must register the
+	// same func as buildTemplates() or ParseFS fails on an undefined function
+	// and the layout template never enters the set.
+	tmpl := template.New("test").Funcs(template.FuncMap{
+		"themePreloadFonts": func(themeClass, version string) template.HTML {
+			return themePreloadFonts(themeClass, version)
+		},
+	})
 	for _, pattern := range patterns {
 		okSite := true
 		if _, err := tmpl.ParseFS(webassets.Assets, pattern); err != nil {

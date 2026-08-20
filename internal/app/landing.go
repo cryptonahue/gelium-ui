@@ -242,6 +242,7 @@ func marketingLanding() landingView {
 func homeLandingNav() []navLink {
 	return []navLink{
 		{Path: "/docs", Label: "Docs"},
+		{Path: "/docs/themes/gallery", Label: "Theme Gallery"},
 		{Path: "/components/button", Label: "Components"},
 		{Path: "/recipes/admin-resource", Label: "Recipes"},
 		{Path: "/docs/agent-workflow", Label: "Agents"},
@@ -269,29 +270,20 @@ func (s *server) renderLanding(w http.ResponseWriter, r *http.Request, data page
 		data.Footer = defaultFooter()
 	}
 
-	themeSlug := ""
-	if q := themeFromRequest(r); q != "" {
-		data.ThemeClass = q
-		themeSlug = themeSlugFromClass(q)
-	} else {
-		data.ThemeClass = themeClass(data.ThemeClass)
+	selection := applyDocumentSelection(&data, r)
+	execution := accordionExecutionFromRequest(r)
+	navigation := navigationSelectionFor(r, routePath)
+
+	// Site chrome keeps the native Recipe form; ordinary landing links retain
+	// only legacy chrome so recipe fields are never globally published.
+	data.RecipeSwitcher = recipeSwitcherFor(r, selection, execution, true, "site-recipe")
+	data.SchemeSwitcher = schemeSwitcherForNavigation(selection, execution, navigation)
+
+	for i := range data.Nav {
+		data.Nav[i].Path = navigation.href(data.Nav[i].Path)
 	}
-	scheme := schemeFromRequest(r)
-	applyDocumentRootScheme(&data, scheme)
-
-	// Site chrome on the landing: same 0-JS theme + appearance controls as docs.
-	data.ThemeSwitcher = themeSwitcherFor(r, data.ThemeClass, themeSlug, scheme)
-	data.SchemeSwitcher = schemeSwitcherFor(r, themeSlug, scheme)
-
-	// Rewrite compact nav hrefs so theme/scheme survive header clicks.
-	if themeSlug != "" || normalizeScheme(scheme) != "" {
-		for i := range data.Nav {
-			data.Nav[i].Path = chromeHref(data.Nav[i].Path, themeSlug, scheme)
-		}
-		// Hero/feature CTAs are absolute docs paths — preserve chrome query too.
-		if data.Landing != nil {
-			applyLandingChrome(data.Landing, themeSlug, scheme)
-		}
+	if data.Landing != nil {
+		applyLandingNavigation(data.Landing, navigation)
 	}
 
 	var page bytes.Buffer
@@ -304,34 +296,35 @@ func (s *server) renderLanding(w http.ResponseWriter, r *http.Request, data page
 	_, _ = w.Write(page.Bytes())
 }
 
-// applyLandingChrome appends allowlisted theme/scheme query onto landing CTAs.
-func applyLandingChrome(l *landingView, themeSlug, scheme string) {
+// applyLandingNavigation uses the same source-aware link policy as the shell.
+func applyLandingNavigation(l *landingView, navigation navigationSelection) {
+	withNavigation := func(href string) string { return navigation.href(href) }
 	if l.Hero != nil {
 		for i := range l.Hero.CTAs {
 			if l.Hero.CTAs[i].Href != "" {
-				l.Hero.CTAs[i].Href = chromeHref(l.Hero.CTAs[i].Href, themeSlug, scheme)
+				l.Hero.CTAs[i].Href = withNavigation(l.Hero.CTAs[i].Href)
 			}
 		}
 	}
 	for i := range l.Features {
 		if l.Features[i].CTA != nil && l.Features[i].CTA.Href != "" {
-			l.Features[i].CTA.Href = chromeHref(l.Features[i].CTA.Href, themeSlug, scheme)
+			l.Features[i].CTA.Href = withNavigation(l.Features[i].CTA.Href)
 		}
 	}
 	if l.Split != nil && l.Split.CTA != nil && l.Split.CTA.Href != "" {
-		l.Split.CTA.Href = chromeHref(l.Split.CTA.Href, themeSlug, scheme)
+		l.Split.CTA.Href = withNavigation(l.Split.CTA.Href)
 	}
 	if l.Demo != nil && l.Demo.CTA.Href != "" {
-		l.Demo.CTA.Href = chromeHref(l.Demo.CTA.Href, themeSlug, scheme)
+		l.Demo.CTA.Href = withNavigation(l.Demo.CTA.Href)
 	}
 	if l.Recipes != nil {
 		for i := range l.Recipes.Cards {
 			if l.Recipes.Cards[i].CTA != nil && l.Recipes.Cards[i].CTA.Href != "" {
-				l.Recipes.Cards[i].CTA.Href = chromeHref(l.Recipes.Cards[i].CTA.Href, themeSlug, scheme)
+				l.Recipes.Cards[i].CTA.Href = withNavigation(l.Recipes.Cards[i].CTA.Href)
 			}
 		}
 	}
 	if l.CTABand != nil && l.CTABand.CTA.Href != "" {
-		l.CTABand.CTA.Href = chromeHref(l.CTABand.CTA.Href, themeSlug, scheme)
+		l.CTABand.CTA.Href = withNavigation(l.CTABand.CTA.Href)
 	}
 }

@@ -47,7 +47,7 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 					">" + lib.AssetsVersion + "<",
 					`Gelium UI`,
 					`type="search"`,
-					`aria-label="Theme"`,
+					`aria-label="Component recipe"`,
 					`aria-label="Appearance"`,
 				} {
 					if !strings.Contains(body, contract) {
@@ -380,29 +380,26 @@ func TestDocsShellChromeActivePeersAndIA(t *testing.T) {
 		}
 	})
 
-	t.Run("theme select only theme query on path", func(t *testing.T) {
-		// Extra query params must be stripped from the chrome form: the select
-		// emits only name=theme (values produce the same ?theme= URLs as the
-		// old link list), plus a hidden scheme only when one is set.
+	t.Run("recipe select has only closed values", func(t *testing.T) {
+		// The Recipe form deliberately drops unrelated query state and submits a
+		// closed visual key; middleware performs the canonical GET redirect.
 		body := getOKBody(t, "/components/button?foo=bar&theme=material")
-		if !strings.Contains(body, `<form class="ui-theme-switcher" method="get"`) {
-			t.Error("topbar theme switcher must be a GET form")
+		if !strings.Contains(body, `<form class="ui-recipe-switcher ui-recipe-switcher--compact" method="get"`) {
+			t.Error("topbar Recipe switcher must be a native GET form")
 		}
-		for _, opt := range []string{`<option value="material"`, `<option value="basecoat"`} {
+		for _, opt := range []string{`<option value="native"`, `<option value="material"`, `<option value="basecoat"`, `<option value="baseui"`} {
 			if !strings.Contains(body, opt) {
-				t.Errorf("topbar theme select missing option %q", opt)
+				t.Errorf("Recipe selector missing option %q", opt)
 			}
 		}
-		if !strings.Contains(body, `value="material" data-class="theme-material" selected`) {
-			t.Error("current theme must be selected in the native select")
+		if !strings.Contains(body, `name="visual"`) || !strings.Contains(body, `value="material" selected`) {
+			t.Error("legacy material URL must map to the matching safe visual recipe")
 		}
-		// Must not re-emit non-theme query state into the chrome form.
 		if strings.Contains(body, `name="foo"`) || strings.Contains(body, "?foo=bar") {
-			t.Error("theme form must not preserve non-theme query params")
+			t.Error("Recipe form must not preserve unrelated query parameters")
 		}
-		// The old link-list switcher is gone.
 		if strings.Contains(body, "ui-theme-switcher-option") {
-			t.Error("theme switcher must no longer render link-list options")
+			t.Error("retired theme link-list options must not render")
 		}
 	})
 

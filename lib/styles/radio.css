@@ -5,7 +5,6 @@
      checked dot from --ui-radio-* tokens. All paints are token-driven so
      states survive light and dark schemes. */
   .ui-radio {
-    --ui-radio-dot-size: 10px;
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -57,8 +56,8 @@
   .ui-radio-mark::after {
     content: "";
     box-sizing: border-box;
-    width: var(--ui-radio-dot-size);
-    height: var(--ui-radio-dot-size);
+    width: var(--ui-radio-dot-size, 10px);
+    height: var(--ui-radio-dot-size, 10px);
     border-radius: 50%;
     background: var(--ui-radio-checked);
     transition: background-color var(--ui-motion-short) var(--ui-easing-standard);

@@ -10,7 +10,6 @@
       field paints it transparent while empty, leaving the resting label as the only
       prompt. */
   .ui-select {
-    --ui-select-caret-reserve: 2.5rem;
     position: relative;
     display: grid;
     width: min(100%, 24rem);
@@ -21,7 +20,7 @@
     width: 100%;
     height: var(--ui-select-height);
     box-sizing: border-box;
-    padding: 1rem var(--ui-select-caret-reserve) 0 1rem;
+    padding: 1rem var(--ui-select-caret-reserve, 2.5rem) 0 var(--ui-field-padding-x, 1rem);
     border-radius: var(--ui-select-radius);
     background: transparent;
     color: var(--ui-select-fg);
@@ -61,7 +60,7 @@
   .ui-select-outlined select:focus-visible { border-color: var(--ui-select-focus); }
   .ui-select-label {
     position: absolute;
-    inset-inline-start: 1rem;
+    inset-inline-start: var(--ui-field-padding-x, 1rem);
     top: 50%;
     color: var(--ui-select-label);
     font: var(--ui-type-body-lg);
@@ -79,7 +78,7 @@
   .ui-select:focus-within .ui-select-label { color: var(--ui-select-focus); }
   .ui-select-caret {
     position: absolute;
-    inset-inline-end: 1rem;
+    inset-inline-end: var(--ui-field-padding-x, 1rem);
     top: 50%;
     color: var(--ui-select-caret);
     pointer-events: none;

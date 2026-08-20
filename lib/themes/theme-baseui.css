@@ -1,0 +1,457 @@
+/*
+ * Gelium UI Base UI behavior-compatible neutral skin (Phase I).
+ *
+ * Base UI is headless: its official docs state that it is unstyled and does not
+ * bundle CSS. This file is Gelium's own neutral token skin; Base UI APIs/state
+ * hooks inform behavior contracts only, not visual values or a downloaded pack.
+ * Reference: https://base-ui.com/react/handbook/styling · https://base-ui.com/react/overview/about
+ * Audit: docs/audit/basecoat-official/gelium-translation-audit.md · contract: docs/gelium-ui-theme-contract.md
+ *
+ * This is a token-only Gelium skin. No markup, no JS, no Base UI runtime, and no
+ * claim that Base UI supplies colors, shadows, typography, or a CSS pack.
+ *
+ * Key mappings (Vega -> --ui-*):
+ *   --background            -> --ui-color-canvas
+ *   --foreground            -> --ui-color-fg
+ *   --muted-foreground      -> --ui-color-fg-muted
+ *   --primary/-foreground   -> --ui-color-primary / --ui-color-primary-fg
+ *   --secondary/-foreground -> --ui-color-secondary / --ui-color-secondary-fg
+ *   --destructive           -> --ui-color-danger
+ *   --border / --input      -> --ui-color-border / --ui-field-border
+ *   --ring                  -> --ui-color-focus-ring (AA step, see below)
+ *   --card / --popover      -> --ui-card-container-* / --ui-dialog-container,
+ *                              --ui-toast-container
+ *   --radius (0.625rem)     -> --ui-radius scale (base on --ui-radius-md)
+ *   --font-sans/mono        -> --ui-font-sans / --ui-font-mono
+ *
+ * Documented divergences (details in themes/theme-baseui/README.md):
+ *   - Text field keeps Gelium's floating label; the field height is stepped
+ *     to 3rem (Basecoat inputs are 2.25rem) so the label keeps headroom.
+ *   - Toast keeps the server-driven aria-live contract (loom:toast); only the
+ *     popover-surface aesthetic is taken (light container, border, shadow-lg).
+ *   - Light --ui-color-danger steps from Vega's red-600 (#dc2626, 4.48:1 with
+ *     white) to red-700 (#b91c1c, 5.86:1) because Gelium paints it as a solid
+ *     badge/tone surface, not the /10 soft fill Basecoat uses.
+ *   - Focus ring uses the neutral ring family at an AA-compliant step (light
+ *     neutral-500, dark neutral-400): Vega ships --ring at 50% opacity, which
+ *     Gelium's solid-outline model cannot reproduce.
+ *   - Status colors (success/warning/info) have no Basecoat source: Vega ships
+ *     only --destructive. Values keep the core semantic palette with dark
+ *     variants tuned for WCAG AA contrast.
+ *   - State hover/pressed opacities are raised to .20 to approximate Vega's
+ *     color-swap hover feedback (bg-primary/80, hover:bg-muted) inside
+ *     Gelium's color-mix state-layer model.
+ */
+.theme-baseui {
+  color-scheme: light;
+
+  /* Color — Vega light (oklch -> hex). */
+  --ui-color-canvas: #ffffff;            /* --background  */
+  --ui-color-surface: #ffffff;           /* --muted (neutral-100) */
+  --ui-color-surface-container: #f7f7f7; /* --muted (code/raised chips) */
+  --ui-color-fg: #171717;                /* --foreground (neutral-950) */
+  --ui-color-fg-muted: #666666;          /* --muted-foreground (neutral-500 → AA-tuned: 4.75:1 on neutral-100 surface, WCAG AA body text) */
+  --ui-color-primary: #171717;           /* --primary (neutral-900) */
+  --ui-color-primary-fg: #ffffff;        /* --primary-foreground (neutral-50) */
+  --ui-color-secondary: #f2f2f2;         /* --secondary (neutral-100) */
+  --ui-color-secondary-fg: #171717;      /* --secondary-foreground (neutral-900) */
+  /* Code highlighting string color (teal-700): WCAG AA 5.0:1 on
+     surface-container #f5f5f5 (checked 2026-08-15). */
+  --ui-color-code-string: #0f766e;
+  --ui-color-border: #ebebeb;            /* --border (neutral-200) */
+  --ui-color-border-strong: #bdbdbd;     /* neutral-400: stronger than border */
+  --ui-color-danger: #b91c1c;            /* destructive red-700 (AA solid) */
+  --ui-color-danger-fg: #ffffff;
+  --ui-color-focus-ring: #171717;        /* neutral-500 (AA non-text step) */
+
+  /* Semantic status colors — no Basecoat source; core palette with AA values.
+     danger-container backs the demo RED quality chip. */
+  --ui-color-success: #2e7d32;
+  --ui-color-success-fg: #ffffff;
+  --ui-color-warning: #b9930a;
+  --ui-color-warning-fg: #6a4b00;
+  --ui-color-warning-container: #fff3d6;
+  --ui-color-info: #4f5d75;
+  --ui-color-info-fg: #ffffff;
+  --ui-color-danger-container: #fddcdc;
+  --ui-color-scrim: rgb(0 0 0 / .20);
+
+  /* Text field — Vega input anatomy (border-input, rounded-md, muted label).
+     The filled container is the muted surface; the outlined control keeps the
+     transparent input on the canvas. */
+  --ui-field-container: #f5f5f5;
+  --ui-field-border: #e5e5e5;
+  --ui-field-border-hover: #a3a3a3;
+  --ui-field-label: #737373;
+  --ui-field-error: #b91c1c;
+
+  /* Dialog — Vega .dialog > * popover surface (bg-popover, rounded-xl,
+     ring-1). The scrim steps up from bg-black/10 because Gelium renders no
+     backdrop blur. */
+  --ui-dialog-container: #ffffff;
+  --ui-dialog-fg: #0a0a0a;
+  --ui-dialog-body: #737373;
+  --ui-dialog-scrim: var(--ui-color-scrim);
+
+  /* Toast — Vega .toast-content popover surface (bg-popover, border,
+     shadow-lg, rounded-2xl). The Gelium contract stays server-driven
+     (aria-live + loom:toast); only the aesthetic is taken. Icons derive from
+     the core semantic colors; the error icon keeps a theme-owned token so it
+     can diverge from --ui-color-danger. */
+  --ui-toast-container: #ffffff;
+  --ui-toast-fg: #0a0a0a;
+  --ui-toast-radius: 1rem;
+  --ui-toast-action: #171717;
+  --ui-toast-icon-info: var(--ui-color-info);
+  --ui-toast-icon-success: var(--ui-color-success);
+  --ui-toast-icon-warning: var(--ui-color-warning);
+  --ui-color-toast-icon-error: #b91c1c;
+  --ui-toast-icon-error: var(--ui-color-toast-icon-error);
+
+  /* Fonts — Vega prefers Geist Sans/Mono with system fallbacks; the fonts are
+     not bundled, so uninstalled stacks resolve to the fallbacks. */
+  --ui-font-sans: "Geist Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --ui-font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+
+  /* Typescale — Phase B decomposition (R1): the theme overrides the five
+     decomposed per-step tokens; the --ui-type-<step> aliases live in the core
+     and compose them, so alias output equals the pre-change shorthand. */
+  --ui-font-sans: "Geist Sans", ui-sans-serif, system-ui, -apple-system, "Segoe UI", sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
+  --ui-font-mono: "Geist Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+  --ui-type-display-sm-size: 2.25rem;
+  --ui-type-display-sm-weight: 600;
+  --ui-type-display-sm-line-height: 2.75rem;
+  --ui-type-display-sm-letter-spacing: normal;
+  --ui-type-display-sm-family: var(--ui-font-sans);
+  --ui-type-display-lg-size: 3rem;
+  --ui-type-display-lg-weight: 600;
+  --ui-type-display-lg-line-height: 3.5rem;
+  --ui-type-display-lg-letter-spacing: normal;
+  --ui-type-display-lg-family: var(--ui-font-sans);
+  --ui-type-headline-sm-size: 1.25rem;
+  --ui-type-headline-sm-weight: 600;
+  --ui-type-headline-sm-line-height: 1.75rem;
+  --ui-type-headline-sm-letter-spacing: normal;
+  --ui-type-headline-sm-family: var(--ui-font-sans);
+  --ui-type-title-lg-size: 1.125rem;
+  --ui-type-title-lg-weight: 600;
+  --ui-type-title-lg-line-height: 1.625rem;
+  --ui-type-title-lg-letter-spacing: normal;
+  --ui-type-title-lg-family: var(--ui-font-sans);
+  --ui-type-title-md-size: 1rem;
+  --ui-type-title-md-weight: 600;
+  --ui-type-title-md-line-height: 1.5rem;
+  --ui-type-title-md-letter-spacing: normal;
+  --ui-type-title-md-family: var(--ui-font-sans);
+  --ui-type-body-lg-size: 1rem;
+  --ui-type-body-lg-weight: 400;
+  --ui-type-body-lg-line-height: 1.5rem;
+  --ui-type-body-lg-letter-spacing: normal;
+  --ui-type-body-lg-family: var(--ui-font-sans);
+  --ui-type-body-md-size: .875rem;
+  --ui-type-body-md-weight: 400;
+  --ui-type-body-md-line-height: 1.375rem;
+  --ui-type-body-md-letter-spacing: normal;
+  --ui-type-body-md-family: var(--ui-font-sans);
+  --ui-type-body-sm-size: .75rem;
+  --ui-type-body-sm-weight: 400;
+  --ui-type-body-sm-line-height: 1.125rem;
+  --ui-type-body-sm-letter-spacing: normal;
+  --ui-type-body-sm-family: var(--ui-font-sans);
+  --ui-type-label-lg-size: .875rem;
+  --ui-type-label-lg-weight: 500;
+  --ui-type-label-lg-line-height: 1.25rem;
+  --ui-type-label-lg-letter-spacing: normal;
+  --ui-type-label-lg-family: var(--ui-font-sans);
+  --ui-type-label-md-size: .875rem;
+  --ui-type-label-md-weight: 500;
+  --ui-type-label-md-line-height: 1.25rem;
+  --ui-type-label-md-letter-spacing: normal;
+  --ui-type-label-md-family: var(--ui-font-sans);
+  --ui-type-label-sm-size: .75rem;
+  --ui-type-label-sm-weight: 500;
+  --ui-type-label-sm-line-height: 1rem;
+  --ui-type-label-sm-letter-spacing: normal;
+  --ui-type-label-sm-family: var(--ui-font-sans);
+  --ui-type-dialog-headline-size: 1.25rem;
+  --ui-type-dialog-headline-weight: 600;
+  --ui-type-dialog-headline-line-height: 1.75rem;
+  --ui-type-dialog-headline-letter-spacing: normal;
+  --ui-type-dialog-headline-family: var(--ui-font-sans);
+  --ui-type-dialog-body-size: .875rem;
+  --ui-type-dialog-body-weight: 400;
+  --ui-type-dialog-body-line-height: 1.375rem;
+  --ui-type-dialog-body-letter-spacing: normal;
+  --ui-type-dialog-body-family: var(--ui-font-sans);
+
+  /* Size — Basecoat density: controls are h-9 (2.25rem) instead of Material's
+     2.5rem. The field stays 3rem instead of Basecoat's 2.25rem so Gelium's
+     floating label keeps headroom (documented Text field divergence). The rest
+     of the core size scale (icons, track, items) is left at core defaults. */
+  --ui-size-control: 2.25rem;
+  --ui-size-field: 3rem;
+
+  /* Shape — Basecoat radius scale derived from --radius: 0.625rem.
+     Gelium has no 0.625 step, so the scale shifts one slot and the base lands
+     on md: xs=0.375rem (rounded-md inputs/code), sm=0.5rem, md=0.625rem (base),
+     lg=0.75rem (rounded-xl). */
+  --ui-radius-none: 0;
+  --ui-radius-xs: 2px;
+  --ui-radius-sm: 4px;
+  --ui-radius-md: 6px;
+  --ui-radius-lg: 12px;
+  --ui-radius-full: 9999px;
+  --ui-dialog-radius: .75rem;
+
+  /* Elevation — Tailwind v4 shadow steps the Vega style pack uses
+     (shadow-xs / sm / md / lg / xl). */
+  --ui-shadow-0: none;
+  --ui-shadow-1: 0 1px 2px 0 rgb(0 0 0 / .05);
+  --ui-shadow-2: 0 1px 3px 0 rgb(0 0 0 / .10), 0 1px 2px -1px rgb(0 0 0 / .10);
+  --ui-shadow-3: 0 4px 6px -1px rgb(0 0 0 / .10), 0 2px 4px -2px rgb(0 0 0 / .10);
+  --ui-shadow-4: 0 10px 15px -3px rgb(0 0 0 / .10), 0 4px 6px -4px rgb(0 0 0 / .10);
+  --ui-shadow-5: 0 20px 25px -5px rgb(0 0 0 / .10), 0 8px 10px -6px rgb(0 0 0 / .10);
+
+  /* Border — Basecoat hairline 1px borders. */
+  --ui-border-width-1: 1px;
+  --ui-border-width-2: 2px;
+  --ui-border-style-solid: solid;
+
+  /* Divider */
+  --ui-divider-color: var(--ui-color-border);
+  --ui-divider-thickness: 1px;
+
+  /* Card — Vega .card surface (bg-card, ring-1, shadow-xs, rounded-xl);
+     the filled variant maps to the muted surface (Basecoat has no filled
+     card; audit: filled -> bg-muted). */
+  --ui-card-radius: 12px;
+  --ui-card-container-elevated: var(--ui-color-canvas);
+  --ui-card-container-filled: var(--ui-color-surface);
+  --ui-card-container-outlined: var(--ui-color-canvas);
+  --ui-card-outline-color: var(--ui-color-border);
+
+  /* Badge — Gelium dot/count marker keeps its error-tinted contract; the
+     pill (large) form carries the label. Derived from the semantic danger
+     pair so dark legibility comes from the color redefinition. */
+  --ui-badge-size: 6px;
+  --ui-badge-large-size: 16px;
+  --ui-badge-container: var(--ui-color-danger);
+  --ui-badge-fg: var(--ui-color-danger-fg);
+
+  /* Checkbox — Vega input[type=checkbox]: size-4, rounded-[4px],
+     checked:bg-primary. */
+  --ui-checkbox-size: 16px;
+  --ui-checkbox-radius: 4px;
+  --ui-checkbox-outline-width: var(--ui-border-width-2);
+  --ui-checkbox-outline: var(--ui-color-fg-muted);
+  --ui-checkbox-hover-outline: var(--ui-color-fg);
+  --ui-checkbox-container: var(--ui-color-primary);
+  --ui-checkbox-icon: var(--ui-color-primary-fg);
+  --ui-checkbox-error: var(--ui-color-danger);
+  --ui-checkbox-checked-disabled-container: var(--ui-color-fg);
+
+  /* Radio — Vega input[type=radio]: size-4, rounded-full, checked:bg-primary. */
+  --ui-radio-size: 16px;
+  --ui-radio-radius: 50%;
+  --ui-radio-outline-width: var(--ui-border-width-2);
+  --ui-radio-outline: var(--ui-color-fg-muted);
+  --ui-radio-hover-outline: var(--ui-color-fg);
+  --ui-radio-checked: var(--ui-color-primary);
+  --ui-radio-disabled: var(--ui-color-fg);
+
+  /* Switch — Vega input[role=switch]: 32x18.4px track, checked:bg-primary,
+     not-checked:bg-input, handle bg-background. Basecoat has no press growth,
+     so pressed keeps the selected size. Disabled matches Basecoat's
+     opacity-50 on the whole control. */
+  --ui-switch-width: 32px;
+  --ui-switch-height: 18.4px;
+  --ui-switch-radius: var(--ui-radius-full);
+  --ui-switch-outline-width: var(--ui-border-width-2);
+  --ui-switch-track: var(--ui-color-primary);
+  --ui-switch-track-unselected: #e5e5e5;
+  --ui-switch-track-outline: var(--ui-color-border-strong);
+  --ui-switch-handle: var(--ui-color-canvas);
+  --ui-switch-handle-selected: var(--ui-color-canvas);
+  --ui-switch-handle-size: 16px;
+  --ui-switch-handle-selected-size: 16px;
+  --ui-switch-handle-pressed-size: 16px;
+  --ui-switch-disabled-track-opacity: .5;
+  --ui-switch-disabled-handle-opacity: .5;
+  --ui-switch-disabled-handle: var(--ui-color-canvas);
+
+  /* Slider — Vega input[type=range]: muted track h-1.5, thumb size-4 with a
+     primary ring. Gelium paints a solid primary thumb (single handle token). */
+  --ui-slider-track-height: 6px;
+  --ui-slider-track-radius: var(--ui-radius-full);
+  --ui-slider-handle-size: 16px;
+  --ui-slider-handle-pressed-size: 16px;
+  --ui-slider-active: var(--ui-color-primary);
+  --ui-slider-inactive: var(--ui-color-surface);
+  --ui-slider-handle: var(--ui-color-primary);
+  --ui-slider-handle-elevation: var(--ui-shadow-1);
+  --ui-slider-disabled: var(--ui-color-fg);
+  --ui-slider-disabled-opacity: var(--ui-state-disabled-opacity);
+
+  /* Progress — Vega .progress: bg-muted h-1.5 rounded-full, bg-primary bar. */
+  --ui-progress-track-height: 6px;
+  --ui-progress-radius: var(--ui-radius-full);
+  --ui-progress-track: var(--ui-color-surface);
+  --ui-progress-indicator: var(--ui-color-primary);
+
+  /* FAB — no Basecoat equivalent (Material-only component); the containers
+     derive from the primary/secondary surface tokens of the style pack. */
+  --ui-fab-primary-container: var(--ui-color-primary);
+  --ui-fab-primary-fg: var(--ui-color-primary-fg);
+  --ui-fab-surface-container: var(--ui-color-surface);
+  --ui-fab-surface-fg: var(--ui-color-fg);
+  --ui-fab-secondary-container: var(--ui-color-secondary);
+  --ui-fab-secondary-fg: var(--ui-color-secondary-fg);
+  --ui-fab-container-shape: .625rem;
+  --ui-fab-container-shape-small: .5rem;
+  --ui-fab-container-shape-large: .75rem;
+  --ui-fab-extended-shape: .625rem;
+  --ui-fab-icon-size: 24px;
+  --ui-fab-icon-size-large: 36px;
+  --ui-fab-icon-size-extended: 28px;
+  --ui-fab-extension-gap: var(--ui-space-3);
+
+  /* Select — Vega native select: h-9, rounded-md, border-input, transparent
+     surface with the chevron caret. The height re-points to the field token
+     so the floating label keeps headroom. */
+  --ui-select-height: var(--ui-size-field);
+  --ui-select-radius: .375rem;
+  --ui-select-radius-top: .375rem .375rem 0 0;
+  --ui-select-caret: var(--ui-color-fg-muted);
+  --ui-select-fg: var(--ui-color-fg);
+  --ui-select-label: var(--ui-color-fg-muted);
+  --ui-select-outline: var(--ui-field-border);
+  --ui-select-container-filled: var(--ui-color-surface);
+  --ui-select-hover-outline: var(--ui-color-fg);
+  --ui-select-focus: var(--ui-color-primary);
+  --ui-select-error: var(--ui-field-error);
+  --ui-select-disabled-opacity: var(--ui-state-disabled-opacity);
+  --ui-select-list-bg: var(--ui-color-canvas);
+  --ui-select-list-fg: var(--ui-color-fg);
+
+  /* State, focus, and motion. State opacities approximate Basecoat's
+     color-swap hover (bg-primary/80 => ~20% mix; hover:bg-muted => solid
+     fill) inside Gelium's color-mix state-layer model; disabled matches
+     Basecoat's opacity-50. Motion uses Tailwind's duration-100/300 and
+     the default ease; there is no medium step (D3 defers tokens without
+     a migrated consumer). */
+  --ui-state-hover-opacity: .20;
+  --ui-state-focus-opacity: .10;
+  --ui-state-pressed-opacity: .20;
+  --ui-state-selected-opacity: .20;
+  --ui-state-disabled-opacity: .50;
+  --ui-focus-thickness: 3px;
+  --ui-focus-offset: 2px;
+  --ui-motion-short: 100ms;
+  --ui-motion-long: 300ms;
+  --ui-easing-standard: cubic-bezier(.4, 0, .2, 1);
+
+  --ui-button-radius: 6px;
+  --ui-button-padding-x: 1rem;
+  --ui-button-padding-y: .5rem;
+  --ui-button-gap: .5rem;
+  --ui-field-radius: 6px;
+  --ui-field-padding-x: 1rem;
+  --ui-card-padding: 1rem;
+  --ui-icon-button-radius: 6px;
+  --ui-size-control: 2.75rem;
+  --ui-size-field: 3rem;
+  --ui-size-icon: 1.25rem;
+  --ui-size-icon-sm: 1rem;
+  --ui-size-track: 4px;
+  --ui-touch-target: 44px;
+  --ui-fab-container-size-small: 44px;
+  --ui-shadow-1: 0 0 0 1px rgb(0 0 0 / .08);
+  --ui-shadow-border: 0 0 0 1px rgb(0 0 0 / .08);
+  --ui-shadow-card: var(--ui-shadow-border);
+  --ui-shadow-menu: var(--ui-shadow-3);
+  --ui-shadow-tooltip: var(--ui-shadow-2);
+  --ui-shadow-dialog: var(--ui-shadow-3);
+  --ui-accordion-radius: 6px;
+  --ui-accordion-border: var(--ui-color-border);
+  --ui-accordion-surface: transparent;
+}
+
+.theme-baseui.theme-dark,
+.theme-baseui.dark,
+.theme-baseui[data-theme="dark"] {
+  color-scheme: dark;
+
+  /* Color — Vega dark (oklch -> hex). */
+  --ui-color-canvas: #171717;            /* --background  */
+  --ui-color-surface: #1f1f1f;           /* --muted (neutral-800) */
+  --ui-color-surface-container: #262626; /* --muted */
+  --ui-color-fg: #f5f5f5;                /* --foreground (neutral-50) */
+  --ui-color-fg-muted: #a3a3a3;          /* --muted-foreground (neutral-400) */
+  --ui-color-primary: #f5f5f5;           /* --primary (neutral-200) */
+  --ui-color-primary-fg: #171717;        /* --primary-foreground (neutral-900) */
+  /* Code highlighting string color (teal-400): WCAG AA 8.1:1 on
+     surface-container #262626 (checked 2026-08-15). */
+  --ui-color-code-string: #2dd4bf;
+  --ui-color-secondary: #262626;         /* --secondary (neutral-800) */
+  --ui-color-secondary-fg: #fafafa;      /* --secondary-foreground (neutral-50) */
+  --ui-color-border: #3a3a3a; /* --border (white 10%) */
+  --ui-color-border-strong: #666666;     /* neutral-400 */
+  --ui-color-danger: #ef4444;            /* destructive red-500 (Vega dark) */
+  --ui-color-danger-fg: #0a0a0a;
+  --ui-color-focus-ring: #f5f5f5;        /* neutral-400 (AA non-text step) */
+
+  /* Semantic status colors — dark variants tuned for AA contrast. */
+  --ui-color-success: #81c995;
+  --ui-color-success-fg: #00391f;
+  --ui-color-warning: #fdd663;
+  --ui-color-warning-fg: #fdd663;
+  --ui-color-warning-container: #3a3100;
+  --ui-color-info: #93c5fd;
+  --ui-color-info-fg: #1e3a8a;
+  --ui-color-danger-container: #7f1d1d;
+  --ui-color-scrim: rgb(0 0 0 / .40);
+
+  --ui-field-container: #262626;
+  --ui-field-border: rgb(255 255 255 / .15);
+  --ui-field-border-hover: #a3a3a3;
+  --ui-field-label: #a3a3a3;
+  --ui-field-error: #ef4444;
+
+  --ui-dialog-container: #171717;
+  --ui-dialog-fg: #fafafa;
+  --ui-dialog-body: #a3a3a3;
+  --ui-dialog-scrim: var(--ui-color-scrim);
+
+  --ui-toast-container: #171717;
+  --ui-toast-fg: #fafafa;
+  --ui-toast-action: #e5e5e5;
+  --ui-color-toast-icon-info: #93c5fd;
+  --ui-color-toast-icon-success: #81c995;
+  --ui-color-toast-icon-warning: #fdd663;
+  --ui-color-toast-icon-error: #f87171;
+  --ui-toast-icon-info: var(--ui-color-toast-icon-info);
+  --ui-toast-icon-success: var(--ui-color-toast-icon-success);
+  --ui-toast-icon-warning: var(--ui-color-toast-icon-warning);
+  --ui-toast-icon-error: var(--ui-color-toast-icon-error);
+
+  --ui-card-container-elevated: #262626;
+  --ui-card-container-filled: #1f1f1f;
+  --ui-card-container-outlined: #1f1f1f;
+  --ui-card-outline-color: var(--ui-color-border);
+
+  --ui-switch-track-unselected: rgb(255 255 255 / .15);
+  --ui-slider-inactive: #262626;
+  --ui-progress-track: #262626;
+  --ui-select-container-filled: #262626;
+  --ui-fab-surface-container: #262626;
+  --ui-fab-surface-fg: #a3a3a3;
+  --ui-fab-secondary-container: #262626;
+  --ui-fab-secondary-fg: #fafafa;
+  --ui-accordion-radius: 6px;
+  --ui-accordion-border: var(--ui-color-border);
+  --ui-accordion-surface: transparent;
+  --ui-accordion-trigger-padding-x: 1rem;
+  --ui-accordion-trigger-padding-y: .75rem;
+  --ui-accordion-panel-padding-x: 1rem;
+  --ui-accordion-panel-padding-y: 1rem;
+}

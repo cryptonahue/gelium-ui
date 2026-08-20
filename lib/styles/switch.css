@@ -7,13 +7,12 @@
      switch geometry. Disabled state follows the Material split: the track
      drops to 12% opacity while the unchecked handle drops to 38%. */
   .ui-switch {
-    --ui-switch-handle-inset: 6px;
     /* Checked-handle travel: the selected handle must land flush against the
        track's end inset, mirroring the start inset. Travel = track width minus
        the selected-handle size minus twice the inset, i.e.
        (track − handle) − 2×inset = 52 − 24 − 12 = 16px with the Material
        defaults — the old magic 12px was exactly 2×inset. */
-    --ui-switch-handle-travel: calc(var(--ui-switch-width) - var(--ui-switch-handle-selected-size) - 2 * var(--ui-switch-handle-inset));
+    --ui-switch-handle-travel: calc(var(--ui-switch-width) - var(--ui-switch-handle-selected-size) - 2 * var(--ui-switch-handle-inset, 6px));
     position: relative;
     display: inline-flex;
     align-items: center;
@@ -70,7 +69,7 @@
   }
   .ui-switch-handle {
     position: absolute;
-    inset-inline-start: var(--ui-switch-handle-inset);
+    inset-inline-start: var(--ui-switch-handle-inset, 6px);
     top: 50%;
     width: var(--ui-switch-handle-size);
     height: var(--ui-switch-handle-size);
