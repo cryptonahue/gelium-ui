@@ -3,6 +3,9 @@ package app
 import (
 	"net/http"
 	"net/http/httptest"
+	"os"
+	"path/filepath"
+	"runtime"
 	"strings"
 	"testing"
 )
@@ -184,8 +187,8 @@ func TestSelectPopupExperimentHTMXDisclosureContract(t *testing.T) {
 			t.Errorf("HTMX experiment is missing %q", contract)
 		}
 	}
-	if got := strings.Count(popup, `<form`); got != 1 {
-		t.Errorf("popup experiment forms = %d, want one non-nested fallback form", got)
+	if got := strings.Count(popup, `<form`); got != 2 {
+		t.Errorf("popup experiment forms = %d, want separate details and platform fallback forms", got)
 	}
 	for _, forbidden := range []string{`role="listbox"`, `role="option"`, `<dialog`, `hx-on`, `onclick=`} {
 		if strings.Contains(popup, forbidden) {
@@ -271,5 +274,77 @@ func TestSelectPopupExperimentHTMXDisclosureContract(t *testing.T) {
 	}
 	if got := invalidFallback.Body.String(); !strings.Contains(got, `<!doctype html>`) || !strings.Contains(got, `Select a valid plan`) || !strings.Contains(got, `Submitted value: not-a-plan`) {
 		t.Error("invalid non-HX popup POST must return a full page with visible preserved value")
+	}
+}
+
+// TestSelectPopupExperimentProgressivePlatformPopoverContract keeps the native
+// Select and details disclosure universal while allowing a standards-gated
+// platform popover alternative in capable browsers.
+func TestSelectPopupExperimentProgressivePlatformPopoverContract(t *testing.T) {
+	h := New()
+
+	native := httptest.NewRecorder()
+	h.ServeHTTP(native, httptest.NewRequest(http.MethodGet, "/components/select?execution=native", nil))
+	for _, contract := range []string{`<select`, `id="select-menu"`, `ui-select-filled`} {
+		if !strings.Contains(native.Body.String(), contract) {
+			t.Errorf("native Select baseline is missing %q", contract)
+		}
+	}
+	for _, absent := range []string{`ui-select-popup-disclosure`, `select-popup-platform`} {
+		if strings.Contains(native.Body.String(), absent) {
+			t.Errorf("native execution must not render experiment-only %q", absent)
+		}
+	}
+
+	page := httptest.NewRecorder()
+	h.ServeHTTP(page, httptest.NewRequest(http.MethodGet, "/components/select?execution=htmx", nil))
+	if page.Code != http.StatusOK {
+		t.Fatalf("HTMX select docs status = %d, want %d", page.Code, http.StatusOK)
+	}
+	popupStart := strings.Index(page.Body.String(), `id="select-popup-experiment"`)
+	if popupStart < 0 {
+		t.Fatal("HTMX select docs must render the popup experiment")
+	}
+	popup := page.Body.String()[popupStart:]
+	for _, contract := range []string{
+		`<details class="ui-select-popup-disclosure">`,
+		`<summary>Choose a plan</summary>`,
+		`class="ui-select-popup-platform-trigger" type="button" popovertarget="select-popup-platform"`,
+		`class="ui-select-popup-platform" id="select-popup-platform" popover>`,
+		`action="/examples/select/popup#select-popup-experiment"`,
+		`hx-post="/examples/select/popup"`,
+		`hx-target="#select-popup-experiment"`,
+		`hx-swap="outerHTML"`,
+		`hx-sync="this:replace"`,
+	} {
+		if !strings.Contains(popup, contract) {
+			t.Errorf("progressive popup experiment is missing %q", contract)
+		}
+	}
+	for _, forbidden := range []string{`role="listbox"`, `role="option"`, `hx-on`, `onclick=`, `<script`} {
+		if strings.Contains(popup, forbidden) {
+			t.Errorf("progressive popup experiment must not add custom listbox or JavaScript behavior %q", forbidden)
+		}
+	}
+
+	_, thisFile, _, ok := runtime.Caller(0)
+	if !ok {
+		t.Fatal("could not locate select test source")
+	}
+	css, err := os.ReadFile(filepath.Join(filepath.Dir(thisFile), "..", "..", "lib", "styles", "select.css"))
+	if err != nil {
+		t.Fatalf("read Select source CSS: %v", err)
+	}
+	for _, contract := range []string{
+		`.ui-select-popup-platform { display: none; }`,
+		`@supports selector(:popover-open) and (anchor-name: --ui-select-popup-anchor) and (position-anchor: --ui-select-popup-anchor) and (position-try-fallbacks: flip-block)`,
+		`anchor-name: --ui-select-popup-anchor;`,
+		`position-anchor: --ui-select-popup-anchor;`,
+		`position-try-fallbacks: flip-block, flip-inline;`,
+		`.ui-select-popup-platform:popover-open`,
+	} {
+		if !strings.Contains(string(css), contract) {
+			t.Errorf("platform popover CSS is missing guarded contract %q", contract)
+		}
 	}
 }

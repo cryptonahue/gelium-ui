@@ -81,11 +81,14 @@ Field anatomy reuses the `--ui-field-*` palette tokens shared with [Text field](
 
 The control is the native `<select>`: keyboard navigation, form submission, and the options popup are browser behavior — zero component JavaScript. The floating label and field surface are pure CSS. In forced-colors mode the select keeps visible `CanvasText` / `GrayText` / `Mark` boundaries and gives the popup `FieldText` contrast.
 
-## HTMX inline disclosure experiment
+## HTMX select enhancements
 
-When the resolved execution profile is `htmx`, the docs page also shows a separate **Select Popup Experiment**. It is an inline disclosure, not a Base UI popup clone. It uses native `<details>` and `<summary>` plus ordinary submit buttons in a semantic list. It does not attempt anchoring, portals, roving focus, typeahead, or `role=listbox` / `role=option` semantics.
+When the resolved execution profile is `htmx`, the docs page also shows a separate **Select Popup Experiment**. It has two progressively layered alternatives. The baseline native select above remains the supported no-JavaScript Select in every browser.
 
-The baseline native select above remains the supported no-JavaScript Select. The experiment's buttons are ordinary form submissions without JavaScript. HTMX swaps only the returned, closed disclosure section when available. Native browser disclosure and button keyboard behavior remain the interaction model.
+- **Cross-browser disclosure:** native `<details>` and `<summary>` plus ordinary submit buttons in a semantic list. This is visibly usable wherever the HTMX experiment renders, does not use `role=listbox` / `role=option`, and works as a normal form submission without JavaScript.
+- **Modern platform popover:** a separate HTML Popover API trigger and `popover` element. It displays only when the browser supports both `:popover-open` and the CSS Anchor Positioning declarations used by the experiment. Its native buttons submit to the same endpoint. An HTMX response swaps the entire experiment root, naturally removing/closing the popover; without HTMX the normal POST+303 redirect preserves the selected value. Browsers that do not meet both feature checks see neither an inert trigger nor raw popover content.
+
+The platform popover is Base UI docs-inspired and headless-only influence, not Base UI behavior or a popup clone. It intentionally does not provide roving focus, typeahead, portal collision logic beyond CSS anchor try fallbacks, or JavaScript focus return. Native browser button, form, and popover behavior remain the interaction model; use the native select when those richer interaction guarantees are required.
 
 ## Accessibility
 

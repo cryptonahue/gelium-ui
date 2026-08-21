@@ -157,6 +157,54 @@
   .ui-select-popup-option:hover { border-color: var(--ui-color-border-strong); }
   .ui-select-popup-option.is-selected { border-color: var(--ui-color-primary); }
   .ui-select-popup-current { color: var(--ui-color-fg-muted); font: var(--ui-type-label-lg); }
+  /*
+   * A platform popover is an optional modern-browser alternative. It stays
+   * absent unless both the Popover state selector and CSS anchor positioning
+   * grammar are understood; details/summary remains the universal disclosure.
+   */
+  .ui-select-popup-platform-alternative,
+  .ui-select-popup-platform { display: none; }
+  @supports selector(:popover-open) and (anchor-name: --ui-select-popup-anchor) and (position-anchor: --ui-select-popup-anchor) and (position-try-fallbacks: flip-block) {
+    .ui-select-popup-platform-alternative { display: grid; gap: var(--ui-space-2); }
+    .ui-select-popup-platform-description { color: var(--ui-color-fg-muted); font: var(--ui-type-body-sm); }
+    .ui-select-popup-platform-trigger {
+      anchor-name: --ui-select-popup-anchor;
+      display: inline-flex;
+      align-items: center;
+      justify-content: center;
+      width: fit-content;
+      min-block-size: var(--ui-touch-target);
+      padding-inline: var(--ui-space-3);
+      border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
+      border-radius: var(--ui-radius-sm);
+      background: var(--ui-color-canvas);
+      color: var(--ui-color-fg);
+      cursor: pointer;
+      font: var(--ui-type-label-lg);
+    }
+    .ui-select-popup-platform-trigger:hover { border-color: var(--ui-color-border-strong); }
+    .ui-select-popup-platform-trigger:focus-visible,
+    .ui-select-popup-platform .ui-select-popup-option:focus-visible {
+      outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
+      outline-offset: var(--ui-focus-offset);
+    }
+    .ui-select-popup-platform {
+      position: fixed;
+      position-anchor: --ui-select-popup-anchor;
+      position-area: block-end span-inline-end;
+      position-try-fallbacks: flip-block, flip-inline;
+      max-inline-size: min(calc(100vi - (var(--ui-space-4) * 2)), 24rem);
+      margin: var(--ui-space-2) 0 0;
+      padding: var(--ui-space-2);
+      border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
+      border-radius: var(--ui-radius-md);
+      background: var(--ui-color-surface);
+      color: var(--ui-color-fg);
+      box-shadow: var(--ui-shadow-md, none);
+    }
+    .ui-select-popup-platform:popover-open { display: grid; gap: var(--ui-space-2); }
+    .ui-select-popup-platform-form { padding: 0; }
+  }
   .select-demo-grid {
     display: grid;
     grid-template-columns: repeat(2, minmax(0, 1fr));
@@ -269,15 +317,15 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ui-select-popup-disclosure, .ui-select-popup-option { scroll-behavior: auto; transition: none; }
+  .ui-select-popup-disclosure, .ui-select-popup-option, .ui-select-popup-platform-trigger, .ui-select-popup-platform { scroll-behavior: auto; transition: none; }
 }
 
 @media (forced-colors: active) {
-  .ui-select-popup-experiment, .ui-select-popup-disclosure, .ui-select-popup-option {
+  .ui-select-popup-experiment, .ui-select-popup-disclosure, .ui-select-popup-option, .ui-select-popup-platform-trigger, .ui-select-popup-platform {
     border-color: CanvasText;
     forced-color-adjust: auto;
   }
-  .ui-select-popup-description, .ui-select-popup-submitted, .ui-select-popup-status, .ui-select-popup-option { color: CanvasText; }
+  .ui-select-popup-description, .ui-select-popup-submitted, .ui-select-popup-status, .ui-select-popup-option, .ui-select-popup-platform-description, .ui-select-popup-platform-trigger { color: CanvasText; }
   .ui-select-popup-error { color: Mark; }
-  .ui-select-popup-disclosure > summary:focus-visible, .ui-select-popup-option:focus-visible { outline-color: Highlight; }
+  .ui-select-popup-disclosure > summary:focus-visible, .ui-select-popup-option:focus-visible, .ui-select-popup-platform-trigger:focus-visible { outline-color: Highlight; }
 }

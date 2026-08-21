@@ -27,10 +27,10 @@ type selectMenuDemo struct {
 	Error   string
 }
 
-// selectPopupExperiment is a deliberately small, inline disclosure experiment
-// shown only for the optional HTMX execution profile. It is not a custom
-// listbox: native details/summary owns disclosure while native submit buttons
-// carry the closed option vocabulary to the server.
+// selectPopupExperiment is a deliberately small Select experiment shown only
+// for the optional HTMX execution profile. Native details/summary remains the
+// cross-browser disclosure; a separately rendered platform popover is gated in
+// CSS. Both use native submit buttons and are never a custom listbox.
 type selectPopupExperiment struct {
 	Options        []selectMenuOption
 	SelectedLabel  string

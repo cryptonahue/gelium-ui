@@ -101,5 +101,17 @@
       </ul>
     </form>
   </details>
+  <section class="ui-select-popup-platform-alternative" aria-label="Platform popover alternative">
+    <p class="ui-select-popup-platform-description">Modern-browser platform popover alternative</p>
+    <button class="ui-select-popup-platform-trigger" type="button" popovertarget="select-popup-platform">Choose a plan</button>
+    <div class="ui-select-popup-platform" id="select-popup-platform" popover>
+      <form class="ui-select-popup-platform-form" method="post" action="/examples/select/popup#select-popup-experiment"
+            hx-post="/examples/select/popup" hx-target="#select-popup-experiment" hx-swap="outerHTML" hx-sync="this:replace">
+        <ul class="ui-select-popup-options">
+          {{range .Options}}<li><button class="ui-select-popup-option{{if .Selected}} is-selected{{end}}" type="submit" name="popup_value" value="{{.Value}}">{{.Label}}{{if .Selected}} <span class="ui-select-popup-current">Current selection</span>{{end}}</button></li>{{end}}
+        </ul>
+      </form>
+    </div>
+  </section>
 </section>
 {{end}}
