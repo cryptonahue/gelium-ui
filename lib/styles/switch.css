@@ -17,6 +17,8 @@
     display: inline-flex;
     align-items: center;
     gap: var(--ui-space-2);
+    min-inline-size: var(--ui-switch-resolved-hit-size, var(--ui-switch-height, 32px));
+    min-block-size: var(--ui-switch-resolved-hit-size, var(--ui-switch-height, 32px));
     cursor: pointer;
     font: var(--ui-type-body-md);
   }

@@ -9,6 +9,8 @@
     display: inline-flex;
     align-items: center;
     gap: var(--ui-space-2);
+    min-inline-size: var(--ui-checkbox-resolved-hit-size, var(--ui-checkbox-size, 18px));
+    min-block-size: var(--ui-checkbox-resolved-hit-size, var(--ui-checkbox-size, 18px));
     cursor: pointer;
     font: var(--ui-type-body-md);
   }

@@ -241,3 +241,31 @@ func TestSelectContractResolvesReferenceDensityAndBaseUIComposition(t *testing.T
 		}
 	}
 }
+
+// TestSelectionControlsContractResolvesTouchTargetsAndSourceDensity locks the
+// native Checkbox, Radio, and Switch onto the server-resolved cascade. Their
+// labels remain the semantic click targets: Gelium contract makes each label
+// touch-safe while source contract retains the audited compact control density.
+func TestSelectionControlsContractResolvesTouchTargetsAndSourceDensity(t *testing.T) {
+	compiled := compactCSS(t, compiledAppCSS(t))
+
+	for _, want := range []string{
+		"--ui-checkbox-resolved-hit-size:max(var(--ui-touch-target),var(--ui-checkbox-size,var(--ui-touch-target)))",
+		"--ui-radio-resolved-hit-size:max(var(--ui-touch-target),var(--ui-radio-size,var(--ui-touch-target)))",
+		"--ui-switch-resolved-hit-size:max(var(--ui-touch-target),var(--ui-switch-height,var(--ui-touch-target)))",
+		"--ui-checkbox-resolved-hit-size:var(--ui-checkbox-size,auto)",
+		"--ui-radio-resolved-hit-size:var(--ui-radio-size,auto)",
+		"--ui-switch-resolved-hit-size:var(--ui-switch-height,auto)",
+		"min-block-size:var(--ui-checkbox-resolved-hit-size,var(--ui-checkbox-size,18px))",
+		"min-block-size:var(--ui-radio-resolved-hit-size,var(--ui-radio-size,20px))",
+		"min-block-size:var(--ui-switch-resolved-hit-size,var(--ui-switch-height,32px))",
+		"--ui-checkbox-size:16px",
+		"--ui-radio-size:16px",
+		"--ui-switch-width:32px",
+		"--ui-checkbox-radius:0",
+	} {
+		if !strings.Contains(compiled, want) {
+			t.Errorf("compiled selection-control contract missing semantic declaration %q", want)
+		}
+	}
+}

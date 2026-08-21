@@ -9,6 +9,8 @@
     display: inline-flex;
     align-items: center;
     gap: var(--ui-space-2);
+    min-inline-size: var(--ui-radio-resolved-hit-size, var(--ui-radio-size, 20px));
+    min-block-size: var(--ui-radio-resolved-hit-size, var(--ui-radio-size, 20px));
     cursor: pointer;
     font: var(--ui-type-body-md);
   }
