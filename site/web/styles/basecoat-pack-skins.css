@@ -82,6 +82,15 @@ html[data-gelium-skin="basecoat-rhea"] {
   --ui-select-radius: .375rem;
   --ui-select-radius-top: .375rem .375rem 0 0;
   --ui-select-caret-reserve: 2.25rem;
+  --ui-select-caret-inset: .625rem;
+  --ui-select-max-width: 16rem;
+  --ui-select-padding-y: .25rem;
+  --ui-select-padding-x: .625rem;
+  --ui-select-label-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-select-font: 400 .875rem/1.25rem var(--ui-font-sans);
+  --ui-select-control-bg: transparent;
+  --ui-select-control-border: var(--ui-border-width-1) solid var(--ui-color-border);
+  --ui-select-control-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --ui-checkbox-size: 16px;
   --ui-checkbox-radius: 4px;
   --ui-checkbox-outline-width: var(--ui-border-width-2);
@@ -180,6 +189,9 @@ html[data-gelium-skin="basecoat-nova"] {
   --ui-size-field: 2rem; /* denser pack */
   --ui-field-radius: .5rem;
   --ui-select-cascade-id: basecoat-nova-skin;
+  --ui-select-radius: .5rem;
+  --ui-select-radius-top: .5rem .5rem 0 0;
+  --ui-select-control-shadow: none;
   --ui-checkbox-cascade-id: basecoat-nova-skin;
   --ui-radio-cascade-id: basecoat-nova-skin;
   --ui-switch-cascade-id: basecoat-nova-skin;
@@ -295,6 +307,12 @@ html[data-gelium-skin="basecoat-mira"] {
   --ui-field-label-font: 500 .75rem/1.35 var(--ui-font-sans);
   --ui-field-input-font: 400 .75rem/1.35 var(--ui-font-sans);
   --ui-select-cascade-id: basecoat-mira-skin;
+  --ui-select-padding-y: .125rem;
+  --ui-select-padding-x: .5rem;
+  --ui-select-caret-reserve: 1.5rem;
+  --ui-select-caret-inset: .375rem;
+  --ui-select-font: 400 .75rem/1.35 var(--ui-font-sans);
+  --ui-select-control-bg: color-mix(in srgb, var(--ui-color-fg) 8%, var(--ui-color-canvas));
   --ui-checkbox-cascade-id: basecoat-mira-skin;
   --ui-radio-cascade-id: basecoat-mira-skin;
   --ui-switch-cascade-id: basecoat-mira-skin;
@@ -376,6 +394,12 @@ html[data-gelium-skin="basecoat-sera"] {
   --ui-field-label-font: 600 .75rem/1 var(--ui-font-sans);
   --ui-field-label-weight: 600;
   --ui-select-cascade-id: basecoat-sera-skin;
+  --ui-select-padding-y: .5rem;
+  --ui-select-padding-x: 0;
+  --ui-select-caret-reserve: 2rem;
+  --ui-select-caret-inset: 0;
+  --ui-select-control-shadow: none;
+  --ui-select-control-border-bottom: var(--ui-border-width-1) solid var(--ui-color-border);
   --ui-select-radius: 0;
   --ui-select-radius-top: 0;
   --ui-checkbox-cascade-id: basecoat-sera-skin;

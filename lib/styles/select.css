@@ -18,7 +18,7 @@
   .ui-select select {
     appearance: none;
     width: 100%;
-    height: var(--ui-select-height, var(--ui-size-field));
+    height: var(--ui-select-resolved-height, var(--ui-select-height, var(--ui-size-field)));
     box-sizing: border-box;
     padding: 1rem var(--ui-select-caret-reserve, 2.5rem) 0 var(--ui-field-padding-x, 1rem);
     border-radius: var(--ui-select-radius, 4px);
@@ -78,7 +78,7 @@
   .ui-select:focus-within .ui-select-label { color: var(--ui-select-focus); }
   .ui-select-caret {
     position: absolute;
-    inset-inline-end: var(--ui-field-padding-x, 1rem);
+    inset-inline-end: var(--ui-select-caret-inset, var(--ui-field-padding-x, 1rem));
     top: 50%;
     color: var(--ui-select-caret);
     pointer-events: none;
@@ -112,6 +112,101 @@
     margin: 0;
     color: var(--ui-color-fg);
     font: var(--ui-type-label-lg);
+  }
+  /*
+   * Basecoat native-select translation. The audited packs style a native
+   * select inside a field with the label above it; this preserves that native
+   * control model while translating only tokenized anatomy. Pack-specific
+   * density remains authored by the later skin adapter.
+   */
+  html[data-gelium-reference="basecoat"][data-gelium-skin="none"] .ui-select,
+  html[data-gelium-skin="basecoat"] .ui-select,
+  html[data-gelium-skin^="basecoat-"] .ui-select {
+    width: min(100%, var(--ui-select-max-width, 16rem));
+    gap: .25rem;
+  }
+  html[data-gelium-reference="basecoat"][data-gelium-skin="none"] .ui-select-label,
+  html[data-gelium-skin="basecoat"] .ui-select-label,
+  html[data-gelium-skin^="basecoat-"] .ui-select-label {
+    position: static;
+    order: -1;
+    color: var(--ui-select-label, var(--ui-color-fg));
+    font: var(--ui-select-label-font, 500 .875rem/1.25rem var(--ui-font-sans));
+    transform: none;
+  }
+  html[data-gelium-reference="basecoat"][data-gelium-skin="none"] .ui-select select,
+  html[data-gelium-skin="basecoat"] .ui-select select,
+  html[data-gelium-skin^="basecoat-"] .ui-select select {
+    height: var(--ui-select-resolved-height, var(--ui-select-height, var(--ui-size-field, 2.25rem)));
+    min-height: var(--ui-select-resolved-height, var(--ui-select-height, var(--ui-size-field, 2.25rem)));
+    padding: var(--ui-select-padding-y, .25rem) var(--ui-select-caret-reserve, 2rem) var(--ui-select-padding-y, .25rem) var(--ui-select-padding-x, .625rem);
+    border: var(--ui-select-control-border, var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border));
+    border-radius: var(--ui-select-radius, .375rem);
+    background: var(--ui-select-control-bg, transparent);
+    box-shadow: var(--ui-select-control-shadow, none);
+    color: var(--ui-select-fg, var(--ui-color-fg));
+    font: var(--ui-select-font, 400 .875rem/1.25rem var(--ui-font-sans));
+  }
+  html[data-gelium-reference="basecoat"][data-gelium-skin="none"] .ui-select-filled select,
+  html[data-gelium-skin="basecoat"] .ui-select-filled select,
+  html[data-gelium-skin^="basecoat-"] .ui-select-filled select,
+  html[data-gelium-reference="basecoat"][data-gelium-skin="none"] .ui-select-outlined select,
+  html[data-gelium-skin="basecoat"] .ui-select-outlined select,
+  html[data-gelium-skin^="basecoat-"] .ui-select-outlined select {
+    border: var(--ui-select-control-border, var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border));
+    border-radius: var(--ui-select-radius, .375rem);
+    background: var(--ui-select-control-bg, transparent);
+  }
+  html[data-gelium-reference="basecoat"][data-gelium-skin="none"] .ui-select select:not(:has(option:checked:not([value=""]))),
+  html[data-gelium-skin="basecoat"] .ui-select select:not(:has(option:checked:not([value=""]))),
+  html[data-gelium-skin^="basecoat-"] .ui-select select:not(:has(option:checked:not([value=""]))) {
+    color: var(--ui-select-placeholder, var(--ui-color-fg-muted));
+  }
+  html[data-gelium-skin="basecoat-sera"] .ui-select select {
+    border: 0;
+    border-bottom: var(--ui-select-control-border-bottom, var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border));
+  }
+  /*
+   * Base UI ships a headless React Select, not a CSS pack. This is a
+   * Gelium-authored docs-inspired native adaptation of the audited example:
+   * label above, square high-contrast field, 2rem source density. No popup or
+   * JavaScript behavior is imported; the native select remains operable.
+   */
+  html[data-gelium-reference="baseui"][data-gelium-skin="none"] .ui-select,
+  html[data-gelium-skin="baseui"] .ui-select {
+    width: min(100%, var(--ui-select-max-width, 16rem));
+    gap: .25rem;
+  }
+  html[data-gelium-reference="baseui"][data-gelium-skin="none"] .ui-select-label,
+  html[data-gelium-skin="baseui"] .ui-select-label {
+    position: static;
+    order: -1;
+    color: var(--ui-select-label, var(--ui-color-fg));
+    font: var(--ui-select-label-font, 700 .875rem/1.25rem var(--ui-font-sans));
+    transform: none;
+  }
+  html[data-gelium-reference="baseui"][data-gelium-skin="none"] .ui-select select,
+  html[data-gelium-skin="baseui"] .ui-select select {
+    height: var(--ui-select-resolved-height, var(--ui-select-height, var(--ui-size-field, 2rem)));
+    min-height: var(--ui-select-resolved-height, var(--ui-select-height, var(--ui-size-field, 2rem)));
+    padding: 0 var(--ui-select-caret-reserve, 2.25rem) 0 var(--ui-field-padding-x, .5rem);
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline, var(--ui-color-fg));
+    border-radius: var(--ui-select-radius, 0);
+    background: var(--ui-select-control-bg, var(--ui-color-canvas));
+    color: var(--ui-select-fg, var(--ui-color-fg));
+    font: var(--ui-select-font, 400 .875rem/1 var(--ui-font-sans));
+  }
+  html[data-gelium-reference="baseui"][data-gelium-skin="none"] .ui-select-filled select,
+  html[data-gelium-skin="baseui"] .ui-select-filled select,
+  html[data-gelium-reference="baseui"][data-gelium-skin="none"] .ui-select-outlined select,
+  html[data-gelium-skin="baseui"] .ui-select-outlined select {
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline, var(--ui-color-fg));
+    border-radius: var(--ui-select-radius, 0);
+    background: var(--ui-select-control-bg, var(--ui-color-canvas));
+  }
+  html[data-gelium-reference="baseui"][data-gelium-skin="none"] .ui-select select:not(:has(option:checked:not([value=""]))),
+  html[data-gelium-skin="baseui"] .ui-select select:not(:has(option:checked:not([value=""]))) {
+    color: var(--ui-select-placeholder, var(--ui-color-fg-muted));
   }
   @media (max-width: 48rem) { .select-demo-grid { grid-template-columns: 1fr; } }
 }

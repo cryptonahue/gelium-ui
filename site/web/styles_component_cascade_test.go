@@ -211,3 +211,33 @@ func TestFieldContractAndBaseUIDocsDensityAreCompiled(t *testing.T) {
 		t.Error("baseui text-field composition selectors must be present")
 	}
 }
+
+// TestSelectContractResolvesReferenceDensityAndBaseUIComposition locks the
+// Select migration onto the same server-resolved reference/skin/contract
+// cascade as fields. The native select remains the interactive control; the
+// Base UI direction only changes its visual composition.
+func TestSelectContractResolvesReferenceDensityAndBaseUIComposition(t *testing.T) {
+	// Assert the served bundle's semantic declarations rather than an exact
+	// selector serialization. Lightning CSS may retain descendant whitespace,
+	// minify it, or regroup equivalent selectors without changing the cascade.
+	compiled := compactCSS(t, compiledAppCSS(t))
+
+	for _, want := range []string{
+		// The contract provides a 44px Gelium floor and an authored-source path.
+		"--ui-select-resolved-height:max(var(--ui-touch-target),var(--ui-select-height,var(--ui-size-field,var(--ui-touch-target))))",
+		"--ui-select-resolved-height:var(--ui-select-height,var(--ui-size-field,auto))",
+		// Core consumes the resolved value; the Base UI adaptation keeps its
+		// authored 2rem density, label-above composition, and square field.
+		"height:var(--ui-select-resolved-height,var(--ui-select-height,var(--ui-size-field)))",
+		"height:var(--ui-select-resolved-height,var(--ui-select-height,var(--ui-size-field,2rem)))",
+		"width:min(100%,var(--ui-select-max-width,16rem))",
+		"order:-1",
+		"position:static",
+		"--ui-select-label-font:700.875rem/1.25remvar(--ui-font-sans)",
+		"--ui-select-radius:0",
+	} {
+		if !strings.Contains(compiled, want) {
+			t.Errorf("compiled Select contract missing semantic declaration %q", want)
+		}
+	}
+}

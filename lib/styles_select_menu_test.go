@@ -17,7 +17,7 @@ func TestSelectMenuDemoUsesNativeSelectFieldSurface(t *testing.T) {
 		`.ui-select {`,
 		`.ui-select select {`,
 		`appearance: none;`,
-		`height: var(--ui-select-height, var(--ui-size-field));`,
+		`height: var(--ui-select-resolved-height, var(--ui-select-height, var(--ui-size-field)));`,
 		`border-radius: var(--ui-select-radius, 4px);`,
 		`.ui-select-filled select { background: var(--ui-select-container-filled); border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent; border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-select-outline);`,
 		`.ui-select select[aria-invalid="true"] { border-color: var(--ui-select-error);`,

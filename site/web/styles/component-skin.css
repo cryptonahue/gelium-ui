@@ -148,6 +148,15 @@ html[data-gelium-skin="basecoat"] {
   --ui-select-radius: .375rem;
   --ui-select-radius-top: .375rem .375rem 0 0;
   --ui-select-caret-reserve: 2.25rem;
+  --ui-select-caret-inset: .625rem;
+  --ui-select-max-width: 16rem;
+  --ui-select-padding-y: .25rem;
+  --ui-select-padding-x: .625rem;
+  --ui-select-label-font: 500 .875rem/1.25rem var(--ui-font-sans);
+  --ui-select-font: 400 .875rem/1.25rem var(--ui-font-sans);
+  --ui-select-control-bg: transparent;
+  --ui-select-control-border: var(--ui-border-width-1) solid var(--ui-color-border);
+  --ui-select-control-shadow: 0 1px 2px 0 rgb(0 0 0 / 0.05);
   --ui-checkbox-cascade-id: basecoat-skin;
   --ui-checkbox-size: 16px;
   --ui-checkbox-radius: 4px;
@@ -276,6 +285,11 @@ html[data-gelium-skin="baseui"] {
   --ui-select-radius: 0;
   --ui-select-radius-top: 0;
   --ui-select-caret-reserve: 2.25rem;
+  --ui-select-caret-inset: .25rem;
+  --ui-select-max-width: 16rem;
+  --ui-select-label-font: 700 .875rem/1.25rem var(--ui-font-sans);
+  --ui-select-font: 400 .875rem/1 var(--ui-font-sans);
+  --ui-select-control-bg: var(--ui-color-canvas);
   --ui-checkbox-cascade-id: baseui-skin;
   --ui-checkbox-size: 16px;
   --ui-checkbox-radius: 0;
