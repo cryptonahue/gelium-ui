@@ -108,7 +108,7 @@
       <p>{{.Desc}}</p>
       <div class="component-preview" aria-label="{{.Name}} example">{{.Demo}}</div>
       <pre><code>{{.Code}}</code></pre>
-    </section>{{end}}{{end}}{{if .APIRef}}<h2>API reference</h2>
+    </section>{{end}}{{end}}{{if .SelectPopup}}{{template "select-popup-experiment" .SelectPopup}}{{end}}{{if .APIRef}}<h2>API reference</h2>
     <div class="api-ref-table-wrap">
       <table class="api-ref-table">
         <caption>{{.APIRef.Component}} props</caption>

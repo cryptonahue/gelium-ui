@@ -3,6 +3,7 @@ package app
 import (
 	"bytes"
 	"net/http"
+	"net/url"
 	"strings"
 )
 
@@ -24,6 +25,17 @@ type selectMenuOption struct {
 type selectMenuDemo struct {
 	Options []selectMenuOption
 	Error   string
+}
+
+// selectPopupExperiment is a deliberately small, inline disclosure experiment
+// shown only for the optional HTMX execution profile. It is not a custom
+// listbox: native details/summary owns disclosure while native submit buttons
+// carry the closed option vocabulary to the server.
+type selectPopupExperiment struct {
+	Options        []selectMenuOption
+	SelectedLabel  string
+	Error          string
+	SubmittedValue string
 }
 
 // selectMenuOptions is the closed vocabulary of the server-driven demo.
@@ -48,6 +60,36 @@ func defaultSelectMenuDemo() selectMenuDemo {
 	}
 }
 
+func defaultSelectPopupExperiment() selectPopupExperiment {
+	demo, _ := selectPopupExperimentForValue("priority")
+	return demo
+}
+
+// selectPopupExperimentForValue resolves only the documented option vocabulary.
+// An unknown submitted value leaves the safe default selected while preserving
+// the raw value for the server-rendered validation message.
+func selectPopupExperimentForValue(value string) (selectPopupExperiment, bool) {
+	selected := "priority"
+	found := false
+	for _, option := range selectMenuOptions {
+		if option.Value == value {
+			selected = value
+			found = true
+			break
+		}
+	}
+
+	demo := selectPopupExperiment{Options: make([]selectMenuOption, len(selectMenuOptions))}
+	for i, option := range selectMenuOptions {
+		option.Selected = option.Value == selected
+		if option.Selected {
+			demo.SelectedLabel = option.Label
+		}
+		demo.Options[i] = option
+	}
+	return demo, found
+}
+
 // selectExamples returns the pilot Examples for the Select page with the
 // server-driven menu example bound to the current demo, so the example's
 // live form always reflects the latest selection. The Select partials
@@ -69,11 +111,21 @@ func selectExamples(demo selectMenuDemo) ([]exampleBlock, *apiRefView) {
 func (s *server) selectDocs(w http.ResponseWriter, r *http.Request) {
 	demo := defaultSelectMenuDemo()
 	examples, apiRef := selectExamples(demo)
-	s.renderMarkdownPage(w, r, pageView{
+	page := pageView{
 		Title:    "Select",
 		Examples: examples,
 		APIRef:   apiRef,
-	}, "content/select.md")
+	}
+	if accordionExecutionFromRequest(r) == accordionExecutionHTMX {
+		popup := defaultSelectPopupExperiment()
+		if value := r.URL.Query().Get("select_popup_value"); value != "" {
+			if resolved, ok := selectPopupExperimentForValue(value); ok {
+				popup = resolved
+			}
+		}
+		page.SelectPopup = &popup
+	}
+	s.renderMarkdownPage(w, r, page, "content/select.md")
 }
 
 // selectMenu completes the no-JS server round-trip for the Select menu demo:
@@ -127,6 +179,63 @@ func (s *server) selectMenu(w http.ResponseWriter, r *http.Request) {
 	var rendered bytes.Buffer
 	if err := s.templates.ExecuteTemplate(&rendered, "select-menu-demo", demo); err != nil {
 		http.Error(w, "select menu unavailable", http.StatusInternalServerError)
+		return
+	}
+	w.Header().Set("Content-Type", "text/html; charset=utf-8")
+	w.WriteHeader(status)
+	_, _ = w.Write(rendered.Bytes())
+}
+
+// selectPopup handles the optional inline disclosure experiment. It is a real
+// progressive enhancement boundary: regular form posts redirect to a canonical
+// GET URL, while HTMX posts receive only the replacement section. HTMX 4 swaps
+// 422 responses by default, so the validation response is a complete section.
+func (s *server) selectPopup(w http.ResponseWriter, r *http.Request) {
+	w.Header().Set("Vary", "HX-Request")
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "invalid form", http.StatusBadRequest)
+		return
+	}
+
+	// HTMX 4 sends the literal request marker `HX-Request: true`. Treat every
+	// other value as a regular form post so Vary: HX-Request cleanly separates
+	// the full-page and fragment representations.
+	isHX := r.Header.Get("HX-Request") == "true"
+	value := r.FormValue("popup_value")
+	demo, found := selectPopupExperimentForValue(value)
+	status := http.StatusOK
+	if !found {
+		status = http.StatusUnprocessableEntity
+		demo.Error = "Select a valid plan"
+		demo.SubmittedValue = value
+	}
+
+	if !isHX {
+		if found {
+			state := url.Values{}
+			state.Set("execution", string(accordionExecutionHTMX))
+			state.Set("select_popup_value", value)
+			http.Redirect(w, r, "/components/select?"+state.Encode()+"#select-popup-experiment", http.StatusSeeOther)
+			return
+		}
+		examples, apiRef := selectExamples(defaultSelectMenuDemo())
+		s.renderMarkdownPageStatus(w, r, pageView{
+			Title:       "Select",
+			Examples:    examples,
+			APIRef:      apiRef,
+			SelectPopup: &demo,
+		}, "content/select.md", status)
+		return
+	}
+
+	// This header remains compatible with the site's shared validation hook;
+	// HTMX 4 itself swaps this full section on HTTP 422 by default.
+	if status == http.StatusUnprocessableEntity {
+		w.Header().Set("X-Gelium-Validation", "true")
+	}
+	var rendered bytes.Buffer
+	if err := s.templates.ExecuteTemplate(&rendered, "select-popup-experiment", demo); err != nil {
+		http.Error(w, "select popup experiment unavailable", http.StatusInternalServerError)
 		return
 	}
 	w.Header().Set("Content-Type", "text/html; charset=utf-8")

@@ -84,3 +84,22 @@
   {{if .Error}}<p class="ui-select-error" id="select-menu-error" role="alert">{{.Error}}</p>{{end}}
 </form>
 {{end}}
+
+{{define "select-popup-experiment"}}
+<section class="ui-select-popup-experiment" id="select-popup-experiment" aria-labelledby="select-popup-experiment-title">
+  <h2 id="select-popup-experiment-title">Select Popup Experiment</h2>
+  <p class="ui-select-popup-description">A docs-inspired, headless-direction inline disclosure for the optional HTMX profile; it is not a Base UI popup clone.</p>
+  <p class="ui-select-popup-status" role="status">Selected plan: {{.SelectedLabel}}</p>
+  {{if .Error}}<p class="ui-select-popup-error" role="alert">{{.Error}}</p>
+  <p class="ui-select-popup-submitted">Submitted value: {{.SubmittedValue}}</p>{{end}}
+  <details class="ui-select-popup-disclosure">
+    <summary>Choose a plan</summary>
+    <form class="ui-select-popup-form" method="post" action="/examples/select/popup#select-popup-experiment"
+          hx-post="/examples/select/popup" hx-target="#select-popup-experiment" hx-swap="outerHTML" hx-sync="this:replace">
+      <ul class="ui-select-popup-options">
+        {{range .Options}}<li><button class="ui-select-popup-option{{if .Selected}} is-selected{{end}}" type="submit" name="popup_value" value="{{.Value}}">{{.Label}}{{if .Selected}} <span class="ui-select-popup-current">Current selection</span>{{end}}</button></li>{{end}}
+      </ul>
+    </form>
+  </details>
+</section>
+{{end}}

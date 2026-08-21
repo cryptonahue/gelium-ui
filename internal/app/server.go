@@ -1614,6 +1614,7 @@ type pageView struct {
 	SwitchDemo           *switchDemo
 	SelectDemo           *selectDemo
 	SelectMenuDemo       *selectMenuDemo
+	SelectPopup          *selectPopupExperiment
 	SliderDemo           *sliderDemo
 	ProgressDemo         *progressDemo
 	IconButtonDemo       *iconButtonDemo
@@ -1736,6 +1737,7 @@ func New() http.Handler {
 	mux.HandleFunc("POST /examples/text-field/validate", s.validateTextField)
 	mux.HandleFunc("POST /examples/toast/demo", s.toastDemo)
 	mux.HandleFunc("POST /examples/select/menu", s.selectMenu)
+	mux.HandleFunc("POST /examples/select/popup", s.selectPopup)
 	mux.HandleFunc("GET /components/dialog/confirm", s.dialogConfirm)
 	mux.HandleFunc("POST /components/dialog/confirm", s.dialogConfirmPost)
 	mux.HandleFunc("POST /examples/chips/remove", s.chipsRemoveDemo)

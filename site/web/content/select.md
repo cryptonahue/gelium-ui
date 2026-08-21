@@ -81,6 +81,12 @@ Field anatomy reuses the `--ui-field-*` palette tokens shared with [Text field](
 
 The control is the native `<select>`: keyboard navigation, form submission, and the options popup are browser behavior — zero component JavaScript. The floating label and field surface are pure CSS. In forced-colors mode the select keeps visible `CanvasText` / `GrayText` / `Mark` boundaries and gives the popup `FieldText` contrast.
 
+## HTMX inline disclosure experiment
+
+When the resolved execution profile is `htmx`, the docs page also shows a separate **Select Popup Experiment**. It is an inline disclosure, not a Base UI popup clone. It uses native `<details>` and `<summary>` plus ordinary submit buttons in a semantic list. It does not attempt anchoring, portals, roving focus, typeahead, or `role=listbox` / `role=option` semantics.
+
+The baseline native select above remains the supported no-JavaScript Select. The experiment's buttons are ordinary form submissions without JavaScript. HTMX swaps only the returned, closed disclosure section when available. Native browser disclosure and button keyboard behavior remain the interaction model.
+
 ## Accessibility
 
 - The visible `<label class="ui-select-label" for="...">` is a real label that focuses the select.

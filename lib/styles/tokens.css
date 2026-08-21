@@ -129,6 +129,7 @@
      There is no density-* family: nothing consumes it, so it stays absent. */
   --ui-size-control: 2.5rem;
   --ui-size-field: 3.5rem;
+  --ui-touch-target: 44px;
   --ui-size-icon: 1.5rem;
   --ui-size-icon-sm: 1.125rem;
   --ui-size-track: 4px;
