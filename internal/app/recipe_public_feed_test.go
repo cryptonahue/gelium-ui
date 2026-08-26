@@ -47,6 +47,45 @@ func TestRecipePublicFeedListRendersCardsWithAvatarAndStates(t *testing.T) {
 	}
 }
 
+// TestRecipePublicFeedSectionOrderContract proves purpose-bound feed regions
+// render in the reader's order, independently of their visual skin classes.
+func TestRecipePublicFeedSectionOrderContract(t *testing.T) {
+	resetRecipeFeedStore()
+
+	res := getRecipe(t, "/recipes/public-feed")
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	sections := []struct {
+		name   string
+		marker string
+	}{
+		{"page header", `>Latest activity</h1>`},
+		{"feed view navigation", `aria-label="Feed views"`},
+		{"feed list", `aria-label="Feed"`},
+		{"post action zone", `aria-label="Post actions"`},
+		{"loading and recovery", `aria-labelledby="recipe-pf-loading-heading"`},
+		{"refresh action", `aria-label="Remote refresh"`},
+	}
+
+	previous := -1
+	for _, section := range sections {
+		index := strings.Index(body, section.marker)
+		if index < 0 {
+			t.Errorf("section contract is missing %s marker %q", section.name, section.marker)
+			continue
+		}
+		if index < previous {
+			t.Errorf("section %s rendered before its prerequisite", section.name)
+		}
+		previous = index
+	}
+	if list, cards := strings.Count(body, "<ol"), strings.Count(body, "<article"); list != 1 || cards == 0 {
+		t.Errorf("feed contract requires one list containing repeated cards, lists=%d cards=%d", list, cards)
+	}
+}
+
 // TestRecipePublicFeedViewsFilterServerSide proves the closed view vocabulary
 // filters the feed server-side and marks the active Tab with aria-current.
 func TestRecipePublicFeedViewsFilterServerSide(t *testing.T) {

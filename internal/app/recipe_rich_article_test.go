@@ -29,6 +29,42 @@ func TestRichArticleRouteStructureAndMetadata(t *testing.T) {
 	}
 }
 
+// TestRichArticleSectionOrderContract proves the existing read-detail recipe
+// keeps primary reading before its evidence, references, recovery, and exits.
+func TestRichArticleSectionOrderContract(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/rich-article", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	sections := []struct {
+		name   string
+		marker string
+	}{
+		{"article header", `id="rich-article-title"`},
+		{"primary prose", `aria-label="Article body"`},
+		{"media evidence", `alt="Abstract blue and coral blocks arranged as a readable content layout"`},
+		{"data reference", `aria-labelledby="table-heading"`},
+		{"related activity", `aria-labelledby="feed-heading"`},
+		{"recoverable states", `aria-labelledby="states-heading"`},
+		{"related navigation", `aria-label="Related content"`},
+	}
+
+	previous := -1
+	for _, section := range sections {
+		index := strings.Index(body, section.marker)
+		if index < 0 {
+			t.Errorf("section contract is missing %s marker %q", section.name, section.marker)
+			continue
+		}
+		if index < previous {
+			t.Errorf("section %s rendered before its prerequisite", section.name)
+		}
+		previous = index
+	}
+}
+
 func TestRichArticleJSONLDIsValidArticle(t *testing.T) {
 	ld := richArticleJSONLD()
 	var value map[string]any

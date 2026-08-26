@@ -87,7 +87,7 @@
           {{if .New}}<span class="ui-badge ui-badge-large ui-badge--info">New</span>{{end}}
         </header>
         <p class="recipe-pf-card-body">{{.Body}}</p>
-        <footer class="recipe-pf-card-actions">
+        <footer class="recipe-pf-card-actions" aria-label="Post actions">
           <form class="recipe-pf-react" method="post" action="{{.ReactAction}}">
             <button class="ui-button ui-button-outline" type="submit">Like · {{.Likes}}</button>
           </form>
