@@ -35,6 +35,34 @@ validation swap, `gelium:toast` regions, view-transition guard, slider fill.
 - `.ui-row-from-desktop` — row layout from desktop breakpoint.
 - Prose measure ≤ 75ch (use 65ch in docs), `text-wrap: pretty`.
 
+### Spacing contract
+
+All spacing uses `--ui-space-*` tokens (4px base scale). Pick the token from
+the **semantic relationship** between elements — never invent a value, never
+eyeball it:
+
+| Relationship | Token | Rationale |
+|---|---|---|
+| Element → its own metadata (title → summary, label → hint) | `--ui-space-1` / `--ui-space-2` | same unit; proximity binds them |
+| Item → item inside one list/feed | `--ui-space-3` | siblings of the same group |
+| Group → group within a section | `--ui-space-4` / `--ui-space-6` | Gestalt: related groups sit closer than unrelated ones |
+| Section → section (page rhythm) | `--ui-space-8` | major page beats |
+
+Rules:
+
+- **Proximity = grouping**: children closer to each other than sibling groups.
+  If two blocks read as "glued", you used space-0/1 where the relationship is
+  space-3+.
+- **One axis per relationship**: pick vertical OR horizontal spacing for a
+  pairing, not both.
+- Components own their internal padding (`--ui-card-padding`, etc.) — compose
+  with margins/gaps *between* components only.
+- Never hardcode px/rem in markup or consumer CSS; if no token fits the
+  relationship, the scale is wrong — escalate instead of inventing.
+
+Prior art: Material 3 spacing/density rules; the industry-standard 8-point
+(4px half-step) grid; classic typographic vertical rhythm.
+
 ### Registry-first page shells
 
 Page-level layouts must compose registered components (`ui-container`,
