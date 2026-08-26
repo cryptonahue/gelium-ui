@@ -14,6 +14,19 @@ layout blocks, not aesthetics.
 
 Default for admin and tool screens is **Operate**.
 
+## Vocabulary resolution (do this before creating any NEW component)
+
+Before naming or building a new component, resolve the user's informal
+description against `lib/ui-vocabulary.md` (grep it for keywords: "the dark
+see-through layer behind a popup" → scrim; "the gray text inside the box" →
+placeholder). Then check `docs/gelium-ui-vocabulary.md` §8 for already-resolved
+naming conflicts.
+
+- Canonical name exists in the registry → compose the registered component.
+- Name is an alias → use the canonical name (e.g. snackbar → toast,
+  facepile → avatar group).
+- Only escalate a genuinely new primitive if neither file resolves it.
+
 ## Screen types → blocks
 
 | Type | Blocks |
