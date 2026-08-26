@@ -308,3 +308,102 @@ Solo tokens `--ui-*` existentes (incluido `--ui-color-info-fg` para el badge "Ne
 ### RATIONALE
 
 Es la recipe que obliga a resolver **loading + novedad + avatar/paginación** — los patrones de carga más críticos del sistema según `composition-audit.md`. Valida el contrato de estado de carga server-driven (Skeleton documentado, nunca flash de empty) y el patrón de "load more" por paginación real sobre la composición Card+Avatar+Badge.
+
+---
+
+## 4. Auth — PROPOSED
+
+> This recipe is documented in English per consumer request. It is a **proposal** (not yet implemented): it composes only registered components over an explicit server contract, targeting the auth screens LLM consumers most often hand-roll badly (duplicated CTAs, no error states, no navigation between steps).
+
+Routes (proposed — `internal/app/server.go`):
+
+| Operation | Route | Contract |
+|---|---|---|
+| Login (form) | `GET /recipes/auth/login` | Full no-JS page |
+| Login (mutation) | `POST /recipes/auth/login` | 303 to `GET /recipes/auth` destination on success; 422 + `X-Gelium-Validation` on failure |
+| Register (form) | `GET /recipes/auth/register` | Full no-JS page |
+| Register (mutation) | `POST /recipes/auth/register` | 303 to login (success banner) or 422 + `X-Gelium-Validation` |
+| Forgot password (form) | `GET /recipes/auth/forgot` | Full no-JS page |
+| Forgot password (mutation) | `POST /recipes/auth/forgot` | Always 303 back to forgot with neutral success banner (no account enumeration); rate-limit lockout → 422 |
+| Reset password (form) | `GET /recipes/auth/reset?token=` | Full page; invalid/expired token → `error-state` page with CTA back to forgot |
+| Reset password (mutation) | `POST /recipes/auth/reset` | 303 to login + success banner; 422 + `X-Gelium-Validation` on validation failure or expired token |
+
+### SURFACE
+
+Standalone server-rendered pages (narrow centered column, `max-width` fluid, no breakpoints) outside the app shell — unauthenticated users have no appbar/drawer to navigate. Each screen is a **page** — unit of URL and history — never a modal or overlay. Cross-screen navigation (login ↔ register ↔ forgot) lives as real links inside each card, so every step is deep-linkable and back-button-safe.
+
+### USER
+
+An anonymous user who needs to prove identity (login), create an account (register), or recover access (forgot/reset). Copy in English, localizable by contract. Exactly one primary action per screen; secondary actions are links, never competing buttons (this is the failure mode observed in hand-rolled logins).
+
+### PRIMARY_TASK
+
+Authenticate: submit credentials in a single form that either succeeds (303 into the app) or fails with field-level validation (422) — never a client-invented spinner-and-guess flow.
+
+### SECONDARY_TASKS
+
+Create an account; request a reset link; set a new password from an emailed token; navigate between the four screens; see why a submission was rejected and how to fix it.
+
+### UX_PATTERN
+
+Form (#2 `ux-patterns.md`) + Error recovery (#9) + Confirmation (via redirect target) + Destructive-adjacent caution on reset. One form screen = one POST mutation; no multi-step wizard — forgot → email → reset spans pages, not client state.
+
+### VISUAL_VOCABULARY
+
+Card (single `ui-card-outlined` as the screen's container, criterion 4.4 — one self-contained unit per page); Text fields for email/password/confirm; Button (one `ui-button--primary` submit per form); Validation summary + Inline alert for 422; Banner (persistent success post-303 on register/reset/forgot); Error state (invalid reset token); Empty/loading states do not apply (server-rendered forms, no client fetch phase). State tones live in the primitives (`inline-alert--error`, `banner--success`), never in recipe CSS.
+
+### COMPONENTS
+
+Card (`ui-card ui-card-outlined`, slots `ui-card-title/body`), Text field (`ui-text-field` filled variant; `type="email"`, `type="password"` with helper text for password rules), Checkbox ("Remember me"), Button (`ui-button-primary` submit), Inline alert (`ui-inline-alert--error` for credential/lockout errors), Validation summary (`ui-validation-summary` linking to `#field-error` anchors on 422), Banner (`ui-banner--success` persistent post-303), Error state (`ui-error-state` for invalid reset tokens). **Zero new primitives** — the recipe is 100% wiring of registered components.
+
+### STATES
+
+- **Rest**: form with empty fields, single primary CTA, cross-links to sibling screens.
+- **Loading**: does not apply — server-rendered; the browser's native form submission progress is the loading signal (anti-rule: no ad-hoc spinner on submit).
+- **Error**: per-field → 422 re-render preserving entered values, with `aria-invalid` + `aria-describedby` per field and a validation-summary linking to `#field-error`; whole-form credential rejection → `inline-alert--error` above the form ("Email or password is incorrect."); too many attempts → same inline alert with factual wait message ("Too many attempts. Try again in 15 minutes."); invalid/expired reset token → `error-state` page with retry CTA back to forgot.
+- **Success**: persistent post-303 — `banner--success` consumed on the next render ("Check your inbox", "Password updated. Sign in."), never a toast.
+- **Neutral-by-design**: forgot-password always renders the same success outcome whether or not the email exists (no account enumeration).
+
+### ACCESSIBILITY
+
+Real `<label>` associated with every field; `autocomplete` attributes (`email`, `new-password`, `current-password`) so password managers work; 422 moves focus to the validation summary whose entries are real links to `#field-error`; `aria-invalid` + `aria-describedby` per failing field; inline alert derives `role="alert"`, banner derives `role="status"`; cross-screen links are real `<a>` elements (keyboard-reachable navigation between login/register/forgot); forced-colors covered by the primitives; never color-only (helper text carries the rule, not just the red border). One `<h1>` per page matching the screen's verb ("Sign in", "Create account").
+
+### CONTENT_RULES
+
+Buttons are verbs ("Sign in", "Create account", "Send reset link" — never "OK"/"Submit"); errors say what happened + how to fix it ("Enter your email.", "Password must be at least 12 characters.") without blaming the user; credential errors stay vague by design (never reveal which field matched); reset-token expiry is factual with a real recovery path; copy in English per contract, localizable.
+
+### SEO_REQUIREMENTS
+
+All `/recipes/*` routes emit `robots: noindex, nofollow` (demo surface, same as `/demo/*`). `lang="en"`, distinct `<title>` and `<meta name="description">` per route (login/register/forgot/reset), clean canonical without query (`siteBaseURL + routePath`; the reset route's `?token=` must never reach a canonical, referrer, or log), one `<h1>` per page.
+
+### GEO_REQUIREMENTS
+
+Factual content citing system vocabulary (contract 303/422/`X-Gelium-Validation`, registered component names); stable deep-linkable URLs per screen; reset tokens excluded from any indexable surface; no unverifiable universal claims; Gelium UI is the single entity.
+
+### SERVER_CONTRACT
+
+Each form is one `POST` endpoint returning `303 SeeOther` on success (redirect target carries a flash banner consumed on next render) and `422 + X-Gelium-Validation: true` on failure (never a toast, never JS-only messaging); 422 re-renders the full page preserving submitted values; reset validates the token **server-side** before rendering the password form (invalid → `error-state` page, not a hidden failure); forgot enforces rate limiting server-side and returns the neutral 303 regardless of account existence; login lockout counters are server-side session state. No `HX-*` headers are required by this recipe — auth mutations stay plain POST+303 even under HTMX (the mutation contract does not change).
+
+### NO_JS_FLOW
+
+Complete: every screen is a full page reached by real links; every mutation is a native form POST + 303; 422 re-renders the full page with values preserved and error anchors in place; invalid reset token renders a server-side `error-state` page with a working CTA; success banners render inline post-redirect. The entire lifecycle works with JavaScript disabled.
+
+### HTMX_ENHANCEMENT
+
+Optional and minimal: none of the four mutations adopt `hx-post` — they remain POST+303. An optional enhancement may swap only the form region on 422 (focus to validation-summary), but the default contract is the full-page re-render, so enabling/disabling HTMX changes nothing observable about the contract.
+
+### RESPONSIVE_BEHAVIOR
+
+Single centered column, fluid `max-width`, no breakpoints; card stacks vertically on narrow; touch targets ≥ 44px via `--ui-touch-target` on all fields/buttons; no horizontal overflow at any width; the form grid uses `min()`/`clamp()` like the other recipes.
+
+### THEME_REQUIREMENTS
+
+Only existing `--ui-*` tokens; zero color literals in the recipe CSS (guard `TestNoColorLiteralsInComponents` covers the recipe stylesheet when implemented); light/dark via theme class; forced-colors and reduced-motion covered by the primitives; no new density/breakpoint tokens.
+
+### ALTERNATIVES_REJECTED
+
+**Dialog/modal login**: page = URL/back/history; long flows never live in dialogs (anti-rule `composition-rules.md`). **Tabs for login/register**: separate concerns with separate URLs and SEO treatment — pages, not tabs. **Client-side-only validation**: contract is 422 + `X-Gelium-Validation`; client hints may supplement but never replace. **Toast for auth errors/successes**: persistent outcomes get banners/inline alerts; toasts are transient-only. **Revealing which credential failed**: account-enumeration risk — always the combined message. **JS wizard for forgot→reset**: cross-page flow with emailed token; URL is the state.
+
+### RATIONALE
+
+Auth is the surface LLM consumers most frequently hand-roll badly — duplicated CTAs, missing error states, dead-end screens, no navigation between steps. This recipe pins the canonical composition (Card + Text field + one primary Button per screen) over the standard mutation contract (POST+303 / 422 + `X-Gelium-Validation`) and makes the no-account-enumeration and token-validation rules explicit, so consumers inherit correct defaults instead of reinventing them.
