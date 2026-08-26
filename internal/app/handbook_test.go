@@ -22,6 +22,7 @@ type handbookRoute struct {
 var handbookRoutes = []handbookRoute{
 	{path: "/docs/information-architecture", label: "Information architecture", h1: "Information architecture", contract: "concept before reference"},
 	{path: "/docs/screens", label: "Screens", h1: "Screens", contract: "Build checklist"},
+	{path: "/docs/page-section-architecture", label: "Page + section architecture", h1: "Page + section architecture", contract: "SECTION-CONTRACT"},
 	{path: "/docs/journeys", label: "Journeys", h1: "Journeys", contract: "JOURNEY-LINEAR"},
 	{path: "/docs/data-display", label: "Data display", h1: "Data display", contract: "DATA-TABLE"},
 	{path: "/docs/feedback", label: "Feedback", h1: "Feedback", contract: "error summary"},
@@ -190,6 +191,52 @@ func TestHandbookPagesInSitemap(t *testing.T) {
 	}
 }
 
+// TestPageSectionArchitectureDocsModel pins the new Core entry to the docs
+// model that drives the sidebar, search, footer, and previous/next pagination.
+func TestPageSectionArchitectureDocsModel(t *testing.T) {
+	const path = "/docs/page-section-architecture"
+	nav := docsNavFor(path, "", "")
+	var core []docsNavLink
+	for _, group := range nav.Groups {
+		if group.Title == "Core" {
+			core = group.Links
+			break
+		}
+	}
+	if len(core) == 0 {
+		t.Fatal("docs navigation must include the Core group")
+	}
+	found := false
+	for i, link := range core {
+		if link.Path != path {
+			continue
+		}
+		found = true
+		if !link.Current {
+			t.Error("page and section architecture must be current on its route")
+		}
+		if i == 0 || i == len(core)-1 || core[i-1].Path != "/docs/screens" || core[i+1].Path != "/docs/journeys" {
+			t.Fatalf("Core order around %s = %v, want Screens → Page + section architecture → Journeys", path, core)
+		}
+		break
+	}
+	if !found {
+		t.Fatalf("Core group must include %s", path)
+	}
+	if !strings.Contains(string(nav.SearchIndex), `"title":"Page + section architecture","href":"/docs/page-section-architecture","group":"Core"`) {
+		t.Error("search index must include the Core handbook entry")
+	}
+	pn := prevNextFor(path, "", "")
+	if pn == nil || pn.Prev == nil || pn.Next == nil || pn.Prev.Href != "/docs/screens" || pn.Next.Href != "/docs/journeys" {
+		t.Fatalf("previous/next = %+v, want Screens and Journeys", pn)
+	}
+	body := getOKBody(t, path)
+	footer := strings.Index(body, `<footer class="ui-footer">`)
+	if footer < 0 || !strings.Contains(body[footer:], `<a href="/docs/page-section-architecture">`) {
+		t.Error("footer must include the page and section architecture entry")
+	}
+}
+
 // TestDocsIndexListsHandbook proves the /docs hub points readers into the
 // Handbook without dumping every handbook destination (those live in the
 // sidebar). A curated Start here set is enough.
@@ -210,7 +257,7 @@ func TestDocsIndexListsHandbook(t *testing.T) {
 		t.Error("docs hub must name Core / System / Meta sidebar tiers")
 	}
 	// Curated high-value handbook entry points (not the full handbookRoutes list).
-	for _, path := range []string{"/docs/screens", "/docs/journeys", "/docs/data-display", "/docs/feedback", "/docs/compare", "/docs/forms", "/docs/themes", "/docs/tokens", "/docs/performance", "/llms.txt", "/llms-ux.txt"} {
+	for _, path := range []string{"/docs/screens", "/docs/page-section-architecture", "/docs/journeys", "/docs/data-display", "/docs/feedback", "/docs/compare", "/docs/forms", "/docs/themes", "/docs/tokens", "/docs/performance", "/llms.txt", "/llms-ux.txt"} {
 		if !strings.Contains(body, `href="`+path+`"`) {
 			t.Errorf("docs hub Start here must link to %s", path)
 		}

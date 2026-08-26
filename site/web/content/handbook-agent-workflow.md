@@ -35,13 +35,14 @@ Do **not** open-ended self-QA loops. Fixed passes:
 |---|---|---|---|
 | **1. Brief** | `WF-BRIEF` | Audience, job, constraints; optional PRODUCT.md / DESIGN.md | Job sentence + surface mode written |
 | **2. Shape** | `WF-SHAPE` | Screen type, journey, data pattern, FEED plan — **no markup yet** | IDs listed (SCREEN / JOURNEY / DATA / FEED) |
-| **3. Build** | `WF-BUILD` | Partials, theme, server contracts | Renders; happy path works |
-| **4. Audit** | `WF-AUDIT` | Technical + contract checks (a11y basics, responsive, FEED/DoD) | Detector script + checklist clean or waived with reason |
-| **5. Polish** | `WF-POLISH` | Align to theme, spacing tokens, copy (Content style) | One pass only — then stop |
+| **3. Architecture** | `WF-ARCH` | Major-region purpose, hierarchy, action, revelation, and recovery — **no components yet** | Every major region has a `SECTION-CONTRACT` ([Page + section architecture](/docs/page-section-architecture)) |
+| **4. Build** | `WF-BUILD` | Partials, theme, server contracts | Renders; happy path works |
+| **5. Audit** | `WF-AUDIT` | Technical + contract checks, including finite `WF-SECTION-AUDIT` (a11y basics, responsive, FEED/DoD) | Detector script + checklist clean or waived with reason |
+| **6. Polish** | `WF-POLISH` | Align to theme, spacing tokens, copy (Content style) | One pass only — then stop |
 | **Harden** (as needed) | `WF-HARDEN` | Empty/error/i18n overflow, edge cases | Edge paths covered |
 | **Onboard** (as needed) | `WF-ONBOARD` | First-run + empty activation | Empty has CTA |
 
-`shape` owns discovery; `build` owns code; `audit` is evidence; `polish` is alignment — not a redesign.
+`shape` owns discovery; `architecture` contracts major regions; `build` owns code; `audit` is evidence; `polish` is alignment — not a redesign.
 
 ## Anti-slop (Gelium-aware)
 
@@ -87,9 +88,10 @@ Deterministic checks for handbook contracts, agent pack IDs, and hard anti-patte
 
 | Pass | Deep links |
 |---|---|
-| Shape | [Screens](/docs/screens), [Journeys](/docs/journeys), [Data display](/docs/data-display), [Patterns](/docs/patterns) |
+| Shape | [Screens](/docs/screens), [Page + section architecture](/docs/page-section-architecture), [Journeys](/docs/journeys), [Data display](/docs/data-display), [Patterns](/docs/patterns) |
+| Architecture | [Page + section architecture](/docs/page-section-architecture) — `SECTION-CONTRACT` before components or tokens |
 | Build | Components sidebar, [Forms](/docs/forms), [Server contracts](/docs/server-contracts) |
-| Audit | [UI definition of done](/docs/ui-definition-of-done), [Feedback](/docs/feedback), [Responsive](/docs/responsive), [Accessibility](/docs/accessibility) |
+| Audit | [Page + section architecture](/docs/page-section-architecture) `WF-SECTION-AUDIT`, [UI definition of done](/docs/ui-definition-of-done), [Feedback](/docs/feedback), [Responsive](/docs/responsive), [Accessibility](/docs/accessibility) |
 | Polish | [Themes](/docs/themes), [Tokens](/docs/tokens), [Content style](/docs/content-style), [Density](/docs/density) |
 
 ## See also

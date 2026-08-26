@@ -1693,6 +1693,7 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/patterns", s.docsPatterns)
 	mux.HandleFunc("GET /docs/information-architecture", s.docsInformationArchitecture)
 	mux.HandleFunc("GET /docs/screens", s.docsScreens)
+	mux.HandleFunc("GET /docs/page-section-architecture", s.docsPageSectionArchitecture)
 	mux.HandleFunc("GET /docs/journeys", s.docsJourneys)
 	mux.HandleFunc("GET /docs/data-display", s.docsDataDisplay)
 	mux.HandleFunc("GET /docs/feedback", s.docsFeedback)

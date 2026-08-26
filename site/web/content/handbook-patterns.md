@@ -4,10 +4,11 @@ Composition patterns for Gelium UI: how to assemble screens for common product s
 
 ## How to use this page
 
-1. Pick a skeleton that matches the product job.  
-2. Expand each screen with [Screens](/docs/screens), [Journeys](/docs/journeys), [Data display](/docs/data-display).  
-3. Apply [Feedback](/docs/feedback) `FEED-*` on every collection and form.  
-4. Prefer an existing [recipe](/recipes/admin-resource) when it already matches.
+1. Pick a skeleton that matches the product job.
+2. Define the ordered major regions with [Page + section architecture](/docs/page-section-architecture); complete a `SECTION-CONTRACT` before selecting components.
+3. Expand each screen with [Screens](/docs/screens), [Journeys](/docs/journeys), [Data display](/docs/data-display).
+4. Apply [Feedback](/docs/feedback) `FEED-*` on every collection and form.
+5. Prefer an existing [recipe](/recipes/admin-resource) when it already matches.
 
 ## Domain skeletons
 
@@ -76,4 +77,5 @@ Recipe **Ops Queue**: status badges, row POST+303, work-list journey (`JOURNEY-Q
 
 ## See also
 
+- [Page + section architecture](/docs/page-section-architecture) — purpose-bound regions before components
 - [UI definition of done](/docs/ui-definition-of-done) · [`/llms-ux.txt`](/llms-ux.txt)

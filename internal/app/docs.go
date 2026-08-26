@@ -264,6 +264,7 @@ var handbookSections = []handbookSection{
 		Links: []navLink{
 			{Path: "/docs/information-architecture", Label: "Information architecture"},
 			{Path: "/docs/screens", Label: "Screens"},
+			{Path: "/docs/page-section-architecture", Label: "Page + section architecture"},
 			{Path: "/docs/journeys", Label: "Journeys"},
 			{Path: "/docs/data-display", Label: "Data display"},
 			{Path: "/docs/feedback", Label: "Feedback"},
@@ -459,6 +460,7 @@ func (s *server) docsIndex(w http.ResponseWriter, r *http.Request) {
 	md += "- [SEO](/docs/seo) — metadata ownership, indexability, sitemap, and social coherence.\n"
 	md += "### Core (screen criteria)\n\n"
 	md += "- [Screens](/docs/screens) — screen types, hierarchy, nav, surface modes.\n"
+	md += "- [Page + section architecture](/docs/page-section-architecture) — purpose-bound regions before components or tokens.\n"
 	md += "- [Journeys](/docs/journeys) — multi-step flows and post-submit landings.\n"
 	md += "- [Data display](/docs/data-display) — table vs list vs cards (`DATA-*`).\n"
 	md += "- [Feedback](/docs/feedback) — toast vs summary vs banner vs empty (`FEED-*`).\n"
@@ -558,6 +560,12 @@ func (s *server) docsChooseTheRightControl(w http.ResponseWriter, r *http.Reques
 // and the build checklist adapted from GOV.UK / USWDS / M3 / NNG sources.
 func (s *server) docsScreens(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Screens"}, "content/handbook-screens.md", "/docs/screens")
+}
+
+// docsPageSectionArchitecture is GET /docs/page-section-architecture — the
+// handbook protocol for purpose-bound page regions before component selection.
+func (s *server) docsPageSectionArchitecture(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Page + section architecture"}, "content/handbook-page-section-architecture.md", "/docs/page-section-architecture")
 }
 
 // docsFeedback is GET /docs/feedback — decision matrix for toast vs

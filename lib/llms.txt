@@ -77,6 +77,7 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 - Home: /
 - Docs hub: /docs
 - Screens (types, hierarchy, nav): /docs/screens
+- Page + Section Architecture (purpose-first composition): /docs/page-section-architecture
 - Journeys (multi-step + landings): /docs/journeys
 - Data display (table vs cards): /docs/data-display
 - Feedback (toast vs summary vs banner): /docs/feedback
@@ -101,7 +102,18 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 
 ## Agent UX (MUST before generating screens)
 
-Before inventing markup, fetch **/llms-ux.txt** (SURFACE + WF-SHAPE/BUILD/AUDIT/POLISH + FEED/DATA/JOURNEY/SKEL + DoD). Human: /docs/agent-workflow and linked handbook pages. Ethos: tokens/themes + sourced criteria — not free-form aesthetic slop or anti-system bans.
+Before inventing markup, fetch **/llms-ux.txt** (SURFACE + `ARCH-*` / `SECTION-*` +
+`WF-ARCH` / `WF-SECTION-AUDIT` + WF-SHAPE/BUILD/AUDIT/POLISH + FEED/DATA/JOURNEY/SKEL
++ DoD). Preserve the existing artifact gate: read consumer `PRODUCT.md` and
+`DESIGN.md`, or stop and ask for the job, surface mode, and visual direction.
+Then follow `Product intent → Page/Surface → Section → Components → Tokens/Skin`:
+section purpose first, components second. The installed normative skill is
+`skills/10-page-section-architecture.md`; the human companion is
+`/docs/page-section-architecture`.
+
+Protocol IDs: `ARCH-PRODUCT`, `ARCH-PAGE`, `ARCH-SECTION`, `ARCH-COMPONENTS`,
+`ARCH-TOKENS`, `SECTION-CONTRACT`, `SECTION-HIERARCHY`, `SECTION-ACTION`,
+`SECTION-REVELATION`, `SECTION-RECOVERY`, `WF-ARCH`, `WF-SECTION-AUDIT`.
 
 ## Components (npm templates + CSS)
 

@@ -1,8 +1,8 @@
 # gelium-ui — Skills for agents
 
 Actionable decision skills. Read them in order for a task; load the ones relevant
-to a specific job. The full decision-id pack (SURFACE / SCREEN / WF / DATA / FEED
-/ JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
+to a specific job. The full decision-id pack (SURFACE / SCREEN / ARCH / SECTION / WF / DATA /
+FEED / JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
 
 | # | Skill | What it answers |
 |---|---|---|
@@ -15,6 +15,19 @@ to a specific job. The full decision-id pack (SURFACE / SCREEN / WF / DATA / FEE
 | 07 | `07-dod-and-antislop.md` | Definition of Done checklist + anti-slop |
 | 08 | `08-product-reasoning.md` | discovery workflow: find missing product-level UX before drawing |
 | 09 | `09-usability-checklist.md` | per-screen binary usability checklist |
+| 10 | `10-page-section-architecture.md` | purpose-first page and section contracts before components |
+
+## Required architecture handoff
+
+Keep the existing gates in order: `skills/01` foundations → `skills/02` surface
+and screen selection → `skills/08` product reasoning → `skills/10` page and
+section contracts → registered components → tokens/skin → `skills/09` usability
+and `skills/07` DoD. If `PRODUCT.md` or `DESIGN.md` is absent in a consumer repo,
+stop and ask before this sequence.
+
+Protocol IDs: `ARCH-PRODUCT`, `ARCH-PAGE`, `ARCH-SECTION`, `ARCH-COMPONENTS`,
+`ARCH-TOKENS`, `SECTION-CONTRACT`, `SECTION-HIERARCHY`, `SECTION-ACTION`,
+`SECTION-REVELATION`, `SECTION-RECOVERY`, `WF-ARCH`, `WF-SECTION-AUDIT`.
 
 ## Description-to-name resolver
 

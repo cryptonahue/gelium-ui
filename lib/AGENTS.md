@@ -8,7 +8,10 @@ default; token + class themes; optional small JS enhancement. **Not** a JS frame
 Read `skills/` — each skill is one actionable decision or flow. Start with
 `skills/01-foundations.md`. After picking a SURFACE mode (`skills/02`), run
 `skills/08-product-reasoning.md` to discover missing product-level UX before
-drawing. The full decision pack is in `llms-ux.txt`.
+drawing. Before selecting components or writing markup, run
+`skills/10-page-section-architecture.md` to contract each major page region by
+purpose, audience, hierarchy, action, revelation, and recovery. The full
+decision pack is in `llms-ux.txt`.
 
 Golden rules that apply to every task:
 
@@ -30,6 +33,9 @@ Golden rules that apply to every task:
 8. **Registry-first shells** — page-level layouts compose registered components
    (`ui-container`, nav primitives); custom shell CSS is spacing/width only.
 9. **Verify mechanically** — run `scripts/ux-detect.sh` before claiming a surface done.
+10. **Section purpose before components** — follow `ARCH-PRODUCT → ARCH-PAGE →
+    ARCH-SECTION → ARCH-COMPONENTS → ARCH-TOKENS`; every major region needs a
+    `SECTION-CONTRACT` before it can be rendered or styled.
 
 ## Gallery
 

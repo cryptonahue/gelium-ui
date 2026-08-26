@@ -15,9 +15,9 @@ Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT
 7. SERVER: GET read; POST+303; 422+X-Gelium-Validation
 8. THEME: theme-* on html (no one-off hex chrome)
 9. NARROW: stack; min-width:0; no overflow-x:hidden on body
-10. WF passes: BRIEF → SHAPE → BUILD → AUDIT → POLISH (stop; no endless loops)
+10. WF passes: BRIEF → SHAPE → ARCH → BUILD → AUDIT (including SECTION-AUDIT) → POLISH (stop; no endless loops)
 11. DoD: /docs/ui-definition-of-done
-12. If present: read consumer PRODUCT.md + DESIGN.md
+12. If present: read consumer PRODUCT.md + DESIGN.md; if absent, stop and ask first
 
 ## SURFACE modes
 
@@ -32,13 +32,34 @@ Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT
 
 | ID | Do | Don't |
 |---|---|---|
-| WF-BRIEF | job, mode, constraints | skip straight to pretty CSS |
+| WF-BRIEF | job, mode, constraints; if no PRODUCT.md/DESIGN.md: STOP and ask user (job, SURFACE mode, theme+skin) | skip straight to pretty CSS |
 | WF-SHAPE | list SCREEN/JOURNEY/DATA/FEED ids | write markup in shape |
+| WF-ARCH | apply ARCH-PRODUCT → ARCH-PAGE → ARCH-SECTION; outline major regions and complete SECTION-CONTRACT before components | use cards, spacing, or CSS to invent a missing section purpose |
 | WF-BUILD | partials + server | invent parallel design system |
-| WF-AUDIT | DoD + bash scripts/ux-detect.sh (monorepo) | claim pass without checks |
+| WF-AUDIT | DoD + WF-SECTION-AUDIT + bash scripts/ux-detect.sh (monorepo) | claim pass without checks |
+| WF-SECTION-AUDIT | five-second scan, action competition, revelation/recovery, then rendered-HTML evidence | call an uncontracted region or hover/JS-only recovery acceptable |
 | WF-POLISH | theme/spacing/copy one pass | redesign under polish |
 | WF-HARDEN | empty/error/edge | happy-path only |
 | WF-ONBOARD | first-run empty CTA | blank first screen |
+
+## PAGE + SECTION ARCHITECTURE
+
+| ID | Rule |
+|---|---|
+| ARCH-PRODUCT | Record audience, user job, outcome, non-goal, and relevant lifecycle/event consequences. |
+| ARCH-PAGE | Record URL, SURFACE/SCREEN, one primary action, JOURNEY/DATA/FEED IDs, chrome, and server/no-JS contract. |
+| ARCH-SECTION | Give every major region one purpose-bound section contract before components. |
+| ARCH-COMPONENTS | Compose registered semantic primitives only after section purpose is known. |
+| ARCH-TOKENS | Express approved relationships through existing semantic tokens and class-routed skins. |
+| SECTION-CONTRACT | Record purpose, audience/moment, input, output/next move, hierarchy, action policy, revelation, composition, state/recovery, boundary/rhythm, accessibility/content, and rendered evidence. |
+| SECTION-HIERARCHY | DOM order is entry → primary → supporting → recovery; card anatomy is not automatically a section. |
+| SECTION-ACTION | One page primary action; section-local actions remain secondary unless the section owns that declared action. |
+| SECTION-REVELATION | Initial scan shows identity and task-critical state; conditional state is server-rendered; optional depth uses native disclosure. |
+| SECTION-RECOVERY | Every applicable data/action section names rest/loading/empty/error/success and a no-JS way forward. |
+
+Details: `skills/10-page-section-architecture.md` (normative) and
+`/docs/page-section-architecture` (human companion). Worked applications use
+existing `/recipes/public-feed` and `/recipes/rich-article` routes only.
 
 ## ANTI-SLOP (Gelium-aware)
 

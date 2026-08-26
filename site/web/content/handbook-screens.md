@@ -116,13 +116,14 @@ Before writing markup:
 1. **Screen type** — hub | list | detail | form | confirm | settings | queue | result.
 2. **One user job** — finish the sentence: “The user came here to ___.”
 3. **One primary action** — name it; demote everything else.
-4. **States** — loading, empty, error, success (see [Feedback](/docs/feedback)).
-5. **Controls** — map fields/actions via [Forms](/docs/forms) and [Choose the right control](/docs/choose-the-right-control).
-6. **Server** — GET for read, POST+redirect for mutates, 422 + summary for validation ([Server contracts](/docs/server-contracts)).
-7. **Theme** — `theme-*` on `<html>`; no one-off hex.
-8. **Narrow viewport** — stack headers, `min-width: 0`, local table scroll ([Responsive](/docs/responsive)).
-9. **Journey / data** — if multi-step or a collection, pick `JOURNEY-*` / `DATA-*` ids.
-10. **DoD** — run [UI definition of done](/docs/ui-definition-of-done) before handoff.
+4. **Section architecture** — map each major region’s purpose, hierarchy, action, revelation, state, and boundary before choosing components ([Page + section architecture](/docs/page-section-architecture)).
+5. **States** — loading, empty, error, success (see [Feedback](/docs/feedback)).
+6. **Controls** — map fields/actions via [Forms](/docs/forms) and [Choose the right control](/docs/choose-the-right-control).
+7. **Server** — GET for read, POST+redirect for mutates, 422 + summary for validation ([Server contracts](/docs/server-contracts)).
+8. **Theme** — `theme-*` on `<html>`; no one-off hex.
+9. **Narrow viewport** — stack headers, `min-width: 0`, local table scroll ([Responsive](/docs/responsive)).
+10. **Journey / data** — if multi-step or a collection, pick `JOURNEY-*` / `DATA-*` ids.
+11. **DoD** — run [UI definition of done](/docs/ui-definition-of-done) before handoff.
 
 ## Anti-patterns
 
