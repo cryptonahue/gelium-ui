@@ -8,6 +8,18 @@ the DoD (`skills/07`); it does not replace it.
 Five steps. Each is enumeration or yes/no questions. If a step surfaces gaps,
 name them and ask the user before designing around them.
 
+## Sources (prior art)
+
+| Topic | Source |
+|---|---|
+| Canonical task/event inventory | [GOV.UK patterns: "Ask users for…" / "Help users to…"](https://design-system.service.gov.uk/patterns/) |
+| Notification inventory + importance grouping | [Material Design: notifications](https://m2.material.io/design/communication/notifications.html) |
+| Post-launch gap signals | [HEART framework](https://kerryrodden.com/heart/) — Goals→Signals→Metrics |
+| Ready-made inventories per product shape | Gelium domain skeletons: [Patterns](/docs/patterns) (`SKEL-FORUM`, `SKEL-CATALOG`, `SKEL-ADMIN-RESOURCE`, …) |
+
+If your product matches a Gelium domain skeleton, start Step 1 from its table —
+reuse the solved problem before re-deriving it.
+
 ## Step 1 — Inventory
 
 Enumerate, purely from the domain (no UI yet):
