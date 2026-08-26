@@ -42,6 +42,38 @@ else is secondary/link.
 3. ONE primary action.
 4. JOURNEY-* if multi-step; DATA-* if collection; FEED-* for feedback.
 5. States (empty/error/loading/success).
+6. Shell/chrome inventory — ask explicitly if no user decision exists:
+   - Does this product have a footer? What carries it (legal / contact / links)?
+   - Top bar vs side navigation? (Decide once per product, not per screen.)
+   - Density by surface (Operate tables denser than Read prose)?
+   If no explicit user decision exists, ASK — this is part of the artifacts
+   gate above. Do not invent chrome silently.
+
+## Multi-screen journeys
+
+Source: `handbook-journeys.md` (`docs/journeys` in the consumer repo).
+
+- **Start/hub pattern**: every journey starts at a hub that gives context,
+  then offers exactly ONE primary CTA into the flow.
+- **Step order**: fixed steps are strongly ordered (each step's only forward
+  path is the next step); optional/free steps are freely navigable from the hub.
+- **Post-submit landing**:
+
+  | Outcome | Landing |
+  |---|---|
+  | validation fail | same form re-rendered with **422** + errors |
+  | success | **303** redirect to detail/result page |
+
+- **Resume rule**: navigable state = URL. If a user can resume mid-journey,
+  that state must be reachable by URL (query params or path), never JS-only.
+
+## Data display choice
+
+| Display | Use for |
+|---|---|
+| table | tabular comparison data (same fields across many rows) |
+| cards | browsable rich items (varied content per item) |
+| list | scannable homogeneous items |
 
 ## Anti-slop
 

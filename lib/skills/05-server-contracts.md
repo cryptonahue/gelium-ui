@@ -38,3 +38,17 @@ you have drifted from the contract.
 
 Optimistic UI, if any, is enhancement on top of a server-authoritative round trip
 — never the source of truth.
+
+## Page metadata contract
+
+Every public route ships complete metadata. Normative source:
+`docs/gelium-ui-seo-contract.md` (in the consumer repo).
+
+- `<title>` — unique per route, ~60 characters.
+- `meta description` — ~155 characters, one per route.
+- `link rel="canonical"` — one canonical URL per content variant.
+- Open Graph: `og:title`, `og:description`, `og:image`.
+
+For AEO (answer-engine visibility): keep an up-to-date sitemap and robots,
+and structure key pages answer-first (question → direct answer → detail).
+Normative source: `docs/gelium-ui-geo-contract.md`.

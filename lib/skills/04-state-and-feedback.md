@@ -29,5 +29,12 @@ Persistent success → banner/result page. Transient → toast.
 
 ## Copy rules
 
-Sentences ≤ 25 words. Active voice, plain English, no "please", AP style.
-Error copy names the fix, not just the failure.
+Plain language in GOV.UK style: short sentences, active voice, sentence case
+everywhere (headings, buttons, labels). No "please" in buttons or errors.
+
+- Button labels are **verb + object**: "Save post", "Delete project" — never
+  "OK", "Submit", or a bare verb with no object.
+- Error messages say **what happened + how to fix it**: "Enter a date in
+  DD/MM/YYYY format", not "Invalid input".
+
+Sentences ≤ 25 words. AP style. Error copy names the fix, not just the failure.

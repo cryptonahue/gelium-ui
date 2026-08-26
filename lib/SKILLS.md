@@ -14,6 +14,7 @@ to a specific job. The full decision-id pack (SURFACE / SCREEN / WF / DATA / FEE
 | 06 | `06-mobile-and-a11y.md` | touch, keyboard, semantics, contrast, media |
 | 07 | `07-dod-and-antislop.md` | Definition of Done checklist + anti-slop |
 | 08 | `08-product-reasoning.md` | discovery workflow: find missing product UX before drawing |
+| 09 | `09-usability-checklist.md` | per-screen binary usability checklist |
 
 ## Install these skills into your agent tool
 

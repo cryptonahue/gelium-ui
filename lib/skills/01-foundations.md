@@ -23,6 +23,10 @@ radius, shadow, spacing, or font in a page — map it to a token from the theme.
 Key families: `--ui-color-*`, `--ui-type-*`, `--ui-space-*`, `--ui-radius-*`,
 `--ui-shadow-*`, `--ui-size-*`, `--ui-touch-target`.
 
+- **Same typographic role for the same job**: one title style per heading level,
+  drawn from the `--ui-type-*` scale — never introduce new font families or
+  one-off sizes per feature.
+
 ## 0-JS default
 
 The primary flow of every screen must work with JavaScript disabled. Native
