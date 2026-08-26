@@ -1684,6 +1684,7 @@ func New() http.Handler {
 	mux := http.NewServeMux()
 	mux.HandleFunc("GET /healthz", s.health)
 	mux.HandleFunc("GET /sitemap.xml", s.sitemap)
+	mux.HandleFunc("GET /components.json", s.componentsJSON)
 	mux.HandleFunc("GET /robots.txt", s.robots)
 	mux.HandleFunc("GET /llms.txt", s.llmsTxt)
 	mux.HandleFunc("GET /llms-ux.txt", s.llmsUXTxt)
