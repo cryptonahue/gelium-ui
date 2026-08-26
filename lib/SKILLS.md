@@ -13,6 +13,7 @@ to a specific job. The full decision-id pack (SURFACE / SCREEN / WF / DATA / FEE
 | 05 | `05-server-contracts.md` | GET / POST+303 / 422 / gelium:toast wire |
 | 06 | `06-mobile-and-a11y.md` | touch, keyboard, semantics, contrast, media |
 | 07 | `07-dod-and-antislop.md` | Definition of Done checklist + anti-slop |
+| 08 | `08-product-reasoning.md` | discovery workflow: find missing product UX before drawing |
 
 ## Install these skills into your agent tool
 

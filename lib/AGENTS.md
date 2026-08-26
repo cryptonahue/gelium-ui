@@ -6,7 +6,9 @@ default; token + class themes; optional small JS enhancement. **Not** a JS frame
 ## Before you generate any UI
 
 Read `skills/` — each skill is one actionable decision or flow. Start with
-`skills/01-foundations.md`. The full decision pack is in `llms-ux.txt`.
+`skills/01-foundations.md`. After picking a SURFACE mode (`skills/02`), run
+`skills/08-product-reasoning.md` to discover missing product-level UX before
+drawing. The full decision pack is in `llms-ux.txt`.
 
 Golden rules that apply to every task:
 
