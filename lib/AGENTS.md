@@ -22,7 +22,11 @@ Golden rules that apply to every task:
 5. **States always** — empty, error, loading, success on every surface.
 6. **Mobile** — touch targets ≥ 44px (`--ui-touch-target`), `min-width: 0` on
    scroll children, **never** `overflow-x: hidden` on `body` (no masking).
-7. **DoD before done** — every surface passes `skills/07-dod-and-antislop.md`.
+7. **DoD before done** — every surface passes `skills/07-dod-and-antislop.md`, starting
+   from its step-0 artifacts gate (no `PRODUCT.md`/`DESIGN.md` → ask the user first).
+8. **Registry-first shells** — page-level layouts compose registered components
+   (`ui-container`, nav primitives); custom shell CSS is spacing/width only.
+9. **Verify mechanically** — run `scripts/ux-detect.sh` before claiming a surface done.
 
 ## Gallery
 

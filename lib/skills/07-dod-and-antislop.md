@@ -3,6 +3,17 @@
 Run this checklist before calling a surface done. If any item is NO, fix it — do
 not pass.
 
+## Step 0 — artifacts gate
+
+If no `PRODUCT.md` / `DESIGN.md` exists in the consumer repo, STOP and ask the
+user at least:
+
+1. Job/purpose of the surface.
+2. Surface mode (`llms-ux` SURFACE id: Operate/Read/Persuade/Experience).
+3. Visual direction — theme + light/dark skin.
+
+Never silently invent these design decisions. Proceed only after the user answers.
+
 ## UI Definition of Done (product/structure/states/contracts)
 
 **Product**
@@ -12,6 +23,9 @@ not pass.
 
 **Structure**
 - [ ] Semantic HTML (native elements), logical heading order (H1 → H2 → H3).
+- [ ] Page shell composes registered components (`ui-container`,
+      `ui-navigation-bar`/drawer primitives). Custom shell CSS is limited to
+      spacing/width — no hand-rolled nav headers or sticky shells.
 - [ ] Correct list semantics for lists; tables only for tabular data.
 - [ ] Links are real `<a href>`; actions are real buttons/forms.
 
@@ -45,11 +59,19 @@ OK:
 
 ## Verification
 
-Where the consumer repo mirrors this package's monorepo gates, run the same
-checks (styles_*_test, copy/contrast contracts). In any consumer repo, at minimum:
-grep for `overflow-x: hidden` on body (forbidden), confirm `theme-*` class on
-`<html>`, confirm a validation-summary + inline errors on every form, and confirm
-no one-off color literals in shipped markup.
+Run `scripts/ux-detect.sh` from the consumer repo root (ships inside the package,
+e.g. `bash node_modules/@gelium/ui/scripts/ux-detect.sh`). It greps for the
+mechanical checks: no media-query dark overrides, no hand-rolled page shells, no
+`overflow-x: hidden` on body, no one-off color literals, validation-summary hooks
+on every form. Where the consumer repo also mirrors this package's monorepo gates,
+run those too (styles_*_test, copy/contrast contracts). At minimum confirm:
+
+- Dark mode is class-routed: `theme-dark` on `<html>` — grep for
+  `prefers-color-scheme:\s*dark` overrides (forbidden; no media-query dark hex).
+- Page shells compose registered components; custom shell CSS is only
+  spacing/width.
+- A validation-summary + inline errors on every form.
+- No one-off color literals in shipped markup.
 
 ## Do not
 

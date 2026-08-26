@@ -32,10 +32,10 @@ Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT
 
 | ID | Do | Don't |
 |---|---|---|
-| WF-BRIEF | job, mode, constraints | skip straight to pretty CSS |
+| WF-BRIEF | job, mode, constraints; if no PRODUCT.md/DESIGN.md: STOP and ask user (job, SURFACE mode, theme+skin) | skip questions or invent design decisions |
 | WF-SHAPE | list SCREEN/JOURNEY/DATA/FEED ids | write markup in shape |
-| WF-BUILD | partials + server | invent parallel design system |
-| WF-AUDIT | DoD + bash scripts/ux-detect.sh (monorepo) | claim pass without checks |
+| WF-BUILD | partials + server; page shells compose registered components | invent parallel design system or hand-roll nav/page shells |
+| WF-AUDIT | DoD + bash node_modules/@gelium/ui/scripts/ux-detect.sh | claim pass without checks |
 | WF-POLISH | theme/spacing/copy one pass | redesign under polish |
 | WF-HARDEN | empty/error/edge | happy-path only |
 | WF-ONBOARD | first-run empty CTA | blank first screen |

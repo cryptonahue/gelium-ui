@@ -34,6 +34,9 @@ else is secondary/link.
 
 ## Workflow before drawing
 
+0. Artifacts gate: no `PRODUCT.md`/`DESIGN.md` in the consumer repo? STOP and ask
+   the user for (a) user job, (b) SURFACE mode, (c) visual direction/theme+skin.
+   Do not invent them silently.
 1. USER JOB → one sentence.
 2. SURFACE mode + SCREEN type.
 3. ONE primary action.

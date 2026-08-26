@@ -30,6 +30,7 @@
     "js",
     "dist",
     "skills",
+ "scripts",
     "AGENTS.md",
     "SKILLS.md",
     "llms.txt",

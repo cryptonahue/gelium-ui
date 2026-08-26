@@ -35,6 +35,13 @@ validation swap, `gelium:toast` regions, view-transition guard, slider fill.
 - `.ui-row-from-desktop` — row layout from desktop breakpoint.
 - Prose measure ≤ 75ch (use 65ch in docs), `text-wrap: pretty`.
 
+### Registry-first page shells
+
+Page-level layouts must compose registered components (`ui-container`,
+`ui-navigation-bar`, drawer primitives) — never hand-roll a nav header or sticky
+page shell. Custom shell CSS is limited to spacing and width. If you need a shell
+the registry does not cover, extend the component, not the page.
+
 ## Mobile guardrails
 
 - Touch targets ≥ 44px (`--ui-touch-target`).
