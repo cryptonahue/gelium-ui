@@ -15,8 +15,9 @@ import (
 // real rather than a stub (same pattern as handbookRoutes). The marker must
 // appear in the rendered post body.
 var blogPostContracts = map[string]string{
-	"genesis": "zero required JS",
-	"roadmap": "contract-tested",
+	"introducing": "zero required JavaScript",
+	"genesis":     "zero required JS",
+	"roadmap":     "contract-tested",
 }
 
 // TestBlogIndexListsPosts proves /blog renders the separate blog space: an

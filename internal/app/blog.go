@@ -55,6 +55,14 @@ type blogPost struct {
 // the single source of post metadata — the content files carry no frontmatter.
 var blogPosts = []blogPost{
 	{
+		Slug:        "introducing",
+		Title:       "Introducing Gelium UI",
+		Date:        "2026-08-21",
+		Author:      "Gelium UI team",
+		Summary:     "Gelium UI is out: themeable, open-code components for server-rendered apps, with a zero-JS contract proven by tests.",
+		ContentPath: "content/blog-introducing.md",
+	},
+	{
 		Slug:        "genesis",
 		Title:       "How Gelium UI was born",
 		Date:        "2026-08-15",

@@ -7,6 +7,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 ## [Unreleased]
 
 ### Added
+- **Launch blog post** (`/blog/introducing`): "Introducing Gelium UI" — the announcement post covering the problem, the 0-JS contract, token themes, and who the library is for; registered in the blog registry with its content contract.
 - **Component catalog grown from 28 to 47 pages**: the composition, content, and feedback primitives that the handbook named but nobody could reach now have `/components/*` pages — hero, avatar, breadcrumb, footer, pagination, section-heading, feature-card, split, image, media, video, newsletter, banner, inline-alert, callout, skeleton, empty-state, error-state, validation-summary. Each page carries a live raw-HTML specimen, When to use / When not to use guidance, anatomy, and a11y notes; sidebar, search index, sitemap, and prev/next auto-derive from the one nav model.
 - **No-JS docs search actually searches**: `GET /docs?q=` now renders server-built results from the same nav model the client-side index is built from (the documented 0-JS fallback previously reloaded the hub without querying).
 - **`/static/{path...}`**: the static route now serves multi-segment assets (media fixtures, subfolders).
