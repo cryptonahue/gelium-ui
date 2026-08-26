@@ -19,6 +19,10 @@ required=(
   site/web/content/handbook-data-display.md
   site/web/content/handbook-agent-workflow.md
   site/web/content/handbook-ui-definition-of-done.md
+  site/web/content/handbook-page-section-architecture.md
+  lib/skills/10-page-section-architecture.md
+  lib/llms-ux.txt
+  lib/llms.txt
   site/web/static/llms-ux.txt
   site/web/static/llms.txt
   site/web/content/templates/product.md
@@ -28,9 +32,31 @@ for f in "${required[@]}"; do
   if [[ -f "$f" ]]; then ok "exists $f"; else bad "missing $f"; fi
 done
 
-# Contract IDs must remain in agent pack
-for id in FEED-VAL JOURNEY-LINEAR DATA-TABLE WF-SHAPE SURFACE Operate SKEL-FORUM DOC-H1 DOC-H2 DOC-LIST; do
-  if grep -q "$id" site/web/static/llms-ux.txt; then ok "llms-ux has $id"; else bad "llms-ux missing $id"; fi
+# Contract IDs must remain in the package and served agent-facing surfaces.
+protocol_surfaces=(
+  lib/skills/10-page-section-architecture.md
+  lib/llms-ux.txt
+  lib/llms.txt
+  site/web/static/llms-ux.txt
+  site/web/static/llms.txt
+)
+protocol_ids=(
+  ARCH-PRODUCT ARCH-PAGE ARCH-SECTION ARCH-COMPONENTS ARCH-TOKENS
+  SECTION-CONTRACT SECTION-HIERARCHY SECTION-ACTION SECTION-REVELATION SECTION-RECOVERY
+  WF-ARCH WF-SECTION-AUDIT
+)
+for f in "${protocol_surfaces[@]}"; do
+  for id in "${protocol_ids[@]}"; do
+    if grep -Fq "$id" "$f"; then ok "$f has $id"; else bad "$f missing $id"; fi
+  done
+done
+
+# The two existing recipes are the protocol's worked applications; keep them
+# discoverable in every package and served agent-facing surface.
+for f in "${protocol_surfaces[@]}"; do
+  for recipe in /recipes/public-feed /recipes/rich-article; do
+    if grep -Fq "$recipe" "$f"; then ok "$f names $recipe"; else bad "$f missing worked application $recipe"; fi
+  done
 done
 
 # Content structure grammar
