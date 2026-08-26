@@ -4,9 +4,10 @@ All notable changes to the Gelium UI project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
-## [Unreleased]
+## [0.6.0] — 2026-08-25
 
 ### Added
+- **Agent guidance hardening**: step-0 artifacts gate (no `PRODUCT.md`/`DESIGN.md` → STOP and ask the user for job, SURFACE mode, and theme+skin before generating UI), registry-first page-shell rule (compose `ui-container`/nav primitives; custom shell CSS is spacing/width only), and a portable DoD verifier (`lib/scripts/ux-detect.sh`, shipped in the npm package) that mechanically greps for media-query dark overrides, hand-rolled page shells, body `overflow-x:hidden`, one-off color literals, and forms without validation-summary. Golden rules 8–9 added to `AGENTS.md`.
 - **Launch blog post** (`/blog/introducing`): "Introducing Gelium UI" — the announcement post covering the problem, the 0-JS contract, token themes, and who the library is for; registered in the blog registry with its content contract.
 - **Component catalog grown from 28 to 47 pages**: the composition, content, and feedback primitives that the handbook named but nobody could reach now have `/components/*` pages — hero, avatar, breadcrumb, footer, pagination, section-heading, feature-card, split, image, media, video, newsletter, banner, inline-alert, callout, skeleton, empty-state, error-state, validation-summary. Each page carries a live raw-HTML specimen, When to use / When not to use guidance, anatomy, and a11y notes; sidebar, search index, sitemap, and prev/next auto-derive from the one nav model.
 - **No-JS docs search actually searches**: `GET /docs?q=` now renders server-built results from the same nav model the client-side index is built from (the documented 0-JS fallback previously reloaded the hub without querying).
@@ -129,6 +130,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - **Docs shell**: navigation, sidebar, breadcrumbs, search (disabled), theme/scheme switchers.
 
 [Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.5.3...HEAD
+[0.6.0]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.0
 [0.5.3]: https://github.com/cryptonahue/gelium-ui/releases
 [0.5.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.4.0]: https://github.com/cryptonahue/gelium-ui/releases

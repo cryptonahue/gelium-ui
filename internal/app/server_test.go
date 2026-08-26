@@ -85,7 +85,7 @@ func TestHomeRendersMarketingLanding(t *testing.T) {
 		`Admin Resource`,
 		`class="site-header"`,
 		`aria-label="Appearance"`,
-		`src="/static/htmx.min.js?v=0.5.5"`,
+		`src="/static/htmx.min.js?v=0.6.0"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("home does not contain contract %q", contract)
@@ -107,9 +107,9 @@ func TestLayoutCacheBustsEmbeddedAssetsAcrossExeUpgrades(t *testing.T) {
 	body := res.Body.String()
 
 	for _, asset := range []string{
-		`href="/static/app.css?v=0.5.5"`,
-		`src="/static/htmx.min.js?v=0.5.5"`,
-		`src="/static/app.js?v=0.5.5"`,
+		`href="/static/app.css?v=0.6.0"`,
+		`src="/static/htmx.min.js?v=0.6.0"`,
+		`src="/static/app.js?v=0.6.0"`,
 	} {
 		if !strings.Contains(body, asset) {
 			t.Errorf("layout must cache-bust upgraded embedded asset %s", asset)
