@@ -414,6 +414,7 @@ var docsSections = []struct {
 			{Path: "/components/media", Label: "Media"},
 			{Path: "/components/video", Label: "Video"},
 			{Path: "/components/newsletter", Label: "Newsletter"},
+			{Path: "/components/language-switcher", Label: "Language switcher"},
 		},
 	},
 }

@@ -57,6 +57,7 @@ func componentRoutes() []componentRoute {
 		{Path: "/components/media", Label: "Media", Handler: (*server).mediaDocs},
 		{Path: "/components/video", Label: "Video", Handler: (*server).videoDocs},
 		{Path: "/components/newsletter", Label: "Newsletter", Handler: (*server).newsletterDocs},
+		{Path: "/components/language-switcher", Label: "Language switcher", Handler: (*server).languageSwitcherDocs},
 		// Feedback & status primitives (the state patterns handbook pages name):
 		{Path: "/components/banner", Label: "Banner", Handler: (*server).bannerDocs},
 		{Path: "/components/inline-alert", Label: "Inline alert", Handler: (*server).inlineAlertDocs},
