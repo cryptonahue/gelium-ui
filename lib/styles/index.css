@@ -1,7 +1,7 @@
 /* Gelium UI component styles manifest (package entry).
- * NO tailwindcss import and NO theme imports: consumers add their own
- * Tailwind entry, import the themes they own, then import this file so the
- * cascade order is core defaults → consumer themes → components.
+ * This is the core/index entry: import it first, then consumer themes, then
+ * site styles. It intentionally imports no themes so consumers retain control
+ * of that cascade order.
  */
 @import "./tokens.css";
 @import "./base.css";

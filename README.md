@@ -22,9 +22,9 @@ Or pick themes + source styles in your own Tailwind entry:
 
 ```css
 @import "tailwindcss";
+@import "gelium-ui/styles/index.css";
 @import "gelium-ui/themes/theme-material.css";
 @import "gelium-ui/themes/theme-basecoat.css";
-@import "gelium-ui/styles/index.css";
 ```
 
 Optional progressive-enhancement JS (toast, 422 validation swap, slider fill,

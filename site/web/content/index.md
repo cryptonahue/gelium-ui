@@ -35,9 +35,9 @@ Or compose with your Tailwind build:
 
 ```css
 @import "tailwindcss";
+@import "gelium-ui/styles/index.css";
 @import "gelium-ui/themes/theme-material.css";
 @import "gelium-ui/themes/theme-basecoat.css";
-@import "gelium-ui/styles/index.css";
 ```
 
 ### 3. Theme class

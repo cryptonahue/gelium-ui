@@ -26,9 +26,9 @@ The prebuilt bundle includes Tailwind preflight, **theme-material**, **theme-bas
 
 ```css
 @import "tailwindcss";
+@import "gelium-ui/styles/index.css";
 @import "gelium-ui/themes/theme-material.css";
 @import "gelium-ui/themes/theme-basecoat.css";
-@import "gelium-ui/styles/index.css";
 ```
 
 Pick themes you need; both ship with the package.
