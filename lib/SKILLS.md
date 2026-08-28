@@ -16,14 +16,16 @@ FEED / JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
 | 08 | `08-product-reasoning.md` | discovery workflow: find missing product-level UX before drawing |
 | 09 | `09-usability-checklist.md` | per-screen binary usability checklist |
 | 10 | `10-page-section-architecture.md` | purpose-first page and section contracts before components |
+| 11 | `11-design-criteria.md` | checkable visual judgment, reuse, and resilient polish |
+| 12 | `12-wireframe-approval.md` | conditional approval gate for new screens, flows, and substantial redesigns |
 
 ## Required architecture handoff
 
-Keep the existing gates in order: `skills/01` foundations → `skills/02` surface
-and screen selection → `skills/08` product reasoning → `skills/10` page and
-section contracts → registered components → tokens/skin → `skills/09` usability
-and `skills/07` DoD. If `PRODUCT.md` or `DESIGN.md` is absent in a consumer repo,
-stop and ask before this sequence.
+Keep the existing gates in order: foundations → surface → product reasoning →
+page/section → design criteria §1–§3 → conditional wireframe approval for new
+screens/flows/substantial redesigns → registered components → tokens/skin →
+design criteria critique → usability → DoD. If `PRODUCT.md` or `DESIGN.md` is
+absent in a consumer repo, stop and ask before this sequence.
 
 Protocol IDs: `ARCH-PRODUCT`, `ARCH-PAGE`, `ARCH-SECTION`, `ARCH-COMPONENTS`,
 `ARCH-TOKENS`, `SECTION-CONTRACT`, `SECTION-HIERARCHY`, `SECTION-ACTION`,

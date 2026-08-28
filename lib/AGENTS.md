@@ -10,8 +10,11 @@ Read `skills/` — each skill is one actionable decision or flow. Start with
 `skills/08-product-reasoning.md` to discover missing product-level UX before
 drawing. Before selecting components or writing markup, run
 `skills/10-page-section-architecture.md` to contract each major page region by
-purpose, audience, hierarchy, action, revelation, and recovery. The full
-decision pack is in `llms-ux.txt`.
+purpose, audience, hierarchy, action, revelation, and recovery. Then run
+`skills/11-design-criteria.md` for hierarchy, type, and density decisions. For
+new screens, new flows, or substantial page redesigns, get the structure
+approved through `skills/12-wireframe-approval.md` before writing markup. The
+full decision pack is in `llms-ux.txt`.
 
 Golden rules that apply to every task:
 
@@ -36,6 +39,12 @@ Golden rules that apply to every task:
 10. **Section purpose before components** — follow `ARCH-PRODUCT → ARCH-PAGE →
     ARCH-SECTION → ARCH-COMPONENTS → ARCH-TOKENS`; every major region needs a
     `SECTION-CONTRACT` before it can be rendered or styled.
+11. **Plan before markup** — new screens, new flows, and substantial page
+    redesigns require the `skills/12` approval gate and `skills/11` pre-emit
+    critique. Accessibility fixes, bug fixes, contract corrections,
+    component/mechanical changes, and already-approved small adjustments are
+    exempt unless the scope expands into a new or substantially redesigned
+    surface.
 
 ## Gallery
 
