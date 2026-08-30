@@ -13,7 +13,7 @@ func TestReleaseDocsAndPackageVersionStayCoherent(t *testing.T) {
 	if !strings.Contains(packageJSON, `"version": "0.5.0"`) {
 		t.Error("root package version must identify the 0.5.0 release line")
 	}
-	for _, contract := range []string{"v0.5.3", "HTMX 4", "on-this-page rail", "prev/next pagination", "Themeable", "gelium:toast", "progressive enhancement"} {
+	for _, contract := range []string{"v" + AssetsVersion, "HTMX 4", "on-this-page rail", "prev/next pagination", "Themeable", "gelium:toast", "progressive enhancement"} {
 		if !strings.Contains(readme, contract) {
 			t.Errorf("README is missing release contract %q", contract)
 		}

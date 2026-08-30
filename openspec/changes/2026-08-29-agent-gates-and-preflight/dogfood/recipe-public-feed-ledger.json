@@ -1,0 +1,62 @@
+{
+  "schema_version": 1,
+  "route": "design-gated",
+  "scope": {
+    "routes": ["/recipes/public-feed"],
+    "owned_paths": [
+      "site/web/templates/recipe-public-feed.html",
+      "site/web/styles/recipe-public-feed.css",
+      "internal/app/recipe_public_feed.go"
+    ],
+    "shared_paths": []
+  },
+  "reading": [
+    {"path": "lib/AGENTS.md", "status": "attested", "note": "Gelium entrypoint"},
+    {"path": "lib/llms-ux.txt", "status": "attested", "note": "Decision pack and media rule"},
+    {"path": "lib/SKILLS.md", "status": "attested", "note": "Workflow index"},
+    {"path": "lib/skills/11-design-criteria.md", "status": "attested", "note": "Criteria plan and rendered-audit split"},
+    {"path": "lib/skills/12-wireframe-approval.md", "status": "attested", "note": "Approval-packet rules"},
+    {"path": "internal/app/recipe_public_feed.go", "status": "attested", "note": "Route, data, POST and HTMX contracts"},
+    {"path": "site/web/templates/recipe-public-feed.html", "status": "attested", "note": "Rendered structure and no-JS forms"},
+    {"path": "site/web/styles/recipe-public-feed.css", "status": "attested", "note": "Token and narrow-layout rules"}
+  ],
+  "gates": {
+    "plan": {"status": "pass", "evidence": ["recipe-public-feed-packet.md#plan-intent-wireframe"]},
+    "architecture": {"status": "pass", "evidence": ["recipe-public-feed-packet.md#architect-buildable-wireframe"]},
+    "criteria_plan": {"status": "pass", "evidence": ["recipe-public-feed-packet.md#criteria-plan-prebuild"]},
+    "approval": {"status": "exception", "packet": "recipe-public-feed-packet.md", "approver": "CryptoNahue", "channel": "current Hermes chat", "date": "2026-08-30"},
+    "rendered_audit": {"status": "pass-with-escalation", "evidence": ["recipe-public-feed-audit.md#renderedserver-evidence", "recipe-public-feed-audit.md#limitations-and-disposition"]}
+  },
+  "release": {
+    "detector": {"status": "pass-with-exceptions", "evidence": ["recipe-public-feed-audit.md#detector-evidence"]},
+    "checks": {
+      "tests": ["go test ./internal/app -run '^TestRecipePublicFeed' -count=1", "go test ./internal/gates -run '^TestCheckAuthorityMatrixReadsCurrentRepositoryMatrix$' -count=1"],
+      "builds": ["npm run build"]
+    },
+    "authority_matrix": {"status": "pass", "evidence": ["recipe-public-feed-audit.md#authority-evidence"]}
+  },
+  "exceptions": [
+    {
+      "id": "recipe-layout-shell",
+      "rule": "shell-contract",
+      "path": "site/web/styles/recipe-public-feed.css",
+      "reason": "Scoped existing recipe layout around registered primitives during advisory detector calibration.",
+      "risk": "A broad custom shell could bypass registered layout primitives.",
+      "owner": "maintainers",
+      "evidence": "recipe-public-feed-audit.md#detector-evidence",
+      "expires_at": "2026-09-30T00:00:00Z",
+      "expires_before_version": ""
+    },
+    {
+      "id": "recipe-action-forms",
+      "rule": "form-contract",
+      "path": "site/web/templates/recipe-public-feed.html",
+      "reason": "Existing action-only POST forms do not collect fields requiring validation summaries.",
+      "risk": "A future input-bearing form could incorrectly inherit this exception.",
+      "owner": "maintainers",
+      "evidence": "recipe-public-feed-audit.md#detector-evidence",
+      "expires_at": "2026-09-30T00:00:00Z",
+      "expires_before_version": ""
+    }
+  ]
+}

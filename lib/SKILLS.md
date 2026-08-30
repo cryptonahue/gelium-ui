@@ -19,13 +19,37 @@ FEED / JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
 | 11 | `11-design-criteria.md` | checkable visual judgment, reuse, and resilient polish |
 | 12 | `12-wireframe-approval.md` | conditional approval gate for new screens, flows, and substantial redesigns |
 
+## Proportional workflow and records
+
+Classify first: `direct-exempt` for an understood bounded fix without a page or
+flow architecture change; `design-gated` for a new screen, new flow, or
+substantial redesign; `escalate` for a decision that cannot safely be inferred;
+and `full-sdd` only when cross-cutting work benefits from durable OpenSpec
+artifacts. The design-gated path is:
+
+```text
+ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE
+```
+
+Orient reads product/design artifacts, vocabulary, registry, and hard contracts.
+Plan produces the job, audience, states, and an intent wireframe. Architect
+checks real routes, data, permissions, templates, components, and no-JS/server
+contracts before producing the buildable wireframe for approval. Prebuild
+records decisions and a criteria plan; rendered evidence belongs in Audit after
+Build. Start records from `skills/templates/gate-ledger.md` and
+`skills/templates/wireframe-approval-packet.md`. For design-gated work the
+packet, visible wireframe, and human approval of that packet are required
+before markup. These are attestations and review records, not proof of reading
+or authority to commit, publish, or deploy.
+
 ## Required architecture handoff
 
-Keep the existing gates in order: foundations → surface → product reasoning →
-page/section → design criteria §1–§3 → conditional wireframe approval for new
-screens/flows/substantial redesigns → registered components → tokens/skin →
-design criteria critique → usability → DoD. If `PRODUCT.md` or `DESIGN.md` is
-absent in a consumer repo, stop and ask before this sequence.
+For a design-gated change, keep the gates in order: foundations → surface →
+product reasoning → page/section → design criteria §1–§3 → conditional
+wireframe approval → registered components → tokens/skin → rendered design
+criteria audit → usability → DoD. A direct-exempt change uses the narrowest
+relevant skills and checks. If `PRODUCT.md` or `DESIGN.md` is absent in a
+consumer repo, stop and ask before a design-gated sequence.
 
 Protocol IDs: `ARCH-PRODUCT`, `ARCH-PAGE`, `ARCH-SECTION`, `ARCH-COMPONENTS`,
 `ARCH-TOKENS`, `SECTION-CONTRACT`, `SECTION-HIERARCHY`, `SECTION-ACTION`,

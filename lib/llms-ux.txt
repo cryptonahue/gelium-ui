@@ -5,19 +5,34 @@ Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT
 
 ## MUST before generating UI
 
-0. SURFACE mode: Operate | Read | Persuade | Experience (Operate default for tools)
-1. USER JOB: one sentence
-2. SCREEN TYPE: hub | list | detail | form | confirm | settings | queue | result
-3. ONE PRIMARY ACTION
-4. JOURNEY-* if multi-step; DATA-* if collection
-5. STATES + FEED-*
-6. CONTROLS: forms + choose-the-right-control
-7. SERVER: GET read; POST+303; 422+X-Gelium-Validation
-8. THEME: theme-* on html (no one-off hex chrome)
-9. NARROW: stack; min-width:0; no overflow-x:hidden on body
-10. WF passes: BRIEF → SHAPE → ARCH → BUILD → AUDIT (including SECTION-AUDIT) → POLISH (stop; no endless loops)
+0. ROUTE: direct-exempt | design-gated | escalate | full-sdd. Small understood
+   fixes stay direct; new screens, flows, and substantial redesigns are a
+   design-gated route; use OpenSpec only when cross-cutting ambiguity needs
+   durable planning.
+1. SURFACE mode: Operate | Read | Persuade | Experience (Operate default for tools)
+2. USER JOB: one sentence
+3. SCREEN TYPE: hub | list | detail | form | confirm | settings | queue | result
+4. ONE PRIMARY ACTION
+5. JOURNEY-* if multi-step; DATA-* if collection
+6. STATES + FEED-*
+7. CONTROLS: forms + choose-the-right-control
+8. SERVER: GET read; POST+303; 422+X-Gelium-Validation
+9. THEME: theme-* on html (no one-off hex chrome)
+10. NARROW: stack; min-width:0; no overflow-x:hidden on body
 11. DoD: /docs/ui-definition-of-done
 12. If present: read consumer PRODUCT.md + DESIGN.md; if absent, stop and ask first
+
+For design-gated work, use
+`ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE`.
+This sequence is required for design-gated work. Prebuild needs a brief,
+architecture packet, approval/exemption, and a prebuild criteria plan. Show
+the buildable wireframe in the conversation and wait; do not start markup
+because the user asked to make the page or said continua. Audit, after a
+candidate exists, records rendered audit evidence for wide/narrow,
+class-routed themes, states, no-JS, detector, and applicable checks. Start from
+`skills/templates/gate-ledger.md` and
+`skills/templates/wireframe-approval-packet.md`; attestations are evidence, not
+proof of cognitive reading or delivery authority.
 
 ## SURFACE modes
 
@@ -156,7 +171,7 @@ Operate UI: one H1; do not stack marketing H2s on forms. Full: /docs/content-sty
 
 | ID | Rule |
 |---|---|
-| MEDIA-IMAGE | Informative images require meaningful `alt`, intrinsic `width`/`height`, and lazy loading below the fold. |
+| MEDIA-IMAGE | Informative images require meaningful `alt`, trustworthy intrinsic `width`/`height` when available, and lazy loading below the fold. If dimensions are unknown, do not fabricate them: preserve alt, safe responsive containment, and recovery, then record `media-metadata-unknown` or `pass-with-escalation` in the audit. |
 | MEDIA-RESPONSIVE | Use real `srcset`/`sizes` variants or a single source; never invent variants; preserve aspect-ratio fallback. |
 | MEDIA-AUDIO | Use native `audio[controls]`, typed sources, fallback text, and link an optional readable transcript. |
 | MEDIA-CAPTIONS | Video with meaningful audio gets a captions track; captions and transcript serve different jobs. |

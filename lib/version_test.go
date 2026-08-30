@@ -5,6 +5,7 @@ import (
 	"os"
 	"path/filepath"
 	"regexp"
+	"strings"
 	"testing"
 )
 
@@ -27,6 +28,17 @@ func TestAssetsVersionCoherence(t *testing.T) {
 	}
 	if pkg.Version != AssetsVersion {
 		t.Errorf("lib.AssetsVersion = %q but lib/package.json version = %q (must match)", AssetsVersion, pkg.Version)
+	}
+	for _, path := range [][]string{{"lib", "llms.txt"}, {"site", "web", "static", "llms.txt"}} {
+		if content := repositoryFile(t, path...); !strings.Contains(content, "- version: "+AssetsVersion) {
+			t.Errorf("%s must declare the current package version %q", strings.Join(path, "/"), AssetsVersion)
+		}
+	}
+	if readme := repositoryFile(t, "README.md"); !strings.Contains(readme, "Current release: **v"+AssetsVersion+"**") {
+		t.Errorf("README.md must declare the current package version %q", AssetsVersion)
+	}
+	if changelog := repositoryFile(t, "CHANGELOG.md"); !strings.Contains(changelog, "## ["+AssetsVersion+"]") {
+		t.Errorf("CHANGELOG.md must declare the current package version %q", AssetsVersion)
 	}
 
 	// 2. No template may hardcode a ?v= literal.

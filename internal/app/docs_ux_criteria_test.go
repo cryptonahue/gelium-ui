@@ -233,6 +233,33 @@ func TestUxDetectScriptPasses(t *testing.T) {
 	}
 }
 
+func TestShippedLegacyUxDetectKeepsPositionalResultContract(t *testing.T) {
+	root := moduleRoot(t)
+	consumer := t.TempDir()
+	good := filepath.Join(consumer, "screen.html")
+	if err := os.WriteFile(good, []byte(`<main><h1>Safe screen</h1></main>`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	shipped := filepath.Join(root, "lib/scripts/ux-detect.sh")
+	cmd := exec.Command("bash", shipped, good)
+	cmd.Dir = consumer
+	out, err := cmd.CombinedOutput()
+	if err != nil || !strings.Contains(string(out), "== RESULT: PASSED ==") {
+		t.Fatalf("legacy positional clean result changed: err=%v output=%s", err, out)
+	}
+
+	bad := filepath.Join(consumer, "form.html")
+	if err := os.WriteFile(bad, []byte(`<form><input name="email"></form>`), 0o644); err != nil {
+		t.Fatal(err)
+	}
+	cmd = exec.Command("bash", shipped, bad)
+	cmd.Dir = consumer
+	out, err = cmd.CombinedOutput()
+	if err == nil || !strings.Contains(string(out), "form without validation-summary contract") || !strings.Contains(string(out), "== RESULT: FAILED ==") {
+		t.Fatalf("legacy positional failure wording changed: err=%v output=%s", err, out)
+	}
+}
+
 func moduleRoot(t *testing.T) string {
 	t.Helper()
 	wd, err := os.Getwd()

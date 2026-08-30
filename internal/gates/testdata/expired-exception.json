@@ -1,0 +1,17 @@
+{
+  "schema_version": 1,
+  "route": "direct-exempt",
+  "scope": {"owned_paths": ["templates/feed.html"]},
+  "exceptions": [
+    {
+      "id": "legacy-shell",
+      "rule": "shell-contract",
+      "path": "templates/feed.html",
+      "reason": "legacy migration",
+      "risk": "visual consistency",
+      "owner": "maintainer",
+      "evidence": "ledger.md#audit",
+      "expires_at": "2026-08-29T00:00:00Z"
+    }
+  ]
+}

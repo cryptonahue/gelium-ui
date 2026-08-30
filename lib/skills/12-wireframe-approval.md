@@ -15,9 +15,23 @@ Require approval **before implementation** when the change introduces:
   hierarchy, major regions, primary action, reading order, or owner/reader
   boundary materially changes.
 
-For these changes, first inspect the real product, route, template, handler,
-CSS, components, states, and no-JS/server contract. Do not edit implementation
-files during the design pass.
+For these changes, follow `ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE` before
+markup. Orient reads the product/design artifacts, vocabulary, registry, and
+hard contracts; Plan defines the user need; Architect inspects the real route,
+template, handler, CSS, components, states, data, permissions, and no-JS/server
+contract. Do not edit implementation files during Orient, Plan, or Architect.
+
+### Two wireframes, one approval target
+
+- **Intent wireframe (Plan)** records the user job, audience, major regions,
+  primary action, states, and non-goals without inventing exact components or
+  data.
+- **Buildable wireframe (Architect)** reconciles that intent with real routes,
+  data, permissions, templates, registered components, and server/no-JS
+  contracts. Human approval applies to this version.
+
+If Architect finds a material mismatch, return to Plan or escalate it; do not
+hide it as CSS polish.
 
 ## Explicit exemptions
 
@@ -39,22 +53,26 @@ expanded scope.
 
 ## Approval packet
 
-For a gated change, prepare a compact packet in English technical artifact
-convention:
+For a gated change, copy `skills/templates/wireframe-approval-packet.md` into
+the change record and complete it in English technical artifact convention. Its
+Plan section contains the intent wireframe; its Architect section contains the
+buildable wireframe that is actually approved. The packet records:
 
 ```text
+Packet version:
 Change:
 Product job / audience:
 Existing route and contracts:
 Scope: new screen | new flow | substantial redesign
 Section inventory: ordered regions and purpose
 Primary action and action hierarchy:
-Desktop wireframe:
-Mobile wireframe:
+Plan — intent wireframe:
+Architect — buildable wireframe:
 States and recovery:
 Accessibility and no-JS behavior:
 Reuse / DESIGN-MEMORY decision:
 Open questions and explicit trade-offs:
+Decision: approved | changes-requested | declined | exception
 ```
 
 Wireframes are structural, not decorative. Use ASCII or another reviewable
@@ -63,19 +81,34 @@ disclosures, recovery, and owner-only areas. Do not spend the approval packet on
 exact colors, shadows, or pixel dimensions; apply skill 11 after structure is
 approved.
 
+## Visible packet
+
+Required for design-gated work: the human must **see** the buildable desktop and
+mobile wireframes in the conversation and explicitly approve **that packet**
+before markup or CSS.
+
+- Saving the packet only to a plan file is not approval.
+- “Make the page”, “oks dale”, `continua`, or a resume after a model/context
+  switch is not approval unless the human has already been shown that wireframe
+  and said yes to it.
+- If the packet was never shown, stop with `Needs your decision` and show it.
+- Record the approved packet version, date, and channel after a real yes.
+
 ## Approval workflow
 
-1. **Classify scope.** Name the trigger and confirm whether an exemption
-   applies. Completion: the scope classification is recorded.
-2. **Read before drawing.** Inspect the existing implementation and apply
-   skills 02, 08, and 10. Completion: route, server/no-JS behavior, sections,
-   and existing Gelium contracts are listed.
-3. **Prepare the packet.** Include desktop and mobile wireframes, states,
-   accessibility, reuse, and open decisions. Completion: another person can
-   understand the intended structure without seeing markup.
-4. **Request a decision.** Record `approved`, `changes requested`, or
-   `declined`, with date/author and the packet version. Completion: gated work
-   has an explicit approval outcome before implementation.
+1. **Classify and Orient.** Name the route/trigger, read the required
+   artifacts and hard contracts, and confirm whether an exemption applies.
+   Completion: the route classification and reading attestations are recorded.
+2. **Plan.** Record job, audience, surface, states, non-goals, and the intent
+   wireframe. Completion: another person can understand what is proposed without
+   markup or invented component details.
+3. **Architect.** Inspect route, data, permissions, templates, components, and
+   server/no-JS behavior; produce the buildable wireframe and section/component
+   mapping. Completion: material incompatibilities are resolved or escalated.
+4. **Request a decision.** Show the buildable wireframe in the conversation,
+   then record `approved`, `changes-requested`, `declined`, or bounded
+   `exception`, with date/author and packet version. Completion: gated work has
+   an explicit blocking outcome before implementation. `pending` blocks Build.
 5. **Implement within scope.** Follow the approved section order and reuse
    existing components/tokens. Completion: implementation matches the packet,
    or any material deviation is recorded and re-approved.
@@ -125,7 +158,7 @@ existing Gelium contracts, and keep the primary flow functional with JS
 ## Verification checklist
 
 - [ ] Scope is new screen, new flow, substantial redesign, or documented exemption.
-- [ ] Gated work has a read-only inspection and an approved packet before markup.
+- [ ] Gated work has a visible packet in conversation and an approved packet before markup.
 - [ ] Exempt work is not delayed by an unnecessary approval ceremony.
 - [ ] Any intentional bypass is recorded as an explicit exception with bounded scope.
 - [ ] Packet covers desktop/mobile order, actions, states, recovery, accessibility,

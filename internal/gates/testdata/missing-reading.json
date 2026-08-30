@@ -1,0 +1,12 @@
+{
+  "schema_version": 1,
+  "route": "design-gated",
+  "scope": {"owned_paths": ["templates/feed.html"]},
+  "reading": [],
+  "gates": {
+    "plan": {"status": "pass"},
+    "architecture": {"status": "pass"},
+    "criteria_plan": {"status": "pass"},
+    "approval": {"status": "approved", "packet": "packet.md", "approver": "maintainer", "channel": "chat", "date": "2026-08-30"}
+  }
+}

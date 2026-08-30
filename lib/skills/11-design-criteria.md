@@ -38,11 +38,21 @@ Check:
 - Every proposed exception names the failed token/component fit, the smallest
   safe scope, and how it remains compatible with existing Gelium contracts.
 
-## Checkable visual criteria
+## Criteria plan (prebuild)
 
-Evaluate the rendered screen at narrow and wide widths, in the selected light
-and dark class-routed themes, and with realistic content. Mark each item
-**pass**, **fail**, or **not applicable**, with a short evidence note.
+Before markup for a design-gated change, record the intended hierarchy, DOM
+order, primary/supporting actions, section boundaries, responsive intent,
+token/theme choices, applicable states, accessibility/no-JS path, preserved
+server contracts, and the `DESIGN-MEMORY` reuse decision. This plan is a
+prebuild decision record; it must not claim rendered evidence that cannot exist
+yet. Record any unresolved mismatch as an escalation or bounded exception.
+
+## Rendered audit (postbuild)
+
+After a candidate exists, evaluate the rendered screen at narrow and wide
+widths, in the selected light and dark class-routed themes, and with realistic
+content. Mark each item **pass**, **fail**, **not applicable**,
+**pass-with-escalation**, or **exception**, with a short evidence note.
 
 ### Hierarchy and composition
 
@@ -131,16 +141,18 @@ Use these as short dialogue labels, never as runtime commands:
    constraints; completion: the relevant artifact and assumptions are named.
 2. `/gshape` — apply skills 02, 08, and 10; completion: page/section contracts
    and reading order exist before markup.
-3. `/gcriteria` — run the checkable criteria above and DESIGN-MEMORY; completion:
-   every item is pass, fail, or not applicable with evidence.
-4. `/gcheck` — inspect rendered HTML/CSS at required widths, themes, states, and
-   no-JS; completion: failures are fixed or escalated with a recorded mismatch.
+3. `/gcriteria` — record the prebuild criteria plan, including hierarchy,
+   states, contracts, tokens, accessibility/no-JS, and DESIGN-MEMORY; completion:
+   unresolved mismatches are escalated or bounded.
+4. `/gcheck` — run the rendered audit after a candidate exists at required
+   widths, themes, states, and no-JS; completion: every item is pass, fail,
+   not applicable, pass-with-escalation, or exception with evidence.
 
 ## Verification record
 
 Before calling a screen complete, record:
 
-- route/template and rendered evidence inspected;
+- criteria plan and the rendered-audit evidence inspected;
 - selected theme classes, viewport widths, and representative states;
 - token/component choices and any escalated mismatches;
 - DESIGN-MEMORY reuse decision;

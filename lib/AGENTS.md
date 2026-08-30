@@ -5,16 +5,47 @@ default; token + class themes; optional small JS enhancement. **Not** a JS frame
 
 ## Before you generate any UI
 
-Read `skills/` — each skill is one actionable decision or flow. Start with
-`skills/01-foundations.md`. After picking a SURFACE mode (`skills/02`), run
-`skills/08-product-reasoning.md` to discover missing product-level UX before
-drawing. Before selecting components or writing markup, run
-`skills/10-page-section-architecture.md` to contract each major page region by
-purpose, audience, hierarchy, action, revelation, and recovery. Then run
+Read this entrypoint, then `llms-ux.txt`, then `SKILLS.md`; each layer is part
+of the protocol. Start with `skills/01-foundations.md`. After picking a SURFACE
+mode (`skills/02`), run `skills/08-product-reasoning.md` to discover missing
+product-level UX before drawing. Before selecting components or writing markup,
+run `skills/10-page-section-architecture.md` to contract each major page region
+by purpose, audience, hierarchy, action, revelation, and recovery. Then run
 `skills/11-design-criteria.md` for hierarchy, type, and density decisions. For
 new screens, new flows, or substantial page redesigns, get the structure
-approved through `skills/12-wireframe-approval.md` before writing markup. The
-full decision pack is in `llms-ux.txt`.
+approved through `skills/12-wireframe-approval.md` before writing markup.
+
+## Route UI work proportionally
+
+Classify the request before planning:
+
+- **direct-exempt** — an understood, bounded copy, token, selector,
+  accessibility, bug, or existing-contract correction with no page/flow
+  architecture change. Inspect the relevant files, build, and run focused
+  checks; do not manufacture a wireframe or ledger ceremony.
+- **design-gated** — a new screen, new flow, or substantial redesign. This
+  route is **required for design-gated** work. Follow
+  `ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE`.
+  Orient reads product/design artifacts, vocabulary, registry, and hard
+  contracts; Plan records job, audience, states, and an intent wireframe;
+  Architect validates it against real routes, data, permissions, templates,
+  components, and no-JS/server behavior. Stop after Architect: show the
+  buildable wireframe in the conversation and wait for an explicit approval of
+  that packet before any markup or CSS. A request to make the page, `continua`,
+  or a model-switch resume is not approval unless the human has seen that
+  wireframe.
+- **escalate** — product intent, risk, scope, permissions, data, or architecture
+  cannot be resolved from the current artifacts. Ask for the smallest concrete
+  decision instead of inventing a solution.
+- **full-sdd** — use OpenSpec only for cross-cutting work where durable proposal,
+  design, specification, and task artifacts materially reduce ambiguity.
+
+For design-gated work, copy the shipped
+`skills/templates/gate-ledger.md` and
+`skills/templates/wireframe-approval-packet.md` into the change record. The
+ledger is structured evidence, not proof that a person read or approved a file.
+Prebuild records decisions and approval; rendered evidence is collected only
+after Build during Audit.
 
 Golden rules that apply to every task:
 
@@ -41,7 +72,8 @@ Golden rules that apply to every task:
     `SECTION-CONTRACT` before it can be rendered or styled.
 11. **Plan before markup** — new screens, new flows, and substantial page
     redesigns require the `skills/12` approval gate and `skills/11` pre-emit
-    critique. Accessibility fixes, bug fixes, contract corrections,
+    critique. The agent MUST show the buildable wireframe in chat and wait.
+    Accessibility fixes, bug fixes, contract corrections,
     component/mechanical changes, and already-approved small adjustments are
     exempt unless the scope expands into a new or substantially redesigned
     surface.

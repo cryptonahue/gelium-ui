@@ -1,0 +1,24 @@
+[
+  {
+    "id": "recipe-layout-shell",
+    "finding_id": "custom-shell",
+    "rule": "shell-contract",
+    "path": "site/web/styles/recipe-public-feed.css",
+    "reason": "The established recipe uses recipe-pf-appbar as scoped layout composition around registered ui-* primitives; dogfood must expose this heuristic finding rather than alter the existing recipe.",
+    "risk": "A broad custom shell could bypass registered layout primitives.",
+    "owner": "maintainers",
+    "evidence": "recipe-public-feed-packet.md#architect-buildable-wireframe",
+    "expires_at": "2026-09-30T00:00:00Z"
+  },
+  {
+    "id": "recipe-action-forms",
+    "finding_id": "form-validation",
+    "rule": "form-contract",
+    "path": "site/web/templates/recipe-public-feed.html",
+    "reason": "Like and refresh are action-only native POST forms with no user-entered field validation contract; the finding remains visible for detector calibration.",
+    "risk": "A future input-bearing form could incorrectly inherit this exception.",
+    "owner": "maintainers",
+    "evidence": "recipe-public-feed-packet.md#architect-buildable-wireframe",
+    "expires_at": "2026-09-30T00:00:00Z"
+  }
+]

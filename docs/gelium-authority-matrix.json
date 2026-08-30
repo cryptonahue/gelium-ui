@@ -1,0 +1,43 @@
+{
+  "schema_version": 1,
+  "groups": [
+    {
+      "id": "gelium-ui-release-version",
+      "kind": "version",
+      "canonical": {"path": "lib/package.json", "extract": "json:/version"},
+      "current": [
+        {"path": "lib/version.go", "extract": "go-const:AssetsVersion"},
+        {"path": "lib/llms.txt", "extract": "line-prefix:- version: "},
+        {"path": "site/web/static/llms.txt", "extract": "line-prefix:- version: "},
+        {"path": "README.md", "extract": "release-heading"},
+        {"path": "CHANGELOG.md", "extract": "first-release-heading"}
+      ],
+      "historical": [
+        {"path": "openspec/config.yaml", "reason": "stale migration policy"},
+        {"path": "docs/handoffs", "reason": "historical audit records"}
+      ]
+    },
+    {
+      "id": "validation-header",
+      "kind": "wire",
+      "canonical_value": "X-Gelium-Validation",
+      "current": [
+        {"path": "internal/app/text_field.go", "extract": "go-http-header:X-Gelium-Validation"},
+        {"path": "internal/app/select.go", "extract": "go-http-header:X-Gelium-Validation"},
+        {"path": "internal/app/newsletter.go", "extract": "go-http-header:X-Gelium-Validation"},
+        {"path": "internal/app/toast.go", "extract": "go-http-header:X-Gelium-Validation"},
+        {"path": "internal/app/recipe_admin_resource.go", "extract": "go-http-header:X-Gelium-Validation"},
+        {"path": "lib/js/gelium.js", "extract": "js-response-header:X-Gelium-Validation"}
+      ]
+    },
+    {
+      "id": "toast-event",
+      "kind": "wire",
+      "canonical_value": "gelium:toast",
+      "current": [
+        {"path": "internal/app/toast.go", "extract": "go-json-tag:gelium:toast"},
+        {"path": "lib/js/gelium.js", "extract": "js-event-listener:gelium:toast"}
+      ]
+    }
+  ]
+}

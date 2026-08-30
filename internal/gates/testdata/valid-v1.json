@@ -1,0 +1,24 @@
+{
+  "schema_version": 1,
+  "route": "design-gated",
+  "scope": {
+    "routes": ["/feed"],
+    "owned_paths": ["templates/feed.html"],
+    "shared_paths": ["templates/logout.html"]
+  },
+  "reading": [
+    {"path": "PRODUCT.md", "status": "attested"}
+  ],
+  "gates": {
+    "plan": {"status": "pass", "evidence": ["packet.md#plan"]},
+    "architecture": {"status": "pass", "evidence": ["packet.md#architecture"]},
+    "criteria_plan": {"status": "pass", "evidence": ["packet.md#criteria"]},
+    "approval": {
+      "status": "approved",
+      "packet": "packet.md",
+      "approver": "maintainer",
+      "channel": "chat",
+      "date": "2026-08-30"
+    }
+  }
+}

@@ -1,0 +1,8 @@
+{
+  "schema_version": 1,
+  "route": "direct-exempt",
+  "scope": {
+    "owned_paths": ["templates/feed.html"],
+    "shared_paths": ["templates/feed.html"]
+  }
+}

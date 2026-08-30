@@ -1,0 +1,159 @@
+<!doctype html>
+<html lang="en">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gelium Agent Gates — Proposed Correct Flow</title>
+<style>
+  :root { color-scheme: dark; --bg:#020617; --panel:#0f172a; --muted:#94a3b8; --line:#334155; --cyan:#22d3ee; --green:#34d399; --amber:#fbbf24; --rose:#fb7185; --violet:#a78bfa; --orange:#fb923c; }
+  * { box-sizing:border-box; }
+  body { margin:0; padding:32px; min-width:1040px; background:var(--bg); color:#e2e8f0; font:14px/1.4 ui-monospace,SFMono-Regular,Menlo,Monaco,Consolas,"Liberation Mono",monospace; background-image:linear-gradient(#1e293b55 1px,transparent 1px),linear-gradient(90deg,#1e293b55 1px,transparent 1px); background-size:40px 40px; }
+  header, main, footer { max-width:1420px; margin:auto; }
+  header { display:flex; align-items:flex-end; justify-content:space-between; margin-bottom:18px; }
+  h1 { margin:0; font-size:23px; letter-spacing:-.04em; }
+  .subtitle { margin:7px 0 0; color:var(--muted); max-width:940px; }
+  .badge { border:1px solid var(--green); color:var(--green); border-radius:999px; padding:5px 9px; font-size:11px; white-space:nowrap; }
+  .diagram { border:1px solid var(--line); border-radius:14px; overflow:hidden; background:#020617e8; box-shadow:0 20px 50px #0008; }
+  svg { display:block; width:100%; height:auto; }
+  .cards { display:grid; grid-template-columns:repeat(3,1fr); gap:14px; margin-top:18px; }
+  .card { background:#0f172ae8; border:1px solid var(--line); border-radius:10px; padding:16px; }
+  .card h2 { margin:0 0 9px; font-size:13px; color:#f8fafc; }
+  .card p, .card ul { margin:0; color:var(--muted); font-size:12px; }
+  .card ul { padding-left:17px; }
+  .card li + li { margin-top:5px; }
+  .dot { display:inline-block; width:8px; height:8px; border-radius:50%; margin-right:7px; vertical-align:1px; }
+  footer { color:#64748b; font-size:11px; padding:14px 0 2px; }
+</style>
+</head>
+<body>
+<header>
+  <div>
+    <h1>Gelium agent gates — proportional operational flow</h1>
+    <p class="subtitle">Route small work directly; gate only architectural UI work. The ledger attests decisions and evidence, memory is advisory, and tooling can block a phase claim—not local typing or ordinary delivery.</p>
+  </div>
+  <span class="badge">proposal revision target</span>
+</header>
+<main>
+<section class="diagram" aria-label="Proposed agent gate workflow">
+<svg viewBox="0 0 1420 830" role="img" aria-labelledby="title desc">
+  <title id="title">Corrected Gelium UI agent workflow</title>
+  <desc id="desc">A left-to-right flow separates discovery and approval before build from rendered audit and release verification after build. Human decisions feed the wireframe and exception records. Failed gates loop back to the agent with a specific recovery action.</desc>
+  <defs>
+    <marker id="arrowCyan" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#22d3ee"/></marker>
+    <marker id="arrowGreen" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#34d399"/></marker>
+    <marker id="arrowRose" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#fb7185"/></marker>
+    <marker id="arrowAmber" markerWidth="10" markerHeight="10" refX="8" refY="3" orient="auto"><path d="M0,0 L0,6 L8,3 z" fill="#fbbf24"/></marker>
+    <filter id="glow"><feGaussianBlur stdDeviation="3" result="blur"/><feMerge><feMergeNode in="blur"/><feMergeNode in="SourceGraphic"/></feMerge></filter>
+  </defs>
+
+  <rect x="30" y="28" width="1030" height="570" rx="14" fill="#0f172acc" stroke="#334155"/>
+  <rect x="1080" y="28" width="310" height="570" rx="14" fill="#111827cc" stroke="#fb7185" stroke-dasharray="7 5"/>
+  <text x="56" y="61" fill="#94a3b8" font-size="12" letter-spacing="1">AGENT + AUTOMATION LANE</text>
+  <text x="1105" y="61" fill="#fb7185" font-size="12" letter-spacing="1">HUMAN DECISION LANE</text>
+
+  <rect x="60" y="95" width="185" height="92" rx="8" fill="#08334499" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="78" y="123" fill="#67e8f9" font-size="13" font-weight="700">ROUTE + ORIENT</text>
+  <text x="78" y="148" fill="#cbd5e1" font-size="11">direct vs design-gated</text>
+  <text x="78" y="166" fill="#cbd5e1" font-size="11">rules, vocab, contracts</text>
+
+  <rect x="290" y="95" width="185" height="92" rx="8" fill="#312e8199" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="308" y="123" fill="#c4b5fd" font-size="13" font-weight="700">1. PLAN</text>
+  <text x="308" y="148" fill="#cbd5e1" font-size="11">job, audience, action</text>
+  <text x="308" y="166" fill="#cbd5e1" font-size="11">intent wireframe + states</text>
+
+  <rect x="520" y="95" width="220" height="92" rx="8" fill="#064e3b99" stroke="#34d399" stroke-width="1.5"/>
+  <text x="538" y="123" fill="#6ee7b7" font-size="13" font-weight="700">2. ARCHITECT</text>
+  <text x="538" y="148" fill="#cbd5e1" font-size="11">route, data, components</text>
+  <text x="538" y="166" fill="#cbd5e1" font-size="11">buildable wireframe + packet</text>
+
+  <polygon points="825,95 895,141 825,187 755,141" fill="#78350f99" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="781" y="137" fill="#fde68a" font-size="12" font-weight="700">3. HUMAN</text>
+  <text x="784" y="153" fill="#fde68a" font-size="12" font-weight="700">APPROVAL?</text>
+
+  <rect x="950" y="105" width="84" height="72" rx="8" fill="#08334499" stroke="#22d3ee" stroke-width="1.5"/>
+  <text x="968" y="134" fill="#67e8f9" font-size="12" font-weight="700">BUILD</text>
+  <text x="962" y="153" fill="#cbd5e1" font-size="10">one writer</text>
+
+  <rect x="60" y="280" width="200" height="102" rx="8" fill="#064e3b99" stroke="#34d399" stroke-width="1.5"/>
+  <text x="78" y="309" fill="#6ee7b7" font-size="13" font-weight="700">5. RENDERED AUDIT</text>
+  <text x="78" y="334" fill="#cbd5e1" font-size="11">wide + narrow · light + dark</text>
+  <text x="78" y="352" fill="#cbd5e1" font-size="11">real content · states · no-JS</text>
+  <text x="78" y="370" fill="#cbd5e1" font-size="11">evidence or limitation</text>
+
+  <rect x="310" y="280" width="205" height="102" rx="8" fill="#7c2d1299" stroke="#fb923c" stroke-width="1.5"/>
+  <text x="328" y="309" fill="#fdba74" font-size="13" font-weight="700">6. SCOPED DETECTOR</text>
+  <text x="328" y="334" fill="#cbd5e1" font-size="11">--scope + raw findings</text>
+  <text x="328" y="352" fill="#cbd5e1" font-size="11">exception ID stays visible</text>
+  <text x="328" y="370" fill="#cbd5e1" font-size="11">shared vs owned attribution</text>
+
+  <rect x="565" y="280" width="205" height="102" rx="8" fill="#312e8199" stroke="#a78bfa" stroke-width="1.5"/>
+  <text x="583" y="309" fill="#c4b5fd" font-size="13" font-weight="700">7. RELEASE CHECK</text>
+  <text x="583" y="334" fill="#cbd5e1" font-size="11">version authority matrix</text>
+  <text x="583" y="352" fill="#cbd5e1" font-size="11">wire-contract coherence</text>
+  <text x="583" y="370" fill="#cbd5e1" font-size="11">tests · build · diff check</text>
+
+  <polygon points="855,280 925,331 855,382 785,331" fill="#78350f99" stroke="#fbbf24" stroke-width="1.5"/>
+  <text x="818" y="326" fill="#fde68a" font-size="12" font-weight="700">8. RELEASE</text>
+  <text x="816" y="342" fill="#fde68a" font-size="12" font-weight="700">PREFLIGHT?</text>
+
+  <rect x="960" y="285" width="75" height="92" rx="8" fill="#064e3b99" stroke="#34d399" stroke-width="1.5"/>
+  <text x="976" y="317" fill="#6ee7b7" font-size="12" font-weight="700">DONE</text>
+  <text x="970" y="338" fill="#cbd5e1" font-size="10">status:</text>
+  <text x="967" y="355" fill="#cbd5e1" font-size="10">clean /</text>
+  <text x="967" y="369" fill="#cbd5e1" font-size="10">exceptions</text>
+
+  <rect x="1110" y="118" width="248" height="108" rx="8" fill="#4c051999" stroke="#fb7185" stroke-width="1.5"/>
+  <text x="1128" y="148" fill="#fda4af" font-size="13" font-weight="700">WIRE FRAME DECISION</text>
+  <text x="1128" y="173" fill="#cbd5e1" font-size="11">approved · exempt · exception</text>
+  <text x="1128" y="192" fill="#cbd5e1" font-size="11">approver + date + packet version</text>
+  <text x="1128" y="211" fill="#cbd5e1" font-size="11">draft/declined block prebuild phase</text>
+
+  <rect x="1110" y="278" width="248" height="108" rx="8" fill="#4c051999" stroke="#fb7185" stroke-width="1.5"/>
+  <text x="1128" y="308" fill="#fda4af" font-size="13" font-weight="700">EXCEPTION DECISION</text>
+  <text x="1128" y="333" fill="#cbd5e1" font-size="11">reason · risk · owner · scope</text>
+  <text x="1128" y="352" fill="#cbd5e1" font-size="11">finding fingerprint + expiry</text>
+  <text x="1128" y="371" fill="#cbd5e1" font-size="11">does not turn failure into clean pass</text>
+
+  <rect x="1110" y="440" width="248" height="120" rx="8" fill="#111827" stroke="#334155"/>
+  <text x="1128" y="470" fill="#e2e8f0" font-size="13" font-weight="700">WHAT THE TOOL CAN ASSERT</text>
+  <text x="1128" y="495" fill="#94a3b8" font-size="11">✓ artifacts, schema, diff scope,</text>
+  <text x="1128" y="513" fill="#94a3b8" font-size="11">  statuses, evidence references</text>
+  <text x="1128" y="537" fill="#94a3b8" font-size="11">✕ that a person/agent truly read</text>
+  <text x="1128" y="555" fill="#94a3b8" font-size="11">  a file or visually inspected it</text>
+
+  <path d="M245 141 H290" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <path d="M475 141 H520" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <path d="M740 141 H755" stroke="#34d399" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <path d="M895 141 H950" stroke="#34d399" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <path d="M992 177 V238 H160 V280" fill="none" stroke="#22d3ee" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <path d="M260 331 H310" stroke="#34d399" stroke-width="2" marker-end="url(#arrowGreen)"/>
+  <path d="M515 331 H565" stroke="#fb923c" stroke-width="2" marker-end="url(#arrowAmber)"/>
+  <path d="M770 331 H785" stroke="#a78bfa" stroke-width="2" marker-end="url(#arrowCyan)"/>
+  <path d="M925 331 H960" stroke="#34d399" stroke-width="2" marker-end="url(#arrowGreen)"/>
+
+  <path d="M1110 172 H895" stroke="#fb7185" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrowRose)"/>
+  <path d="M1110 332 H515" stroke="#fb7185" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrowRose)"/>
+  <path d="M785 141 V225 H625 V187" fill="none" stroke="#fb7185" stroke-width="2" stroke-dasharray="6 5" marker-end="url(#arrowRose)"/>
+
+  <path d="M825 187 V220 H382 V187" fill="none" stroke="#fb7185" stroke-width="2" marker-end="url(#arrowRose)"/>
+  <text x="470" y="214" fill="#fda4af" font-size="10">missing artifact, receipt, approval, or exemption → revise packet</text>
+  <path d="M855 382 V430 H430 V382" fill="none" stroke="#fb7185" stroke-width="2" marker-end="url(#arrowRose)"/>
+  <text x="477" y="424" fill="#fda4af" font-size="10">failed evidence, unapproved finding, drift, or tests → fix / escalate / re-verify</text>
+
+  <line x1="60" y1="640" x2="1035" y2="640" stroke="#334155"/>
+  <text x="60" y="675" fill="#94a3b8" font-size="12">STATUS MODEL</text>
+  <rect x="60" y="696" width="170" height="44" rx="7" fill="#064e3b99" stroke="#34d399"/><text x="76" y="723" fill="#6ee7b7" font-size="12">clean-pass</text>
+  <rect x="250" y="696" width="230" height="44" rx="7" fill="#78350f99" stroke="#fbbf24"/><text x="266" y="723" fill="#fde68a" font-size="12">pass-with-exceptions</text>
+  <rect x="500" y="696" width="170" height="44" rx="7" fill="#4c051999" stroke="#fb7185"/><text x="516" y="723" fill="#fda4af" font-size="12">failed / blocked</text>
+  <text x="700" y="724" fill="#94a3b8" font-size="11">The exception outcome is visible, scoped, owned, and never presented as clean compliance.</text>
+</svg>
+</section>
+<section class="cards" aria-label="Flow decisions">
+  <article class="card"><h2><span class="dot" style="background:#22d3ee"></span>Proportional routing</h2><p>Small understood fixes follow the direct path. Architectural UI work follows Route → Orient → Plan → Architect → human approval; only then does one writer build the agreed shape.</p></article>
+  <article class="card"><h2><span class="dot" style="background:#fbbf24"></span>Two evidence phases</h2><p>Prebuild checks the intent, architecture packet, approval, and criteria plan. Postbuild checks rendered wide/narrow, themes, real states, no-JS, detector findings, and evidence limitations.</p></article>
+  <article class="card"><h2><span class="dot" style="background:#fb7185"></span>Bounded authority</h2><p>Explorers are read-only and exact-path; one writer changes production; a fresh reviewer audits the candidate. Memory can guide Orient, but repository artifacts and human decisions remain authoritative.</p></article>
+</section>
+</main>
+<footer>Derived from proposal <code>2026-08-29-agent-gates-and-preflight</code> · diagram is a review artifact, not a release claim.</footer>
+</body>
+</html>
