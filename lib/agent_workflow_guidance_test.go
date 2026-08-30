@@ -58,6 +58,14 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 			},
 		},
 		{
+			name: "foundations skill",
+			path: []string{"lib", "skills", "01-foundations.md"},
+			want: []string{
+				"Do not flatten mixed relationships",
+				"--ui-space-1",
+			},
+		},
+		{
 			name: "approval skill",
 			path: []string{"lib", "skills", "12-wireframe-approval.md"},
 			want: []string{
@@ -66,6 +74,7 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 				"approved | changes-requested | declined | exception",
 				"Visible packet",
 				"continua",
+				"ASCII maps SCREEN blocks",
 			},
 		},
 		{

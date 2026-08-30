@@ -81,6 +81,35 @@ disclosures, recovery, and owner-only areas. Do not spend the approval packet on
 exact colors, shadows, or pixel dimensions; apply skill 11 after structure is
 approved.
 
+## ASCII maps SCREEN blocks
+
+Show the wireframe in the conversation **before** markup. ASCII must map the
+chosen SURFACE + SCREEN blocks from `skills/02` and `llms-ux.txt`, not a
+generic “pretty box” layout.
+
+- Name the SCREEN type on the wireframe (`settings`, `list`, `hub`, `form`, …)
+  and draw only its blocks. `settings` = grouped **list rows** (optional
+  switch/select). `hub` = title, short context, **one** primary button.
+- One highlighted primary action per page. Row navigation is a link/chevron,
+  never a repeated primary button (`[ abrir ]`, `Save` on every row).
+- Sections are headings + purpose, not cards. A card is a repeated instance,
+  not a section border (`skills/10`).
+- Desktop and mobile share the same regions and reading order. Narrow stacks
+  (`NARROW`). Do not invent a second desktop pattern (stretched mobile list,
+  extra centered column, marketing two-column) unless Architect records a real
+  container/token reason.
+- `DATA-LIST` rows: title + little meta + trailing control. Use the list
+  anatomy and a Gelium `.ui-icon` from the allowlist (`chevron_right`, not
+  a typed `›`).
+- Before consumer CSS, map each adjacent pair to the spacing table in
+  `skills/01-foundations.md`. Do not put one `gap` on a page wrapper when
+  children mix title→metadata, group→group, and section→section.
+- Label existing chrome as unchanged when it is out of scope. Do not redraw
+  the product header as if it were this page.
+
+Bad: two cards, seven `[ abrir ]` buttons, a full-width dotted leader line.
+Good: H1 + context, H2 groups, `ui-list` rows with supporting text and `›`.
+
 ## Visible packet
 
 Required for design-gated work: the human must **see** the buildable desktop and

@@ -33,7 +33,7 @@ Open uncertainty:
 ## Plan — intent wireframe
 
 Describe the requested user outcome without inventing unavailable components,
-data, media metadata, or pixel polish.
+data, media metadata, or pixel polish. ASCII maps SCREEN blocks from skill 02.
 
 ```text
 Screen / SURFACE:

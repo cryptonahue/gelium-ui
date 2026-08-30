@@ -63,6 +63,14 @@ Rules:
   with margins/gaps *between* components only.
 - Never hardcode px/rem in markup or consumer CSS; if no token fits the
   relationship, the scale is wrong — escalate instead of inventing.
+- **Do not flatten mixed relationships with one wrapper `gap`.** Before writing
+  consumer CSS, list each adjacent pair and pick one row from the table
+  (title→summary `space-1/2`, siblings `space-3`, groups `space-4/6`, sections
+  `space-8`). A page stack that mixes those pairs needs per-pair margin, not
+  one `gap` on the parent.
+- Use registered list/card/field anatomy as shipped (text column `flex: 1`,
+  trailing slot). Do not leave a trailing control as a sibling of a bare
+  headline — it will sit next to the text instead of at the end.
 
 Prior art: Material 3 spacing/density rules; the industry-standard 8-point
 (4px half-step) grid; classic typographic vertical rhythm.
