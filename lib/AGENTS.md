@@ -80,10 +80,22 @@ Golden rules that apply to every task:
 
 ## Gallery
 
-The searchable icon gallery (item 0 of the roadmap) exposes top icon SVG sets as
-opt-in `lib/icons/<pack>` packs — Tabler, Lucide, Heroicons, Phosphor — each with a
-searchable gallery on `/docs/icon`, themeable via `currentColor`. Packs are SVG
-server-rendered, never icon-fonts.
+The searchable icon gallery (item 0 of the roadmap) dogfoods trusted
+inline SVG (`.ui-icon`, `currentColor`). Library catalogs:
+
+- Material Symbols rounded — `@material-symbols/svg-400` (fill; default)
+- Tabler Icons — `@tabler/icons` (outline stroke + filled; MIT)
+
+Consumers run `scripts/extract-used-icons.mjs` so the app binary embeds
+only names referenced as string literals. Unprefixed names use `--set`
+(`material` default, or `tabler`). Prefixed names pick a catalog:
+
+- `data-gelium-icon="chevron_right"` / `icons.SVG("settings")`
+- `data-gelium-icon="tabler:chevron-right"` / `icons.SVG("ms:home")`
+- `icons.SVG("tabler-filled:home")`
+
+Prefer one set per product; prefixes are for an explicit mixed screen.
+Packs are SVG server-rendered, never icon-fonts.
 
 ## Layout of this package
 

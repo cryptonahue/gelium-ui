@@ -9,8 +9,8 @@
     "node": ">=20"
   },
   "peerDependencies": {
-    "tailwindcss": ">=4.0.0",
-    "htmx.org": ">=4.0.0"
+    "htmx.org": ">=4.0.0",
+    "tailwindcss": ">=4.0.0"
   },
   "peerDependenciesMeta": {
     "tailwindcss": {
@@ -19,6 +19,10 @@
     "htmx.org": {
       "optional": true
     }
+  },
+  "dependencies": {
+    "@material-symbols/svg-400": "^0.46.0",
+    "@tabler/icons": "^3.46.0"
   },
   "sideEffects": [
     "*.css"
@@ -30,7 +34,7 @@
     "js",
     "dist",
     "skills",
- "scripts",
+    "scripts",
     "AGENTS.md",
     "SKILLS.md",
     "llms.txt",

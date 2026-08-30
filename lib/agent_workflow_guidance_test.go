@@ -52,6 +52,9 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 				"Criteria plan (prebuild)",
 				"Rendered audit (postbuild)",
 				"pass-with-escalation",
+				"Gelium icon allowlist",
+				"extract-used-icons",
+				"--set material|tabler",
 			},
 		},
 		{

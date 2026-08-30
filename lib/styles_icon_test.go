@@ -69,3 +69,16 @@ func TestIconSetIsTrustedDecorativeMarkup(t *testing.T) {
 		}
 	}
 }
+
+func TestIconCSSSupportsTablerStroke(t *testing.T) {
+	css := repositoryFile(t, "lib", "styles", "icon.css")
+	for _, want := range []string{
+		`[data-gelium-set="tabler"]`,
+		"stroke: currentColor",
+		"fill: none",
+	} {
+		if !strings.Contains(css, want) {
+			t.Errorf("icon.css missing Tabler stroke support %q", want)
+		}
+	}
+}

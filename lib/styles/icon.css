@@ -8,6 +8,14 @@
     flex: none;
     fill: currentColor;
   }
+  /* Tabler outline is stroke, not fill. Material (default) stays filled. */
+  .ui-icon[data-gelium-set="tabler"] {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 2;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+  }
   .icon-demo-grid {
     display: flex;
     flex-wrap: wrap;

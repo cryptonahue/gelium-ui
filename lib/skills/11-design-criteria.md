@@ -99,6 +99,56 @@ content. Mark each item **pass**, **fail**, **not applicable**,
 - [ ] Existing URL, POST+303, 422 validation, `X-Gelium-Validation`, metadata,
       component, and theme contracts are preserved or an intentional change is
       explicitly recorded.
+- [ ] If a glyph is required, it is a Gelium `.ui-icon` referenced by a
+      **string literal** from the product's chosen catalog (`data-gelium-icon="chevron_right"`
+      or `icons.SVG("tabler:chevron-right")`), next to visible text; not `›`,
+      emoji, an icon font, or an ad-hoc SVG. The consumer embed is produced by
+      `extract-used-icons`.
+
+## Gelium icon allowlist
+
+The **library** catalogs are Material Symbols rounded
+(`@material-symbols/svg-400`) and Tabler Icons (`@tabler/icons`). The
+**consumer** chooses one default set and the binary embeds only names
+referenced as string literals. Do not compile either catalog into the app,
+and do not invent a character or one-off path.
+
+Pick the product set once (`--set material|tabler`; default `material`).
+Unprefixed names resolve against that set. Prefixes override per glyph:
+
+```html
+<span data-gelium-icon="chevron_right"></span>
+<span data-gelium-icon="tabler:chevron-right"></span>
+```
+
+```go
+icons.SVG("settings")
+icons.SVG("ms:home")
+icons.SVG("tabler-filled:star")
+```
+
+Then generate the embed (only used glyphs):
+
+```text
+node node_modules/gelium-ui/scripts/extract-used-icons.mjs \
+  --scan . --out internal/icons/icons.go --package icons \
+  --set material
+```
+
+Use `--set tabler` when the product chose Tabler. Prefer one set per product;
+prefixes are for an explicit mixed screen, not a default.
+
+Contract: `.ui-icon`, `aria-hidden` + `focusable="false"` when decorative,
+visible text names the control, Material uses `fill="currentColor"`, Tabler
+outline uses `stroke="currentColor"` + `data-gelium-set="tabler"`. No
+user-built markup. Import `icon.css` (or the Gelium index that already
+includes it).
+
+If extract errors `unknown Material Symbol` or `unknown Tabler icon`, the
+name is not in that catalog — look it up on https://fonts.google.com/icons
+or https://tabler.io/icons, pick another name, or use text only. Do not paste
+a random SVG. The docs gallery still uses a small curated Material demo set
+(`scripts/copy-icons.mjs`); that is not the consumer catalog.
 
 ## DESIGN-MEMORY: reuse with evidence
 
