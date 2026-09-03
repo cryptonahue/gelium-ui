@@ -4,6 +4,15 @@ All notable changes to the Gelium UI project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.6.2] — 2026-09-03
+
+### Added
+- **Portable agent reference catalog**: npm consumers now receive `references/catalog.json`, section fichas, component-reference guidance, and social-feed pattern notes without requiring the docs site or monorepo.
+- **Package completeness contract**: tests and pack verification require the portable reference catalog to be declared and included in the published files.
+
+### Changed
+- **Reference resolution**: `skills/13-reference-selection.md` reads the npm catalog first and uses docs-site fichas only as a richer supplement.
+
 ## [0.6.1] — 2026-09-03
 
 ### Added
@@ -139,7 +148,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - **Access and verification contracts** (Phases A–D): native semantics, focus rings, aria-* across the whole surface.
 - **Docs shell**: navigation, sidebar, breadcrumbs, search (disabled), theme/scheme switchers.
 
-[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.0...HEAD
+[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.2...HEAD
+[0.6.2]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.2
 [0.6.0]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.0
 [0.5.3]: https://github.com/cryptonahue/gelium-ui/releases
 [0.5.0]: https://github.com/cryptonahue/gelium-ui/releases

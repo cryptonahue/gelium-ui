@@ -198,7 +198,7 @@ Section references cover page composition; component references cover local
 behavior and states. Gelium contracts remain authoritative.
 
 ## SECTION REFERENCES
-Index: /docs/section-references  Published fichas: /docs/section-references/article (REF-ARTICLE), /docs/section-references/404-vercel (REF-404), /docs/section-references/auth-register (REF-AUTH), /docs/section-references/faq-vercel (REF-FAQ), /docs/section-references/hero-linear (REF-HERO), /docs/section-references/pricing-linear (REF-PRICING).
+Section references: `/docs/section-references` when the docs site is available; npm-only consumers use `references/catalog.json` and `references/section-references/*.md`.
 Cite official URLs. Block map or our crop. Gelium remake must exist. Not a moodboard.
 
 | ID | Rule |

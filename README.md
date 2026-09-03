@@ -2,7 +2,7 @@
 
 > Themeable, open-code UI components for Tailwind CSS and HTMX.
 
-Current release: **v0.6.1** — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) published; monorepo `lib/` + `site/` dogfood; HTMX 4; on-this-page rail; prev/next pagination; demo-first docs; mobile foundations (touch targets, safe areas, reduced motion, overflow containment).
+Current release: **v0.6.2** — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui) published; monorepo `lib/` + `site/` dogfood; HTMX 4; on-this-page rail; prev/next pagination; demo-first docs; mobile foundations (touch targets, safe areas, reduced motion, overflow containment).
 
 Gelium UI is a **Themeable**, open-code, server-rendered component library: semantic HTML, copyable components, token-driven `--ui-*` themes, Tailwind CSS 4 and HTMX served locally. No CDN, no client framework, no hydration. JavaScript is progressive enhancement — everything works without it.
 

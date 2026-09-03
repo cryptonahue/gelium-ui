@@ -1,0 +1,14 @@
+{
+  "schema_version": 1,
+  "references": [
+    { "id": "REF-ARTICLE", "kind": "section", "type": "article", "tags": ["read", "detail", "prose", "media"], "source_url": "https://vercel.com/blog/the-end-of-credential-sprawl-for-agents", "ficha": "section-references/article.md" },
+    { "id": "REF-404", "kind": "section", "type": "404", "tags": ["error", "recovery", "not-found"], "source_url": "https://vercel.com/docs/errors/does-not-exist", "ficha": "section-references/404.md" },
+    { "id": "REF-AUTH", "kind": "section", "type": "auth", "tags": ["form", "register", "validation", "recovery"], "source_url": "https://vercel.com/signup", "ficha": "section-references/auth.md" },
+    { "id": "REF-FAQ", "kind": "section", "type": "faq", "tags": ["details", "summary", "questions", "decision"], "source_url": "https://vercel.com/pricing", "ficha": "section-references/faq.md" },
+    { "id": "REF-HERO", "kind": "section", "type": "hero", "tags": ["landing", "promise", "cta", "hub"], "source_url": "https://linear.app/", "ficha": "section-references/hero.md" },
+    { "id": "REF-PRICING", "kind": "section", "type": "pricing", "tags": ["plans", "comparison", "billing", "cta"], "source_url": "https://linear.app/pricing", "ficha": "section-references/pricing.md" },
+    { "id": "REF-SOCIAL-FEED", "kind": "component", "type": "social-feed", "tags": ["feed", "timeline", "post", "social", "responsive"], "source_url": null, "ficha": "component-references/social-feed.md", "visual_evidence": "development-only" },
+    { "id": "REF-SHELL", "kind": "shell", "type": "header-navbar-footer", "tags": ["header", "navbar", "footer", "account", "search", "responsive"], "source_url": null, "ficha": "component-references/shell.md", "visual_evidence": "development-only" },
+    { "id": "REF-CARD-DETAIL-ENTRY", "kind": "pattern", "type": "detail-entry", "tags": ["card", "link", "navigation", "nested-actions"], "source_url": null, "ficha": "component-references/detail-entry.md" }
+  ]
+}

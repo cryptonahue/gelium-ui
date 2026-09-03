@@ -37,6 +37,19 @@ func TestLibPackageJsonIsPublishable(t *testing.T) {
 	if len(pkg.Files) == 0 {
 		t.Error("files must list published entries (styles, templates, js, dist)")
 	}
+	hasReferences := false
+	for _, entry := range pkg.Files {
+		if entry == "references" {
+			hasReferences = true
+			break
+		}
+	}
+	if !hasReferences {
+		t.Error("files must include the portable agent reference catalog")
+	}
+	if _, err := os.Stat(filepath.Join(repositoryRoot(t), "lib", "references", "catalog.json")); err != nil {
+		t.Fatalf("portable reference catalog missing: %v", err)
+	}
 	if len(pkg.SideEffects) == 0 {
 		t.Error("sideEffects must declare *.css so bundlers keep the CSS imports")
 	}

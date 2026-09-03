@@ -4,9 +4,8 @@ Use after selecting `SURFACE` and `SCREEN`, before page/section architecture and
 
 ## Procedure
 
-1. Extract the semantic needs from the request and the selected screen:
-   page sections, local components, user actions, data shape, states, and recovery.
-2. Match each need against published section references and the registered component vocabulary/registry.
+1. Read `references/catalog.json` first when running from the npm package, then match semantic needs by `kind`, `type`, and `tags`.
+2. Read the matching Markdown ficha before architecture/wireframe. If the consumer is using the monorepo/docs site, the richer `/docs/section-references` fichas may supplement the portable copy.
 3. Run a discovery pass over the reference before filtering it. Enumerate visible affordances and composition choices: what opens the detail, which actions deserve a glyph, search/discovery entry points, account/menu treatment, shell regions, responsive transitions, media controls, and recovery paths. Do not omit a candidate because it is not in the current contract; classify it first.
 4. For every candidate, record the reference ID/name and why it applies. Then classify it as existing contract, B alert, C improvement, product fork, or rejected/no-match.
 5. If a matching reference is available, consult it before the wireframe. If browser access, source verification, or the reference itself is unavailable, fail open and record the reason.

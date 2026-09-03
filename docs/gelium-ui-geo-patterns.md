@@ -52,7 +52,7 @@ and the system, no back-references. → feeds meta description.
 
 ```text
 name:           Gelium UI
-softwareVersion: 0.6.1        (source: lib.AssetsVersion / lib/package.json)
+softwareVersion: 0.6.2        (source: lib.AssetsVersion / lib/package.json)
 license:        MIT           (source: README.md:128, LICENSE)
 publisher/author: Gelium UI maintainer
 ```
@@ -71,7 +71,7 @@ publisher/author: Gelium UI maintainer
 **Visible line** (rendered in the `article`, under the summary — Phase F `Article` slot):
 
 ```text
-Gelium UI documentation · v0.6.1 · MIT license
+Gelium UI documentation · v0.6.2 · MIT license
 Published <datePublished> · Updated <dateModified> · Source: <slug>.md
 ```
 
@@ -80,7 +80,7 @@ Published <datePublished> · Updated <dateModified> · Source: <slug>.md
 ```yaml
 title: Button
 description: <first paragraph, verbatim>
-version: 0.6.1
+version: 0.6.2
 published: 2026-08-10
 updated: 2026-08-10
 author: Gelium UI maintainer
@@ -138,7 +138,7 @@ author: Gelium UI maintainer
   "name": "Gelium UI",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any",
-  "softwareVersion": "0.6.1",
+  "softwareVersion": "0.6.2",
   "license": "https://spdx.org/licenses/MIT.html",
   "url": "https://example.com/components/button",
   "publisher": { "@type": "Organization", "name": "Gelium UI" }
@@ -200,7 +200,7 @@ author: Gelium UI maintainer
 
 **Intent**: docs and released versions cannot drift; staleness is visible and release-blocking.
 
-- **Visible version**: header/footer shows `Gelium UI v0.6.1` on every docs-shell page from `lib.AssetsVersion`; assets keep `?v={{.AssetsVersion}}`.
+- **Visible version**: header/footer shows `Gelium UI v0.6.2` on every docs-shell page from `lib.AssetsVersion`; assets keep `?v={{.AssetsVersion}}`.
 - **Versioned assets**: keep `?v=<release>` cache-busting (`layout.html:7-9`); it is the SEO asset-cache contract (audit §4), independent of visible version.
 - **Content-with-code**: when a component's contract changes, the component's summary + `dateModified` change in the same work unit (`work-unit-commits`) — docs are not updated in a separate sweep.
 - **Release checklist**: bump `package.json` version → update visible footer + `softwareVersion` JSON-LD → refresh touched pages' `dateModified` → run the acceptance checks.
