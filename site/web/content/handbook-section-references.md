@@ -18,7 +18,7 @@ This is **structure, not a moodboard**. Saaspo, Land-book, and Mobbin may index 
   </li>
 </ul>
 
-Use the catalog after SURFACE and SCREEN, before the wireframe. No browser, login wall, or JPG-only extract: skip and continue with recipes and `skills/08`. Never block the wireframe.
+Use the catalog after SURFACE and SCREEN, before ARCH and the wireframe. When the request has a matching published section reference, consult it as a design input when available and record the matched ID in the plan/G5 packet. Resolve local behavior against the component registry. If there is no match, or browser/source verification is unavailable, record `no-match` and continue; never block the wireframe.
 
 ## Rules
 

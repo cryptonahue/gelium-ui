@@ -180,9 +180,24 @@ Recipes show "Maps to Gelium criteria" (SKEL/FEED/DATA/JOURNEY). Patterns: /docs
 
 Consumer: /docs/templates/product · /docs/templates/design
 
-## SECTION REFERENCES
+## REFERENCE-SELECTION
+After SURFACE/SCREEN and before ARCH/wireframe, perform a semantic match against
+published section references and the component registry. A matching need makes
+that reference input mandatory when available; no match is not an error.
+Before filtering, fish the reference for visible affordances and responsive
+choices (detail entry, icon-versus-text actions, search, account/menu, shell,
+media, and recovery). Also audit identity/account grouping, constant state,
+and visibility semantics: do not duplicate shell destinations, repeat a badge
+that is true for every row, or expose visibility where the surface is public-only.
+Do not omit a candidate because it is absent from the current contract; classify it as existing contract, B, C, fork, or rejected.
+Fail-open if there is no browser, the source is blocked, or the reference cannot
+be verified. Record matched IDs (or the no-match reason) in the plan/G5 packet.
+Use references for structure and decisions, never copied skin, branding, assets,
+claims, screenshots, or motion. Apply the product filter before A/B/C.
+Section references cover page composition; component references cover local
+behavior and states. Gelium contracts remain authoritative.
 
-Optional Plan research after SURFACE/SCREEN, before wireframe. Fail-open if no browser.
+## SECTION REFERENCES
 Index: /docs/section-references  Published fichas: /docs/section-references/article (REF-ARTICLE), /docs/section-references/404-vercel (REF-404), /docs/section-references/auth-register (REF-AUTH), /docs/section-references/faq-vercel (REF-FAQ), /docs/section-references/hero-linear (REF-HERO), /docs/section-references/pricing-linear (REF-PRICING).
 Cite official URLs. Block map or our crop. Gelium remake must exist. Not a moodboard.
 

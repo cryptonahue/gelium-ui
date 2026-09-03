@@ -4,6 +4,16 @@ All notable changes to the Gelium UI project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.6.1] — 2026-09-03
+
+### Added
+- **Semantic reference selection for agents**: matching section/component references are consulted before architecture and wireframes; visual affordances are fished before product filtering and recorded as existing contract, B, C, fork, or rejected.
+- **Social-feed visual reference set**: development-only responsive captures, provenance manifest, and audit notes for X-like and Reddit-like feed patterns.
+
+### Changed
+- **Gelium decision pack**: added identity/account grouping, action-versus-navigation, constant-state, visibility-semantics, detail-entry, and responsive-reference lenses.
+- **Reference selection skill**: added `skills/13-reference-selection.md` and synchronized `AGENTS.md`, `SKILLS.md`, and static agent guidance.
+
 ## [0.6.0] — 2026-08-25
 
 ### Added

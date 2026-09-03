@@ -8,8 +8,10 @@ default; token + class themes; optional small JS enhancement. **Not** a JS frame
 Read this entrypoint, then `llms-ux.txt`, then `SKILLS.md`; each layer is part
 of the protocol. Start with `skills/01-foundations.md`. After picking a SURFACE
 mode (`skills/02`), run `skills/08-product-reasoning.md` to discover missing
-product-level UX before drawing. Before selecting components or writing markup,
-run `skills/10-page-section-architecture.md` to contract each major page region
+product-level UX before drawing. Run `skills/13-reference-selection.md` after
+SURFACE/SCREEN to resolve matching section and component references before the
+wireframe. Before selecting components or writing markup, run
+`skills/10-page-section-architecture.md` to contract each major page region
 by purpose, audience, hierarchy, action, revelation, and recovery. Then run
 `skills/11-design-criteria.md` for hierarchy, type, and density decisions. For
 new screens, new flows, or substantial page redesigns, get the structure

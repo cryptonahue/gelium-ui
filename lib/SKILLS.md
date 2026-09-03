@@ -18,6 +18,7 @@ FEED / JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
 | 10 | `10-page-section-architecture.md` | purpose-first page and section contracts before components |
 | 11 | `11-design-criteria.md` | checkable visual judgment, reuse, and resilient polish |
 | 12 | `12-wireframe-approval.md` | conditional approval gate for new screens, flows, and substantial redesigns |
+| 13 | `13-reference-selection.md` | semantic section/component reference selection before wireframes |
 
 ## Proportional workflow and records
 

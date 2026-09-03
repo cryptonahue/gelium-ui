@@ -178,6 +178,11 @@ func TestLlmsUXTxtServesAgentDecisionPack(t *testing.T) {
 		"/docs/journeys",
 		"/docs/content-style",
 		"/docs/ui-definition-of-done",
+		"REFERENCE-SELECTION",
+		"semantic match",
+		"component reference",
+		"constant state",
+		"visibility semantics",
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("llms-ux.txt missing %q", contract)

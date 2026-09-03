@@ -1,0 +1,40 @@
+{
+  "schema_version": 1,
+  "reference_set": "social-feeds",
+  "origin": "user-supplied-screenshot",
+  "source_url": null,
+  "verification": "visual-only",
+  "usage": "development-only",
+  "copyright_status": "unknown-do-not-publish-or-bundle-without-permission",
+  "references": [
+    {
+      "id": "REF-SOCIAL-FEED-X-MOBILE",
+      "file": "x-mobile.png",
+      "viewport": { "width": 399, "height": 850 },
+      "family": "x-like-social-feed",
+      "observed": ["single-column-feed", "topic-tabs", "quoted-post", "fixed-bottom-navigation", "dark-theme"]
+    },
+    {
+      "id": "REF-SOCIAL-FEED-X-MEDIUM",
+      "file": "x-medium.png",
+      "viewport": { "width": 830, "height": 850 },
+      "family": "x-like-social-feed",
+      "observed": ["icon-only-left-rail", "constrained-central-feed", "composer", "quoted-post", "dark-theme"]
+    },
+    {
+      "id": "REF-SOCIAL-FEED-REDDIT-MOBILE",
+      "file": "reddit-mobile.png",
+      "viewport": { "width": 413, "height": 857 },
+      "family": "reddit-like-community-feed",
+      "observed": ["single-column-feed", "compact-header", "sort-controls", "contained-portrait-media", "pill-actions", "dark-theme"]
+    },
+    {
+      "id": "REF-SOCIAL-FEED-REDDIT-MEDIUM",
+      "file": "reddit-medium.png",
+      "viewport": { "width": 848, "height": 842 },
+      "family": "reddit-like-community-feed",
+      "observed": ["global-search-header", "single-central-feed", "sort-controls", "contained-portrait-media", "video-overlays", "dark-theme"]
+    }
+  ],
+  "notes": "See README.md for the full visual audit, confirmed versus inferred behavior, and Gelium adaptation constraints."
+}

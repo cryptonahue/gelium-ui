@@ -344,7 +344,7 @@ the layout before `</head>`. The home page ships the `WebSite` block; every regi
 page ships a single `@graph` document with the `BreadcrumbList` trail (Home > Components > page,
 matching the visible breadcrumb) plus a `TechArticle` carrying the page headline and canonical URL
 (`componentJSONLD`, `server.go:214-260`). Values are derived from the registry and fixed system
-facts (version `0.6.0` from `lib.AssetsVersion`, license MIT). No JSON is built by string
+facts (version `0.6.1` from `lib.AssetsVersion`, license MIT). No JSON is built by string
 concatenation in templates; Go `encoding/json` marshals typed structs so escaping and validity are
 guaranteed (tested with `json.Valid` in `server_test.go`).
 
