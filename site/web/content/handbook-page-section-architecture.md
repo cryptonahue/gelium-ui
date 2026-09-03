@@ -131,6 +131,7 @@ This is the existing post-detail/read-detail analogue, not a `/recipes/post-deta
 | Bounded implementation passes | [Agent workflow](/docs/agent-workflow) |
 | Ship checklist | [UI definition of done](/docs/ui-definition-of-done) |
 | Domain skeletons | [Patterns](/docs/patterns) |
+| Cited originals vs Gelium remakes | [Section references](/docs/section-references) |
 | Product discovery | [GOV.UK patterns](https://design-system.service.gov.uk/patterns/) and [Material guidance](https://m3.material.io/) |
 
 See also: [Journeys](/docs/journeys), [Data display](/docs/data-display), [Feedback](/docs/feedback), [Spacing](/docs/spacing), [Accessibility](/docs/accessibility), and the agent pack [`/llms-ux.txt`](/llms-ux.txt).

@@ -3,7 +3,7 @@
      + main content column. Tokens only; breakpoint ~48rem (md). */
 
   .docs-shell {
-    --docs-topbar-height: 3.5rem;
+    --docs-chrome-height: 3.5rem;
     --docs-sidebar-width: 17rem;
 
     display: flex;
@@ -13,7 +13,7 @@
     margin: 0;
   }
 
-  .docs-topbar {
+  .docs-chrome {
     position: sticky;
     top: 0;
     z-index: 10;
@@ -21,8 +21,8 @@
     align-items: center;
     gap: 1rem;
     flex-wrap: wrap;
-    min-height: var(--docs-topbar-height);
-    /* Safe areas (GOV.UK viewport-fit=cover pattern): the sticky topbar pads
+    min-height: var(--docs-chrome-height);
+    /* Safe areas (GOV.UK viewport-fit=cover pattern): the sticky chrome pads
        into the device insets so controls never sit under a notch/home
        indicator. max() keeps the fluid clamp on supported screens; env() is
        0 on desktop, so the padding is unchanged there. */
@@ -33,70 +33,30 @@
     background: var(--ui-color-surface);
     box-shadow: var(--ui-shadow-1);
   }
-  .docs-topbar-brand {
+  .docs-chrome .brand {
     flex: none;
-    text-decoration: none;
   }
-  .docs-topbar-search {
+  .docs-search {
+    position: relative;
     display: flex;
     align-items: center;
-    gap: .5rem;
     flex: 1 1 12rem;
     min-width: 10rem;
     max-width: 28rem;
   }
-  .docs-topbar-search-label {
-    position: absolute;
-    width: 1px;
-    height: 1px;
-    padding: 0;
-    margin: -1px;
-    overflow: hidden;
-    clip: rect(0, 0, 0, 0);
-    white-space: nowrap;
-    border: 0;
-  }
-  .docs-topbar-search-input {
+  .docs-search .ui-text-field {
     width: 100%;
-    padding: .5rem .75rem;
-    border: 1px solid var(--ui-color-border);
-    border-radius: var(--ui-radius-sm);
-    background: var(--ui-color-surface-container, var(--ui-color-canvas));
-    color: var(--ui-color-fg-muted);
-    font: var(--ui-type-body-md);
   }
-  .docs-topbar-search-input:disabled {
-    opacity: var(--ui-state-disabled-opacity, .5);
-    cursor: not-allowed;
-  }
-  .docs-topbar-end {
+  .docs-chrome-end {
     display: flex;
     align-items: center;
     flex-wrap: wrap;
     gap: .75rem 1rem;
     margin-inline-start: auto;
   }
-  .docs-topbar-version {
-    flex: none;
-    padding: .125rem .5rem;
-    border-radius: var(--ui-radius-xs, var(--ui-radius-sm));
-    background: var(--ui-color-surface-container, var(--ui-color-canvas));
-    color: var(--ui-color-fg-muted);
-    font: var(--ui-type-label-md);
-    letter-spacing: var(--ui-type-label-md-letter-spacing);
-  }
-  .docs-topbar .ui-theme-switcher {
+  .docs-chrome .ui-theme-switcher,
+  .docs-chrome .ui-scheme-switcher {
     margin-inline-start: 0;
-  }
-  .docs-topbar .ui-scheme-switcher {
-    margin-inline-start: 0;
-  }
-
-  /* Docs search: live GET form (0-JS) whose results dropdown is enhanced by
-     search.js. No display rule on the list so the [hidden] attribute stays
-     effective until JavaScript populates it. */
-  .docs-topbar-search {
-    position: relative;
   }
   .docs-search-results {
     position: absolute;
@@ -135,38 +95,6 @@
     font: var(--ui-type-label-sm);
   }
 
-  /* External repository link in the docs topbar. Never chrome-rewritten: the
-     href is a static template literal, so ?theme= / ?scheme= can't leak. */
-  .docs-topbar-github {
-    display: inline-flex;
-    align-items: center;
-    gap: .375rem;
-    flex: none;
-    color: var(--ui-color-fg-muted);
-    font: var(--ui-type-label-md);
-    letter-spacing: var(--ui-type-label-md-letter-spacing);
-    text-decoration: none;
-  }
-  .docs-topbar-github:hover {
-    color: var(--ui-color-fg);
-  }
-  .docs-topbar-github-icon {
-    flex: none;
-  }
-
-  /* Blog link in the docs topbar. Static internal href — never
-     chrome-rewritten, the same query-cleanliness rule as the GitHub link. */
-  .docs-topbar-blog {
-    flex: none;
-    color: var(--ui-color-fg-muted);
-    font: var(--ui-type-label-md);
-    letter-spacing: var(--ui-type-label-md-letter-spacing);
-    text-decoration: none;
-  }
-  .docs-topbar-blog:hover {
-    color: var(--ui-color-fg);
-  }
-
   /* Mobile: details/summary disclosure with the same nav model. */
   .docs-nav-mobile {
     display: block;
@@ -196,7 +124,7 @@
        subtracts the disclosure chrome (summary row + padding + margin) so the
        open pane fits entirely on screen and scrolls internally (Base UI
        SideNavViewport / GOV.UK hidden-toggle pattern). */
-    max-height: calc(100dvh - var(--docs-topbar-height) - 4rem);
+    max-height: calc(100dvh - var(--docs-chrome-height) - 4rem);
     overflow-y: auto;
   }
 
@@ -302,11 +230,11 @@
     }
     .docs-sidebar-desktop {
       position: sticky;
-      top: var(--docs-topbar-height);
+      top: var(--docs-chrome-height);
       display: block;
       flex: 0 0 var(--docs-sidebar-width);
       width: var(--docs-sidebar-width);
-      max-height: calc(100vh - var(--docs-topbar-height));
+      max-height: calc(100vh - var(--docs-chrome-height));
       overflow: auto;
       padding: 1rem .5rem 2rem;
       border-inline-end: 1px solid var(--ui-color-border);
@@ -323,8 +251,8 @@
       flex: 0 0 14rem;
       width: 14rem;
       position: sticky;
-      top: var(--docs-topbar-height);
-      max-height: calc(100vh - var(--docs-topbar-height));
+      top: var(--docs-chrome-height);
+      max-height: calc(100vh - var(--docs-chrome-height));
       overflow: auto;
       padding: 1.5rem 1rem 2rem .75rem;
       border-inline-start: 1px solid var(--ui-color-border);

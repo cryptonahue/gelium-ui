@@ -52,17 +52,17 @@ and the system, no back-references. → feeds meta description.
 
 ```text
 name:           Gelium UI
-softwareVersion: 0.4.0        (source: package.json:3)
+softwareVersion: 0.6.0        (source: lib.AssetsVersion / lib/package.json)
 license:        MIT           (source: README.md:128, LICENSE)
 publisher/author: Gelium UI maintainer
 ```
 
 **Rules**:
 - Always `Gelium UI`. Never Gelidium, Loom UI, LoomChat, or a mix. This is the audit gap 1 fix and a Phase E blocker.
-- Version comes from one source (`package.json`), never re-typed per page.
+- Version comes from one source (`lib.AssetsVersion`), never re-typed per page.
 - The entity appears in the same three places on every component page: visible (header/footer + provenance line), machine-readable (JSON-LD `SoftwareApplication`/`WebSite`/`Organization`), and in prose (first use in the summary, §1 of the contract).
 
-**Verify**: `rg -i "gelidium|loomchat|loom ui"` over public surfaces returns nothing; visible version equals `softwareVersion` equals `package.json:3`.
+**Verify**: `rg -i "gelidium|loomchat|loom ui"` over public surfaces returns nothing; visible version equals `softwareVersion` equals `lib.AssetsVersion`.
 
 ## 3. Provenance pattern
 
@@ -71,7 +71,7 @@ publisher/author: Gelium UI maintainer
 **Visible line** (rendered in the `article`, under the summary — Phase F `Article` slot):
 
 ```text
-Gelium UI documentation · v0.4.0 · MIT license
+Gelium UI documentation · v0.6.0 · MIT license
 Published <datePublished> · Updated <dateModified> · Source: <slug>.md
 ```
 
@@ -80,7 +80,7 @@ Published <datePublished> · Updated <dateModified> · Source: <slug>.md
 ```yaml
 title: Button
 description: <first paragraph, verbatim>
-version: 0.4.0
+version: 0.6.0
 published: 2026-08-10
 updated: 2026-08-10
 author: Gelium UI maintainer
@@ -138,7 +138,7 @@ author: Gelium UI maintainer
   "name": "Gelium UI",
   "applicationCategory": "DeveloperApplication",
   "operatingSystem": "Any",
-  "softwareVersion": "0.4.0",
+  "softwareVersion": "0.6.0",
   "license": "https://spdx.org/licenses/MIT.html",
   "url": "https://example.com/components/button",
   "publisher": { "@type": "Organization", "name": "Gelium UI" }
@@ -200,7 +200,7 @@ author: Gelium UI maintainer
 
 **Intent**: docs and released versions cannot drift; staleness is visible and release-blocking.
 
-- **Visible version**: header/footer shows `Gelium UI v0.4.0` on every page (Phase F `Footer` pattern); today version exists only in asset query strings (`layout.html:7-9`).
+- **Visible version**: header/footer shows `Gelium UI v0.6.0` on every docs-shell page from `lib.AssetsVersion`; assets keep `?v={{.AssetsVersion}}`.
 - **Versioned assets**: keep `?v=<release>` cache-busting (`layout.html:7-9`); it is the SEO asset-cache contract (audit §4), independent of visible version.
 - **Content-with-code**: when a component's contract changes, the component's summary + `dateModified` change in the same work unit (`work-unit-commits`) — docs are not updated in a separate sweep.
 - **Release checklist**: bump `package.json` version → update visible footer + `softwareVersion` JSON-LD → refresh touched pages' `dateModified` → run the acceptance checks.

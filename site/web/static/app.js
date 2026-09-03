@@ -38,11 +38,8 @@
   // hidden scheme (and the scheme form's hidden theme) would otherwise stay
   // stale and the next submission would silently forget the other parameter.
   function keepPreservedState(name, value) {
-    var checkbox = document.querySelector('form[data-chrome-form] input[type="checkbox"][name="scheme"]');
-    var select = document.querySelector('form[data-chrome-form] select[name="theme"]');
-    var target = name === "scheme" ? (select && select.closest("form")) : (checkbox && checkbox.closest("form"));
-    var hidden = target && target.querySelector('input[type="hidden"][name="' + name + '"]');
-    if (hidden) hidden.value = value;
+    var hiddens = document.querySelectorAll('form[data-chrome-form] input[type="hidden"][name="' + name + '"]');
+    for (var i = 0; i < hiddens.length; i++) hiddens[i].value = value;
   }
   // refreshChromeHrefs rewrites every docs-shell chrome href (sidebar,
   // topbar, breadcrumb, prev/next) with the current theme/scheme query.
@@ -66,7 +63,7 @@
     if (themeSlug) params.push("theme=" + themeSlug);
     if (params.length) query = "?" + params.join("&");
     var links = document.querySelectorAll(
-      ".docs-nav-list a[href], .docs-nav-mobile a[href], .docs-topbar a[href], .ui-breadcrumb a[href], .docs-prev-next a[href]"
+      ".docs-nav-list a[href], .docs-nav-mobile a[href], .docs-chrome a[href], .ui-breadcrumb a[href], .docs-prev-next a[href]"
     );
     for (var i = 0; i < links.length; i++) {
       var a = links[i];
@@ -84,7 +81,7 @@
       form.setAttribute("data-gelium-initialized", "true");
       var submit = form.querySelector('button[type="submit"]'); if (submit) submit.hidden = true;
       form.addEventListener("change", function () {
-        applyOptimisticChrome(form);
+        applyOptimisticChrome(this);
         // requestSubmit (not submit) fires the submit event so htmx intercepts
         // the boosted GET; form.submit() performs a NATIVE full page load.
         this.requestSubmit();

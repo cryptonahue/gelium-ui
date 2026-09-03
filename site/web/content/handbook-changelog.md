@@ -6,6 +6,30 @@ Todas las cambios notables del proyecto Gelium UI se documentan en este archivo.
 
 El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/) y el proyecto usa [Semantic Versioning](https://semver.org/).
 
+## [0.6.0] — 2026-08-25
+
+### Added
+- **Guía de agentes endurecida**: gate de artefactos en el paso 0, shells con primitivas `ui-*`, y `ux-detect.sh` portable en el paquete npm.
+- **Post de lanzamiento** (`/blog/introducing`): anuncio de Gelium UI.
+- **Catálogo de 28 a 47 páginas**: primitivas de composición, contenido y feedback ahora tienen `/components/*` con specimen vivo.
+- **Búsqueda 0-JS real**: `GET /docs?q=` arma resultados desde el mismo modelo de nav.
+- **Ruta estática `/static/{path...}`** y fixtures de media que ya no 404.
+- **Templates de producto/diseño en el sitemap**.
+
+### Changed
+- **Errores de docs** pasan por el shell (sidebar, búsqueda, theme) y fuerzan `noindex, nofollow` en no-200.
+- **Ritmo de specimens** en `.specimen-block`; `ui-media` define su propio spacing.
+- **`llms.txt` sincronizado** con image, media y rich-article.
+
+## [0.5.3] — 2026-08-17
+
+> 0.5.1 y 0.5.2 fueron pasos de empaquetado; esta entrada documenta la serie.
+
+### Added
+- **Paquete npm `gelium-ui`**: workspaces, exports map, cache-bust en `lib/version.go`, docs que dogfoodean el paquete.
+- **Componente Media** con contrato 0-JS.
+- **Metadata SEO/AEO coherente**: `llms.txt`, JSON-LD, canonical/robots/sitemap.
+
 ## [0.5.0] — 2026-08-16
 
 ### Added
@@ -105,6 +129,8 @@ El formato sigue [Keep a Changelog](https://keepachangelog.com/es/1.1.0/) y el p
 - **Contratos de acceso y verificación** (Phases A-D): native semantics, focus rings, aria-* en toda la superficie.
 - **Docs shell**: navegación, sidebar, breadcrumbs, búsqueda (deshabilitada), theme/scheme switchers.
 
+[0.6.0]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.0
+[0.5.3]: https://github.com/cryptonahue/gelium-ui/releases
 [0.5.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.4.0]: https://github.com/cryptonahue/gelium-ui/releases
 [0.3.0]: https://github.com/cryptonahue/gelium-ui/releases

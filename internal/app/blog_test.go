@@ -27,7 +27,7 @@ var blogPostContracts = map[string]string{
 func TestBlogIndexListsPosts(t *testing.T) {
 	body := getOKBody(t, "/blog")
 	// Separate space: legacy site-header chrome, not the docs shell.
-	if strings.Contains(body, `class="docs-topbar"`) {
+	if strings.Contains(body, `class="docs-chrome"`) {
 		t.Error("blog must not render docs-topbar")
 	}
 	if !strings.Contains(body, `class="site-header"`) {
@@ -196,11 +196,11 @@ func TestBlogPostsKeepSentencesUnder25Words(t *testing.T) {
 // direct navigation). It stays plain when no theme/scheme is selected.
 func TestBlogTopbarLinkKeepsChromeQuery(t *testing.T) {
 	body := getOKBody(t, "/components/button?theme=basecoat&scheme=dark")
-	if !strings.Contains(body, `class="docs-topbar-blog" href="/blog?scheme=dark&amp;theme=basecoat"`) {
+	if !strings.Contains(body, `class="ui-button ui-button-text docs-chrome-blog" href="/blog?scheme=dark&amp;theme=basecoat"`) {
 		t.Error("docs topbar Blog link must carry the chrome query under ?theme=/?scheme=")
 	}
 	plain := getOKBody(t, "/components/button")
-	if !strings.Contains(plain, `class="docs-topbar-blog" href="/blog"`) {
+	if !strings.Contains(plain, `class="ui-button ui-button-text docs-chrome-blog" href="/blog"`) {
 		t.Error("docs topbar Blog link must stay plain without theme/scheme")
 	}
 	// The blog space itself still honors the chrome query on its own pages.

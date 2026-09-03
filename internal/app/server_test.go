@@ -96,7 +96,7 @@ func TestHomeRendersMarketingLanding(t *testing.T) {
 		t.Error("marketing landing must not render prose article shell")
 	}
 	// Must not use the docs two-pane chrome on home.
-	if strings.Contains(body, `class="docs-topbar"`) {
+	if strings.Contains(body, `class="docs-chrome"`) {
 		t.Error("home must not render docs shell topbar")
 	}
 }
@@ -849,8 +849,8 @@ func TestSitemapXMLDerivedFromRegistry(t *testing.T) {
 	// home + /docs + patterns + handbook pages + all components. The handbook
 	// count derives from handbookNavLinks() (same registry the sitemap uses), so
 	// adding a handbook page can never drift this total again.
-	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+len(handbookNavLinks())+8+len(blogPosts) {
-		t.Errorf("sitemap <url> entries = %d, want %d (base pages + handbook + components + blog registry)", got, len(componentRoutes())+len(handbookNavLinks())+6+len(blogPosts))
+	if got := strings.Count(body, "<url>"); got != len(componentRoutes())+len(handbookNavLinks())+8+len(blogPosts)+len(publishedSectionRefPaths()) {
+		t.Errorf("sitemap <url> entries = %d, want %d (base pages + handbook + section-ref fichas + components + blog registry)", got, len(componentRoutes())+len(handbookNavLinks())+8+len(blogPosts)+len(publishedSectionRefPaths()))
 	}
 	for _, excluded := range []string{"/demo/", "/examples/", "/recipes/", "/components/dialog/confirm"} {
 		if strings.Contains(body, excluded) {

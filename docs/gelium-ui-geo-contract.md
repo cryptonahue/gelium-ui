@@ -21,7 +21,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 | Aspect | Source | Evidence |
 |---|---|---|
 | Entity name | `Gelium UI` (canonical) | Roadmap naming note (`gelium-ui-system-roadmap.md:7`); audit gap 1 |
-| Version | `0.4.0` | `package.json:3`; asset query strings `layout.html:7-9` |
+| Version | `0.6.0` | `lib/package.json` and `lib.AssetsVersion`; docs chrome badge; asset query `?v={{.AssetsVersion}}` |
 | License | MIT | `README.md:128`, `LICENSE` |
 | Authorship | Project maintainer | Decision below (§6) |
 | Content | `web/content/*.md`, embedded and dogfooded | `server.go:262-272`, `docs.go:86` |
@@ -65,7 +65,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 - **Rule**: one unambiguous system entity — **Gelium UI** — with version, license and authorship. No alternate brand names in public content.
 - **Gelium UI today**: unified — every served surface (title, brand, demos, content) renders `Gelium UI`; the repo README and metadata use `Gelium UI`. "LoomChat" survives only as the fictional in-app chat persona inside the WhatsApp demo data (`demo_whatsapp.go`), which is demo content, not a system-entity claim.
 - **Requirement**: unify on `Gelium UI` in all public surfaces (title, brand, demos, content). Expose the entity machine-readably via JSON-LD `WebSite`/`Organization`/`SoftwareApplication` (§14).
-- **Entity block** (single source, repeated consistently): name `Gelium UI`, softwareVersion `0.4.0`, license `MIT`, author `Gelium UI maintainer`.
+- **Entity block** (single source, repeated consistently): name `Gelium UI`, softwareVersion `0.6.0` (`lib.AssetsVersion`), license `MIT`, author `Gelium UI maintainer`.
 
 ### 6. Authorship
 
@@ -85,7 +85,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 - **Rule**: every page states where its content comes from, visibly. Provenance = origin + citation + stable reference.
 - **Gelium UI today**: shipped — every component page renders a visible provenance line inside the article: version, MIT license link (`https://opensource.org/licenses/MIT`), `Source: <slug>.md` and the ISO dates (`provenanceView` in `server.go`, `{{if .Provenance}}` guard in `layout.html`).
 - **Requirements**:
-  - a visible provenance line in the article (e.g. "Gelium UI documentation — v0.4.0, MIT. Source: button.md");
+  - a visible provenance line in the article (e.g. "Gelium UI documentation — v0.6.0, MIT. Source: button.md");
   - cross-links count as citations and already exist (`data-table.md:86` links to List);
   - URLs are the stable reference (`routes.go:16-47`) — provenance must reference paths, never query-state (sort/filter/pagination URLs, `data_table.go`, are state, not identity).
 
@@ -130,10 +130,10 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 ### 13. Freshness
 
 - **Rule**: docs stay in sync with released versions; stale content is updated, never left to drift.
-- **Gelium UI today**: version exists only in asset query strings (`?v=0.4.0`, `layout.html:7-9`) — not as visible text, not in metadata.
+- **Gelium UI today**: visible version is `lib.AssetsVersion` (`0.6.0`) in the docs chrome and JSON-LD `softwareVersion`; assets use `?v={{.AssetsVersion}}`.
 - **Requirements**:
   - visible version on every page (header/footer, Phase F footer pattern);
-  - `softwareVersion` in JSON-LD always matches the release (`package.json:3`);
+  - `softwareVersion` in JSON-LD always matches the release (`lib.AssetsVersion` / `lib/package.json`);
   - when a component's contract changes, the component's intro summary and dates are updated in the same change (content travels with code — `work-unit-commits`);
   - an outdated page (version mismatch, stale API example) is a release-blocking defect.
 
@@ -147,7 +147,7 @@ GEO builds on SEO. Without crawlable, stable, well-metadataed pages there is not
 |---|---|---|
 | `WebSite` | `/` (home) | `name` Gelium UI, `url`, `inLanguage`, `publisher` |
 | `Organization` | `/`, `/docs` | publisher node, `url`, `logo` (when available) |
-| `SoftwareApplication` | each `/components/*` | `name`, `applicationCategory` DeveloperApplication, `softwareVersion` 0.4.0, `operatingSystem`, `license` MIT |
+| `SoftwareApplication` | each `/components/*` | `name`, `applicationCategory` DeveloperApplication, `softwareVersion` 0.6.0, `operatingSystem`, `license` MIT |
 | `BreadcrumbList` | each `/components/*` | Home → Docs → Component |
 | `TechArticle` (optional) | each `/components/*` | `headline`, `datePublished`, `dateModified`, `about`, `author` |
 

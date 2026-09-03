@@ -1,6 +1,4 @@
 @layer components {
-  .docs-topbar-theme { color: var(--ui-color-primary); font: var(--ui-type-label-md); text-decoration: none; white-space: nowrap; }
-  .docs-topbar-theme:hover, .docs-topbar-theme:focus-visible { text-decoration: underline; }
   .theme-gallery { display: grid; gap: 2.5rem; margin-block: 2rem; }
   .theme-gallery-hero { padding: 2rem; border: 1px solid var(--ui-color-border); border-radius: var(--ui-card-radius, var(--ui-radius-lg)); background: var(--ui-color-surface); }
   .theme-gallery-hero h2, .theme-gallery-section h2 { color: var(--ui-color-fg); font: var(--ui-type-title-lg); margin: 0 0 .5rem; }

@@ -1,17 +1,19 @@
-{{/* Color scheme switcher (docs chrome). Native switch in a 0-JS GET form:
-     checked → ?scheme=dark, unchecked → ?scheme=light. A cleared checkbox
+{{/* Color scheme switcher (docs chrome). Native Gelium switch in a 0-JS GET
+     form: checked → ?scheme=dark, unchecked → ?scheme=light. A cleared checkbox
      submits nothing, so a hidden light twin AFTER the checkbox supplies
      ?scheme=light (first value wins server-side: dark when checked). Canonical
      recipe fields preserve the current document contract; legacy ?theme= is
      deliberately never emitted. */}}
 {{define "color-scheme-switcher"}}
-<form class="ui-theme-switcher ui-scheme-switcher" method="get" aria-label="{{or .Label "Appearance"}}">
+<form class="ui-theme-switcher ui-scheme-switcher" method="get" data-chrome-form hx-swap="none" aria-label="{{or .Label "Appearance"}}">
   <span class="ui-theme-switcher-label" id="scheme-switcher-label">{{or .Label "Appearance"}}</span>
   <svg class="ui-scheme-icon ui-scheme-icon-sun" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><circle cx="12" cy="12" r="5"></circle><line x1="12" y1="1" x2="12" y2="3"></line><line x1="12" y1="21" x2="12" y2="23"></line><line x1="4.22" y1="4.22" x2="5.64" y2="5.64"></line><line x1="18.36" y1="18.36" x2="19.78" y2="19.78"></line><line x1="1" y1="12" x2="3" y2="12"></line><line x1="21" y1="12" x2="23" y2="12"></line><line x1="4.22" y1="19.78" x2="5.64" y2="18.36"></line><line x1="18.36" y1="5.64" x2="19.78" y2="4.22"></line></svg>
   <svg class="ui-scheme-icon ui-scheme-icon-moon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true" focusable="false"><path d="M21 12.79A9 9 0 1 1 11.21 3 7 7 0 0 0 21 12.79z"></path></svg>
-  <label class="ui-scheme-switch">
+  <label class="ui-switch">
     <input type="checkbox" role="switch" name="scheme" value="dark"{{if .Checked}} checked{{end}}>
-    <span class="ui-scheme-switch-label">Dark</span>
+    <span class="ui-switch-track" aria-hidden="true"></span>
+    <span class="ui-switch-handle" aria-hidden="true"></span>
+    <span class="ui-switch-label">Dark</span>
   </label>
   <input type="hidden" name="scheme" value="light">
   {{if .Canonical}}
@@ -22,6 +24,6 @@
   {{else}}
   <input type="hidden" name="theme" value="{{.Theme}}">
   {{end}}
-  <button type="submit" class="ui-theme-switcher-submit">Apply</button>
+  <button type="submit" class="ui-button ui-button-text"><span>Apply</span></button>
 </form>
 {{end}}

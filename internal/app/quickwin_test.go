@@ -16,7 +16,7 @@ func TestDocsSearchQHonoredServerSide(t *testing.T) {
 	for _, contract := range []string{
 		`Search results for “table”`,
 		`/components/data-table`,
-		`Data` ,
+		`Data`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("/docs?q=table missing search result contract %q", contract)
@@ -44,7 +44,7 @@ func TestErrorPageDocsShellNoindex(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, contract := range []string{
-		`<form class="docs-topbar-search" method="get" action="/docs" role="search">`,
+		`<form class="docs-search" method="get" action="/docs" role="search">`,
 		`name="robots" content="noindex, nofollow"`,
 	} {
 		if !strings.Contains(body, contract) {

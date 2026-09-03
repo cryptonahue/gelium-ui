@@ -129,7 +129,7 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - **Access and verification contracts** (Phases A–D): native semantics, focus rings, aria-* across the whole surface.
 - **Docs shell**: navigation, sidebar, breadcrumbs, search (disabled), theme/scheme switchers.
 
-[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.5.3...HEAD
+[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.0...HEAD
 [0.6.0]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.0
 [0.5.3]: https://github.com/cryptonahue/gelium-ui/releases
 [0.5.0]: https://github.com/cryptonahue/gelium-ui/releases

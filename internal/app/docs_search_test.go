@@ -13,8 +13,8 @@ import (
 func TestDocsSearchEnabledInTopbar(t *testing.T) {
 	body := getOKBody(t, "/docs")
 	for _, contract := range []string{
-		`<form class="docs-topbar-search" method="get" action="/docs" role="search">`,
-		`class="docs-topbar-search-input" type="search" name="q"`,
+		`<form class="docs-search" method="get" action="/docs" role="search">`,
+		`id="docs-search" type="search" name="q"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("docs topbar search missing contract %q", contract)
@@ -29,7 +29,7 @@ func TestDocsSearchEnabledInTopbar(t *testing.T) {
 	}
 	// The same live form renders on component pages too.
 	comp := getOKBody(t, "/components/button")
-	if !strings.Contains(comp, `<form class="docs-topbar-search" method="get" action="/docs" role="search">`) {
+	if !strings.Contains(comp, `<form class="docs-search" method="get" action="/docs" role="search">`) {
 		t.Error("component pages must render the live docs search form")
 	}
 }
@@ -96,7 +96,7 @@ func TestDocsSearchPreservesChrome(t *testing.T) {
 // onto the GitHub href (same rule as the landing external CTA).
 func TestDocsTopbarGitHubLinkStaysClean(t *testing.T) {
 	body := getOKBody(t, "/components/button?theme=basecoat&scheme=dark")
-	if !strings.Contains(body, `class="docs-topbar-github" href="https://github.com/cryptonahue/gelium-ui"`) {
+	if !strings.Contains(body, `href="https://github.com/cryptonahue/gelium-ui"`) {
 		t.Error("docs topbar must link https://github.com/cryptonahue/gelium-ui")
 	}
 	if !strings.Contains(body, "View source") {

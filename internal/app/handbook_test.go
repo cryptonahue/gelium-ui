@@ -23,6 +23,7 @@ var handbookRoutes = []handbookRoute{
 	{path: "/docs/information-architecture", label: "Information architecture", h1: "Information architecture", contract: "concept before reference"},
 	{path: "/docs/screens", label: "Screens", h1: "Screens", contract: "Build checklist"},
 	{path: "/docs/page-section-architecture", label: "Page + section architecture", h1: "Page + section architecture", contract: "SECTION-CONTRACT"},
+	{path: "/docs/section-references", label: "Section references", h1: "Section references", contract: "not a moodboard"},
 	{path: "/docs/journeys", label: "Journeys", h1: "Journeys", contract: "JOURNEY-LINEAR"},
 	{path: "/docs/data-display", label: "Data display", h1: "Data display", contract: "DATA-TABLE"},
 	{path: "/docs/feedback", label: "Feedback", h1: "Feedback", contract: "error summary"},
@@ -215,8 +216,8 @@ func TestPageSectionArchitectureDocsModel(t *testing.T) {
 		if !link.Current {
 			t.Error("page and section architecture must be current on its route")
 		}
-		if i == 0 || i == len(core)-1 || core[i-1].Path != "/docs/screens" || core[i+1].Path != "/docs/journeys" {
-			t.Fatalf("Core order around %s = %v, want Screens → Page + section architecture → Journeys", path, core)
+		if i == 0 || i == len(core)-1 || core[i-1].Path != "/docs/screens" || core[i+1].Path != "/docs/section-references" {
+			t.Fatalf("Core order around %s = %v, want Screens → Page + section architecture → Section references", path, core)
 		}
 		break
 	}
@@ -227,8 +228,8 @@ func TestPageSectionArchitectureDocsModel(t *testing.T) {
 		t.Error("search index must include the Core handbook entry")
 	}
 	pn := prevNextFor(path, "", "")
-	if pn == nil || pn.Prev == nil || pn.Next == nil || pn.Prev.Href != "/docs/screens" || pn.Next.Href != "/docs/journeys" {
-		t.Fatalf("previous/next = %+v, want Screens and Journeys", pn)
+	if pn == nil || pn.Prev == nil || pn.Next == nil || pn.Prev.Href != "/docs/screens" || pn.Next.Href != "/docs/section-references" {
+		t.Fatalf("previous/next = %+v, want Screens and Section references", pn)
 	}
 	body := getOKBody(t, path)
 	footer := strings.Index(body, `<footer class="ui-footer">`)

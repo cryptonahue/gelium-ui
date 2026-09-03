@@ -34,7 +34,7 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 			body := res.Body.String()
 			if tt.wantShell {
 				for _, contract := range []string{
-					`class="docs-topbar"`,
+					`class="docs-chrome"`,
 					`class="docs-nav-mobile"`,
 					`<summary`,
 					`class="docs-sidebar-desktop"`,
@@ -44,6 +44,9 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 					`ui-list`,
 					`ui-list-item-link`,
 					`ui-divider`,
+					`ui-text-field`,
+					`ui-button ui-button-text`,
+					`ui-button ui-button-outline`,
 					">" + lib.AssetsVersion + "<",
 					`Gelium UI`,
 					`type="search"`,
@@ -60,7 +63,7 @@ func TestDocsShellFrameOnDocsAndComponents(t *testing.T) {
 				}
 			} else {
 				for _, forbidden := range []string{
-					`class="docs-topbar"`,
+					`class="docs-chrome"`,
 					`class="docs-nav-mobile"`,
 					`class="docs-sidebar-desktop"`,
 				} {
@@ -89,7 +92,7 @@ func TestDocsStubRoutesAndShellChrome(t *testing.T) {
 			}
 			body := res.Body.String()
 			for _, contract := range []string{
-				`class="docs-topbar"`,
+				`class="docs-chrome"`,
 				`class="docs-nav-mobile"`,
 				`class="docs-sidebar-desktop"`,
 				`<nav aria-label="Docs"`,
@@ -104,7 +107,7 @@ func TestDocsStubRoutesAndShellChrome(t *testing.T) {
 			}
 			// Search is a live GET form to the /docs hub: 0-JS Enter submits
 			// /docs?q=<term>; with JS, search.js filters the nav index client-side.
-			if !strings.Contains(body, `<form class="docs-topbar-search" method="get" action="/docs" role="search">`) {
+			if !strings.Contains(body, `<form class="docs-search" method="get" action="/docs" role="search">`) {
 				t.Errorf("%s must wrap search in a live GET form to /docs", path)
 			}
 		})
@@ -220,7 +223,7 @@ func TestDocsShellColorSchemeSwitcher(t *testing.T) {
 		body := getOKBody(t, "/")
 		// Marketing landing may expose Appearance on the site header, but must
 		// not use the docs two-pane shell chrome.
-		if strings.Contains(body, `class="docs-topbar"`) {
+		if strings.Contains(body, `class="docs-chrome"`) {
 			t.Error("home must not render docs-topbar")
 		}
 		if !strings.Contains(body, `class="site-header"`) {
@@ -409,7 +412,7 @@ func TestDocsShellChromeActivePeersAndIA(t *testing.T) {
 			t.Error(`?theme=basecoat must set class="theme-basecoat" on the document root`)
 		}
 		// Shell still present; theme does not drop chrome.
-		if !strings.Contains(body, `class="docs-topbar"`) {
+		if !strings.Contains(body, `class="docs-chrome"`) {
 			t.Error("theme query must keep docs shell chrome")
 		}
 	})
@@ -492,7 +495,7 @@ func TestHomeUnchangedByDocsShell(t *testing.T) {
 	}
 	body := res.Body.String()
 	for _, forbidden := range []string{
-		`class="docs-topbar"`,
+		`class="docs-chrome"`,
 		`class="docs-nav-mobile"`,
 		`class="docs-sidebar-desktop"`,
 	} {

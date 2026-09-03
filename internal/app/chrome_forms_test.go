@@ -120,9 +120,13 @@ func TestChromeFormsRenderSubmitButtons(t *testing.T) {
 		t.Errorf("chrome submit buttons = %d, want 2 (Recipe + Appearance)", got)
 	}
 	for _, contract := range []string{
-		`<form class="ui-recipe-switcher ui-recipe-switcher--compact" method="get" aria-label="Component recipe">`,
-		`<label for="docs-recipe-behavior">Behavior</label>`,
-		`<label for="docs-recipe-visual">Visual recipe</label>`,
+		`<form class="ui-recipe-switcher ui-recipe-switcher--compact" method="get" data-chrome-form hx-boost="false" aria-label="Component recipe">`,
+		`<form class="ui-theme-switcher ui-scheme-switcher" method="get" data-chrome-form hx-swap="none" aria-label="Appearance">`,
+		`<label class="ui-select-label" for="docs-recipe-behavior">Behavior</label>`,
+		`<label class="ui-select-label" for="docs-recipe-visual">Visual recipe</label>`,
+		`ui-select ui-select-outlined`,
+		`ui-button ui-button-outline`,
+		`ui-switch`,
 		`name="behavior"`, `name="visual"`, `value="basecoat"`, `Apply`,
 	} {
 		if !strings.Contains(body, contract) {
@@ -176,7 +180,16 @@ func TestRecipeFormCarriesOnlyClosedValues(t *testing.T) {
 			t.Errorf("recipe form missing closed-value contract %q", contract)
 		}
 	}
-	if strings.Contains(body, `hx-swap="none"`) || strings.Contains(body, `data-class=`) {
+	start := strings.Index(body, `class="ui-recipe-switcher`)
+	if start < 0 {
+		t.Fatal("missing recipe form")
+	}
+	end := strings.Index(body[start:], "</form>")
+	if end < 0 {
+		t.Fatal("unclosed recipe form")
+	}
+	recipe := body[start : start+end]
+	if strings.Contains(recipe, `hx-swap="none"`) || strings.Contains(recipe, `data-class=`) {
 		t.Error("native Recipe form must not depend on optimistic or class-mapping JavaScript")
 	}
 }

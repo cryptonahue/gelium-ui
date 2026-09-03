@@ -30,9 +30,9 @@ valid head.
   {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
   {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
   {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
-  <link rel="stylesheet" href="/static/app.css?v=0.4.0">
-  <script defer src="/static/htmx.min.js?v=0.4.0"></script>
-  <script defer src="/static/app.js?v=0.4.0"></script>
+  <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
+  <script defer src="/static/htmx.min.js?v={{.AssetsVersion}}"></script>
+  <script defer src="/static/app.js?v={{.AssetsVersion}}"></script>
   {{if .Meta.OGTitle}}<meta property="og:type" content="{{or .Meta.OGType "website"}}">
   <meta property="og:title" content="{{.Meta.OGTitle}}">
   <meta property="og:description" content="{{.Meta.OGDescription}}">
@@ -152,7 +152,7 @@ type webSiteLD struct {
 ```json
 {"@context":"https://schema.org","@type":"SoftwareApplication",
  "name":"Gelium UI","applicationCategory":"DeveloperApplication",
- "softwareVersion":"0.4.0","operatingSystem":"Any (web)","license":"MIT",
+ "softwareVersion":"0.6.0","operatingSystem":"Any (web)","license":"MIT",
  "url":"https://gelium-ui.example/"}
 ```
 

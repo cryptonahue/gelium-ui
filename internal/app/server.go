@@ -1694,6 +1694,8 @@ func New() http.Handler {
 	mux.HandleFunc("GET /docs/information-architecture", s.docsInformationArchitecture)
 	mux.HandleFunc("GET /docs/screens", s.docsScreens)
 	mux.HandleFunc("GET /docs/page-section-architecture", s.docsPageSectionArchitecture)
+	mux.HandleFunc("GET /docs/section-references", s.docsSectionReferences)
+	mux.HandleFunc("GET /docs/section-references/{id}", s.docsSectionReferenceDetail)
 	mux.HandleFunc("GET /docs/journeys", s.docsJourneys)
 	mux.HandleFunc("GET /docs/data-display", s.docsDataDisplay)
 	mux.HandleFunc("GET /docs/feedback", s.docsFeedback)
@@ -1875,6 +1877,7 @@ func sitemapPaths() []string {
 	for _, l := range handbookNavLinks() {
 		paths = append(paths, l.Path)
 	}
+	paths = append(paths, publishedSectionRefPaths()...)
 	for _, r := range componentRoutes() {
 		paths = append(paths, r.Path)
 	}

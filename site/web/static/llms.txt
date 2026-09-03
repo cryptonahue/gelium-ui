@@ -78,6 +78,7 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 - Docs hub: /docs
 - Screens (types, hierarchy, nav): /docs/screens
 - Page + Section Architecture (purpose-first composition): /docs/page-section-architecture
+- Section references (cited originals vs Gelium remakes): /docs/section-references
 - Journeys (multi-step + landings): /docs/journeys
 - Data display (table vs cards): /docs/data-display
 - Feedback (toast vs summary vs banner): /docs/feedback

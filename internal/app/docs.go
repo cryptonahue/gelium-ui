@@ -265,6 +265,7 @@ var handbookSections = []handbookSection{
 			{Path: "/docs/information-architecture", Label: "Information architecture"},
 			{Path: "/docs/screens", Label: "Screens"},
 			{Path: "/docs/page-section-architecture", Label: "Page + section architecture"},
+			{Path: "/docs/section-references", Label: "Section references"},
 			{Path: "/docs/journeys", Label: "Journeys"},
 			{Path: "/docs/data-display", Label: "Data display"},
 			{Path: "/docs/feedback", Label: "Feedback"},
@@ -567,6 +568,8 @@ func (s *server) docsScreens(w http.ResponseWriter, r *http.Request) {
 func (s *server) docsPageSectionArchitecture(w http.ResponseWriter, r *http.Request) {
 	s.renderMarkdownPageAt(w, r, pageView{Title: "Page + section architecture"}, "content/handbook-page-section-architecture.md", "/docs/page-section-architecture")
 }
+
+// docsSectionReferences handlers live in section_references.go.
 
 // docsFeedback is GET /docs/feedback — decision matrix for toast vs
 // validation-summary vs banner vs empty/error/skeleton (sourced criteria).
