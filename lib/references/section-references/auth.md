@@ -1,7 +1,27 @@
 # REF-AUTH
 
 Source: https://vercel.com/signup
+Kind: section · type: auth · tags: form, register, validation, recovery
 
-Structure: auth identity → labeled fields → consent/context → primary submit → validation → recovery.
+## Structure
 
-Gelium: native labels, 422 summary + inline errors, safe `next`, no nested simple-form card, no invented route.
+```text
+auth identity / title
+labeled fields
+consent / context
+one primary submit
+validation summary + field errors
+recovery or alternate auth path
+```
+
+## Gelium adaptation
+
+- Native labeled controls; server-side validation (422)
+- Validation summary plus inline errors
+- Safe `next` / return path when the product has one
+- No nested card theater for a simple form
+- Do not claim routes that are not registered
+
+## Reject
+
+Fake social buttons without providers, invented password rules UI, client-only validation as the only gate.

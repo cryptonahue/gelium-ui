@@ -204,6 +204,10 @@ choices (detail entry, icon-versus-text actions, search, account/menu, shell,
 media, and recovery). Also audit identity/account grouping, constant state,
 and visibility semantics: do not duplicate shell destinations, repeat a badge
 that is true for every row, or expose visibility where the surface is public-only.
+The shell must also apply first-plane priority and progressive disclosure: keep
+primary navigation visible, group low-frequency settings/logout behind a named
+account control when safe, and compare reference diversity before choosing a
+chrome model.
 Do not omit a candidate because it is absent from the current contract; classify it as existing contract, B, C, fork, or rejected.
 Fail-open if there is no browser, the source is blocked, or the reference cannot
 be verified. Record matched IDs (or the no-match reason) in the plan/G5 packet.

@@ -4,6 +4,15 @@ All notable changes to the Gelium UI project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.6.3] — 2026-09-03
+
+### Fixed
+- **Portable reference fichas were stubs**: 0.6.2 shipped `references/` but most Markdown files were ~6-line placeholders. Agents still needed the monorepo for usable feed/shell/detail guidance. Fichas are now full structural notes (especially `REF-SOCIAL-FEED`) so npm-only consumers can run skill 13 without docs or git checkout.
+- **Reference quality contract**: `TestPortableReferenceCatalogQuality` requires catalog IDs, on-disk fichas, minimum substantive size, social-feed filter content, and forbids shipping screenshot binaries in the package.
+
+### Changed
+- **Skill 13**: package `references/catalog.json` + fichas are the authority for npm consumers; monorepo screenshots/`/docs/section-references` are optional supplements only.
+
 ## [0.6.2] — 2026-09-03
 
 ### Added
@@ -148,7 +157,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - **Access and verification contracts** (Phases A–D): native semantics, focus rings, aria-* across the whole surface.
 - **Docs shell**: navigation, sidebar, breadcrumbs, search (disabled), theme/scheme switchers.
 
-[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.2...HEAD
+[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.3...HEAD
+[0.6.3]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.3
 [0.6.2]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.2
 [0.6.0]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.0
 [0.5.3]: https://github.com/cryptonahue/gelium-ui/releases

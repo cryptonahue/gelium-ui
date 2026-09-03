@@ -183,6 +183,9 @@ func TestLlmsUXTxtServesAgentDecisionPack(t *testing.T) {
 		"component reference",
 		"constant state",
 		"visibility semantics",
+		"first-plane priority",
+		"progressive disclosure",
+		"reference diversity",
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("llms-ux.txt missing %q", contract)

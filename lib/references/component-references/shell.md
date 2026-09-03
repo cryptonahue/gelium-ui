@@ -1,7 +1,32 @@
 # REF-SHELL
 
-Use for header/navbar/footer/account/search decisions. The reference informs hierarchy and responsive transitions; the consumer's existing shared shell is authoritative.
+Use for header / navbar / footer / account / search decisions on any surface.
+Screenshots and external products inform hierarchy; the **consumer’s existing
+shared shell is authoritative**.
 
-Audit: group identity destinations (`Me`, account menu, settings, logout) coherently; separate notifications when it is a distinct job; decide whether search belongs to shell or page; check desktop/medium/mobile behavior; avoid duplicate chrome.
+## Audit lenses
 
-Gelium filter: native links/forms, no-JS fallback, real routes, CSRF for logout, accessible names, catalog icons only when they improve scan. Never invent avatars, branding, or a second navigation system.
+- **Identity cluster:** `Me`, account menu, settings, logout — one coherent place.
+  Do not re-implement account actions in the page body when the shell owns them.
+- **Notifications:** separate destination only when it is a distinct job.
+- **Search:** shell-owned vs page-owned; do not duplicate both without a reason.
+- **Responsive:** what collapses, what becomes a menu, what stays visible.
+- **No duplicate chrome:** one top nav system; reject second header/rail/bottom bar
+  from a reference unless the product explicitly has no shell yet.
+
+## Gelium filter
+
+- Native links and forms; no-JS completion
+- Real registered routes only
+- CSRF on logout and other POST shell actions
+- Accessible names; catalog icons only when they improve scan
+- Never invent avatars, brand marks, or a parallel navigation system
+- Page body links must not restate shell destinations the header already exposes
+  (Architect checks shared header before proposing body chrome)
+
+## Packet note
+
+```text
+References: REF-SHELL — preserve existing top nav; account stays in shell.
+Rejected: reference bottom nav / left rail (shell already settled).
+```

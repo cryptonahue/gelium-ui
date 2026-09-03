@@ -1,6 +1,6 @@
 {
   "name": "gelium-ui",
-  "version": "0.6.2",
+  "version": "0.6.3",
   "description": "Server-rendered UI components: Go + HTMX + Tailwind. HTML-first, 0-JS contract, themes by class. Components and styles, not a framework.",
   "license": "MIT",
   "private": false,

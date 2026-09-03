@@ -34,7 +34,7 @@ Gelium UI shipped its full 10-phase system roadmap: verification and close-out o
 | Mobile audit — overflow containment: preview, data-table, chips, whatsapp demo (no masking; min-width:0 + internal scroll) | ✅ Shipped |
 | Mobile audit — runtime: same-document view transitions (reduced-motion guard), safe areas, mobile nav 100dvh + aria-label, focus matrix | ✅ Shipped |
 | Library/docs split — monorepo npm workspaces: `lib/` publishable package `gelium-ui` (CSS+tokens+themes+templates+consumer JS+dist) + `site/` docs consumer dogfooding by package name; dual go:embed + gates include `./lib/...` | ✅ Shipped |
-| npm package `gelium-ui@0.6.2` on the public registry (https://www.npmjs.com/package/gelium-ui) — dist bundle, themes, templates, consumer JS | ✅ Shipped |
+| npm package `gelium-ui@0.6.3` on the public registry (https://www.npmjs.com/package/gelium-ui) — dist bundle, themes, templates, consumer JS | ✅ Shipped |
 | `/llms.txt` agent brief (install, wire contracts, when not to use, component list) | ✅ Shipped |
 | Comparison page `/docs/compare` — Why Gelium vs Radix/shadcn/Base UI, ~50KB JS story, no-gos | ✅ Shipped |
 | Recipes mobile — admin/ops/feed headers stack + table/list containment under ~40rem (no overflow-x:hidden) | ✅ Shipped |
