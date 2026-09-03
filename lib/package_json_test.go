@@ -37,6 +37,16 @@ func TestLibPackageJsonIsPublishable(t *testing.T) {
 	if len(pkg.Files) == 0 {
 		t.Error("files must list published entries (styles, templates, js, dist)")
 	}
+	hasSkill := false
+	for _, entry := range pkg.Files {
+		if entry == "SKILL.md" {
+			hasSkill = true
+			break
+		}
+	}
+	if !hasSkill {
+		t.Error("files must include SKILL.md for agent skill registries")
+	}
 	hasReferences := false
 	for _, entry := range pkg.Files {
 		if entry == "references" {

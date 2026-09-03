@@ -26,7 +26,7 @@ A reading record MAY attest that a required file/path was reviewed. Tooling MUST
 
 ### Requirement: Separate prebuild and release preflight
 
-The future preflight MUST expose distinct `prebuild` and `release` modes.
+The preflight MUST expose distinct `route`, `prebuild`, and `release` modes.
 
 #### Scenario: Prebuild validates only prebuild evidence
 - **GIVEN** a design-gated surface has a complete Plan and Architecture packet but no candidate implementation

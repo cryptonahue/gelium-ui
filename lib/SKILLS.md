@@ -1,11 +1,13 @@
 # gelium-ui — Skills for agents
 
-Actionable decision skills. Read them in order for a task; load the ones relevant
-to a specific job. The full decision-id pack (SURFACE / SCREEN / ARCH / SECTION / WF / DATA /
+Actionable decision skills. Read `skills/00-agent-routing.md` first, then load
+the ones relevant to the selected route. Do not impose design-gated ceremony on
+direct-exempt work. The full decision-id pack (SURFACE / SCREEN / ARCH / SECTION / WF / DATA /
 FEED / JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
 
 | # | Skill | What it answers |
 |---|---|---|
+| 00 | `00-agent-routing.md` | outcome-first route selection and delegation boundary |
 | 01 | `01-foundations.md` | tokens, themes by class, 0-JS, layout, mobile guardrails |
 | 02 | `02-surface-and-screens.md` | SURFACE mode + screen types → layout blocks |
 | 03 | `03-forms-and-controls.md` | which control, form layout, 422 validation |
@@ -23,7 +25,8 @@ FEED / JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
 ## Proportional workflow and records
 
 Classify first: `direct-exempt` for an understood bounded fix without a page or
-flow architecture change; `design-gated` for a new screen, new flow, or
+flow architecture change; `delegated-direct` for broad context or multi-file
+work without a design change; `design-gated` for a new screen, new flow, or
 substantial redesign; `escalate` for a decision that cannot safely be inferred;
 and `full-sdd` only when cross-cutting work benefits from durable OpenSpec
 artifacts. The design-gated path is:

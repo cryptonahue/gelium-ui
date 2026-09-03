@@ -4,6 +4,13 @@ How humans and LLMs **work with Gelium** without leaving the product ethos: serv
 
 This page adapts useful **agent process** ideas (brief → shape → build → audit → polish) — not free-form “make it award-winning” aesthetics that fight Material/Basecoat tokens.
 
+## Start here: route the outcome
+
+The package source of truth is [`skills/00-agent-routing.md`](https://github.com/cryptonahue/gelium-ui/blob/main/lib/skills/00-agent-routing.md).
+It chooses `direct-exempt`, `delegated-direct`, `design-gated`, `escalate`, or
+`full-sdd` before this downstream UX workflow is loaded. Delegation is per
+action, and delivery remains under ordinary repository policy.
+
 ## Ethos (non-negotiable)
 
 | Do | Don’t |

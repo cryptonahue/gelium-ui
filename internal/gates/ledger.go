@@ -17,10 +17,11 @@ const SchemaVersionV1 = 1
 type Route string
 
 const (
-	RouteDirectExempt Route = "direct-exempt"
-	RouteDesignGated  Route = "design-gated"
-	RouteEscalate     Route = "escalate"
-	RouteFullSDD      Route = "full-sdd"
+	RouteDirectExempt    Route = "direct-exempt"
+	RouteDelegatedDirect Route = "delegated-direct"
+	RouteDesignGated     Route = "design-gated"
+	RouteEscalate        Route = "escalate"
+	RouteFullSDD         Route = "full-sdd"
 )
 
 // Ledger is the JSON v1 record supplied explicitly to the preflight command.
@@ -105,7 +106,7 @@ func ValidateLedger(data []byte, now time.Time) (Ledger, []Issue) {
 		issues = append(issues, issue("unsupported-schema", "schema_version", "must equal 1"))
 	}
 	if !isRoute(ledger.Route) {
-		issues = append(issues, issue("unknown-route", "route", "must be direct-exempt, design-gated, escalate, or full-sdd"))
+		issues = append(issues, issue("unknown-route", "route", "must be direct-exempt, delegated-direct, design-gated, escalate, or full-sdd"))
 	}
 	issues = append(issues, validateScope(ledger.Scope)...)
 	issues = append(issues, validateReading(ledger)...)
@@ -120,7 +121,7 @@ func issue(code, field, message string) Issue {
 
 func isRoute(route Route) bool {
 	switch route {
-	case RouteDirectExempt, RouteDesignGated, RouteEscalate, RouteFullSDD:
+	case RouteDirectExempt, RouteDelegatedDirect, RouteDesignGated, RouteEscalate, RouteFullSDD:
 		return true
 	default:
 		return false

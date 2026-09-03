@@ -37,6 +37,18 @@ func TestPrebuildAcceptsDirectExemptAndRejectsUncoveredPaths(t *testing.T) {
 	}
 }
 
+func TestPrebuildAcceptsDelegatedDirectWithoutDesignGates(t *testing.T) {
+	ledger := Ledger{
+		SchemaVersion: SchemaVersionV1,
+		Route:         Route("delegated-direct"),
+		Scope:         Scope{OwnedPaths: []string{"internal/app/feed.go"}},
+	}
+	result := EvaluatePrebuild(ledger, nil, []string{"internal/app/feed.go"})
+	if result.Status != "pass" {
+		t.Fatalf("delegated-direct ledger should pass without design gates: %#v", result)
+	}
+}
+
 func TestPrebuildReportsInvalidConfiguration(t *testing.T) {
 	result := EvaluatePrebuild(Ledger{}, []Issue{{Code: "malformed-json"}}, nil)
 	if result.Status != "invalid-configuration" || !hasIssue(result.Issues, "malformed-json") {

@@ -12,7 +12,7 @@ set -euo pipefail
 HERE="$(cd "$(dirname "${BASH_SOURCE[0]}")" && pwd)"
 SRC="$HERE"
 NAME="gelium-ui"
-FILES=("AGENTS.md" "SKILLS.md" "llms-ux.txt" "llms.txt" "skills")
+FILES=("AGENTS.md" "SKILL.md" "SKILLS.md" "llms-ux.txt" "llms.txt" "skills")
 
 target=""
 dry=false
@@ -62,6 +62,12 @@ for f in "${FILES[@]}"; do
     echo "skip (missing source): $f" >&2
   fi
 done
+
+if [[ ! -f "$target/skills/00-agent-routing.md" ]]; then
+  echo "canonical routing missing after installation: $target/skills/00-agent-routing.md" >&2
+  exit 1
+fi
+echo "canonical routing: installed"
 
 echo
 echo "Installed. LLM tools that load $NAME skills will now see Gelium's good-practice guide."

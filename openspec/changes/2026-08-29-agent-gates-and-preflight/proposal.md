@@ -4,7 +4,7 @@
 
 Turn Gelium UI's distributed guidance into a proportional, evidence-backed workflow. Small understood changes stay direct; a new screen, flow, or substantial redesign moves through explicit product, architecture, approval, build, and audit phases. The workflow blocks an **incomplete phase or evidence claim**, not a person's ability to type locally, and it never claims tooling can prove cognitive reading or own delivery.
 
-The proposal is based on a substantial redesign of the authenticated DeepFilter feed using `gelium-ui@0.6.0`. That trial preserved routes, auth, privacy, pagination, POST contracts, no-JS behavior, and theme classes, while exposing preventable gaps in reading attestations, gate state, detector scope, visual evidence, media metadata, and documentation versioning.
+The proposal is based on a substantial redesign of the authenticated DeepFilter feed using `gelium-ui@0.6.0`; the current published package is `0.6.3`. That trial preserved routes, auth, privacy, pagination, POST contracts, no-JS behavior, and theme classes, while exposing preventable gaps in reading attestations, gate state, detector scope, visual evidence, media metadata, and documentation versioning.
 
 ## Problem statement
 
@@ -20,7 +20,7 @@ Gelium documents sound principles, but the current protocol leaves the agent to 
 
 ## Goals
 
-- Route work proportionally as `direct-exempt`, `design-gated`, `escalate`, or optional `full-sdd`.
+- Route work proportionally as `direct-exempt`, `delegated-direct`, `design-gated`, `escalate`, or optional `full-sdd`.
 - Separate **Orient → Plan → Architect → Approve → Build → Audit → Release**.
 - Give design-gated work a reusable ledger with clear scope, ownership, evidence, and status semantics.
 - Require a buildable, human-approved architecture packet before markup for gated work, without slowing ordinary small fixes.
@@ -68,7 +68,7 @@ The packet retains job/audience, route/contracts, ordered sections, primary acti
 
 ### 4. Define a task-local ledger and public progress projection
 
-A future ledger MUST be selected deterministically by one canonical consumer location or an explicit `--ledger <path>` command input. It MUST use a versioned schema and include route, scope, owned/shared paths, reading attestations, prebuild gates, postbuild audit, exception references, and evidence references.
+The implemented JSON v1 ledger MUST be selected deterministically by one canonical consumer location or an explicit `--ledger <path>` command input. It includes route, scope, owned/shared paths, reading attestations, prebuild gates, postbuild audit, exception references, and evidence references.
 
 ```yaml
 schema_version: 1
@@ -112,7 +112,7 @@ Changed paths MUST be checked against the ledger's owned/shared paths. They are 
 
 ### 7. Extend `ux-detect.sh` with scoped, honest result semantics
 
-Future detector options MUST support an explicit audited scope, an exception manifest, and machine-readable output while preserving existing default behavior during migration. Every raw finding remains visible.
+The scoped detector supports an explicit audited scope, an exception manifest, and machine-readable output while preserving the existing default behavior. Every raw finding remains visible.
 
 An exception MUST identify the rule or finding fingerprint, path/selector scope, reason, bounded risk, owner, ledger evidence, and deterministic expiry (`expires_at` or `expires_before_version`). A broad path exclusion is not evidence that a rule passed.
 
@@ -246,4 +246,4 @@ The workflow implementation is additive: guidance, templates, scripts, tests, an
 - Detector output distinguishes clean pass, approved visible exceptions, shared attribution, failure, and invalid configuration.
 - Unknown image dimensions are represented honestly without fake compliance.
 - Version/wire drift checks compare authority equivalents and never rename contracts automatically.
-- `go test ./internal/... ./site/... ./lib/...`, `go vet ./internal/... ./site/... ./lib/...`, `npm run build`, and `git diff --check` remain the required future production implementation verification gates.
+- `go test ./internal/... ./site/... ./lib/...`, `go vet ./internal/... ./site/... ./lib/...`, `npm run build`, and `git diff --check` are the production implementation verification gates.

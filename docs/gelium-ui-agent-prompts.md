@@ -4,6 +4,12 @@
 > Fase J del system roadmap (`docs/gelium-ui-system-roadmap.md`).
 > Principio: **referenciar los docs existentes, no duplicarlos**. Cada flujo apunta al documento canónico y extrae solo el checklist operativo.
 
+**Routing:** antes de entrar en cualquiera de estos flujos, leer
+`lib/skills/00-agent-routing.md`. Este documento describe procedimientos
+downstream para componentes, recipes, themes y documentación; no selecciona la
+ruta del trabajo ni reemplaza `direct-exempt`, `delegated-direct`,
+`design-gated`, `escalate` o `full-sdd`.
+
 ---
 
 ## 1. Reglas de oro (en todo trabajo, sin excepción)

@@ -2,7 +2,10 @@
 
 ## Technical approach
 
-The change defines a proportional operating protocol, future machine-readable artifacts, and future detector/preflight contracts. It does not prescribe the parser or implement a runtime command in this design phase.
+The change defines a proportional operating protocol and its machine-readable
+artifacts. The ledger, detector, and preflight contracts are implemented in
+`internal/gates`, `cmd/gelium-preflight`, and `cmd/gelium-ux-detect`; this design
+records their boundaries and does not grant delivery authority.
 
 ```text
 ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE
@@ -20,7 +23,7 @@ Detailed statuses remain in artifacts so a user does not need to reason about pa
 
 | Phase | Inputs | Output | Block / recovery |
 |---|---|---|---|
-| Route | Request, changed surface, known risk | `direct-exempt`, `design-gated`, `escalate`, or `full-sdd` | Ambiguity → `escalate`. |
+| Route | Request, changed surface, known risk | `direct-exempt`, `delegated-direct`, `design-gated`, `escalate`, or `full-sdd` | Ambiguity → `escalate`. |
 | Orient | Product/design artifacts, Gelium pack, vocabulary/registry, prior memory, hard contracts | Constraint map and reading attestation | Missing product intent → human record or artifact exception. |
 | Plan | Constraint map, user request, product intent | Brief, states, primary action, Plan wireframe | Unresolved product choice → `Needs your decision`. |
 | Architect | Plan wireframe, route/handler/template/data/component inspection | Buildable wireframe, section contracts, component/contract mapping | Component/data mismatch → revise or exception. |
@@ -36,7 +39,11 @@ Detailed statuses remain in artifacts so a user does not need to reason about pa
 
 ## Ledger model
 
-A future ledger MUST be selected deterministically, either by one canonical consumer path or explicit `--ledger <path>` input. It MUST include a `schema_version`; a scope declaration; route classification; owned and shared paths; reading attestations; prebuild gates; postbuild evidence; and exception references.
+The JSON v1 ledger is selected deterministically, either by one canonical
+consumer path or explicit `--ledger <path>` input. It includes a
+`schema_version`; a scope declaration; route classification; owned and shared
+paths; reading attestations; prebuild gates; postbuild evidence; and exception
+references.
 
 ```yaml
 schema_version: 1
@@ -57,14 +64,17 @@ gates:
   rendered_audit: { status: pending }
 ```
 
-The shown YAML is a conceptual model, not approval to parse unrestricted YAML in Bash. Implementation MUST either use a real versioned parser or select a simpler canonical machine format.
+The shown YAML is a conceptual shape only. The implemented canonical machine
+format is versioned JSON, validated by `internal/gates`; Bash does not parse
+unrestricted YAML.
 
 ## Preflight boundary
 
-The future preflight has two modes:
+The implemented preflight has three modes:
 
 | Mode | Checks | Does not claim |
 |---|---|---|
+| `route` | Validate the selected route and return its next action and design-gate requirement. | Infer intent from file count or authorize implementation/delivery. |
 | `prebuild` | Artifact presence, attestations, declared scope coverage, plan/architecture/approval state. | That no local markup can be typed or that a human cognitively reviewed a file. |
 | `release` | Rendered evidence references, detector results, exceptions, authority-matrix coherence, tests/build results. | Authority to commit, push, publish, or deploy. |
 

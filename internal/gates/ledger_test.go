@@ -51,6 +51,17 @@ func TestValidateLedgerRejectsMalformedJSON(t *testing.T) {
 	}
 }
 
+func TestValidateLedgerAcceptsDelegatedDirectRoute(t *testing.T) {
+	data := []byte(`{"schema_version":1,"route":"delegated-direct","scope":{"owned_paths":["internal/app/feed.go"]}}`)
+	ledger, issues := ValidateLedger(data, time.Date(2026, time.August, 30, 12, 0, 0, 0, time.UTC))
+	if len(issues) != 0 {
+		t.Fatalf("delegated-direct ledger has issues: %#v", issues)
+	}
+	if ledger.Route != Route("delegated-direct") {
+		t.Fatalf("parsed route = %q, want delegated-direct", ledger.Route)
+	}
+}
+
 func hasIssue(issues []Issue, code string) bool {
 	for _, issue := range issues {
 		if issue.Code == code {

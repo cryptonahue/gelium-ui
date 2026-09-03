@@ -28,8 +28,8 @@ func TestHTMX4NavigationContract(t *testing.T) {
 
 func TestHTMX4RuntimeAndEnhancementsArePresent(t *testing.T) {
 	runtime := readAsset(t, "static/htmx.min.js")
-	if !strings.Contains(runtime, "4.0.0-beta6") || !strings.Contains(runtime, "innerMorph") {
-		t.Fatal("embedded runtime is not the official HTMX 4.0.0-beta6 build")
+	if !strings.Contains(runtime, "4.0.0") || !strings.Contains(runtime, "innerMorph") {
+		t.Fatal("embedded runtime is not the official HTMX 4.0.0 build")
 	}
 	app := readAsset(t, "static/app.js")
 	gelium := readAsset(t, "static/gelium.js")

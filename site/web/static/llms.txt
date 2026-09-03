@@ -97,7 +97,6 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 - Recipes: /recipes/admin-resource, /recipes/ops-queue, /recipes/public-feed, /recipes/rich-article
 - Health: /healthz
 - Sitemap: /sitemap.xml
-- Component registry (JSON): /components.json
 - Robots: /robots.txt
 - This file: /llms.txt
 - Agent UX pack (decision tables): /llms-ux.txt

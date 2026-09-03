@@ -5,6 +5,10 @@ default; token + class themes; optional small JS enhancement. **Not** a JS frame
 
 ## Before you generate any UI
 
+First read `skills/00-agent-routing.md` and classify the requested outcome.
+It is the canonical route selector; the rules below are downstream Gelium
+contracts. Do not apply design-gated ceremony to `direct-exempt` work.
+
 Read this entrypoint, then `llms-ux.txt`, then `SKILLS.md`; each layer is part
 of the protocol. Start with `skills/01-foundations.md`. After picking a SURFACE
 mode (`skills/02`), run `skills/08-product-reasoning.md` to discover missing
@@ -36,6 +40,9 @@ Classify the request before planning:
   that packet before any markup or CSS. A request to make the page, `continua`,
   or a model-switch resume is not approval unless the human has seen that
   wireframe.
+- **delegated-direct** — broad or multi-file work that benefits from fresh
+  context but does not change screen/flow architecture. Delegate one bounded
+  explorer or writer; the parent retains scope, integration, and verification.
 - **escalate** — product intent, risk, scope, permissions, data, or architecture
   cannot be resolved from the current artifacts. Ask for the smallest concrete
   decision instead of inventing a solution.

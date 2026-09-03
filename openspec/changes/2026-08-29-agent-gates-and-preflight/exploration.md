@@ -16,7 +16,7 @@ This change turns Gelium UI guidance into a proportional workflow for agents. It
 | `lib/llms-ux.txt` | Defines product and workflow guidance, but combines pre-emit judgment with audit guidance. | Split criteria planning from rendered evidence. |
 | `lib/skills/11-design-criteria.md` | Requires rendered checks across themes, widths, realistic content, and states. | Keep that evidence postbuild; do not require it before markup exists. |
 | `lib/skills/12-wireframe-approval.md` | Correctly requires approval before a new screen, flow, or substantial redesign. | Add a machine-readable packet and phase boundary without applying it to exemptions. |
-| `lib/scripts/ux-detect.sh` | Takes positional paths and yields only passed/failed output. | Future detector must add explicit scope, ownership, exception, and machine-readable result semantics. |
+| `lib/scripts/ux-detect.sh` | Legacy positional detector remains available; `cmd/gelium-ux-detect` adds scoped ownership, exceptions, and machine-readable result semantics. | Keep both paths during migration and preserve raw findings. |
 | `lib/llms.txt` / `lib/package.json` / `openspec/config.yaml` | Version and wire vocabulary disagree across release-facing and historical/configuration surfaces. | Define authority matrices before a drift detector attempts to compare files. |
 
 ## DeepFilter findings retained by this change
@@ -32,6 +32,7 @@ This change turns Gelium UI guidance into a proportional workflow for agents. It
 | Route | Trigger | Required record | Human decision |
 |---|---|---|---|
 | `direct-exempt` | Small, already-understood copy, token, selector, accessibility, bug, or contract correction with no architecture shift. | Narrow change note only when required by existing repo policy. | No wireframe ceremony. |
+| `delegated-direct` | Broad context, read-only research, or multi-file work without a screen/flow architecture shift. | Bounded worker handoff plus parent verification. | No design gate. |
 | `design-gated` | New screen, new flow, or substantial redesign. | Ledger + Plan + Architecture packet. | Required before Build. |
 | `escalate` | Missing product decision, unbounded exception, unknown risk, or ambiguous scope. | Escalation record. | Required to resume. |
 | `full-sdd` | Cross-cutting work where proposal/spec/design/tasks materially reduce ambiguity. | OpenSpec artifacts plus the relevant Gelium records. | Proposal/design acceptance as defined by repo policy. |

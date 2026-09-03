@@ -2,7 +2,9 @@
 
 ## Delivery strategy
 
-This change is documentation/specification work now. Future production work is divided into independently reviewable units.
+This change began as documentation/specification work. The ledger, preflight,
+detector, authority, and dogfood units below are now reconciled against the
+tracked implementation; remaining unchecked items are the only open work.
 
 | Unit | Goal | Primary verification | Rollback boundary |
 |---|---|---|---|
@@ -16,29 +18,29 @@ This change is documentation/specification work now. Future production work is d
 
 ## Phase 0: OpenSpec revision
 
-- [ ] 0.1 Rewrite `proposal.md` around proportional routing and phased gates.
-- [ ] 0.2 Add `exploration.md` with repository baseline and bounded external lessons.
-- [ ] 0.3 Add `design.md` with phase, ledger, authority, subagent, and memory boundaries.
-- [ ] 0.4 Add delta specs for workflow, ledger/preflight, and detector/evidence.
-- [ ] 0.5 Update `agent-gates-flow.html` for Route → Orient → Plan → Architect → Approve → Build → Audit → Release.
-- [ ] 0.6 Review terminology and run whitespace validation.
+- [x] 0.1 Rewrite `proposal.md` around proportional routing and phased gates.
+- [x] 0.2 Add `exploration.md` with repository baseline and bounded external lessons.
+- [x] 0.3 Add `design.md` with phase, ledger, authority, subagent, and memory boundaries.
+- [x] 0.4 Add delta specs for workflow, ledger/preflight, and detector/evidence.
+- [x] 0.5 Update `agent-gates-flow.html` for Route → Orient → Plan → Architect → Approve → Build → Audit → Release.
+- [x] 0.6 Review terminology and run whitespace validation.
 
 ## Phase 1: Guidance and artifacts
 
-- [ ] 1.1 RED: Add tests that assert the published agent guidance defines Route, Orient, Plan, Architect, and the prebuild/rendered-audit split.
-- [ ] 1.2 GREEN: Update `lib/AGENTS.md`, `lib/llms-ux.txt`, `lib/SKILLS.md`, and applicable skills with the proportional workflow.
-- [ ] 1.3 GREEN: Ship a ledger/packet template from a package-included location, not an unshipped docs-only path.
-- [ ] 1.4 GREEN: Add public progress names and clarify they are projections, not detailed machine state.
-- [ ] 1.5 Verify published-package file coverage and focused tests.
+- [x] 1.1 RED: Add tests that assert the published agent guidance defines Route, Orient, Plan, Architect, and the prebuild/rendered-audit split.
+- [x] 1.2 GREEN: Update `lib/AGENTS.md`, `lib/llms-ux.txt`, `lib/SKILLS.md`, and applicable skills with the proportional workflow.
+- [x] 1.3 GREEN: Ship a ledger/packet template from a package-included location, not an unshipped docs-only path.
+- [x] 1.4 GREEN: Add public progress names and clarify they are projections, not detailed machine state.
+- [x] 1.5 Verify published-package file coverage and focused tests.
 
 ## Phase 2: Ledger validation and preflight
 
-- [ ] 2.1 RED: Add fixture tests for valid and malformed schema v1 ledgers, missing attestations, unknown statuses, invalid ownership boundaries, and expired exceptions.
-- [ ] 2.2 GREEN: Implement one versioned parser/validator; do not parse arbitrary YAML with shell regex.
-- [ ] 2.3 RED: Add prebuild fixtures for direct-exempt, design-gated approved, draft/declined, user-record, and scope mismatch outcomes.
-- [ ] 2.4 GREEN: Implement `gelium-preflight` `prebuild` mode with text and machine-readable output.
-- [ ] 2.5 RED: Add release fixtures requiring audit evidence and authority-matrix results.
-- [ ] 2.6 GREEN: Implement `release` mode; it reports evidence only and does not control commit/push/deploy.
+- [x] 2.1 RED: Add fixture tests for valid and malformed schema v1 ledgers, missing attestations, unknown statuses, invalid ownership boundaries, and expired exceptions.
+- [x] 2.2 GREEN: Implement one versioned parser/validator; do not parse arbitrary YAML with shell regex.
+- [x] 2.3 RED: Add prebuild fixtures for direct-exempt, design-gated approved, draft/declined, user-record, and scope mismatch outcomes.
+- [x] 2.4 GREEN: Implement `gelium-preflight` prebuild mode with text and machine-readable output.
+- [x] 2.5 RED: Add release fixtures requiring audit evidence and authority-matrix results.
+- [x] 2.6 GREEN: Implement `release` mode; it reports evidence only and does not control commit/push/deploy.
 
 ## Phase 3: Detector, media, and coherence
 
@@ -57,7 +59,7 @@ This change is documentation/specification work now. Future production work is d
 - [x] 4.4 Publish migration guidance; preserve direct-exempt work and legacy exception paths.
 - [x] 4.5 Enable required visible-wireframe approval for design-gated work; `continua` without a shown packet is not approval.
 
-## Future implementation verification
+## Implementation verification baseline
 
 ```text
 go test ./internal/... ./site/... ./lib/...

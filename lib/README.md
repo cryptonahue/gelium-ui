@@ -75,11 +75,15 @@ Copyable HTML partials live under `templates/` (e.g. `templates/button.html`). W
 ## Agent guidance
 
 This package teaches LLM tools how to apply Gelium's good practices. When you
-write UI with an AI agent, point it at these:
+write UI with an AI agent, start with the canonical routing layer:
 
-- `AGENTS.md` — the entry point: golden rules + how to read the guidance.
-- `skills/` — 7 actionable decision skills (tokens/themes, screen types, forms,
-  states, server contracts, a11y, definition-of-done + anti-slop).
+- `SKILL.md` — discoverable wrapper for agent registries such as Gentle AI.
+- `skills/00-agent-routing.md` — outcome-first route selection and delegation
+  boundary.
+- `AGENTS.md` — Gelium entry point: golden rules + how to read the guidance.
+- `skills/` — actionable decision skills for foundations, screens, forms,
+  states, server contracts, a11y, architecture, criteria, approval, and
+  references.
 - `llms-ux.txt` — the compact decision-id pack (SURFACE / SCREEN / WF / DATA /
   FEED / JOURNEY / MEDIA / SKEL) for fast agent lookup.
 
@@ -89,7 +93,21 @@ Install into your agent's skill directory so the LLM loads it in any project:
 bash node_modules/gelium-ui/install-agents.sh   # auto-detects hermes/cursor/claude
 ```
 
-See `SKILLS.md` for the skill index.
+For projects using Gentle AI, refresh its project-local registry after
+installation:
+
+```bash
+./node_modules/gelium-ui/scripts/agent-start.sh .
+```
+
+Then select a task route explicitly when implementation begins:
+
+```bash
+go run ./cmd/gelium-preflight route --route delegated-direct --format json
+```
+
+The startup hook refreshes discovery only; it does not infer intent, enable
+SDD/RDD, or authorize delivery. See `SKILLS.md` for the full skill index.
 
 ## Monorepo
 

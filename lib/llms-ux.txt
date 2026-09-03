@@ -1,11 +1,15 @@
 # Gelium UI — UX decision pack (for agents)
 
+First read `skills/00-agent-routing.md`. It is the canonical outcome-first
+route selector; this file defines downstream Gelium UX decisions.
+
 Human: /docs/agent-workflow /docs/screens /docs/feedback /docs/journeys /docs/data-display /docs/patterns /docs/density /docs/motion /docs/content-style /docs/ui-definition-of-done /docs/section-references
 Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT free-form aesthetic redesign.
 
 ## MUST before generating UI
 
-0. ROUTE: direct-exempt | design-gated | escalate | full-sdd. Small understood
+0. ROUTE: direct-exempt | delegated-direct | design-gated | escalate | full-sdd.
+   Small understood
    fixes stay direct; new screens, flows, and substantial redesigns are a
    design-gated route; use OpenSpec only when cross-cutting ambiguity needs
    durable planning.

@@ -20,8 +20,10 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 			want: []string{
 				"ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE",
 				"direct-exempt",
+				"delegated-direct",
 				"design-gated",
 				"required for design-gated",
+				"skills/00-agent-routing.md",
 				"skills/templates/gate-ledger.md",
 			},
 		},
@@ -30,6 +32,8 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 			path: []string{"lib", "llms-ux.txt"},
 			want: []string{
 				"ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE",
+				"skills/00-agent-routing.md",
+				"delegated-direct",
 				"prebuild criteria plan",
 				"rendered audit",
 				"media-metadata-unknown",
@@ -37,12 +41,38 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 			},
 		},
 		{
+			name: "served decision pack",
+			path: []string{"site", "web", "static", "llms-ux.txt"},
+			want: []string{
+				"skills/00-agent-routing.md",
+				"delegated-direct",
+				"design-gated",
+			},
+		},
+		{
 			name: "skill index",
 			path: []string{"lib", "SKILLS.md"},
 			want: []string{
+				"skills/00-agent-routing.md",
 				"ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE",
 				"skills/templates/gate-ledger.md",
 				"skills/templates/wireframe-approval-packet.md",
+			},
+		},
+		{
+			name: "canonical routing",
+			path: []string{"lib", "skills", "00-agent-routing.md"},
+			want: []string{
+				"direct-exempt",
+				"delegated-direct",
+				"design-gated",
+				"full-sdd",
+				"Working",
+				"Needs your decision",
+				"Checking",
+				"Ready",
+				"per action",
+				"authority boundaries",
 			},
 		},
 		{
@@ -106,5 +136,15 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 				}
 			}
 		})
+	}
+}
+
+func TestServedAgentPacksMirrorPackageSources(t *testing.T) {
+	for _, name := range []string{"llms.txt", "llms-ux.txt"} {
+		packageSource := repositoryFile(t, "lib", name)
+		servedProjection := repositoryFile(t, "site", "web", "static", name)
+		if servedProjection != packageSource {
+			t.Errorf("served %s must exactly mirror lib/%s", name, name)
+		}
 	}
 }

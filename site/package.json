@@ -1,9 +1,9 @@
 {
   "name": "gelium-ui-site",
-  "version": "0.5.0",
+  "version": "0.6.3",
   "private": true,
   "scripts": {
-    "build": "tailwindcss --cwd .. -i site/web/styles/app.css -o site/web/static/app.css --minify && node ../scripts/copy-htmx.mjs && node ../scripts/copy-icons.mjs && node ../scripts/copy-lib-js.mjs"
+    "build": "tailwindcss --cwd .. -i site/web/styles/app.css -o site/web/static/app.css --minify && node ../scripts/copy-htmx.mjs && node ../scripts/copy-icons.mjs && node ../scripts/copy-lib-js.mjs && node ../scripts/copy-agent-guidance.mjs"
   },
   "devDependencies": {
     "@material-symbols/svg-400": "^0.46.0",
@@ -12,6 +12,6 @@
     "tailwindcss": "4.3.3"
   },
   "dependencies": {
-    "gelium-ui": "0.6.0"
+    "gelium-ui": "0.6.3"
   }
 }

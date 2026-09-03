@@ -15,6 +15,8 @@ This contract governs **composition authoring**: producing or reviewing a screen
 recipe, a flow, and their machine-readable contracts. It does NOT govern
 component implementation (see `AI-COMPONENT-IMPLEMENTER-PROMPT.md`) or the
 component/recipe/theme/documentary workflows (`gelium-ui-agent-prompts.md`).
+Routing is governed first by `lib/skills/00-agent-routing.md`; this contract is
+downstream of that decision and must not be treated as a second route selector.
 
 ## 2. Mandatory constraints (the agent MUST NOT)
 
