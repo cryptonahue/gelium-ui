@@ -5,3 +5,8 @@ loom
 loom.exe
 .tmp/
 .zcode/
+
+# Local agent plans, auxiliary worktrees, and package archives
+.hermes/
+.worktrees/
+lib/gelium-ui-*.tgz
