@@ -54,7 +54,7 @@
 | 11 | SEO_REQUIREMENTS | noindex/noindex, title/desc por ruta, canonical, h1 | `seo-contract.md`, `seo-patterns.md` |
 | 12 | GEO_REQUIREMENTS | contenido factual, URLs deep-linkables, entidad única | `geo-contract.md`, `geo-patterns.md` |
 | 13 | SERVER_CONTRACT | GET params, POST+303, 422, gelium:toast, postOnlyPaths | `composition-rules.md` §9 |
-| 14 | NO_JS_FLOW | rama no-HX completa | `AI-COMPONENT-IMPLEMENTER-PROMPT.md` §12 |
+| 14 | NO_JS_FLOW | rama no-HX completa | `lib/skills/14-component-implementation.md` |
 | 15 | HTMX_ENHANCEMENT | fragmento swap, sin cambiar contrato de mutación | `composition-rules.md` §9 |
 | 16 | RESPONSIVE_BEHAVIOR | columna fluida, min()/clamp(), paginación server-side | `composition-rules.md` §7 |
 | 17 | THEME_REQUIREMENTS | solo tokens `--ui-*`, guard de literales | `theme-contract.md` |

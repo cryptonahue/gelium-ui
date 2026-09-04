@@ -14,18 +14,18 @@ ruta del trabajo ni reemplaza `direct-exempt`, `delegated-direct`,
 
 ## 1. Reglas de oro (en todo trabajo, sin excepción)
 
-1. **No-JS end-to-end**: el flujo principal DEBE completarse con JS/HTMX deshabilitado (`AI-COMPONENT-IMPLEMENTER-PROMPT.md` §12). JS solo si queda una brecha de plataforma demostrada (auditoría platform-first, §7 del mismo prompt).
-2. **HTML-first**: elementos nativos antes que ARIA; `div`/`span` nunca reemplazan controles (`core.md`, prompt §11).
+1. **No-JS end-to-end**: el flujo principal DEBE completarse con JS/HTMX deshabilitado (`lib/skills/14-component-implementation.md`, reglas no-JS). JS solo si queda una brecha de plataforma demostrada.
+2. **HTML-first**: elementos nativos antes que ARIA; `div`/`span` nunca reemplazan controles (`core.md`, `lib/skills/14-component-implementation.md`).
 3. **Tokens `--ui-*`**: todo valor visual público es token; cero literales de color/geometría en componentes (guard `TestNoColorLiteralsInComponents`). Los mappings Material viven en el theme, no en componentes.
 4. **Server-first**: estado navegable = URL; validación = 422 + `X-Gelium-Validation`; feedback persistente ≠ toast (`composition-rules.md` §9).
 5. **No tocar**: `app.js`, `tokens.css`/`theme.css` (salvo theme work), `go.mod`/`package.json`, `COMPONENT-ROADMAP.md`, `MATERIAL-WEB-PROGRESS.md`, `docs/handoffs/*` — salvo tarea explícita.
-6. **Worktree aislado**: trabaja en una copia física autorizada, nunca en el checkout canónico (`AI-COMPONENT-IMPLEMENTER-PROMPT.md` §4.1 `ISOLATED_PHYSICAL_WORKSPACE`).
+6. **Worktree aislado**: trabaja en una copia física autorizada, nunca en el checkout canónico (`lib/skills/14-component-implementation.md`, ownership y handoff).
 
 ---
 
 ## 2. Flujo: implementar un componente nuevo
 
-> El prompt operativo completo (parámetros, concurrencia, TDD, reviews, estados finales) está en **`AI-COMPONENT-IMPLEMENTER-PROMPT.md`** (repo root). Este es el checklist condensado que ese prompt ejecuta:
+> La skill operativa actual es **`lib/skills/14-component-implementation.md`**; este es el checklist condensado para implementar un componente:
 
 1. **Descubrimiento (read-only)** — leer README, roadmap, docs de contrato (`composition-rules.md`, `gelium-ui-core.md`), componente similar existente; reportar ownership/paths protegidos (prompt §5).
 2. **Auditoría platform-first** — tabla capacidad vs HTML/CSS/forms/HTMX vs baseline de browsers; JS solo con brecha demostrada (§7).
@@ -44,7 +44,7 @@ ruta del trabajo ni reemplaza `direct-exempt`, `delegated-direct`,
 9. **Smoke en puerto propio** (nunca `:8787`, no tocar `gelium.exe`) — light/dark, narrow/wide, keyboard, no-JS, HTMX, reduced motion, forced colors (§17).
 10. **Estado final** — exactamente uno de `COMPLETE_AWAITING_USER_ACCEPTANCE` / `READY_FOR_INTEGRATION` / `BLOCKED` / `ABORTED_ON_DRIFT`; entrega con checklist observable (§18-20).
 
-**Plantilla mínima de asignación**: ver `AI-COMPONENT-IMPLEMENTER-PROMPT.md` ("Plantilla mínima de asignación", ejemplo Checkbox).
+**Plantilla mínima de asignación**: ver `lib/skills/14-component-implementation.md` y el contrato de routing antes de asignar un worker.
 
 ---
 
@@ -84,7 +84,7 @@ ruta del trabajo ni reemplaza `direct-exempt`, `delegated-direct`,
 
 1. **Fuente de verdad = código real**: la tabla de componentes se genera leyendo `web/templates/*.html`, `web/styles/*.css` y `internal/app/*.go`; no se inventa nada.
 2. **Categorías cerradas** — foundation/action/input/feedback/navigation/data/public/state-pattern/recipe-primitive; los patterns (D/E/F) se indexan en `gelium-ui-pattern-registry.md`, no en el component registry.
-3. **No duplicar** — cada doc referencia los contratos existentes (`composition-rules.md`, `theme-contract.md`, `theme-implementation-guide.md`, `ux-patterns.md`, `public-content-patterns.md`, `screen-recipes.md`, `AI-COMPONENT-IMPLEMENTER-PROMPT.md`) con enlaces relativos; solo lo operativo se extrae.
+3. **No duplicar** — cada doc referencia los contratos existentes (`composition-rules.md`, `theme-contract.md`, `theme-implementation-guide.md`, `ux-patterns.md`, `public-content-patterns.md`, `screen-recipes.md`, `lib/skills/14-component-implementation.md`) con enlaces relativos; solo lo operativo se extrae.
 4. **Todo cambio documental verifica** — `npm run build`, `go test ./...`, `go vet ./...`, `git diff --check`.
 
 ---
@@ -97,7 +97,7 @@ ruta del trabajo ni reemplaza `direct-exempt`, `delegated-direct`,
 | `ISOLATED_PHYSICAL_WORKSPACE` | copia física autorizada; nunca el canónico | varias IAs |
 | `EXCLUSIVE_INTEGRATION` | shared files canónicos con reserva literal | integrador único |
 
-Shared files por defecto (no editar sin reserva): `server.go`, `server_test.go`, `layout.html`, `app.css`, `theme.css`, `styles_contract_test.go`, `static/app.css`, `static/app.js`, `static/htmx.min.js`, `assets.go`, `README.md`, `package.json`, `package-lock.json`, `go.mod`, `go.sum`, `cmd/gelium/*` (`AI-COMPONENT-IMPLEMENTER-PROMPT.md` §4.2). Sin Git en workers (`git init/status/diff/commit` prohibidos); el integrador commitea.
+Shared files por defecto (no editar sin reserva): `server.go`, `server_test.go`, `layout.html`, `app.css`, `theme.css`, `styles_contract_test.go`, `static/app.css`, `static/app.js`, `static/htmx.min.js`, `assets.go`, `README.md`, `package.json`, `package-lock.json`, `go.mod`, `go.sum`, `cmd/gelium/*` (`lib/skills/14-component-implementation.md`, ownership). Sin Git en workers (`git init/status/diff/commit` prohibidos); el integrador commitea.
 
 ---
 

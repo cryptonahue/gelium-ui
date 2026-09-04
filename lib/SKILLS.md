@@ -21,6 +21,7 @@ FEED / JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
 | 11 | `11-design-criteria.md` | checkable visual judgment, reuse, and resilient polish |
 | 12 | `12-wireframe-approval.md` | conditional approval gate for new screens, flows, and substantial redesigns |
 | 13 | `13-reference-selection.md` | semantic section/component reference selection before wireframes |
+| 14 | `14-component-implementation.md` | new component contract, TDD, ownership, no-JS, and verification |
 
 ## Proportional workflow and records
 

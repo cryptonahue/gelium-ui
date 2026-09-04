@@ -43,6 +43,12 @@ else
 fi
 
 echo "== gates =="
+VERSION="$(node -p "require('./lib/package.json').version")"
+if ! grep -q "^## \[${VERSION}\]" "${ROOT}/CHANGELOG.md"; then
+  echo "CHANGELOG.md is missing a release entry for gelium-ui@${VERSION}."
+  exit 1
+fi
+echo "changelog entry: ${VERSION}"
 go test ./internal/... ./site/... ./lib/...
 go vet ./internal/... ./site/... ./lib/...
 npm run build

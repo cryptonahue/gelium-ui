@@ -152,7 +152,7 @@ type webSiteLD struct {
 ```json
 {"@context":"https://schema.org","@type":"SoftwareApplication",
  "name":"Gelium UI","applicationCategory":"DeveloperApplication",
- "softwareVersion":"0.6.3","operatingSystem":"Any (web)","license":"MIT",
+ "softwareVersion":"0.6.4","operatingSystem":"Any (web)","license":"MIT",
  "url":"https://gelium-ui.example/"}
 ```
 

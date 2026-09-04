@@ -41,7 +41,7 @@ Hallazgos menores: residuo de branding en `README.md` (gap abierto documentado p
 | Branding residuo (comentario) | `web/styles/demo-whatsapp.css:2` ("…composes the Loom primitives") | Baja | Reescribir el comentario: "Gelium UI primitives". Es un asset importado por `app.css`. |
 | Metadata gap | `internal/app/server.go` `renderErrorPage` (404/500) no pasa por `resolveMeta` → sin `description`/`canonical`/`robots` | Baja | Pasar el error page por `resolveMeta` (el status 404 ya impide indexación, pero el contrato §15 exige canonical en páginas indexables y coherencia de head). O documentar la excepción en el contrato SEO. |
 | A11y matiz (documentable) | `web/templates/skeleton.html` `role="status"` | Baja | Cuando HTMX reemplaza el skeleton, la región viva se elimina sin anunciar "loaded" (solo se anuncia el insert). Cumple el contrato actual; documentar el comportamiento si se quiere el anuncio de fin de carga. |
-| Branding residuo (histórico) | `PROMPT-MATERIAL-WEB-INVENTORY.md`, `MATERIAL-WEB-PROGRESS.md`, `AI-COMPONENT-IMPLEMENTER-PROMPT.md`, `COMPONENT-ROADMAP.md` | Baja | Opcional — docs de proceso/roadmap, no superficies servidas. Unificar naming al tocarlas. |
+| Branding residuo (histórico) | `PROMPT-MATERIAL-WEB-INVENTORY.md`, `MATERIAL-WEB-PROGRESS.md`, `COMPONENT-ROADMAP.md` | Baja | Opcional — docs de proceso/roadmap, no superficies servidas. Unificar naming al tocarlas. |
 | Branding residuo (temp) | `.tmp/*.html` ("Loom UI") | Despreciable | Limpiar `.tmp/` o ignorar (snapshots de trabajo). |
 
 ---

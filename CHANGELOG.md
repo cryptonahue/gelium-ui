@@ -4,6 +4,18 @@ All notable changes to the Gelium UI project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.6.4] — 2026-09-03
+
+### Added
+- **Canonical agent routing**: root `AGENTS.md`, discoverable `lib/SKILL.md`, and `lib/skills/00-agent-routing.md` now route work as `direct-exempt`, `delegated-direct`, `design-gated`, `escalate`, or `full-sdd` before loading downstream Gelium guidance.
+- **Component implementation skill**: `lib/skills/14-component-implementation.md` replaces the legacy root prompt as the operational contract for new components, covering ownership, platform-first decisions, no-JS, TDD, verification, and handoff states.
+- **Route handoff and startup discovery**: `gelium-preflight route` provides machine-readable next actions, while `lib/scripts/agent-start.sh` optionally refreshes a Gentle AI project registry.
+
+### Changed
+- **Agent guidance projections**: `site/web/static/llms.txt` and `llms-ux.txt` are now copied from `lib/` during the build and protected by equality tests.
+- **Component workflow references**: active documentation points to skill 14; `AI-COMPONENT-IMPLEMENTER-PROMPT.md` was removed after its references were migrated.
+- **Package metadata**: the docs site consumes `gelium-ui@0.6.4`; HTMX tests and asset cache-busting expectations follow the actual `4.0.0` runtime and `0.6.4` asset version.
+
 ## [0.6.3] — 2026-09-03
 
 ### Fixed
@@ -157,7 +169,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - **Access and verification contracts** (Phases A–D): native semantics, focus rings, aria-* across the whole surface.
 - **Docs shell**: navigation, sidebar, breadcrumbs, search (disabled), theme/scheme switchers.
 
-[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.3...HEAD
+[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.4...HEAD
+[0.6.4]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.4
 [0.6.3]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.3
 [0.6.2]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.2
 [0.6.0]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.0

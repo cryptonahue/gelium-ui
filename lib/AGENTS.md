@@ -9,6 +9,9 @@ First read `skills/00-agent-routing.md` and classify the requested outcome.
 It is the canonical route selector; the rules below are downstream Gelium
 contracts. Do not apply design-gated ceremony to `direct-exempt` work.
 
+For a new library component, load `skills/14-component-implementation.md`
+after routing.
+
 Read this entrypoint, then `llms-ux.txt`, then `SKILLS.md`; each layer is part
 of the protocol. Start with `skills/01-foundations.md`. After picking a SURFACE
 mode (`skills/02`), run `skills/08-product-reasoning.md` to discover missing

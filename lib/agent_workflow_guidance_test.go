@@ -15,6 +15,16 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 		want []string
 	}{
 		{
+			name: "repository entrypoint",
+			path: []string{"AGENTS.md"},
+			want: []string{
+				"lib/SKILL.md",
+				"lib/skills/00-agent-routing.md",
+				"lib/skills/14-component-implementation.md",
+				"go test ./...",
+			},
+		},
+		{
 			name: "entrypoint",
 			path: []string{"lib", "AGENTS.md"},
 			want: []string{
@@ -108,6 +118,16 @@ func TestAgentWorkflowGuidanceContract(t *testing.T) {
 			},
 		},
 		{
+			name: "component implementation skill",
+			path: []string{"lib", "skills", "14-component-implementation.md"},
+			want: []string{
+				"gelium-ui-component-implementation",
+				"NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST",
+				"styles_contract_test.go",
+				"READY_FOR_INTEGRATION",
+			},
+		},
+		{
 			name: "gate ledger template",
 			path: []string{"lib", "skills", "templates", "gate-ledger.md"},
 			want: []string{
@@ -146,5 +166,23 @@ func TestServedAgentPacksMirrorPackageSources(t *testing.T) {
 		if servedProjection != packageSource {
 			t.Errorf("served %s must exactly mirror lib/%s", name, name)
 		}
+	}
+}
+
+func TestComponentImplementationSkillIsIndexed(t *testing.T) {
+	skill := repositoryFile(t, "lib", "skills", "14-component-implementation.md")
+	index := repositoryFile(t, "lib", "SKILLS.md")
+	for _, required := range []string{
+		"gelium-ui-component-implementation",
+		"NO PRODUCTION CODE WITHOUT A FAILING TEST FIRST",
+		"styles_contract_test.go",
+		"READY_FOR_INTEGRATION",
+	} {
+		if !strings.Contains(skill, required) {
+			t.Errorf("component skill is missing %q", required)
+		}
+	}
+	if !strings.Contains(index, "14-component-implementation.md") {
+		t.Errorf("component guidance surface does not point to skill 14")
 	}
 }
