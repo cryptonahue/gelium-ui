@@ -25,13 +25,15 @@ go run ./cmd/gelium-preflight route --route delegated-direct --format json
 
 ## Repository map
 
-- `lib/` — published `gelium-ui` npm package. Read `lib/AGENTS.md` and the
+- `lib/` — primary product and published `gelium-ui` npm package. Read `lib/AGENTS.md` and the
   applicable `lib/skills/*.md` before changing package behavior.
-- `site/` — docs/dogfood site consuming the package through npm workspaces.
+- `site/` — docs/dogfood consumer application; it does not define package
+  component contracts or package versions.
 - `internal/` — Go application, gates, handlers, and contract tests.
 - `cmd/` — repository tools and smoke binaries.
 - `docs/` — product/system contracts, OpenSpec changes, audits, and diagrams.
 - `scripts/` — reproducible build, asset-copy, detector, and packaging scripts.
+- `docs/release-workflow.md` — single release/version/changelog workflow.
 
 ## Change boundaries
 
@@ -41,6 +43,9 @@ go run ./cmd/gelium-preflight route --route delegated-direct --format json
   assets change.
 - Keep public package source in `lib/`; keep site-only dogfood behavior in
   `site/`.
+- Treat `lib/package.json` as the npm version authority. Every package version
+  must have a matching `CHANGELOG.md` entry; run `npm run release:check` before
+  commit or publish.
 - Component implementation uses `lib/skills/14-component-implementation.md`.
   Do not use the removed root-level prompt; it was replaced by this skill.
 - Do not commit, push, publish, or deploy unless the user explicitly requests

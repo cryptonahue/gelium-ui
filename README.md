@@ -4,6 +4,11 @@
 
 Current release: **v0.6.4** (prepared; npm publication pending) — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui); monorepo `lib/` + `site/` dogfood; HTMX 4; on-this-page rail; prev/next pagination; demo-first docs; mobile foundations (touch targets, safe areas, reduced motion, overflow containment); canonical agent routing and component implementation skill.
 
+This repository is library-first: `lib/` is the publishable npm package,
+`site/` is its docs and dogfood consumer, and `docs/` holds repository-level
+contracts and decisions. Release metadata and the changelog workflow are
+documented in [`docs/release-workflow.md`](docs/release-workflow.md).
+
 Gelium UI is a **Themeable**, open-code, server-rendered component library: semantic HTML, copyable components, token-driven `--ui-*` themes, Tailwind CSS 4 and HTMX served locally. No CDN, no client framework, no hydration. JavaScript is progressive enhancement — everything works without it.
 
 ## Install (consumer)

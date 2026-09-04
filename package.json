@@ -8,6 +8,7 @@
   ],
   "scripts": {
     "build": "npm run build -w gelium-ui-site && node scripts/build-lib-dist.mjs",
+    "release:check": "node scripts/check-release.mjs",
     "test:workspace-resolution": "node scripts/verify-workspace-gelium-resolution.mjs"
   }
 }

@@ -2,6 +2,10 @@
 
 Server-rendered UI components for **Tailwind CSS 4** and **HTMX**. HTML-first, 0-JS contract by default; progressive enhancement for toast, validation swap, and slider fill.
 
+This directory is the public `gelium-ui` npm package. The repository's
+`site/` directory is only the Go docs/dogfood consumer; package contracts,
+templates, styles, skills, and release metadata are authoritative here.
+
 ## Install
 
 ```bash
