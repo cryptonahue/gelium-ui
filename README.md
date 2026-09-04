@@ -4,11 +4,6 @@
 
 Current release: **v0.6.5** (prepared; npm publication pending) — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui).
 
-The accompanying docs consumer includes HTMX 4, an **on-this-page rail**,
-**prev/next pagination**, demo-first documentation, and mobile foundations; these
-are examples of the repository dogfood site, not runtime requirements of the
-package.
-
 Gelium UI is an open-code, server-rendered UI library for HTML-first products.
 It gives teams reusable components, token-based themes, accessible states, and
 a real no-JavaScript baseline without requiring React, Vue, hydration, or a
@@ -38,6 +33,13 @@ gelium-ui/
 ├── skills/     decision and implementation guidance for agents
 └── references/ portable structural references for npm-only consumers
 ```
+
+### The repository docs consumer
+
+The accompanying docs consumer includes HTMX 4, an **on-this-page rail**,
+**prev/next pagination**, demo-first documentation, and mobile foundations.
+These are examples of the repository dogfood site, not runtime requirements of
+the npm package.
 
 ## Quick start
 
@@ -208,10 +210,17 @@ are **docs-inspired / Gelium-authored**, never claimed as official package CSS.
 
 Gelium is informed by public design systems, open-code libraries, UX research,
 visual studies, and the [Gentle AI](https://github.com/Gentleman-Programming/gentle-ai)
-agent workflow. The roles are different: Material 3, USWDS, GOV.UK, and Mozilla
-Protocol inform foundations; Basecoat, Base UI, Naive UI, shadcn/ui, and templ
-inform component and documentation patterns; Linear, Vercel, Alden, and Refero
-inform visual studies; Gentle AI informs outcome-first routing and delegation.
+agent workflow. The roles are different, and the table below records the
+adaptation rather than implying affiliation or runtime dependency.
+
+| Area | Sources studied | Gelium adaptation |
+|---|---|---|
+| Design foundations | [Material Design 3](https://m3.material.io), [USWDS](https://designsystem.digital.gov), [GOV.UK Design System](https://design-system.service.gov.uk), [Mozilla Protocol](https://protocol.mozilla.org) | Semantic `--ui-*` tokens, content guidance, accessibility, readable measure, state/elevation/type rules |
+| Component behavior and open code | [Base UI](https://base-ui.com), [Basecoat UI](https://basecoatui.com), [Naive UI](https://naiveui.com), [shadcn/ui](https://ui.shadcn.com), [templ](https://templ.guide) | Composable behavior, copyable HTML, demos-first docs, and server-rendered/no-JS adaptations—not their React runtime |
+| Naming, references, and icons | [Name That UI](https://namethatui.com), [Material Web](https://github.com/material-components/material-web), [Material Symbols](https://github.com/google/material-design-icons), [Tabler Icons](https://github.com/tabler/tabler-icons) | Alternative names, agent-readable references, audited token families, curated inline SVG icons |
+| Visual directions | Basecoat style packs, [Linear](https://linear.app), [Vercel](https://vercel.com), Alden, and [Refero](https://styles.refero.design) studies | Token-only skins over unchanged Gelium markup and server contracts; documented divergences instead of claimed parity |
+| UX and content research | [Nielsen Norman Group](https://www.nngroup.com), [WCAG](https://www.w3.org/WAI/standards-guidelines/wcag/) | Reading, hierarchy, plain language, focus, contrast, responsive, and recovery checks |
+| Agent workflow | [Gentle AI](https://github.com/Gentleman-Programming/gentle-ai) | Outcome-first routing, bounded delegation, optional SDD, candidate-first review, and separated delivery authority; not full RDD |
 
 Gelium reimplements ideas as original semantic HTML, `--ui-*` tokens,
 server-rendered templates, and optional progressive enhancement. It does not
