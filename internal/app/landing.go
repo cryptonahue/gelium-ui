@@ -100,18 +100,18 @@ func marketingLanding() landingView {
 	return landingView{
 		Hero: &heroView{
 			Eyebrow:  "Gelium UI",
-			Title:    "Server-rendered components. Zero required JS.",
-			Subtitle: "Open-code HTML and tokens for server apps. Install npm gelium-ui, pick a theme class, copy partials. HTMX when you want it.",
+			Title:    "Build UI that works without JavaScript.",
+			Subtitle: "Open-code components, semantic HTML, token themes, and server-first flows for HTML-first applications.",
 			CTAs: []buttonView{
-				{Label: "Get started", Variant: "primary", Href: "/docs"},
+				{Label: "Install gelium-ui", Variant: "primary", Href: "#landing-install"},
 				{Label: "Browse components", Variant: "secondary", Href: "/components/button"},
 			},
 		},
 		Claims: []string{
-			"Zero required JS",
-			"Two themes, one bundle",
-			"735+ contract tests",
-			"Open code, MIT",
+			"HTML-first",
+			"No-JS baseline",
+			"Server-first state",
+			"Themes without forks",
 		},
 		FeaturesHeading: sectionHeadingView{
 			Eyebrow:  "Why Gelium",
@@ -137,8 +137,8 @@ func marketingLanding() landingView {
 		},
 		Split: &splitView{
 			Eyebrow: "How it fits",
-			Title:   "Install the package. Copy the open code.",
-			Body:    "Consumers use npm gelium-ui (CSS, themes, templates, JS helpers). This docs site is a Go dogfood app — not the install path for product UI. Progressive enhancement stays optional.",
+			Title:   "Start with the package. Copy the open code.",
+			Body:    "Install gelium-ui for CSS, themes, templates, optional JS helpers, agent guidance, and portable references. The server renders the HTML; progressive enhancement stays optional.",
 			CTA:     &buttonView{Label: "Open the docs", Variant: "secondary", Href: "/docs"},
 			Media: template.HTML(
 				`<pre class="ui-landing-code" tabindex="0"><code>npm install gelium-ui
@@ -148,6 +148,9 @@ func marketingLanding() landingView {
 
 /* Theme on &lt;html&gt; */
 &lt;html class="theme-material"&gt;
+
+/* First component */
+&lt;button class="ui-button"&gt;Save changes&lt;/button&gt;
 
 /* Optional */
 // gelium.js — toast + 422 helper</code></pre>`,
@@ -250,6 +253,37 @@ func homeLandingNav() []navLink {
 	}
 }
 
+func marketingFooter() *footerView {
+	defaultSiteFooter := defaultFooter()
+	sections := []footerSection{
+		{Title: "Package", Links: []navLink{
+			{Path: "/components/button", Label: "Component registry"},
+			{Path: "/docs/themes/gallery", Label: "Themes"},
+			{Path: "/docs/templates/product", Label: "Templates"},
+		}},
+		{Title: "Learn", Links: []navLink{
+			{Path: "/docs", Label: "Documentation"},
+			{Path: "/docs/server-contracts", Label: "Server contracts"},
+			{Path: "/docs/agent-workflow", Label: "Agent guidance"},
+		}},
+		{Title: "Resources", Links: []navLink{
+			{Path: "https://www.npmjs.com/package/gelium-ui", Label: "npm"},
+			{Path: "https://github.com/cryptonahue/gelium-ui", Label: "GitHub"},
+			{Path: "/docs/changelog", Label: "Changelog"},
+		}},
+		{Title: "Community", Links: []navLink{
+			{Path: "https://github.com/cryptonahue/gelium-ui/issues", Label: "Issues"},
+			{Path: "https://github.com/cryptonahue/gelium-ui/discussions", Label: "Discussions"},
+		}},
+	}
+	sections = append(sections, defaultSiteFooter.Sections...)
+	return &footerView{
+		Brand: "Gelium UI",
+		Sections: sections,
+		Legal: "© 2026 Gelium UI · MIT",
+	}
+}
+
 func (s *server) home(w http.ResponseWriter, r *http.Request) {
 	landing := marketingLanding()
 	data := pageView{
@@ -267,7 +301,7 @@ func (s *server) renderLanding(w http.ResponseWriter, r *http.Request, data page
 	data.Meta = resolveMeta(data, routePath)
 	data.AssetsVersion = lib.AssetsVersion
 	if data.Footer == nil {
-		data.Footer = defaultFooter()
+		data.Footer = marketingFooter()
 	}
 
 	selection := applyDocumentSelection(&data, r)

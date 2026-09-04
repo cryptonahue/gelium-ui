@@ -5,6 +5,23 @@ import (
 	"testing"
 )
 
+func TestMarketingShellUsesInlineStartMobileDrawer(t *testing.T) {
+	css := sourceComponentCSS(t, "docs-chrome.css")
+	for _, contract := range []string{
+		".site-header-mobile-menu { display: none; }",
+		"@media (max-width: 48rem)",
+		".site-header-primary { display: none; }",
+		".site-header-mobile-menu { display: block;",
+		"position: absolute;",
+		"inset-inline-start: 0;",
+		"width: min(20rem, calc(100vw - 2rem));",
+	} {
+		if !strings.Contains(css, contract) {
+			t.Errorf("marketing shell is missing responsive drawer contract %q", contract)
+		}
+	}
+}
+
 // TestDocsShellSafeAreaAndNavHeightContract pins the Layer 3 (mobile/runtime)
 // contracts that live in docs-shell.css and must reach the compiled bundle:
 // the sticky topbar pads into the device safe areas (GOV.UK

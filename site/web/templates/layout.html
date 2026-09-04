@@ -47,7 +47,11 @@
   {{else}}
   <header class="site-header">
     <a class="brand" href="/">Gelium UI</a>
-    <nav aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
+    <nav class="site-header-primary" aria-label="Primary">{{range $i, $l := .Nav}}{{if $i}} {{end}}<a href="{{$l.Path}}">{{$l.Label}}</a>{{end}}</nav>
+    <details class="site-header-mobile-menu">
+      <summary>Menu</summary>
+      <nav aria-label="Primary mobile">{{range .Nav}}<a href="{{.Path}}">{{.Label}}</a>{{end}}</nav>
+    </details>
     <div class="site-header-end">
       {{if .RecipeSwitcher}}{{if .RecipeSwitcher.RenderInTopbar}}{{template "recipe-switcher" .RecipeSwitcher}}{{end}}{{end}}
       {{if .SchemeSwitcher}}{{template "color-scheme-switcher" .SchemeSwitcher}}{{end}}

@@ -51,8 +51,18 @@ func TestLandingShowsFAQ(t *testing.T) {
 		}
 	}
 
-	// Exactly four zero-JS disclosures must be rendered.
-	if got := strings.Count(body, "<summary>"); got != 4 {
+	// Exactly four zero-JS disclosures must be rendered inside the FAQ section;
+	// the marketing shell's responsive menu has its own native summary.
+	start := strings.Index(body, `ui-landing-faq`)
+	if start < 0 {
+		t.Fatal("landing FAQ section missing before disclosure count")
+	}
+	end := strings.Index(body[start:], `</section>`)
+	faq := body[start:]
+	if end >= 0 {
+		faq = faq[:end]
+	}
+	if got := strings.Count(faq, "<summary>"); got != 4 {
 		t.Errorf("landing FAQ rendered %d <summary> disclosures, want 4", got)
 	}
 }
@@ -67,10 +77,10 @@ func TestLandingClaimsStrip(t *testing.T) {
 	}
 
 	claims := []string{
-		"Zero required JS",
-		"Two themes, one bundle",
-		"735+ contract tests",
-		"Open code, MIT",
+		"HTML-first",
+		"No-JS baseline",
+		"Server-first state",
+		"Themes without forks",
 	}
 	// html/template escapes '+' as &#43; in text; normalize so the assertion
 	// checks the claim copy, not the escaping mechanism.

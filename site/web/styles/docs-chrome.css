@@ -8,10 +8,12 @@
     padding: 1rem clamp(1rem, 4vw, 4rem);
     background: var(--ui-color-surface);
     box-shadow: var(--ui-shadow-1);
+    position: relative;
   }
   .brand { font: var(--ui-type-title-lg); letter-spacing: var(--ui-type-title-lg-letter-spacing); text-decoration: none; }
-  .site-header nav { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
+  .site-header-primary { display: flex; flex-wrap: wrap; gap: .25rem 1rem; }
   .site-header nav a { color: var(--ui-color-primary); font: var(--ui-type-label-lg); letter-spacing: var(--ui-type-label-lg-letter-spacing); }
+  .site-header-mobile-menu { display: none; }
   .site-header-end {
     display: flex;
     align-items: center;
@@ -261,4 +263,38 @@
     gap: 2rem;
   }
   .text-field-preview .ui-text-field { width: 100%; }
+
+  @media (max-width: 48rem) {
+    .site-header { align-items: center; }
+    .site-header-primary { display: none; }
+    .site-header-mobile-menu { display: block; margin-inline-start: auto; }
+    .site-header-mobile-menu > summary {
+      cursor: pointer;
+      list-style: none;
+      padding: .625rem .75rem;
+      border: 1px solid var(--ui-color-border);
+      border-radius: var(--ui-radius-sm);
+      color: var(--ui-color-primary);
+      font: var(--ui-type-label-lg);
+    }
+    .site-header-mobile-menu > summary::-webkit-details-marker { display: none; }
+    .site-header-mobile-menu[open] > summary { background: var(--ui-color-surface-container, var(--ui-color-surface)); }
+    .site-header-mobile-menu nav {
+      position: absolute;
+      inset-block-start: 100%;
+      inset-inline-start: 0;
+      z-index: 2;
+      display: flex;
+      flex-direction: column;
+      gap: .25rem;
+      width: min(20rem, calc(100vw - 2rem));
+      padding: .75rem;
+      border: 1px solid var(--ui-color-border);
+      border-block-start: 0;
+      background: var(--ui-color-surface);
+      box-shadow: var(--ui-shadow-2);
+    }
+    .site-header-mobile-menu nav a { padding: .625rem .75rem; }
+    .site-header-end { margin-inline-start: .75rem; }
+  }
 }
