@@ -18,7 +18,11 @@ Every library stands on the shoulders of the systems its authors have read, used
 | [Name That UI](https://namethatui.com) | Alternate names plus agent prompts | "Alternative names" and "Agent prompt" sections make the docs usable by AI coding agents | See project site |
 | [Material Web](https://github.com/material-components/material-web) | Token inventory reference | `--ui-*` token families audited against Material Web's public token families; an original mapping, not a port | See project site |
 | [Material Symbols](https://github.com/google/material-design-icons) | Icon glyph vocabulary | Curated set of 21 trusted server-resolved inline SVGs (see the [Icon](/components/icon) page), themeable via `currentColor`, embedded in the binary | Apache-2.0 |
+| [Tabler Icons](https://github.com/tabler/tabler-icons) | Outline and filled icon vocabulary | Optional curated catalog alongside Material Symbols; icons remain literal, server-resolved, and extracted only when used | MIT |
 | [shadcn/ui and templ](https://ui.shadcn.com) | Distribution presets as a reference | Component source ships as copyable, themeable primitives over semantic tokens, rendered server-side | See project sites |
+| [Nielsen Norman Group](https://www.nngroup.com) | Usability and reading research | F-pattern, banner blindness, hierarchy, and recovery guidance are translated into Gelium checks; no NNG code or assets ship | Research source; terms apply |
+| [Gentle AI](https://github.com/Gentleman-Programming/gentle-ai) | Agent routing, delegation boundaries, optional SDD, and receipt/review ideas | Gelium uses outcome-first routing and separated delivery authority while keeping its own UX contracts; full RDD is not adopted as a requirement | MIT |
+| [Refero](https://styles.refero.design) and visual studies | Visual direction references for Alden, Linear, and Vercel | Token-only skins and documented structural observations; no screenshots, branding, or copied visual assets ship | See project sites |
 
 ## License notes
 

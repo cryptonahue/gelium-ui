@@ -2,16 +2,46 @@
 
 > Themeable, open-code UI components for Tailwind CSS and HTMX.
 
-Current release: **v0.6.4** (prepared; npm publication pending) — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui); monorepo `lib/` + `site/` dogfood; HTMX 4; on-this-page rail; prev/next pagination; demo-first docs; mobile foundations (touch targets, safe areas, reduced motion, overflow containment); canonical agent routing and component implementation skill.
+Current release: **v0.6.5** (prepared; npm publication pending) — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui).
 
-This repository is library-first: `lib/` is the publishable npm package,
-`site/` is its docs and dogfood consumer, and `docs/` holds repository-level
-contracts and decisions. Release metadata and the changelog workflow are
-documented in [`docs/release-workflow.md`](docs/release-workflow.md).
+The accompanying docs consumer includes HTMX 4, an **on-this-page rail**,
+**prev/next pagination**, demo-first documentation, and mobile foundations; these
+are examples of the repository dogfood site, not runtime requirements of the
+package.
 
-Gelium UI is a **Themeable**, open-code, server-rendered component library: semantic HTML, copyable components, token-driven `--ui-*` themes, Tailwind CSS 4 and HTMX served locally. No CDN, no client framework, no hydration. JavaScript is progressive enhancement — everything works without it.
+Gelium UI is an open-code, server-rendered UI library for HTML-first products.
+It gives teams reusable components, token-based themes, accessible states, and
+a real no-JavaScript baseline without requiring React, Vue, hydration, or a
+client-side component runtime.
 
-## Install (consumer)
+## Is Gelium for you?
+
+| Choose Gelium if you need… | Gelium may not be the right fit if you need… |
+|---|---|
+| Go, Rails, Laravel, Django, or plain HTML integration | A React/Vue component runtime or hydration-first architecture |
+| Copyable HTML and server-rendered templates | A closed, JavaScript-only component abstraction |
+| HTML forms and URLs that work without JavaScript | Client-only state with no server-rendered fallback |
+| Tailwind CSS 4, HTMX as enhancement, and class-based themes | A bundled design brand or a mandatory frontend framework |
+
+## What you get
+
+The published package contains CSS, themes, HTML partials, optional enhancement
+JavaScript, portable agent guidance, and text reference fichas:
+
+```text
+gelium-ui/
+├── dist/       prebuilt CSS bundle
+├── styles/     source CSS, tokens, and component styles
+├── themes/     Material, Basecoat, Base UI-inspired, and product skins
+├── templates/  copyable server-rendered HTML partials
+├── js/         optional toast, validation, slider, and transition enhancements
+├── skills/     decision and implementation guidance for agents
+└── references/ portable structural references for npm-only consumers
+```
+
+## Quick start
+
+### Install (consumer)
 
 ```bash
 npm install gelium-ui
@@ -31,6 +61,46 @@ Or pick themes + source styles in your own Tailwind entry:
 @import "gelium-ui/themes/theme-material.css";
 @import "gelium-ui/themes/theme-basecoat.css";
 ```
+
+Use a registered component in your server-rendered HTML:
+
+```html
+<button class="ui-button ui-button-primary" type="submit">
+  Save changes
+</button>
+```
+
+Then choose a visual direction on the document root:
+
+```html
+<html class="theme-material">
+```
+
+See the [component registry](docs/gelium-ui-component-registry.md) for the
+canonical inventory and the [package README](lib/README.md) for templates,
+themes, and optional JavaScript.
+
+## Core contract
+
+- **HTML-first:** native elements before ARIA or custom controls.
+- **No-JS first:** the main flow works with JavaScript disabled.
+- **Server-first state:** URLs, forms, HTTP statuses, and validation remain real.
+- **Progressive enhancement:** HTMX and `js/gelium.js` enhance; they do not own
+  the primary flow.
+- **Theme by tokens:** themes change semantic `--ui-*` values without requiring
+  different component markup.
+- **States included:** loading, empty, error, success, validation, and recovery
+  are part of the component contract where applicable.
+- **Accessible by default:** focus, keyboard, contrast, responsive behavior,
+  reduced motion, and forced colors are tested contracts.
+
+## Components and themes
+
+The library includes buttons, text fields, selects, checkboxes, radios, switches,
+sliders, dialogs, toasts, cards, lists, data tables, navigation, tabs, pagination,
+media, feedback, and layout primitives. Themes and skins share the same semantic
+markup and server contracts; documented divergences are intentional and are not
+claimed as official vendor parity.
 
 Optional progressive-enhancement JS (toast, 422 validation swap, slider fill,
 view-transition guard):
@@ -133,6 +203,21 @@ tokens under `data-gelium-skin`. Evidence packages live in
 
 Official `@base-ui/react` is headless (no visual CSS). Gelium’s Base UI visuals
 are **docs-inspired / Gelium-authored**, never claimed as official package CSS.
+
+## Inspiration and attribution
+
+Gelium is informed by public design systems, open-code libraries, UX research,
+visual studies, and the [Gentle AI](https://github.com/Gentleman-Programming/gentle-ai)
+agent workflow. The roles are different: Material 3, USWDS, GOV.UK, and Mozilla
+Protocol inform foundations; Basecoat, Base UI, Naive UI, shadcn/ui, and templ
+inform component and documentation patterns; Linear, Vercel, Alden, and Refero
+inform visual studies; Gentle AI informs outcome-first routing and delegation.
+
+Gelium reimplements ideas as original semantic HTML, `--ui-*` tokens,
+server-rendered templates, and optional progressive enhancement. It does not
+ship vendor branding, copied markup, screenshots, or runtime dependencies.
+See the [full acknowledgments matrix](site/web/content/handbook-acknowledgments.md)
+for sources, adaptations, licenses, and explicit boundaries.
 
 ## Two audiences
 

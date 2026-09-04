@@ -1,7 +1,7 @@
 ---
 name: gelium-ui
 description: Use when composing or reviewing Gelium UI work. Select the smallest outcome-first route, then load the applicable Gelium contracts.
-version: 0.6.4
+version: 0.6.5
 license: MIT
 ---
 

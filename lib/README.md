@@ -6,6 +6,25 @@ This directory is the public `gelium-ui` npm package. The repository's
 `site/` directory is only the Go docs/dogfood consumer; package contracts,
 templates, styles, skills, and release metadata are authoritative here.
 
+## Inspiration and boundaries
+
+Gelium learns from public design systems and open-code libraries, including
+[Material Design 3](https://m3.material.io), [USWDS](https://designsystem.digital.gov),
+[GOV.UK Design System](https://design-system.service.gov.uk), [Mozilla Protocol](https://protocol.mozilla.org),
+[Base UI](https://base-ui.com), [Basecoat UI](https://basecoatui.com),
+[Naive UI](https://naiveui.com), [shadcn/ui](https://ui.shadcn.com),
+[Material Web](https://github.com/material-components/material-web), and
+[Material Symbols](https://github.com/google/material-design-icons).
+
+These sources inform structure, tokens, accessibility, documentation, naming,
+and visual studies. [Gentle AI](https://github.com/Gentleman-Programming/gentle-ai)
+also informs Gelium's outcome-first agent routing and delegation boundaries; it
+does not replace Gelium's UX contracts. Gelium reimplements those ideas as original semantic HTML,
+`--ui-*` tokens, server-rendered templates, and optional progressive-enhancement
+JavaScript. It does not ship their branding, assets, copied markup, or runtime
+dependencies. The full attribution and adaptation matrix is maintained in the
+[repository acknowledgments](https://github.com/cryptonahue/gelium-ui/blob/main/site/web/content/handbook-acknowledgments.md).
+
 ## Install
 
 ```bash

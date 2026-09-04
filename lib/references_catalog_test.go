@@ -8,7 +8,7 @@ import (
 	"testing"
 )
 
-// TestPortableReferenceCatalogQuality pins the 0.6.4 contract: npm consumers
+// TestPortableReferenceCatalogQuality pins the 0.6.5 contract: npm consumers
 // get substantive Markdown fichas (not stub one-liners), every catalog entry
 // resolves on disk, required feed/shell IDs exist, and no unlicensed
 // screenshots are bundled under lib/references.

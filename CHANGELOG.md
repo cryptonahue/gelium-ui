@@ -4,6 +4,14 @@ All notable changes to the Gelium UI project are documented in this file.
 
 The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and the project uses [Semantic Versioning](https://semver.org/).
 
+## [0.6.5] — 2026-09-04
+
+### Added
+- **Inspiration map in package documentation**: root and npm README files now distinguish design foundations, component/open-code references, visual studies, UX/content research, and Gentle AI workflow influence.
+
+### Changed
+- **README accuracy**: the published version, package boundaries, implementation stack, attribution boundaries, and non-affiliation disclaimer are explicit; the full source matrix remains in the docs-site acknowledgments page.
+
 ## [0.6.4] — 2026-09-03
 
 ### Added
@@ -169,7 +177,8 @@ The format follows [Keep a Changelog](https://keepachangelog.com/en/1.1.0/) and 
 - **Access and verification contracts** (Phases A–D): native semantics, focus rings, aria-* across the whole surface.
 - **Docs shell**: navigation, sidebar, breadcrumbs, search (disabled), theme/scheme switchers.
 
-[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.4...HEAD
+[Unreleased]: https://github.com/cryptonahue/gelium-ui/compare/v0.6.5...HEAD
+[0.6.5]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.5
 [0.6.4]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.4
 [0.6.3]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.3
 [0.6.2]: https://github.com/cryptonahue/gelium-ui/releases/tag/v0.6.2

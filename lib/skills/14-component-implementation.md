@@ -1,7 +1,7 @@
 ---
 name: gelium-ui-component-implementation
 description: Use when implementing or reviewing a new Gelium UI component in the library. Apply the canonical route, component contract, TDD, ownership, no-JS, and verification workflow.
-version: 0.6.4
+version: 0.6.5
 license: MIT
 ---
 
