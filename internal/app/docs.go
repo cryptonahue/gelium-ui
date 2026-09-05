@@ -394,6 +394,13 @@ var docsSections = []struct {
 		},
 	},
 	{
+		Title: "Admin recipes",
+		Intro: "Server-rendered screens and consumer-owned contracts.",
+		Links: []navLink{
+			{Path: "/docs/admin-recipes", Label: "Admin recipes"},
+		},
+	},
+	{
 		Title: "Data",
 		Intro: "Server-side tables.",
 		Links: []navLink{
@@ -570,6 +577,12 @@ func (s *server) docsPageSectionArchitecture(w http.ResponseWriter, r *http.Requ
 }
 
 // docsSectionReferences handlers live in section_references.go.
+
+// docsAdminRecipes is GET /docs/admin-recipes — runnable admin recipes and
+// their consumer-owned integration contracts.
+func (s *server) docsAdminRecipes(w http.ResponseWriter, r *http.Request) {
+	s.renderMarkdownPageAt(w, r, pageView{Title: "Admin recipes"}, "content/handbook-admin-recipes.md", "/docs/admin-recipes")
+}
 
 // docsFeedback is GET /docs/feedback — decision matrix for toast vs
 // validation-summary vs banner vs empty/error/skeleton (sourced criteria).

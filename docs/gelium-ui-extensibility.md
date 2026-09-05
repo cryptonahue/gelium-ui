@@ -2,6 +2,19 @@
 
 Gelium UI is extended through server-rendered recipes, registered components, and consumer-owned data adapters. A recipe is the default extension point. Runtime plugins are intentionally out of scope until a real consumer establishes a stable need.
 
+## Contract map
+
+Use the contract that matches the extension before writing implementation code:
+
+- [Application integration and tenant isolation](gelium-ui-application-integration.md)
+- [Dashboard metrics](gelium-ui-dashboard-metrics.md)
+- [Feedback states](gelium-ui-feedback-recipe.md)
+- [Recipe testing](gelium-ui-recipe-testing.md)
+- [Export](gelium-ui-export-recipe.md)
+- [Import](gelium-ui-import-recipe.md)
+- [Relationships and nested resources](gelium-ui-relationships-recipe.md)
+- [Screen recipes](gelium-ui-screen-recipes.md)
+
 ## Extension order
 
 1. Compose an existing recipe from existing components.

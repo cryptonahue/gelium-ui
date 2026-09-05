@@ -1710,6 +1710,7 @@ func newWithRecipeAdminAuthorizer(authorize recipeAdminAuthorizer) http.Handler 
 	mux.HandleFunc("GET /docs/section-references/{id}", s.docsSectionReferenceDetail)
 	mux.HandleFunc("GET /docs/journeys", s.docsJourneys)
 	mux.HandleFunc("GET /docs/data-display", s.docsDataDisplay)
+	mux.HandleFunc("GET /docs/admin-recipes", s.docsAdminRecipes)
 	mux.HandleFunc("GET /docs/feedback", s.docsFeedback)
 	mux.HandleFunc("GET /docs/density", s.docsDensity)
 	mux.HandleFunc("GET /docs/motion", s.docsMotion)
