@@ -33,6 +33,7 @@ func TestRecipeAdminResourceListRendersDataTableWithFilterSortPage(t *testing.T)
 	body := res.Body.String()
 	for _, contract := range []string{
 		`<h1 class="recipe-ar-title">Projects</h1>`,
+		`id="recipe-ar-q" type="search"`,
 		`<table class="ui-data-table-table">`,
 		`<caption class="ui-data-table-caption">12 projects · page 1 of 3</caption>`,
 		`aria-sort="ascending"`,
@@ -63,6 +64,41 @@ func TestRecipeAdminResourceListRendersDataTableWithFilterSortPage(t *testing.T)
 	}
 	if strings.Contains(body, "Beta rollout") {
 		t.Error("filtered list must not contain a non-matching row")
+	}
+
+	// Status filter: the closed GET vocabulary filters server-side and remains
+	// selected in the native control while sort links preserve the filter.
+	res = httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource?status=Pending", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status filter status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body = res.Body.String()
+	for _, contract := range []string{
+		`name="status"`,
+		`<option value="Pending" selected>Pending</option>`,
+		`4 projects · page 1 of 1`,
+		`Beta rollout`,
+		`href="?dir=desc&amp;sort=name&amp;status=Pending"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("status filter does not contain contract %q", contract)
+		}
+	}
+	if strings.Contains(body, "Alpha release") {
+		t.Error("status filter must drop a non-matching row")
+	}
+
+	res = httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource?q=alpha&status=Pending", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("combined empty filter status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body = res.Body.String()
+	for _, contract := range []string{`No results`, `Clear filters`, `href="?dir=asc&amp;sort=name"`} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("combined empty filter does not contain contract %q", contract)
+		}
 	}
 
 	// Sort by date descending: the newest project leads the first page.
@@ -123,6 +159,42 @@ func TestRecipeAdminResourceListHXFragment(t *testing.T) {
 	}
 }
 
+func TestRecipeAdminResourceDetailRendersReadOnlyRecord(t *testing.T) {
+	resetRecipeResourceStore()
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource/alpha", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<article class="recipe-ar-detail">`,
+		`<h1 class="recipe-ar-title">Alpha release</h1>`,
+		`<dl class="recipe-ar-detail-fields">`,
+		`<dt>Name</dt><dd>Alpha release</dd>`,
+		`<dt>Status</dt><dd><span class="ui-badge ui-badge-large ui-badge--success">Active</span>`,
+		`href="/recipes/admin-resource/alpha/edit"`,
+		`href="/recipes/admin-resource/alpha/delete"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("detail does not contain contract %q", contract)
+		}
+	}
+}
+
+func TestRecipeAdminResourceDetailNotFoundAndGETOnly(t *testing.T) {
+	resetRecipeResourceStore()
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource/nope", nil))
+	if res.Code != http.StatusNotFound || !strings.Contains(res.Body.String(), `class="ui-error-state"`) {
+		t.Fatalf("unknown detail status/body = %d/%q, want 404 error state", res.Code, res.Body.String())
+	}
+	res = postRecipeAdminResource(t, "/recipes/admin-resource/alpha", url.Values{})
+	if res.Code != http.StatusMethodNotAllowed {
+		t.Fatalf("POST detail status = %d, want %d", res.Code, http.StatusMethodNotAllowed)
+	}
+}
+
 // TestRecipeAdminResourceEmptyState proves the table empty row uses the shared
 // empty-state primitive: a search with no matches offers a real "Clear search"
 // CTA and the empty dataset offers "New project".
@@ -171,10 +243,25 @@ func TestRecipeAdminResourceSelection(t *testing.T) {
 		`value="alpha" checked`,
 		`value="beta" checked`,
 		`2 rows selected.`,
+		`href="?dir=desc&amp;selection=alpha&amp;selection=beta&amp;sort=name"`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("selection state does not contain contract %q", contract)
 		}
+	}
+
+	res = httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource?selection=alpha&selection=alpha&selection=unknown", nil))
+	body = res.Body.String()
+	if !strings.Contains(body, `1 row selected.`) {
+		t.Error("selection notice must deduplicate valid IDs and ignore unknown IDs")
+	}
+
+	res = httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource?selection=all", nil))
+	body = res.Body.String()
+	if !strings.Contains(body, `href="?dir=asc&amp;page=2&amp;selection=all&amp;sort=name"`) {
+		t.Error("select-all scope must survive pagination links")
 	}
 }
 
@@ -416,8 +503,103 @@ func TestRecipeAdminResourceDeleteSuccess303(t *testing.T) {
 	}
 }
 
+func TestRecipeAdminResourceBulkDeleteConfirm(t *testing.T) {
+	resetRecipeResourceStore()
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource/bulk-delete?selection=alpha&selection=beta", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`id="recipe-ar-bulk-confirm-title">Delete 2 projects?`,
+		`action="/recipes/admin-resource/bulk-delete"`,
+		`name="selection" value="alpha"`,
+		`name="selection" value="beta"`,
+		`This action cannot be undone.`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("bulk confirmation does not contain contract %q", contract)
+		}
+	}
+}
+
+func TestRecipeAdminResourceBulkDeleteSuccess303(t *testing.T) {
+	resetRecipeResourceStore()
+	res := postRecipeAdminResource(t, "/recipes/admin-resource/bulk-delete", url.Values{
+		"selection": {"alpha", "beta"},
+	})
+	if res.Code != http.StatusSeeOther {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusSeeOther)
+	}
+	if got := res.Header().Get("Location"); got != "/recipes/admin-resource" {
+		t.Fatalf("Location = %q, want /recipes/admin-resource", got)
+	}
+	res = httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource", nil))
+	body := res.Body.String()
+	for _, contract := range []string{`2 projects deleted`, `class="ui-banner ui-banner--success"`} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("bulk delete result does not contain contract %q", contract)
+		}
+	}
+	if strings.Contains(body, "Alpha release") || strings.Contains(body, "Beta rollout") {
+		t.Error("bulk-deleted projects must not remain in the list")
+	}
+}
+
 // TestRecipeAdminResourceNotFound proves unknown resource IDs render the shared
 // error-state page with the real 404 status on both edit and delete.
+func TestRecipeAdminResourceAuthorizationIsConsumerOwnedAndRevalidated(t *testing.T) {
+	resetRecipeResourceStore()
+	denyBeta := func(_ *http.Request, action string, item *recipeResource) bool {
+		if action != recipeAdminDeleteAction {
+			return true
+		}
+		return item == nil || item.ID != "beta"
+	}
+	h := newWithRecipeAdminAuthorizer(denyBeta)
+
+	res := httptest.NewRecorder()
+	h.ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource", nil))
+	if res.Code != http.StatusOK {
+		t.Fatalf("list status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	if !strings.Contains(body, "/recipes/admin-resource/alpha/delete") {
+		t.Error("authorized row should render its delete action")
+	}
+	if strings.Contains(body, "/recipes/admin-resource/beta/delete") {
+		t.Error("unauthorized row must not render a delete action")
+	}
+
+	res = httptest.NewRecorder()
+	h.ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource/beta/delete", nil))
+	if res.Code != http.StatusForbidden {
+		t.Fatalf("unauthorized confirmation status = %d, want %d", res.Code, http.StatusForbidden)
+	}
+
+	form := url.Values{"selection": {"alpha", "beta"}}
+	req := httptest.NewRequest(http.MethodPost, "/recipes/admin-resource/bulk-delete", strings.NewReader(form.Encode()))
+	req.Header.Set("Content-Type", "application/x-www-form-urlencoded")
+	res = httptest.NewRecorder()
+	h.ServeHTTP(res, req)
+	if res.Code != http.StatusSeeOther {
+		t.Fatalf("mixed bulk delete status = %d, want %d", res.Code, http.StatusSeeOther)
+	}
+	if _, ok := resourceDemoStore.get("alpha"); ok {
+		t.Error("authorized selected row should be deleted")
+	}
+	if _, ok := resourceDemoStore.get("beta"); !ok {
+		t.Error("unauthorized selected row must survive")
+	}
+	res = httptest.NewRecorder()
+	h.ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/recipes/admin-resource", nil))
+	if !strings.Contains(res.Body.String(), "not authorized and were left unchanged") {
+		t.Error("mixed bulk delete should report the unauthorized selection")
+	}
+}
+
 func TestRecipeAdminResourceNotFound(t *testing.T) {
 	resetRecipeResourceStore()
 

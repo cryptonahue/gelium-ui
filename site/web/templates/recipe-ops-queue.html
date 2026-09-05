@@ -81,7 +81,7 @@
     <li class="ui-list-item ui-list-item--two-line recipe-oq-item">
       {{template "avatar" .Avatar}}
       <span class="ui-list-item-text">
-        <span class="ui-list-item-headline">{{.Subject}}</span>
+        <a class="ui-list-item-headline recipe-oq-item-link" href="/recipes/ops-queue/{{.ID}}">{{.Subject}}</a>
         <span class="ui-list-item-supporting">{{.Requester}} · {{.KindLabel}} · {{.ReceivedText}}{{if .Assignee}} · Assigned to {{.Assignee}}{{end}} · {{.SLAText}}</span>
       </span>
       <span class="ui-badge ui-badge-large ui-badge--{{.Tone}}">{{.StatusLabel}}</span>
@@ -103,6 +103,53 @@
   <p class="recipe-oq-caption">{{.Caption}}</p>
 </div>
 {{end}}
+
+{{define "recipe-ops-queue-detail"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Meta.Title}}</title>
+  {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
+  {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
+  {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
+  <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
+</head>
+<body class="recipe-oq-root">
+  <div class="recipe-oq-app">
+    <header class="recipe-oq-appbar">
+      <a class="recipe-oq-brand" href="/recipes/ops-queue">✳ Gelium UI <span class="recipe-oq-brand-tag">Ops Queue</span></a>
+      <nav class="recipe-oq-appbar-actions" aria-label="Ops Queue actions"><a class="recipe-oq-back" href="/docs">Docs</a></nav>
+    </header>
+    <main class="recipe-oq-main recipe-oq-detail-main">
+      <p class="recipe-oq-breadcrumb"><a href="{{.ListHref}}">Ops Queue</a> / Item detail</p>
+      <header class="recipe-oq-header">
+        <div class="recipe-oq-header-text">
+          <h1 class="recipe-oq-title">{{.Item.Subject}}</h1>
+          <p class="recipe-oq-desc">{{.KindLabel}} · {{.StatusLabel}} · {{.SLAText}}</p>
+        </div>
+        <span class="ui-badge ui-badge-large ui-badge--{{.StatusTone}}">{{.StatusLabel}}</span>
+      </header>
+      <section class="recipe-oq-panel" aria-labelledby="recipe-oq-detail-heading">
+        <h2 id="recipe-oq-detail-heading">Item details</h2>
+        <dl class="recipe-oq-detail-list">
+          <div><dt>Requester</dt><dd>{{.Item.Requester}}</dd></div>
+          <div><dt>Kind</dt><dd>{{.KindLabel}}</dd></div>
+          <div><dt>Status</dt><dd>{{.StatusLabel}}</dd></div>
+          <div><dt>Assignee</dt><dd>{{if .Item.Assignee}}{{.Item.Assignee}}{{else}}Unassigned{{end}}</dd></div>
+          <div><dt>Received</dt><dd><time datetime="{{.ReceivedAt}}">{{.ReceivedText}} ({{.ReceivedAt}})</time></dd></div>
+          <div><dt>SLA deadline</dt><dd><time datetime="{{.SLADeadline}}">{{.SLADeadline}}</time> · {{.SLAText}}</dd></div>
+        </dl>
+      </section>
+      <section class="recipe-oq-detail-actions" aria-label="Item actions">
+        {{if .CanAdvance}}<form method="post" action="{{.AdvanceAction}}"><button class="ui-button ui-button-primary" type="submit">Advance item</button></form>{{else}}<p class="recipe-oq-terminal" role="status">This item is completed.</p>{{end}}
+        <form method="post" action="{{.DequeueAction}}"><button class="ui-button ui-button-text" type="submit">Remove from queue</button></form>
+        <a class="ui-button ui-button-text" href="{{.ListHref}}">Back to queue</a>
+      </section>
+    </main>
+  </div>
+</body>
+</html>{{end}}
 
 {{define "recipe-ops-queue-refresh-form"}}
 <form class="recipe-oq-refresh" method="post" action="/recipes/ops-queue/refresh#recipe-oq-main" novalidate

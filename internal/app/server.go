@@ -1638,6 +1638,11 @@ type server struct {
 	templates *template.Template
 	markdown  goldmark.Markdown
 	assets    fs.FS
+
+	// recipeAdminAuthorize is supplied by the consumer in a real application.
+	// The documentation demo uses an explicit allow-all policy so its recipes
+	// remain runnable without inventing authentication.
+	recipeAdminAuthorize recipeAdminAuthorizer
 }
 
 // buildTemplates parses the merged template set: the site shell/chrome first
@@ -1660,7 +1665,13 @@ func buildTemplates() *template.Template {
 }
 
 // New builds the Gelium UI documentation HTTP handler from embedded assets.
+// The demo deliberately uses an explicit allow-all policy; consumers should
+// provide their own authorization boundary around the recipe handlers.
 func New() http.Handler {
+	return newWithRecipeAdminAuthorizer(recipeAdminAllowAll)
+}
+
+func newWithRecipeAdminAuthorizer(authorize recipeAdminAuthorizer) http.Handler {
 	templates := buildTemplates()
 	s := &server{
 		templates: templates,
@@ -1678,7 +1689,8 @@ func New() http.Handler {
 			goldmark.WithParserOptions(parser.WithAutoHeadingID()),
 			goldmark.WithRendererOptions(goldmarkhtml.WithUnsafe()),
 		),
-		assets: webassets.Assets,
+		assets:               webassets.Assets,
+		recipeAdminAuthorize: authorize,
 	}
 
 	mux := http.NewServeMux()
@@ -1759,17 +1771,22 @@ func New() http.Handler {
 	// create action (GET renders, POST mutates), the edit/delete routes pair a
 	// GET form/confirm page with a POST mutation, and refresh is POST-only.
 	mux.HandleFunc("GET /recipes/admin-resource", s.recipeAdminResourceList)
+	mux.HandleFunc("GET /recipes/admin-dashboard", s.recipeAdminDashboard)
 	mux.HandleFunc("POST /recipes/admin-resource", s.recipeAdminResourceCreate)
 	mux.HandleFunc("GET /recipes/admin-resource/new", s.recipeAdminResourceNew)
+	mux.HandleFunc("GET /recipes/admin-resource/{id}", s.recipeAdminResourceDetail)
 	mux.HandleFunc("GET /recipes/admin-resource/{id}/edit", s.recipeAdminResourceEdit)
 	mux.HandleFunc("POST /recipes/admin-resource/{id}/edit", s.recipeAdminResourceUpdate)
 	mux.HandleFunc("GET /recipes/admin-resource/{id}/delete", s.recipeAdminResourceDeleteConfirm)
 	mux.HandleFunc("POST /recipes/admin-resource/{id}/delete", s.recipeAdminResourceDelete)
+	mux.HandleFunc("GET /recipes/admin-resource/bulk-delete", s.recipeAdminResourceBulkDeleteConfirm)
+	mux.HandleFunc("POST /recipes/admin-resource/bulk-delete", s.recipeAdminResourceBulkDelete)
 	mux.HandleFunc("POST /recipes/admin-resource/refresh", s.recipeAdminResourceRefresh)
 	// Ops Queue screen recipe (Phase G): the list is a GET page (filter by
 	// status/kind + server-side pagination), every transition is a POST+303
 	// mutation with a persistent success banner, and refresh is POST-only.
 	mux.HandleFunc("GET /recipes/ops-queue", s.recipeOpsQueueList)
+	mux.HandleFunc("GET /recipes/ops-queue/{id}", s.recipeOpsQueueDetail)
 	mux.HandleFunc("POST /recipes/ops-queue/{id}/advance", s.recipeOpsQueueAdvance)
 	mux.HandleFunc("POST /recipes/ops-queue/{id}/dequeue", s.recipeOpsQueueDequeue)
 	mux.HandleFunc("POST /recipes/ops-queue/refresh", s.recipeOpsQueueRefresh)

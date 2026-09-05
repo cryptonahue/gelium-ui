@@ -17,6 +17,8 @@ func TestPaginationPrimitiveCSSMapsPagesAndBoundaries(t *testing.T) {
 		`--ui-pagination-page-color: var(--ui-color-fg-muted);`,
 		`--ui-pagination-active-color: var(--ui-color-primary);`,
 		`.ui-pagination-page {`,
+		`min-height: var(--ui-touch-target);`,
+		`min-width: var(--ui-touch-target);`,
 		`border-radius: var(--ui-radius-full);`,
 		`font: var(--ui-type-label-sm);`,
 		`.ui-pagination-page--current {`,

@@ -2,7 +2,7 @@
   {{if .Brand}}<p class="ui-footer-brand">{{.Brand}}</p>{{end}}
   <nav class="ui-footer-nav" aria-label="Footer">
     {{range .Sections}}<section class="ui-footer-section">
-      <details class="ui-footer-details">
+      <details class="ui-footer-details" open>
         <summary class="ui-footer-heading">{{.Title}}</summary>
         <ul class="ui-footer-list">{{range .Links}}<li><a href="{{.Path}}">{{.Label}}</a></li>{{end}}</ul>
       </details>

@@ -143,7 +143,7 @@ superficie (nivel de inmersión)
 6. **No reclamar `role="tablist"`/roving focus sin teclado completo** → links reales con `aria-current` (Tabs).
 7. **No abrir un flujo largo en Dialog** → page/steps.
 8. **No usar spinner cuando existe Progress determinate/indeterminate** → `.ui-progress` + `aria-busy`/`role="status"`.
-9. **No dejar empty states sin mensaje/CTA** → todo listado server-side define vacío (gap actual: tabla muestra `0 rows`).
+9. **No dejar empty states sin mensaje/CTA** → todo listado server-side define vacío; Data table ya compone `Empty state` con mensaje y CTA.
 10. **No usar color como único portador de estado** → estado en el control nativo + forced colors.
 11. **No introducir JS para lo que un form GET ya resuelve** → platform-first.
 
@@ -167,14 +167,14 @@ superficie (nivel de inmersión)
 |---|---|---|---|---|---|---|---|
 | Card | ✅ | ✅ | ✅ (control interno) | n/a | n/a | n/a | n/a |
 | List | ✅ | ✅ | ✅ (`:checked`) | ✅ | GAP | GAP | n/a |
-| Data table | ✅ | ✅ | ✅ (`:has(input:checked)`) | por control | **GAP** | H | GAP |
+| Data table | ✅ | ✅ | ✅ (`:has(input:checked)`) | por control | ✅ (Empty state) | H | ✅ (Error state / Inline alert) |
 | Queue | ✅ | ✅ | ✅ | por control | GAP | GAP | GAP |
 | Feed | ✅ | ✅ | n/a | n/a | **GAP** | **GAP** | GAP |
 | Dashboard | ✅ | ✅ | n/a | n/a | GAP | **GAP** | GAP |
 | Dialog | ✅ | ✅ | n/a | acciones | n/a | n/a | inline |
 | Form | ✅ | ✅ | ✅ | ✅ | n/a | submit | 422 inline |
 
-GAP = patrón de estado no implementado como componente reusable (Empty state, Loading/Skeleton, Inline alert, Banner) — **requisito bloqueante de Phase 4**.
+`GAP` en esta matriz significa que la composición todavía no tiene una cobertura de recipe o contrato suficiente; no significa que falte necesariamente un primitive. Empty state, Skeleton, Inline alert, Banner y Error state son primitives existentes. La cobertura de loading para Data table queda condicionada a una espera real de región, no a la primera respuesta server-rendered.
 
 ## 9. Server-driven rules
 

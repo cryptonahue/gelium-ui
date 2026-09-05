@@ -196,8 +196,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    min-width: 2rem;
-    height: 2rem;
+    min-width: var(--ui-touch-target);
+    min-height: var(--ui-touch-target);
     box-sizing: border-box;
     padding: 0 var(--ui-space-2);
     border-radius: var(--ui-radius-full);

@@ -137,6 +137,41 @@ func TestRecipeOpsQueueListHXFragment(t *testing.T) {
 	}
 }
 
+func TestRecipeOpsQueueDetailRendersItemContextAndActions(t *testing.T) {
+	resetRecipeQueueStore()
+	res := getRecipe(t, "/recipes/ops-queue/billing-invoice-77")
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		`<h1 class="recipe-oq-title">Invoice reconciliation for Q2</h1>`,
+		`<span class="ui-badge ui-badge-large ui-badge--error">Pending</span>`,
+		`<h2 id="recipe-oq-detail-heading">Item details</h2>`,
+		`<dt>Requester</dt><dd>Carla M.</dd>`,
+		`<dt>SLA deadline</dt>`,
+		`method="post" action="/recipes/ops-queue/billing-invoice-77/advance"`,
+		`>Advance item</button>`,
+		`method="post" action="/recipes/ops-queue/billing-invoice-77/dequeue"`,
+		`href="/recipes/ops-queue">Back to queue</a>`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("detail is missing %q", contract)
+		}
+	}
+}
+
+func TestRecipeOpsQueueDetailNotFound(t *testing.T) {
+	resetRecipeQueueStore()
+	res := getRecipe(t, "/recipes/ops-queue/nope")
+	if res.Code != http.StatusNotFound {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusNotFound)
+	}
+	if !strings.Contains(res.Body.String(), "Back to the queue") {
+		t.Error("not found detail should provide queue recovery")
+	}
+}
+
 // TestRecipeOpsQueueAdvance303 proves the advance mutation follows POST+303 and
 // the following render shows the persistent success banner and the new status.
 func TestRecipeOpsQueueAdvance303(t *testing.T) {

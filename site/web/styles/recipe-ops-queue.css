@@ -177,3 +177,45 @@
   .recipe-oq-appbar,
   .recipe-oq-panel { border-color: CanvasText; }
 }
+
+.recipe-oq-breadcrumb {
+  margin: 0;
+  color: var(--ui-color-fg-muted);
+  font: var(--ui-type-body-sm);
+}
+.recipe-oq-breadcrumb a,
+.recipe-oq-item-link {
+  color: var(--ui-color-primary);
+  text-decoration: none;
+}
+.recipe-oq-breadcrumb a:hover,
+.recipe-oq-item-link:hover { text-decoration: underline; }
+.recipe-oq-detail-list {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(12rem, 1fr));
+  gap: var(--ui-space-4);
+  margin: 0;
+}
+.recipe-oq-detail-list > div { min-width: 0; }
+.recipe-oq-detail-list dt {
+  color: var(--ui-color-fg-muted);
+  font: var(--ui-type-label-md);
+}
+.recipe-oq-detail-list dd {
+  margin: var(--ui-space-1) 0 0;
+  color: var(--ui-color-fg);
+  font: var(--ui-type-body-md);
+  overflow-wrap: anywhere;
+}
+.recipe-oq-detail-actions {
+  display: flex;
+  flex-wrap: wrap;
+  align-items: center;
+  gap: var(--ui-space-2);
+}
+.recipe-oq-detail-actions form { margin: 0; }
+.recipe-oq-terminal {
+  margin: 0;
+  color: var(--ui-color-fg-muted);
+  font: var(--ui-type-body-md);
+}

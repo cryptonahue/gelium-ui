@@ -60,9 +60,7 @@
             <input type="checkbox" name="selection" value="{{.ID}}"{{if .Selected}} checked{{end}} aria-label="Select {{.Name}}">
           </label>
         </td>
-        <td class="ui-data-table-cell ui-data-table-cell--label">{{.Name}}</td>
-        <td class="ui-data-table-cell ui-data-table-cell--label">{{.Status}}</td>
-        <td class="ui-data-table-cell ui-data-table-cell--label">{{.Date}}</td>
+        {{range .Cells}}<td class="ui-data-table-cell ui-data-table-cell--label">{{.}}</td>{{end}}
       </tr>
       {{end}}
       {{else}}

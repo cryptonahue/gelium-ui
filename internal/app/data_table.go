@@ -69,6 +69,7 @@ type dataTableRowView struct {
 	Name     string
 	Status   string
 	Date     string
+	Cells    []string
 	Selected bool
 }
 
@@ -213,6 +214,7 @@ func newDataTableDemo(q, sortParam, dir, page string, selection []string) *dataT
 		end = total
 	}
 
+	columns := dataTableColumns(query, sortKey, direction)
 	rows := make([]dataTableRowView, 0, end-start)
 	for _, it := range items[start:end] {
 		rows = append(rows, dataTableRowView{
@@ -220,6 +222,7 @@ func newDataTableDemo(q, sortParam, dir, page string, selection []string) *dataT
 			Name:     it.Name,
 			Status:   it.Status,
 			Date:     it.Date,
+			Cells:    dataTableCellValues(it, columns),
 			Selected: selectAll || selectedSet[it.ID],
 		})
 	}
@@ -239,7 +242,7 @@ func newDataTableDemo(q, sortParam, dir, page string, selection []string) *dataT
 
 	// The empty row spans every column plus the leading checkbox column, so
 	// the message never collapses the table grid.
-	colspan := 1 + len(dataTableColumns(query, sortKey, direction))
+	colspan := 1 + len(columns)
 	var emptyState emptyStateView
 	if total == 0 {
 		emptyState = emptyStateView{
@@ -269,7 +272,7 @@ func newDataTableDemo(q, sortParam, dir, page string, selection []string) *dataT
 		Total:           total,
 		Pages:           totalPages,
 		Caption:         fmt.Sprintf("%d rows · page %d of %d", total, pageNum, totalPages),
-		Columns:         dataTableColumns(query, sortKey, direction),
+		Columns:         columns,
 		Rows:            rows,
 		PageLinks:       pageLinks,
 		PrevHref:        dataTableHref(query, sortKey, direction, pageNum-1),
@@ -295,6 +298,17 @@ func dataTableField(it dataTableItem, key string) string {
 	default:
 		return it.Name
 	}
+}
+
+// dataTableCellValues keeps the row body aligned with the closed column
+// definition used by the header. The template must not duplicate the column
+// vocabulary with hard-coded <td> elements.
+func dataTableCellValues(it dataTableItem, columns []dataTableColumn) []string {
+	values := make([]string, 0, len(columns))
+	for _, column := range columns {
+		values = append(values, dataTableField(it, column.Key))
+	}
+	return values
 }
 
 // dataTableColumns builds the three sortable columns. The active column carries

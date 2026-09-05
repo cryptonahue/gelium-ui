@@ -74,8 +74,9 @@
 
   /* Desktop: hide the disclosure chrome and force every section open. */
   @media (min-width: 48rem) {
+    .ui-footer-details { display: contents; }
     .ui-footer-details > summary { display: none; }
-    .ui-footer-list { display: block; }
+    .ui-footer-details:not([open]) > .ui-footer-list { display: block; }
   }
 }
 

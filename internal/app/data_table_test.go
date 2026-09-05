@@ -30,6 +30,49 @@ func TestDataTableDocsRouteDogfoodsNativeTableSemantics(t *testing.T) {
 	}
 }
 
+func TestDataTableRowsFollowColumnDefinition(t *testing.T) {
+	demo := newDataTableDemo("", "name", "asc", "", nil)
+	if len(demo.Rows) == 0 {
+		t.Fatal("data table demo must render at least one row")
+	}
+	if got, want := len(demo.Rows[0].Cells), len(demo.Columns); got != want {
+		t.Fatalf("row cell count = %d, want column count %d", got, want)
+	}
+	for i, want := range []string{"Alpha release", "Active", "2026-01-12"} {
+		if got := demo.Rows[0].Cells[i]; got != want {
+			t.Errorf("row cell %d = %q, want %q", i, got, want)
+		}
+	}
+}
+
+func TestDataTablePanelRendersColumnDerivedCells(t *testing.T) {
+	s := newDocsServer(t)
+	view := dataTableDemo{
+		Columns: []dataTableColumn{
+			{Label: "First"},
+			{Label: "Second"},
+		},
+		Rows: []dataTableRowView{
+			{Name: "stale hard-coded name", Cells: []string{"Cell one", "Cell two"}},
+		},
+		Colspan: 3,
+	}
+
+	var out strings.Builder
+	if err := s.templates.ExecuteTemplate(&out, "data-table-panel", &view); err != nil {
+		t.Fatalf("render data-table panel: %v", err)
+	}
+	body := out.String()
+	for _, want := range []string{">Cell one</td>", ">Cell two</td>"} {
+		if !strings.Contains(body, want) {
+			t.Errorf("rendered panel is missing column-derived cell %q", want)
+		}
+	}
+	if strings.Contains(body, `ui-data-table-cell ui-data-table-cell--label">stale hard-coded name</td>`) {
+		t.Error("rendered panel must not use the row's duplicated display fields")
+	}
+}
+
 func TestDataTableDocsRouteUsesRealGETLinksForSortAndPagination(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/data-table", nil))

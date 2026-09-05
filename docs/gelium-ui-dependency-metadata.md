@@ -28,7 +28,7 @@ core (tokens --ui-* + base.css + tokens.css)
 |---|---|---|---|
 | Button | color, state, size, radius, focus, motion, type, border | Icon (SVG inline), spinner propio | none (form nativo); `aria-busy` loading |
 | Text field | field, color, size, radius, border, state, type | Icon (error) | 422 + `X-Gelium-Validation`; valor + focus preservados |
-| Data table | data-table (scoped), color, state, size, type | Pagination (footer), Empty state, Skeleton, Progress, Toast (refresh) | `GET ?q=&sort=&dir=&page=&selection=`; `HX-Request` bifurca |
+| Data table | data-table (scoped), color, state, size, type | Pagination (footer), Empty state, optional Skeleton for an actual waiting region, Progress, Toast (refresh) | `GET ?q=&sort=&dir=&page=&selection=`; `HX-Request` bifurca |
 | Toast | toast, color, shadow, radius, type | — | `HX-Trigger gelium:toast` (vocabulario cerrado) |
 | Banner | banner, color | Button (CTA), Icon button (dismiss) | dismiss `POST + 303` |
 | Empty state | empty-state, color, type | Button (CTA link) | none (server output) |
@@ -53,7 +53,7 @@ core (tokens --ui-* + base.css + tokens.css)
 
 | Pattern | Depende de (componentes) | Contrato | Desbloquea |
 |---|---|---|---|
-| Resource list (E3) | Data table/List, Empty state, Skeleton, Pagination | GET params | Admin Resource |
+| Resource list (E3) | Data table/List, Empty state, optional Skeleton for an actual waiting region, Pagination | GET params | Admin Resource |
 | Search (E4) | GET form, Empty state, Data table/List | `GET ?q=` | Admin Resource (`?q=`) |
 | Filters (E5) | Chips, Select, Segmented buttons | GET params | Admin Resource, Ops Queue |
 | Pagination (E6) | Pagination standalone / data-table footer | `GET ?page=` | TODAS las recipes |

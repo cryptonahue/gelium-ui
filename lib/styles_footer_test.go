@@ -50,6 +50,12 @@ func TestFooterPrimitiveCSSMapsTokens(t *testing.T) {
 	if !strings.Contains(css, `.ui-footer-list`) {
 		t.Error("footer.css must force footer lists open on desktop")
 	}
+	if !strings.Contains(css, `.ui-footer-details:not([open]) > .ui-footer-list { display: block; }`) {
+		t.Error("footer.css must override closed details for desktop footer lists")
+	}
+	if !strings.Contains(css, `.ui-footer-details { display: contents; }`) {
+		t.Error("footer.css must keep desktop details in the layout")
+	}
 	if strings.Contains(css, `transition:`) || strings.Contains(css, `animation:`) {
 		t.Error("footer.css must not declare transitions or animations")
 	}
@@ -92,10 +98,10 @@ func TestFooterClassVocabularyIsClosed(t *testing.T) {
 		}
 	}
 
-	// The accordion is native and collapsed by default: <details> never carries
-	// the open attribute in the source, so no-JS users get the disclosure.
-	if !strings.Contains(tmpl, "<details class=\"ui-footer-details\">") {
-		t.Error("footer.html must render <details> without the open attribute")
+	// Groups are open initially so desktop always exposes their links. On narrow
+	// screens the native summary remains available to collapse each group.
+	if !strings.Contains(tmpl, "<details class=\"ui-footer-details\" open>") {
+		t.Error("footer.html must render footer groups open initially")
 	}
 	if strings.Contains(tmpl, "<details open") {
 		t.Error("footer.html must not render <details open> (collapsed by default)")

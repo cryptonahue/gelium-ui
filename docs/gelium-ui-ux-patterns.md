@@ -17,8 +17,8 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 |---|---|---|---|
 | 1 | Authentication | Phase G | Text field, Inline alert, Validation summary, Banner, Button, 422 contract |
 | 2 | Onboarding | Phase G | Steps (gap), Callout, Text field, Banner, 422 |
-| 3 | Resource list | Ready | Data table or List, Empty state, Skeleton, Pagination, GET params |
-| 4 | Search | Ready | GET form, Empty state, Data table/List, Skeleton |
+| 3 | Resource list | Ready | Data table or List, Empty state, optional Skeleton for an actual waiting region, Pagination, GET params |
+| 4 | Search | Ready | GET form, Empty state, Data table/List, optional Skeleton for an actual waiting region |
 | 5 | Filters | Ready | Chips, Select, Segmented buttons, GET params |
 | 6 | Pagination | Ready | Data table pagination `<nav>` links, GET params |
 | 7 | Empty state | Ready | `empty-state.html` |
@@ -80,7 +80,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Context**: Admin Resource recipe surface (Phase G) — Data table or List.
 - **Happy path**: GET with stable params → server renders the table/list → row action or selection → POST + 303.
 - **Empty path**: `empty-state.html` row with message + CTA (`data-table.html:68-70`); "Select all" is hidden when empty (`data-table.html:42`).
-- **Loading path**: first paint Skeleton (`skeleton.html`); refresh via Progress + inline Toast (`data-table.html:81-91`).
+- **Loading path**: server-rendered first paint does not require a client-like Skeleton; use Skeleton only when a real data region is rendered in a waiting state. A remote refresh may use Progress and transient feedback (`data-table.html:81-91`).
 - **Error path**: resource error → `error-state.html` (page) or Inline alert (fragment).
 - **Recovery path**: URL carries `?q=&sort=&dir=&page=&selection=`; back/refresh restores state; re-submit re-renders.
 - **Mobile behavior**: server-side pagination instead of horizontal scroll (`composition-rules.md:145`); List over Data table when narrow.
@@ -97,7 +97,7 @@ Each pattern declares: problem, user, context, happy/empty/loading/error/recover
 - **Context**: a GET form above a Data table/List (Search Results recipe, Phase G).
 - **Happy path**: submit GET `?q=…` → server-rendered results.
 - **Empty path**: `empty-state.html` — "No results for `{query}`. Check the spelling or clear the filter." + CTA (clear filter link).
-- **Loading path**: Skeleton while the results region loads; `aria-live` region announces the swap.
+- **Loading path**: when an enhanced request leaves the results region waiting, Skeleton may preserve its structure; a server-rendered first response does not need a fabricated loading phase. An `aria-live` region announces an actual HTMX swap.
 - **Error path**: malformed/vocabulary-invalid query → sanitized, never crashes; server renders normal results or empty.
 - **Recovery path**: query persists in the URL (`?q=`); back button returns to results; clear-filter link.
 - **Mobile behavior**: search input full-width; `type="search"` for native clear.

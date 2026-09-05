@@ -226,6 +226,52 @@ func (s *server) recipeOpsQueueList(w http.ResponseWriter, r *http.Request) {
 	s.renderRecipeTemplate(w, http.StatusOK, "recipe-ops-queue", view)
 }
 
+type recipeOpsQueueDetailView struct {
+	AssetsVersion string
+	Meta          metaView
+	ThemeClass    string
+	DataTheme     string
+	Item          recipeQueueItem
+	StatusLabel   string
+	KindLabel     string
+	StatusTone    string
+	SLAText       string
+	ReceivedText  string
+	ReceivedAt    string
+	SLADeadline   string
+	AdvanceAction string
+	DequeueAction string
+	CanAdvance    bool
+	ListHref      string
+}
+
+func (s *server) recipeOpsQueueDetail(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	item, ok := queueDemoStore.get(id)
+	if !ok {
+		s.recipeQueueNotFound(w, "Item not found", "The queue item you are trying to view does not exist or has been removed.")
+		return
+	}
+	now := time.Now()
+	s.renderRecipeTemplate(w, http.StatusOK, "recipe-ops-queue-detail", recipeOpsQueueDetailView{
+		AssetsVersion: lib.AssetsVersion,
+		Meta:          screenRecipeMeta(item.Subject+" · Ops Queue recipe", "Review one work queue item, its status and SLA, and choose the next action.", "/recipes/ops-queue/"+id),
+		ThemeClass:    themeClass(""),
+		Item:          item,
+		StatusLabel:   recipeQueueStatusLabels[item.Status],
+		KindLabel:     recipeQueueKindLabels[item.Kind],
+		StatusTone:    recipeQueueItemTone(item, now),
+		SLAText:       recipeQueueSLAText(item, now),
+		ReceivedText:  recipeRelativeTime(item.ReceivedAt, now),
+		ReceivedAt:    item.ReceivedAt.Format("2006-01-02 15:04 MST"),
+		SLADeadline:   item.SLADeadline.Format("2006-01-02 15:04 MST"),
+		AdvanceAction: "/recipes/ops-queue/" + id + "/advance",
+		DequeueAction: "/recipes/ops-queue/" + id + "/dequeue",
+		CanAdvance:    recipeQueueAdvanceStatus(item.Status) != item.Status,
+		ListHref:      "/recipes/ops-queue",
+	})
+}
+
 // recipeOpsQueueAdvance moves an item to its next operational state and
 // redirects (POST+303) with a persistent success banner. Done is terminal; a
 // re-advance of a done item is a no-op reported with an informational banner.

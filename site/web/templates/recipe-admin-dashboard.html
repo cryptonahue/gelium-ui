@@ -1,0 +1,57 @@
+{{define "recipe-admin-dashboard"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Meta.Title}}</title>
+  {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
+  {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
+  {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
+  <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
+</head>
+<body class="recipe-ad-root">
+  <main class="recipe-ad-main">
+    <header class="recipe-ad-header">
+      <p class="recipe-ad-eyebrow">Admin Resource</p>
+      <h1 class="recipe-ad-title">Projects dashboard</h1>
+      <p class="recipe-ad-description">A server-rendered summary of the current projects set.</p>
+    </header>
+    <section class="recipe-ad-metrics" aria-labelledby="recipe-ad-metrics-title">
+      <h2 class="recipe-ad-section-title" id="recipe-ad-metrics-title">Project metrics</h2>
+      {{if eq .State "error"}}
+      <p class="recipe-ad-empty" role="alert">Project metrics are unavailable. <a href="/recipes/admin-dashboard">Try again</a></p>
+      {{else if eq .State "loading"}}
+      <p class="recipe-ad-empty" role="status" aria-busy="true">Loading project metrics…</p>
+      {{else if .HasData}}
+      <div class="recipe-ad-grid">
+        {{range .Metrics}}
+        <article class="ui-card ui-card-outlined recipe-ad-metric">
+          <p class="ui-card-meta">{{.Label}}</p>
+          <p class="recipe-ad-value">{{.Value}}</p>
+        </article>
+        {{end}}
+      </div>
+      {{else}}
+      <p class="recipe-ad-empty" role="status">No project metrics available. <a href="{{.ListHref}}">View projects</a></p>
+      {{end}}
+    </section>
+    <section class="recipe-ad-recent" aria-labelledby="recipe-ad-recent-title">
+      <h2 class="recipe-ad-section-title" id="recipe-ad-recent-title">Recent projects</h2>
+      {{if .Recent}}
+      <ul class="ui-list">
+        {{range .Recent}}
+        <li class="ui-list-item ui-list-item--two-line">
+          <span class="ui-list-item-text">
+            <span class="ui-list-item-headline">{{.Name}}</span>
+            <span class="ui-list-item-supporting">{{.Status}} · {{.Date}}</span>
+          </span>
+        </li>
+        {{end}}
+      </ul>
+      {{else}}
+      <p class="recipe-ad-empty" role="status">No recent projects. <a href="{{.ListHref}}">View projects</a></p>
+      {{end}}
+    </section>
+  </main>
+</body>
+</html>{{end}}

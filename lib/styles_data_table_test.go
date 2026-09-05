@@ -116,6 +116,9 @@ func TestDataTableDemoClassVocabularyIsClosed(t *testing.T) {
 			t.Errorf("data-table.css is missing primitive selector .%s", cls)
 		}
 	}
+	if !strings.Contains(css, "min-width: var(--ui-touch-target);") || !strings.Contains(css, "min-height: var(--ui-touch-target);") {
+		t.Error("data-table pagination pages must meet the shared touch-target token")
+	}
 
 	// The sort glyph and its class live in the trusted internal SVG constant in
 	// data_table.go; the template references it through {{.SortIcon}}.

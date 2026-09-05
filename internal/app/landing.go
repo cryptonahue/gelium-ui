@@ -152,6 +152,12 @@ func marketingLanding() landingView {
 /* First component */
 &lt;button class="ui-button"&gt;Save changes&lt;/button&gt;
 
+/* Rendered output */
+<div class="ui-landing-first-component" aria-label="Rendered button example">
+  <p>Rendered output</p>
+  <button class="ui-button" type="button">Save changes</button>
+</div>
+
 /* Optional */
 // gelium.js — toast + 422 helper</code></pre>`,
 			),
@@ -254,7 +260,6 @@ func homeLandingNav() []navLink {
 }
 
 func marketingFooter() *footerView {
-	defaultSiteFooter := defaultFooter()
 	sections := []footerSection{
 		{Title: "Package", Links: []navLink{
 			{Path: "/components/button", Label: "Component registry"},
@@ -276,7 +281,6 @@ func marketingFooter() *footerView {
 			{Path: "https://github.com/cryptonahue/gelium-ui/discussions", Label: "Discussions"},
 		}},
 	}
-	sections = append(sections, defaultSiteFooter.Sections...)
 	return &footerView{
 		Brand: "Gelium UI",
 		Sections: sections,

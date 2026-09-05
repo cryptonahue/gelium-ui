@@ -46,8 +46,8 @@ Nota: **Toast** es el mecanismo transitorio-de-acción (contrario directo de D8)
 |---|---|---|---|---|---|
 | 1 | Authentication | Text field, Inline alert, Validation summary, Banner, Button, 422 | pantalla completa, nunca dialog | — | Phase G |
 | 2 | Onboarding | Steps (gap), Callout, Text field, Banner, 422 | multi-paso | — | Phase G |
-| 3 | Resource list | Data table o List, Empty state, Skeleton, Pagination, GET params | set de registros (`composition-rules.md` §4.1) | **Admin Resource** | Ready |
-| 4 | Search | GET form, Empty state, Data table/List, Skeleton | find by free text | Admin Resource (`?q=`) | Ready |
+| 3 | Resource list | Data table o List, Empty state, optional Skeleton for an actual waiting region, Pagination, GET params | set de registros (`composition-rules.md` §4.1) | **Admin Resource** | Ready |
+| 4 | Search | GET form, Empty state, Data table/List, optional Skeleton for an actual waiting region | find by free text | Admin Resource (`?q=`) | Ready |
 | 5 | Filters | Chips, Select, Segmented buttons, GET params | narrow by category | Admin Resource, Ops Queue (`?status=&kind=`) | Ready |
 | 6 | Pagination | Pagination standalone / data-table footer, GET params | navegar páginas | **TODAS las recipes** | Ready |
 | 7 | Empty state | Empty state | (== D1) | todas | Ready |

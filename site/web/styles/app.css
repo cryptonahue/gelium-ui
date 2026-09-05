@@ -32,6 +32,7 @@
 @import "./blog.css" layer(gelium.site);
 @import "./demo-whatsapp.css" layer(gelium.site);
 @import "./recipe-admin-resource.css" layer(gelium.site);
+@import "./recipe-admin-dashboard.css" layer(gelium.site);
 @import "./recipe-ops-queue.css" layer(gelium.site);
 @import "./recipe-public-feed.css" layer(gelium.site);
 @import "./recipe-rich-article.css" layer(gelium.site);

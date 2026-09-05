@@ -40,17 +40,25 @@
       <form class="recipe-ar-filter" method="get" action="{{.FilterAction}}"
             hx-get="{{.FilterAction}}" hx-target="#resource-panel" hx-swap="outerHTML" role="search">
         {{template "text-field" .SearchField}}
+        <div class="ui-select ui-select-outlined">
+          <select id="recipe-ar-status" name="status">
+            <option value="">All statuses</option>
+            {{range .StatusOptions}}<option value="{{.Value}}"{{if eq .Value $.StatusFilter}} selected{{end}}>{{.Label}}</option>{{end}}
+          </select>
+          <label class="ui-select-label" for="recipe-ar-status">Status</label>
+        </div>
         <button class="ui-button ui-button-outline" type="submit">Filter</button>
       </form>
 
       <section class="recipe-ar-panel" aria-label="Project list">
         <form class="recipe-ar-select" method="get" action="{{.FilterAction}}">
           <input type="hidden" name="q" value="{{.Query}}">
+          <input type="hidden" name="status" value="{{.StatusFilter}}">
           <input type="hidden" name="sort" value="{{.Sort}}">
           <input type="hidden" name="dir" value="{{.Dir}}">
           {{template "recipe-admin-resource-panel" .}}
           <div class="recipe-ar-select-actions">
-            {{if gt .Total 0}}<button class="ui-button ui-button-outline" type="submit">Submit selection</button>{{end}}
+            {{if and .CanBulkDelete (gt .Total 0) .SelectionNotice}}<button class="ui-button ui-button-outline" type="submit" formaction="/recipes/admin-resource/bulk-delete" formmethod="get">Delete selected</button>{{end}}
             {{if and (gt .Total 0) .SelectionNotice}}<p class="recipe-ar-notice" role="status">{{.SelectionNotice}}</p>{{end}}
           </div>
         </form>
@@ -102,7 +110,7 @@
         <td class="ui-data-table-cell ui-data-table-cell--label">
           <span class="recipe-ar-row-actions">
             <a class="recipe-ar-row-action" href="{{.EditHref}}">Edit</a>
-            <a class="recipe-ar-row-action recipe-ar-row-action--danger" href="{{.DeleteHref}}">Delete</a>
+            {{if .CanDelete}}<a class="recipe-ar-row-action recipe-ar-row-action--danger" href="{{.DeleteHref}}">Delete</a>{{end}}
           </span>
         </td>
       </tr>
@@ -134,6 +142,50 @@
   {{if .Refreshed}}{{if .RefreshToast}}{{template "toast" .RefreshToast}}{{end}}{{end}}
 </form>
 {{end}}
+
+{{define "recipe-admin-resource-detail"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Meta.Title}}</title>
+  {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
+  {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
+  {{if .Meta.Robots}}<meta name="robots" content="{{.Meta.Robots}}">{{end}}
+  <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
+</head>
+<body class="recipe-ar-root">
+  <div class="recipe-ar-app">
+    <header class="recipe-ar-appbar">
+      <a class="recipe-ar-brand" href="{{.ListHref}}">Gelium UI <span class="recipe-ar-brand-tag">Admin Resource</span></a>
+      <nav class="recipe-ar-appbar-actions" aria-label="Admin Resource actions"><a class="recipe-ar-back" href="{{.ListHref}}">Back to projects</a></nav>
+    </header>
+    <main class="recipe-ar-main">
+      <article class="recipe-ar-detail">
+        <header class="recipe-ar-header">
+          <div class="recipe-ar-header-text">
+            <p class="recipe-ar-eyebrow">Project detail</p>
+            <h1 class="recipe-ar-title">{{.Item.Name}}</h1>
+          </div>
+          <div class="recipe-ar-detail-actions">
+            <a class="ui-button ui-button-outline" href="{{.EditHref}}">Edit project</a>
+            <a class="ui-button ui-button-text" href="{{.DeleteHref}}">Delete project</a>
+          </div>
+        </header>
+        <section class="recipe-ar-detail-section" aria-labelledby="recipe-ar-detail-overview">
+          <h2 class="recipe-ar-section-title" id="recipe-ar-detail-overview">Overview</h2>
+          <dl class="recipe-ar-detail-fields">
+            <dt>Name</dt><dd>{{.Item.Name}}</dd>
+            <dt>Status</dt><dd><span class="ui-badge ui-badge-large{{if .StatusTone}} ui-badge--{{.StatusTone}}{{end}}">{{.Item.Status}}</span></dd>
+            <dt>Owner</dt><dd>{{.Item.Owner}}</dd>
+            <dt>Date</dt><dd>{{.Item.Date}}</dd>
+          </dl>
+        </section>
+      </article>
+    </main>
+  </div>
+</body>
+</html>{{end}}
 
 {{define "recipe-admin-resource-form"}}<!doctype html>
 <html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
@@ -190,6 +242,35 @@
     </main>
   </div>
   {{template "toast-region"}}
+</body>
+</html>{{end}}
+
+{{define "recipe-admin-resource-bulk-confirm"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Meta.Title}}</title>
+  {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
+  {{if .Meta.Canonical}}<link rel="canonical" href="{{.Meta.Canonical}}">{{end}}
+  <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
+</head>
+<body class="recipe-ar-root">
+  <main class="recipe-ar-confirm">
+    <dialog class="ui-dialog" open aria-labelledby="recipe-ar-bulk-confirm-title" aria-describedby="recipe-ar-bulk-confirm-desc">
+      <h2 class="ui-dialog-headline" id="recipe-ar-bulk-confirm-title">Delete {{.Count}} projects?</h2>
+      <div class="ui-dialog-content"><p id="recipe-ar-bulk-confirm-desc">You are about to permanently delete the selected projects. This action cannot be undone.</p></div>
+      <div class="ui-dialog-actions">
+        <a class="ui-button ui-button-text" href="{{.ListHref}}">Cancel</a>
+        <form class="recipe-ar-confirm-form" method="post" action="{{.DeleteHref}}">
+          <input type="hidden" name="q" value="{{.Query}}">
+          <input type="hidden" name="status" value="{{.Status}}">
+          {{range .Selection}}<input type="hidden" name="selection" value="{{.}}">{{end}}
+          <button class="ui-button ui-button-primary" type="submit">Delete {{.Count}} projects</button>
+        </form>
+      </div>
+    </dialog>
+  </main>
 </body>
 </html>{{end}}
 

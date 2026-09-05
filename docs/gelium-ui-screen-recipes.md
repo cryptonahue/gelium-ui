@@ -6,17 +6,12 @@
 > con flujo no-JS completo y una mejora HTMX opcional que no introduce contratos
 > nuevos.
 >
-> **Estado**: las tres recipes de Phase G están **implementadas** — **Admin
-> Resource** (`/recipes/admin-resource`, `recipe_admin_resource.go`,
-> `recipe-admin-resource.html`), **Ops Queue** (`/recipes/ops-queue`,
-> `recipe_ops_queue.go`, `recipe-ops-queue.html`) y **Public/Social Feed**
-> (`/recipes/public-feed`, `recipe_public_feed.go`, `recipe-public-feed.html`).
-> Las dos últimas consumen las primitivas introducidas junto a ellas: **Avatar**
-> (`avatar.html`/`avatar.css`/`avatar.go`), **tone variants de Badge**
-> (`ui-badge--error|success|warning|info` en `badge.css`, con el on-color nuevo
-> `--ui-color-info-fg`) y **pagination standalone** (`pagination.html`/
-> `pagination.css`/`pagination.go`, la extracción reutilizable del footer de la
-> Data table).
+> **Estado**: las recipes de Phase G están **implementadas**: **Admin Resource**
+> (`/recipes/admin-resource`), **Ops Queue** (`/recipes/ops-queue`),
+> **Public/Social Feed** (`/recipes/public-feed`) y el primer slice de
+> **Admin Dashboard** (`/recipes/admin-dashboard`, KPI cards server-rendered).
+> Rich Article mantiene su ruta read-detail existente como fixture de lectura.
+> Las recipes componen primitivas existentes y mantienen el flujo no-JS.
 >
 > **Fuentes de autoridad**: `docs/gelium-ui-composition-rules.md` (gramática de
 > pantalla, criterios 4.1-4.8, state matrix, anti-rules), `docs/gelium-ui-ux-patterns.md`,
@@ -32,7 +27,8 @@ Rutas vivas (`internal/app/server.go`):
 
 | Operación | Ruta | Contrato |
 |---|---|---|
-| Listar/filtrar/ordenar/paginar/seleccionar | `GET /recipes/admin-resource` | GET params estables `?q=&sort=&dir=&page=&selection=`; `HX-Request` bifurca el fragmento `#resource-panel` |
+| Listar/filtrar/ordenar/paginar/seleccionar | `GET /recipes/admin-resource` | GET params estables `?q=&status=&sort=&dir=&page=&selection=`; `status` usa el vocabulario cerrado de estados; `HX-Request` bifurca el fragmento `#resource-panel` |
+| Ver detalle (read-only) | `GET /recipes/admin-resource/{id}` | `<article>` + `<dl>` server-rendered; 404 con `error-state` si el id no existe |
 | Crear (form) | `GET /recipes/admin-resource/new` | página completa no-JS |
 | Crear (mutación) | `POST /recipes/admin-resource` | 303 a la lista (éxito, banner persistente) o 422 + `X-Gelium-Validation` (fallo) |
 | Editar (form) | `GET /recipes/admin-resource/{id}/edit` | página completa; 404 con `error-state` si el id no existe |
@@ -96,11 +92,11 @@ Contenido factual citado del vocabulario del sistema (estados Active/Pending/Don
 
 ### SERVER_CONTRACT
 
-`GET ?q=&sort=&dir=&page=&selection=` con vocabularios cerrados sanitizados (`dataTableSortKeys`, `dataTableStatuses`, page ≥ 1 → defaults seguros); `POST + 303 SeeOther` para todas las mutaciones; `422 + X-Gelium-Validation: true` para validación (nunca toast); `HX-Trigger: {"gelium:toast":{...}}` para transitorio (refresh); banner/inline success para persistente; `HX-Request` bifurca fragmento `#resource-panel` vs página completa; `POST /recipes/admin-resource/refresh` registrado en `postOnlyPaths()` → GET responde 405 con `Allow: POST`.
+`GET ?q=&status=&sort=&dir=&page=&selection=` con vocabularios cerrados sanitizados (`dataTableStatuses`, `dataTableSortKeys`, page ≥ 1 → defaults seguros); `status` filtra por estado exacto y todos los links de sort/página preservan sus filtros y selección; IDs de `selection` se validan contra el dataset y se deduplican; `selection=all` significa todos los registros del conjunto filtrado; bulk delete usa GET de confirmación y POST + 303 con revalidación server-side y banner persistente; autorización es consumer-owned mediante un hook `(request, action, record) -> bool`, con política demo explícita allow-all; acciones no autorizadas no se renderizan y las rutas responden `403`; la selección bulk se vuelve a filtrar por autorización justo antes de mutar y puede producir un resultado parcial; `422 + X-Gelium-Validation: true` para validación (nunca toast); `HX-Trigger: {"gelium:toast":{...}}` para transitorio (refresh); banner/inline success para persistente; `HX-Request` bifurca fragmento `#resource-panel` vs página completa; `POST /recipes/admin-resource/refresh` registrado en `postOnlyPaths()` → GET responde 405 con `Allow: POST`.
 
 ### NO_JS_FLOW
 
-Completo: filtro/orden/página/sort = links GET reales (la URL es el estado); selección = checkboxes en form real; crear/editar/borrar = form POST + 303; 422 = re-render de página completa preservando valores; confirmación = `<dialog open>` server-rendered con form POST real; refresh = reload de página con toast inline (`toast.go` fallback no-JS); banner success persistente post-303.
+Completo: búsqueda/estado/orden/página = controles y links GET reales (la URL es el estado); selección = checkboxes en form real; crear/editar/borrar = form POST + 303; 422 = re-render de página completa preservando valores; confirmación = `<dialog open>` server-rendered con form POST real; refresh = reload de página con toast inline (`toast.go` fallback no-JS); banner success persistente post-303.
 
 ### HTMX_ENHANCEMENT
 

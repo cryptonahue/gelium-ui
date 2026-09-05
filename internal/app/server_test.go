@@ -606,7 +606,7 @@ func TestBreadcrumbMarkupContracts(t *testing.T) {
 }
 
 // TestFooterMarkupContracts proves the footer partial renders the brand, the
-// secondary nav with native details/summary sections (collapsed by default),
+// secondary nav with native details/summary sections (open initially),
 // and the legal line — zero JS.
 func TestFooterMarkupContracts(t *testing.T) {
 	got := renderFooter(t, footerView{
@@ -621,7 +621,7 @@ func TestFooterMarkupContracts(t *testing.T) {
 		`<p class="ui-footer-brand">Gelium UI</p>`,
 		`<nav class="ui-footer-nav" aria-label="Footer">`,
 		`<section class="ui-footer-section">`,
-		`<details class="ui-footer-details">`,
+		`<details class="ui-footer-details" open>`,
 		`<summary class="ui-footer-heading">Documentation</summary>`,
 		`<ul class="ui-footer-list">`,
 		`<a href="/docs">Docs</a>`,
@@ -631,8 +631,8 @@ func TestFooterMarkupContracts(t *testing.T) {
 			t.Errorf("footer markup is missing contract %q", contract)
 		}
 	}
-	if strings.Contains(got, "<details open") {
-		t.Error("footer must render <details> collapsed by default (zero-JS accordion)")
+	if !strings.Contains(got, "<details class=\"ui-footer-details\" open>") {
+		t.Error("footer must render groups open initially so desktop links are visible")
 	}
 
 	// Nil-safe: brand and legal are optional and omitted when empty.
@@ -713,26 +713,23 @@ func TestHomeRendersDefaultFooter(t *testing.T) {
 		`<footer class="ui-footer">`,
 		`<p class="ui-footer-brand">Gelium UI</p>`,
 		`<nav class="ui-footer-nav" aria-label="Footer">`,
-		`<summary class="ui-footer-heading">Getting started</summary>`,
-		`<summary class="ui-footer-heading">Foundation</summary>`,
-		`<summary class="ui-footer-heading">Actions</summary>`,
-		`<summary class="ui-footer-heading">Patterns</summary>`,
-		`<summary class="ui-footer-heading">Recipes</summary>`,
-		`<summary class="ui-footer-heading">Core</summary>`,
-		`<summary class="ui-footer-heading">System</summary>`,
-		`<summary class="ui-footer-heading">Meta</summary>`,
-		`<a href="/components/button">Button</a>`,
+		`<summary class="ui-footer-heading">Package</summary>`,
+		`<summary class="ui-footer-heading">Learn</summary>`,
+		`<summary class="ui-footer-heading">Resources</summary>`,
+		`<summary class="ui-footer-heading">Community</summary>`,
+		`<a href="/components/button">Component registry</a>`,
 		`<a href="/docs">Documentation</a>`,
-		`<a href="/docs/patterns">Patterns</a>`,
-		`<a href="/recipes/admin-resource">Admin Resource</a>`,
+		`<a href="/docs/agent-workflow">Agent guidance</a>`,
+		`<a href="https://www.npmjs.com/package/gelium-ui">npm</a>`,
+		`<a href="https://github.com/cryptonahue/gelium-ui/issues">Issues</a>`,
 		`<p class="ui-footer-legal">© 2026 Gelium UI · MIT</p>`,
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("home is missing footer contract %q", contract)
 		}
 	}
-	if strings.Contains(body, "<details open") {
-		t.Error("live footer must not render expanded <details>")
+	if got := strings.Count(body, `<details class="ui-footer-details" open>`); got != 4 {
+		t.Errorf("marketing footer rendered %d expanded groups, want 4", got)
 	}
 }
 

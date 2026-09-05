@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"geliumui/lib"
 	"net/http"
+	"net/url"
 	"sort"
 	"strconv"
 	"strings"
@@ -20,6 +21,15 @@ import (
 // variant rendered as a real native <dialog open>, and every mutation follows
 // POST+303 with a persistent success banner (never a toast). The recipe
 // introduces no new primitives — only wiring.
+
+// recipeAdminAuthorizer is the consumer-owned authorization boundary for the
+// demo recipe. Gelium does not inspect sessions, roles, tenants, or policies;
+// the consumer answers whether an action is allowed for the request and record.
+type recipeAdminAuthorizer func(*http.Request, string, *recipeResource) bool
+
+const recipeAdminDeleteAction = "recipes.admin-resource.delete"
+
+func recipeAdminAllowAll(*http.Request, string, *recipeResource) bool { return true }
 
 // recipeAdminPageSize controls the server-side pagination slice of the recipe.
 const recipeAdminPageSize = 5
@@ -200,6 +210,8 @@ type recipeAdminResourceView struct {
 	NewButton       buttonView
 	FilterAction    string
 	SearchField     textFieldView
+	StatusFilter    string
+	StatusOptions   []recipeStatusOption
 	Query           string
 	Sort            string
 	Dir             string
@@ -216,6 +228,7 @@ type recipeAdminResourceView struct {
 	HasNext         bool
 	SelectedCount   int
 	SelectionNotice string
+	CanBulkDelete   bool
 	Colspan         int
 	EmptyState      emptyStateView
 	Banner          *bannerView
@@ -231,6 +244,7 @@ type recipeResourceRowView struct {
 	Date       string
 	Owner      string
 	Selected   bool
+	CanDelete  bool
 	EditHref   string
 	DeleteHref string
 }
@@ -279,6 +293,30 @@ type recipeAdminResourceConfirmView struct {
 	ListHref      string
 }
 
+type recipeAdminResourceBulkConfirmView struct {
+	AssetsVersion string
+	Meta          metaView
+	ThemeClass    string
+	DataTheme     string
+	DeleteHref    string
+	ListHref      string
+	Query         string
+	Status        string
+	Selection     []string
+	Count         int
+}
+
+type recipeAdminResourceDetailView struct {
+	AssetsVersion string
+	Meta          metaView
+	ThemeClass    string
+	Item          recipeResource
+	StatusTone    string
+	ListHref      string
+	EditHref      string
+	DeleteHref    string
+}
+
 // validationSummaryView is the production view model for the shared
 // "validation-summary" partial. The items are real links to each field error
 // anchor, so a no-JS form failure navigates straight to the broken field.
@@ -298,9 +336,14 @@ type validationSummaryItemView struct {
 func (s *server) recipeAdminResourceList(w http.ResponseWriter, r *http.Request) {
 	selection := r.URL.Query()["selection"]
 	view := newRecipeAdminResourceView(
-		r.URL.Query().Get("q"), r.URL.Query().Get("sort"), r.URL.Query().Get("dir"), r.URL.Query().Get("page"),
+		r.URL.Query().Get("q"), r.URL.Query().Get("status"), r.URL.Query().Get("sort"), r.URL.Query().Get("dir"), r.URL.Query().Get("page"),
 		selection, resourceDemoStore.takeBanner(),
 	)
+	view.CanBulkDelete = s.recipeAdminAuthorize == nil || s.recipeAdminAuthorize(r, recipeAdminDeleteAction, nil)
+	for i := range view.Rows {
+		item, ok := resourceDemoStore.get(view.Rows[i].ID)
+		view.Rows[i].CanDelete = ok && (s.recipeAdminAuthorize == nil || s.recipeAdminAuthorize(r, recipeAdminDeleteAction, &item))
+	}
 	applyRequestChrome(r, view)
 
 	if strings.EqualFold(r.Header.Get("HX-Request"), "true") {
@@ -308,6 +351,25 @@ func (s *server) recipeAdminResourceList(w http.ResponseWriter, r *http.Request)
 		return
 	}
 	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-list", view)
+}
+
+func (s *server) recipeAdminResourceDetail(w http.ResponseWriter, r *http.Request) {
+	id := r.PathValue("id")
+	item, ok := resourceDemoStore.get(id)
+	if !ok {
+		s.recipeAdminResourceNotFound(w, "Project not found", "The project you are trying to view does not exist or has been deleted.")
+		return
+	}
+	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-detail", recipeAdminResourceDetailView{
+		AssetsVersion: lib.AssetsVersion,
+		Meta:          recipeAdminMeta(item.Name+" · Admin Resource recipe", "Read-only project details in the Admin Resource screen recipe.", "/recipes/admin-resource/"+id),
+		ThemeClass:    themeClass(""),
+		Item:          item,
+		StatusTone:    recipeStatusTone(item.Status),
+		ListHref:      "/recipes/admin-resource",
+		EditHref:      "/recipes/admin-resource/" + id + "/edit",
+		DeleteHref:    "/recipes/admin-resource/" + id + "/delete",
+	})
 }
 
 func (s *server) recipeAdminResourceNew(w http.ResponseWriter, r *http.Request) {
@@ -362,6 +424,10 @@ func (s *server) recipeAdminResourceDeleteConfirm(w http.ResponseWriter, r *http
 		s.recipeAdminResourceNotFound(w, "Project not found", "The project you are trying to delete does not exist or has already been removed.")
 		return
 	}
+	if s.recipeAdminAuthorize != nil && !s.recipeAdminAuthorize(r, recipeAdminDeleteAction, &item) {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
 	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-confirm", recipeAdminResourceConfirmView{
 		AssetsVersion: lib.AssetsVersion,
 		Meta:          recipeAdminMeta("Delete "+item.Name+" · Admin Resource recipe", "Confirm the deletion of a project in the Admin Resource screen recipe.", "/recipes/admin-resource/"+id+"/delete"),
@@ -380,12 +446,83 @@ func (s *server) recipeAdminResourceDelete(w http.ResponseWriter, r *http.Reques
 		s.recipeAdminResourceNotFound(w, "Project not found", "The project you are trying to delete does not exist or has already been removed.")
 		return
 	}
+	if s.recipeAdminAuthorize != nil && !s.recipeAdminAuthorize(r, recipeAdminDeleteAction, &item) {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "invalid form", http.StatusBadRequest)
 		return
 	}
 	resourceDemoStore.delete(id)
 	resourceDemoStore.setBanner(recipeAdminSuccessBanner("Project deleted", fmt.Sprintf("%q was removed from the projects list.", item.Name)))
+	http.Redirect(w, r, "/recipes/admin-resource", http.StatusSeeOther)
+}
+
+func (s *server) recipeAdminResourceBulkDeleteConfirm(w http.ResponseWriter, r *http.Request) {
+	selection := normalizeRecipeSelection(resourceDemoStore.snapshot(), r.URL.Query()["selection"])
+	if len(selection) == 0 {
+		resourceDemoStore.setBanner(bannerView{Tone: "error", Title: "No projects selected", Body: "Select at least one project before deleting."})
+		http.Redirect(w, r, "/recipes/admin-resource", http.StatusSeeOther)
+		return
+	}
+	ids := s.authorizedRecipeAdminIDs(r, resourceDemoStore.snapshot(), selection, r.URL.Query().Get("q"), r.URL.Query().Get("status"))
+	if len(ids) == 0 {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+	s.renderRecipeTemplate(w, http.StatusOK, "recipe-admin-resource-bulk-confirm", recipeAdminResourceBulkConfirmView{
+		AssetsVersion: lib.AssetsVersion,
+		Meta:          recipeAdminMeta("Delete selected projects · Admin Resource recipe", "Confirm deleting selected projects.", "/recipes/admin-resource/bulk-delete"),
+		ThemeClass:    themeClass(""),
+		DeleteHref:    "/recipes/admin-resource/bulk-delete",
+		ListHref:      "/recipes/admin-resource",
+		Query:         r.URL.Query().Get("q"),
+		Status:        r.URL.Query().Get("status"),
+		Selection:     ids,
+		Count:         len(ids),
+	})
+}
+
+func (s *server) recipeAdminResourceBulkDelete(w http.ResponseWriter, r *http.Request) {
+	if err := r.ParseForm(); err != nil {
+		http.Error(w, "invalid form", http.StatusBadRequest)
+		return
+	}
+	snapshot := resourceDemoStore.snapshot()
+	selection := normalizeRecipeSelection(snapshot, r.Form["selection"])
+	if len(selection) == 0 {
+		resourceDemoStore.setBanner(bannerView{Tone: "error", Title: "No projects selected", Body: "Select at least one project before deleting."})
+		http.Redirect(w, r, "/recipes/admin-resource", http.StatusSeeOther)
+		return
+	}
+	requestedIDs := recipeAdminSelectionIDs(snapshot, selection, r.FormValue("q"), r.FormValue("status"))
+	ids := s.authorizedRecipeAdminIDs(r, snapshot, selection, r.FormValue("q"), r.FormValue("status"))
+	if len(ids) == 0 {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+	deleted := 0
+	for _, id := range ids {
+		// Authorization is intentionally checked from this fresh snapshot immediately
+		// before each mutation. The confirmation page is not an authority token.
+		item, exists := resourceDemoStore.get(id)
+		if !exists || (s.recipeAdminAuthorize != nil && !s.recipeAdminAuthorize(r, recipeAdminDeleteAction, &item)) {
+			continue
+		}
+		if resourceDemoStore.delete(id) {
+			deleted++
+		}
+	}
+	if deleted == 0 {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
+	body := "The selected projects were permanently removed."
+	if denied := len(requestedIDs) - len(ids); denied > 0 {
+		body = fmt.Sprintf("The selected projects were permanently removed. %d project(s) were not authorized and were left unchanged.", denied)
+	}
+	resourceDemoStore.setBanner(recipeAdminSuccessBanner(fmt.Sprintf("%d projects deleted", deleted), body))
 	http.Redirect(w, r, "/recipes/admin-resource", http.StatusSeeOther)
 }
 
@@ -401,7 +538,7 @@ func (s *server) recipeAdminResourceRefresh(w http.ResponseWriter, r *http.Reque
 	}
 	isHX := strings.EqualFold(r.Header.Get("HX-Request"), "true")
 
-	view := newRecipeAdminResourceView("", "", "", "", nil, resourceDemoStore.takeBanner())
+	view := newRecipeAdminResourceView("", "", "", "", "", nil, resourceDemoStore.takeBanner())
 	applyRequestChrome(r, view)
 	view.Refreshed = true
 
@@ -504,8 +641,14 @@ func recipeAdminSuccessBanner(title, body string) bannerView {
 // newRecipeAdminResourceView validates the request against the closed Data
 // table vocabularies (reusing dataTableSortKeys and the column/href builders)
 // and builds the filtered, sorted, paginated list view from the store.
-func newRecipeAdminResourceView(q, sortParam, dir, page string, selection []string, banner *bannerView) *recipeAdminResourceView {
+func newRecipeAdminResourceView(q, statusParam, sortParam, dir, page string, selection []string, banner *bannerView) *recipeAdminResourceView {
 	query := strings.TrimSpace(q)
+	statusFilter := ""
+	for _, status := range dataTableStatuses {
+		if statusParam == status {
+			statusFilter = status
+		}
+	}
 	sortKey := "name"
 	for _, k := range dataTableSortKeys {
 		if sortParam == k {
@@ -522,8 +665,12 @@ func newRecipeAdminResourceView(q, sortParam, dir, page string, selection []stri
 	}
 
 	snapshot := resourceDemoStore.snapshot()
+	selection = normalizeRecipeSelection(snapshot, selection)
 	items := make([]recipeResource, 0, len(snapshot))
 	for _, it := range snapshot {
+		if statusFilter != "" && it.Status != statusFilter {
+			continue
+		}
 		if query != "" && !strings.Contains(strings.ToLower(it.Name), strings.ToLower(query)) &&
 			!strings.Contains(strings.ToLower(it.Status), strings.ToLower(query)) &&
 			!strings.Contains(strings.ToLower(it.Owner), strings.ToLower(query)) {
@@ -591,14 +738,15 @@ func newRecipeAdminResourceView(q, sortParam, dir, page string, selection []stri
 		}
 	}
 
-	colspan := 1 + len(dataTableColumns(query, sortKey, direction)) + 1
-	empty := recipeAdminEmptyState(query, sortKey, direction)
+	columns := recipeAdminColumns(query, statusFilter, sortKey, direction, selection)
+	colspan := 1 + len(columns) + 1
+	empty := recipeAdminEmptyState(query, statusFilter, sortKey, direction)
 
 	pageLinks := make([]dataTablePageView, 0, totalPages)
 	for n := 1; n <= totalPages; n++ {
 		pageLinks = append(pageLinks, dataTablePageView{
 			Num:     n,
-			Href:    dataTableHref(query, sortKey, direction, n),
+			Href:    recipeAdminHref(query, statusFilter, sortKey, direction, selection, n),
 			Current: n == pageNum,
 		})
 	}
@@ -617,7 +765,9 @@ func newRecipeAdminResourceView(q, sortParam, dir, page string, selection []stri
 		Description:     "The Admin Resource screen recipe: a server-rendered resource manager composed from the Data table, form, dialog, banner and toast primitives.",
 		NewButton:       buttonView{Label: "New project", Variant: "primary", Href: "/recipes/admin-resource/new"},
 		FilterAction:    "/recipes/admin-resource",
-		SearchField:     textFieldView{ID: "recipe-ar-q", Label: "Filter", Name: "q", Value: query, Variant: "outlined", Helper: "Filter by name, status or owner."},
+		SearchField:     textFieldView{ID: "recipe-ar-q", Label: "Filter", Name: "q", Type: "search", Value: query, Variant: "outlined", Helper: "Filter by name, status or owner."},
+		StatusFilter:    statusFilter,
+		StatusOptions:   recipeStatusFilterOptions(statusFilter),
 		Query:           query,
 		Sort:            sortKey,
 		Dir:             direction,
@@ -625,11 +775,11 @@ func newRecipeAdminResourceView(q, sortParam, dir, page string, selection []stri
 		Total:           total,
 		Pages:           totalPages,
 		Caption:         fmt.Sprintf("%d projects · page %d of %d", total, pageNum, totalPages),
-		Columns:         dataTableColumns(query, sortKey, direction),
+		Columns:         columns,
 		Rows:            rows,
 		PageLinks:       pageLinks,
-		PrevHref:        dataTableHref(query, sortKey, direction, pageNum-1),
-		NextHref:        dataTableHref(query, sortKey, direction, pageNum+1),
+		PrevHref:        recipeAdminHref(query, statusFilter, sortKey, direction, selection, pageNum-1),
+		NextHref:        recipeAdminHref(query, statusFilter, sortKey, direction, selection, pageNum+1),
 		HasPrev:         pageNum > 1,
 		HasNext:         pageNum < totalPages,
 		SelectedCount:   selectedCount,
@@ -637,6 +787,19 @@ func newRecipeAdminResourceView(q, sortParam, dir, page string, selection []stri
 		Colspan:         colspan,
 		EmptyState:      empty,
 		Banner:          banner,
+	}
+}
+
+func recipeStatusTone(status string) string {
+	switch status {
+	case "Active":
+		return "success"
+	case "Pending":
+		return "warning"
+	case "Done":
+		return "info"
+	default:
+		return ""
 	}
 }
 
@@ -651,16 +814,133 @@ func recipeAdminField(it recipeResource, key string) string {
 	}
 }
 
+func recipeAdminColumns(query, status, sortKey, direction string, selection []string) []dataTableColumn {
+	columns := dataTableColumns(query, sortKey, direction)
+	for i := range columns {
+		dir := "asc"
+		if columns[i].Active {
+			dir = toggleDataTableDir(direction)
+		}
+		columns[i].Href = recipeAdminHref(query, status, columns[i].Key, dir, selection, 0)
+	}
+	return columns
+}
+
+func recipeAdminHref(query, status, sortKey, direction string, selection []string, page int) string {
+	values := url.Values{}
+	if query != "" {
+		values.Set("q", query)
+	}
+	if status != "" {
+		values.Set("status", status)
+	}
+	for _, selected := range selection {
+		values.Add("selection", selected)
+	}
+	values.Set("sort", sortKey)
+	values.Set("dir", direction)
+	if page >= 1 {
+		values.Set("page", strconv.Itoa(page))
+	}
+	return "?" + values.Encode()
+}
+
+func recipeAdminSelectionIDs(snapshot []recipeResource, selection []string, query, status string) []string {
+	if len(selection) == 1 && selection[0] == "all" {
+		ids := make([]string, 0)
+		for _, item := range filteredRecipeResources(snapshot, query, status) {
+			ids = append(ids, item.ID)
+		}
+		return ids
+	}
+	return selection
+}
+
+func (s *server) authorizedRecipeAdminIDs(r *http.Request, snapshot []recipeResource, selection []string, query, status string) []string {
+	ids := recipeAdminSelectionIDs(snapshot, selection, query, status)
+	byID := make(map[string]recipeResource, len(snapshot))
+	for _, item := range snapshot {
+		byID[item.ID] = item
+	}
+	authorized := make([]string, 0, len(ids))
+	for _, id := range ids {
+		item, ok := byID[id]
+		if !ok || (s.recipeAdminAuthorize != nil && !s.recipeAdminAuthorize(r, recipeAdminDeleteAction, &item)) {
+			continue
+		}
+		authorized = append(authorized, id)
+	}
+	return authorized
+}
+
+func normalizeRecipeSelection(items []recipeResource, selection []string) []string {
+	valid := make(map[string]struct{}, len(items))
+	for _, item := range items {
+		valid[item.ID] = struct{}{}
+	}
+	seen := make(map[string]struct{}, len(selection))
+	normalized := make([]string, 0, len(selection))
+	for _, value := range selection {
+		if value == "all" {
+			return []string{"all"}
+		}
+		if _, ok := valid[value]; !ok {
+			continue
+		}
+		if _, ok := seen[value]; ok {
+			continue
+		}
+		seen[value] = struct{}{}
+		normalized = append(normalized, value)
+	}
+	return normalized
+}
+
+func filteredRecipeResources(items []recipeResource, query, status string) []recipeResource {
+	query = strings.ToLower(strings.TrimSpace(query))
+	filtered := make([]recipeResource, 0, len(items))
+	for _, item := range items {
+		if status != "" && item.Status != status {
+			continue
+		}
+		if query != "" && !strings.Contains(strings.ToLower(item.Name), query) &&
+			!strings.Contains(strings.ToLower(item.Status), query) &&
+			!strings.Contains(strings.ToLower(item.Owner), query) {
+			continue
+		}
+		filtered = append(filtered, item)
+	}
+	return filtered
+}
+
+func recipeStatusFilterOptions(selected string) []recipeStatusOption {
+	options := make([]recipeStatusOption, 0, len(dataTableStatuses))
+	for _, status := range dataTableStatuses {
+		options = append(options, recipeStatusOption{Value: status, Label: status})
+	}
+	return options
+}
+
 // recipeAdminEmptyState builds the table empty row: with a search it invites
 // clearing the filters; with no results at all it points to creating the first
 // resource.
-func recipeAdminEmptyState(query, sortKey, direction string) emptyStateView {
+func recipeAdminEmptyState(query, status, sortKey, direction string) emptyStateView {
+	if status != "" {
+		return emptyStateView{
+			Title:    "No results",
+			Body:     "No projects match your filters. Try adjusting the filters.",
+			CTA:      true,
+			CTAHref:  recipeAdminHref("", "", sortKey, direction, nil, 0),
+			CTALabel: "Clear filters",
+			Compact:  true,
+		}
+	}
 	if query != "" {
 		return emptyStateView{
 			Title:    "No results",
 			Body:     "No projects match your search. Try adjusting the filters.",
 			CTA:      true,
-			CTAHref:  dataTableHref("", sortKey, direction, 0),
+			CTAHref:  recipeAdminHref("", "", sortKey, direction, nil, 0),
 			CTALabel: "Clear search",
 			Compact:  true,
 		}
@@ -780,11 +1060,15 @@ func applyRequestChrome(r *http.Request, view interface{}) {
 	switch v := view.(type) {
 	case *recipeAdminResourceView:
 		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
+	case *recipeAdminDashboardView:
+		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
 	case *recipeAdminResourceFormView:
 		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
 	case *recipeAdminResourceConfirmView:
 		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
 	case *recipeOpsQueueView:
+		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
+	case *recipeOpsQueueDetailView:
 		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
 	case *recipeFeedView:
 		applyChromeToView(theme, &v.ThemeClass, &v.DataTheme, scheme)
