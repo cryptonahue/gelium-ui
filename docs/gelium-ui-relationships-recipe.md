@@ -2,6 +2,17 @@
 
 Related records are an application-owned data and authorization concern. Gelium can render a relationship manager or nested resource recipe, but it must never infer joins, fetch undeclared fields, or assume that visibility of a parent grants access to its children.
 
+## Gelium demo consumer
+
+The Admin Resource demo implements a deliberately small `Project → Tasks` relationship:
+
+```text
+GET  /recipes/admin-resource/{project-id}/tasks?status=
+POST /recipes/admin-resource/{project-id}/tasks
+```
+
+It demonstrates project-scoped reads, a closed task-status filter, native task creation, `422` validation, and `POST + 303` navigation. Its in-memory data and allow-all demo authorization are not production persistence or policy implementations.
+
 ## Quick path
 
 1. Declare the parent resource and relationship explicitly.

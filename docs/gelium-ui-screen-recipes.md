@@ -29,6 +29,8 @@ Rutas vivas (`internal/app/server.go`):
 |---|---|---|
 | Listar/filtrar/ordenar/paginar/seleccionar | `GET /recipes/admin-resource` | GET params estables `?q=&status=&sort=&dir=&page=&selection=`; `status` usa el vocabulario cerrado de estados; `HX-Request` bifurca el fragmento `#resource-panel` |
 | Ver detalle (read-only) | `GET /recipes/admin-resource/{id}` | `<article>` + `<dl>` server-rendered; 404 con `error-state` si el id no existe |
+| Listar tasks relacionados | `GET /recipes/admin-resource/{id}/tasks?status=` | Project-scoped; estados cerrados; empty state cuando no hay tasks |
+| Crear task relacionado | `POST /recipes/admin-resource/{id}/tasks` | 303 + banner success o 422; demo in-memory con autorización consumer-owned |
 | Importar CSV (form) | `GET /recipes/admin-resource/import` | página completa no-JS; allowlist `name,status,date,owner`; máximo 50 filas |
 | Importar CSV (mutación) | `POST /recipes/admin-resource/import` | 303 + banner success o 422 con fila inválida; no persiste filas si alguna falla |
 | Crear (form) | `GET /recipes/admin-resource/new` | página completa no-JS |

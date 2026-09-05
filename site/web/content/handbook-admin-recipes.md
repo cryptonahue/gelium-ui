@@ -4,7 +4,7 @@ Gelium UI provides server-rendered admin recipes for applications that own their
 
 ## Runnable recipes
 
-- [Admin Resource](/recipes/admin-resource) — list, search, filters, pagination, selection, forms, confirmation, bounded CSV import, and mutations.
+- [Admin Resource](/recipes/admin-resource) — list, search, filters, pagination, selection, forms, confirmation, bounded CSV import, Project → Tasks nested resources, and mutations.
 - [Ops Queue](/recipes/ops-queue) — operational queue with search, filters, bounded CSV export, POST + 303 transitions, and recovery states.
 - [Public/Social Feed](/recipes/public-feed) — server-rendered feed with pagination, reactions, loading, and empty states.
 
