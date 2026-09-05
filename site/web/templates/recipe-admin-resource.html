@@ -34,7 +34,8 @@
           <h1 class="recipe-ar-title">{{.Title}}</h1>
           <p class="recipe-ar-desc">{{.Description}}</p>
         </div>
-        {{template "button" .NewButton}}
+        <a class="ui-button ui-button-outline" href="/recipes/admin-resource/import">Import CSV</a>
+         {{template "button" .NewButton}}
       </header>
 
       <form class="recipe-ar-filter" method="get" action="{{.FilterAction}}"
@@ -242,6 +243,36 @@
     </main>
   </div>
   {{template "toast-region"}}
+</body>
+</html>{{end}}
+
+{{define "recipe-admin-resource-import"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{{.Meta.Title}}</title>
+  {{if .Meta.Description}}<meta name="description" content="{{.Meta.Description}}">{{end}}
+  <link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}">
+</head>
+<body class="recipe-ar-root">
+  <main class="recipe-ar-main">
+    <section class="recipe-ar-form" aria-labelledby="recipe-ar-import-title">
+      <header class="recipe-ar-form-head">
+        <h1 class="recipe-ar-title" id="recipe-ar-import-title">Import projects</h1>
+        <p class="recipe-ar-desc">Upload a CSV with exactly: name,status,date,owner. Maximum {{.ImportMaxRows}} rows.</p>
+      </header>
+      {{if .Error}}<div class="ui-inline-alert ui-inline-alert--error" role="alert">{{.Error}}</div>{{end}}
+      <form class="recipe-ar-form-fields" method="post" action="/recipes/admin-resource/import" enctype="multipart/form-data">
+        <label for="recipe-ar-import-file">CSV file</label>
+        <input id="recipe-ar-import-file" name="file" type="file" accept=".csv,text/csv" required>
+        <div class="recipe-ar-form-actions">
+          <a class="ui-button ui-button-text" href="{{.ListHref}}">Cancel</a>
+          <button class="ui-button ui-button-primary" type="submit">Import projects</button>
+        </div>
+      </form>
+    </section>
+  </main>
 </body>
 </html>{{end}}
 

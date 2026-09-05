@@ -29,6 +29,8 @@ Rutas vivas (`internal/app/server.go`):
 |---|---|---|
 | Listar/filtrar/ordenar/paginar/seleccionar | `GET /recipes/admin-resource` | GET params estables `?q=&status=&sort=&dir=&page=&selection=`; `status` usa el vocabulario cerrado de estados; `HX-Request` bifurca el fragmento `#resource-panel` |
 | Ver detalle (read-only) | `GET /recipes/admin-resource/{id}` | `<article>` + `<dl>` server-rendered; 404 con `error-state` si el id no existe |
+| Importar CSV (form) | `GET /recipes/admin-resource/import` | página completa no-JS; allowlist `name,status,date,owner`; máximo 50 filas |
+| Importar CSV (mutación) | `POST /recipes/admin-resource/import` | 303 + banner success o 422 con fila inválida; no persiste filas si alguna falla |
 | Crear (form) | `GET /recipes/admin-resource/new` | página completa no-JS |
 | Crear (mutación) | `POST /recipes/admin-resource` | 303 a la lista (éxito, banner persistente) o 422 + `X-Gelium-Validation` (fallo) |
 | Editar (form) | `GET /recipes/admin-resource/{id}/edit` | página completa; 404 con `error-state` si el id no existe |

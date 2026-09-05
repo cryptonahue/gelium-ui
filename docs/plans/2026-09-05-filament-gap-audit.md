@@ -22,7 +22,7 @@ The meaningful gaps are documented below. The next product-facing slices should 
 | Custom pages/widgets | Partial | Recipe composition is documented; widget layout contract is not yet a product need |
 | Global search | Missing | Candidate next slice when cross-resource search has a real consumer |
 | Export | Contract + demo slice | `docs/gelium-ui-export-recipe.md`; Ops Queue has a bounded CSV demo; production async/export policy still waits for a real consumer dataset |
-| Import | Contract documented | `docs/gelium-ui-import-recipe.md`; implementation waits for a real consumer and dataset |
+| Import | Contract + demo slice | `docs/gelium-ui-import-recipe.md`; Admin Resource has a bounded synchronous CSV demo; production async/import policy remains consumer-owned |
 | Relationship managers / nested resources | Contract documented | `docs/gelium-ui-relationships-recipe.md`; implementation waits for a real consumer and relationship |
 | Multi-tenancy | Boundary only | Add explicit tenant-scope and URL/data-leakage guidance; never implement tenancy in Gelium |
 | Authentication / MFA | Intentionally out of scope | Consumer owns identity, sessions, MFA, recovery, and security policy |

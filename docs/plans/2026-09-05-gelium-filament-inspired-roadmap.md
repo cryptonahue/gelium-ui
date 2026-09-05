@@ -504,7 +504,7 @@ El próximo slice de implementación debe ser **uno** de estos problemas respald
 
 1. Global search server-rendered para Ops Queue — implementado como primer consumer.
 2. Export seguro — contrato documentado y demo CSV acotada en Ops Queue; export production/async pendiente de consumer real.
-3. Import seguro — contrato documentado en `docs/gelium-ui-import-recipe.md`; implementación pendiente de consumer real.
+3. Import seguro — contrato documentado y demo CSV síncrona en Admin Resource; import production/async pendiente de consumer real.
 4. Relaciones/nested resources — contrato documentado en `docs/gelium-ui-relationships-recipe.md`; implementación pendiente de consumer real.
 
 No implementar todos a la vez. Elegir un caso real, escribir primero el contrato framework-neutral y recién después construir la recipe.

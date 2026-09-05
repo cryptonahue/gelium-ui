@@ -1775,6 +1775,8 @@ func newWithRecipeAdminAuthorizer(authorize recipeAdminAuthorizer) http.Handler 
 	mux.HandleFunc("GET /recipes/admin-dashboard", s.recipeAdminDashboard)
 	mux.HandleFunc("POST /recipes/admin-resource", s.recipeAdminResourceCreate)
 	mux.HandleFunc("GET /recipes/admin-resource/new", s.recipeAdminResourceNew)
+	mux.HandleFunc("GET /recipes/admin-resource/import", s.recipeAdminResourceImport)
+	mux.HandleFunc("POST /recipes/admin-resource/import", s.recipeAdminResourceImportCSV)
 	mux.HandleFunc("GET /recipes/admin-resource/{id}", s.recipeAdminResourceDetail)
 	mux.HandleFunc("GET /recipes/admin-resource/{id}/edit", s.recipeAdminResourceEdit)
 	mux.HandleFunc("POST /recipes/admin-resource/{id}/edit", s.recipeAdminResourceUpdate)
