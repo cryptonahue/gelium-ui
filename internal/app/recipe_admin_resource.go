@@ -307,14 +307,15 @@ type recipeAdminResourceBulkConfirmView struct {
 }
 
 type recipeAdminResourceDetailView struct {
-	AssetsVersion string
-	Meta          metaView
-	ThemeClass    string
-	Item          recipeResource
-	StatusTone    string
-	ListHref      string
-	EditHref      string
-	DeleteHref    string
+	AssetsVersion   string
+	Meta            metaView
+	ThemeClass      string
+	Item            recipeResource
+	StatusTone      string
+	ListHref        string
+	EditHref        string
+	DeleteHref      string
+	TransitionError string
 }
 
 // validationSummaryView is the production view model for the shared

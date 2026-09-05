@@ -171,6 +171,7 @@
           <div class="recipe-ar-detail-actions">
             <a class="ui-button ui-button-outline" href="{{.EditHref}}">Edit project</a>
              <a class="ui-button ui-button-outline" href="/recipes/admin-resource/{{.Item.ID}}/tasks">View tasks</a>
+             <a class="ui-button ui-button-outline" href="/recipes/admin-resource/{{.Item.ID}}/activity">View activity</a>
             <a class="ui-button ui-button-text" href="{{.DeleteHref}}">Delete project</a>
           </div>
         </header>
@@ -183,6 +184,12 @@
             <dt>Date</dt><dd>{{.Item.Date}}</dd>
           </dl>
         </section>
+        {{if .TransitionError}}<div class="ui-inline-alert ui-inline-alert--error" role="alert">{{.TransitionError}}</div>{{end}}
+        {{if ne .Item.Status "Done"}}<section class="recipe-ar-detail-section" aria-labelledby="recipe-ar-transition-title">
+          <h2 class="recipe-ar-section-title" id="recipe-ar-transition-title">Advance project</h2>
+          <p>Transitions are checked against the current project status at submit time.</p>
+          <form method="post" action="/recipes/admin-resource/{{.Item.ID}}/transition"><label for="recipe-ar-transition-status">Next status</label><select id="recipe-ar-transition-status" name="status"><option>{{if eq .Item.Status "Pending"}}Active{{else}}Done{{end}}</option></select><button class="ui-button ui-button-primary" type="submit">Confirm status change</button></form>
+        </section>{{end}}
       </article>
     </main>
   </div>
@@ -287,6 +294,16 @@
   <form class="recipe-ar-filter" method="get" action="/recipes/admin-resource/{{.Project.ID}}/tasks"><label for="task-status">Status</label><select id="task-status" name="status"><option value="">All statuses</option><option value="Active"{{if eq .Status "Active"}} selected{{end}}>Active</option><option value="Pending"{{if eq .Status "Pending"}} selected{{end}}>Pending</option><option value="Done"{{if eq .Status "Done"}} selected{{end}}>Done</option></select><button class="ui-button ui-button-outline" type="submit">Filter</button></form>
   <table class="ui-data-table-table"><caption class="ui-data-table-caption">{{len .Tasks}} tasks</caption><thead><tr><th scope="col">Task</th><th scope="col">Status</th><th scope="col">Due date</th><th scope="col">Assignee</th></tr></thead><tbody>{{range .Tasks}}<tr><th scope="row">{{.Title}}</th><td>{{.Status}}</td><td>{{.DueDate}}</td><td>{{.Assignee}}</td></tr>{{else}}<tr><td colspan="4">No tasks match this filter.</td></tr>{{end}}</tbody></table>
   <section class="recipe-ar-form"><h2 class="recipe-ar-title">Add task</h2><form class="recipe-ar-form-fields" method="post" action="/recipes/admin-resource/{{.Project.ID}}/tasks"><label for="task-title">Title</label><input id="task-title" name="title" required><label for="task-status-new">Status</label><select id="task-status-new" name="status"><option>Pending</option><option>Active</option><option>Done</option></select><label for="task-due-date">Due date</label><input id="task-due-date" name="due_date" type="date" required><label for="task-assignee">Assignee</label><input id="task-assignee" name="assignee"><button class="ui-button ui-button-primary" type="submit">Add task</button></form></section>
+</main></body></html>{{end}}
+
+{{define "recipe-admin-resource-activity"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{.Meta.Title}}</title><link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}"></head>
+<body class="recipe-ar-root"><main class="recipe-ar-main">
+  <p><a href="/recipes/admin-resource/{{.Project.ID}}">Back to {{.Project.Name}}</a></p>
+  <header class="recipe-ar-form-head"><h1 class="recipe-ar-title">{{.Project.Name}} activity</h1><p class="recipe-ar-desc">Read-only activity scoped to this project. The consumer owns audit persistence and authorization.</p></header>
+  <form class="recipe-ar-filter" method="get" action="/recipes/admin-resource/{{.Project.ID}}/activity"><label for="activity-type">Type</label><select id="activity-type" name="type"><option value="">All activity</option><option value="status"{{if eq .Type "status"}} selected{{end}}>Status</option><option value="comment"{{if eq .Type "comment"}} selected{{end}}>Comment</option><option value="system"{{if eq .Type "system"}} selected{{end}}>System</option></select><button class="ui-button ui-button-outline" type="submit">Filter</button></form>
+  <ol class="recipe-ar-activity-list" aria-label="Project activity">{{range .Activities}}<li><strong>{{.Summary}}</strong><span>{{.Type}} · {{.Actor}} · {{.CreatedAt}}</span></li>{{else}}<li>No activity matches this filter.</li>{{end}}</ol>
 </main></body></html>{{end}}
 
 {{define "recipe-admin-resource-bulk-confirm"}}<!doctype html>

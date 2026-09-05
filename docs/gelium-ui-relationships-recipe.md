@@ -4,14 +4,15 @@ Related records are an application-owned data and authorization concern. Gelium 
 
 ## Gelium demo consumer
 
-The Admin Resource demo implements a deliberately small `Project → Tasks` relationship:
+The Admin Resource demo implements deliberately small `Project → Tasks` and read-only `Project → Activity` relationships:
 
 ```text
 GET  /recipes/admin-resource/{project-id}/tasks?status=
 POST /recipes/admin-resource/{project-id}/tasks
+GET  /recipes/admin-resource/{project-id}/activity?type=
 ```
 
-It demonstrates project-scoped reads, a closed task-status filter, native task creation, `422` validation, and `POST + 303` navigation. Its in-memory data and allow-all demo authorization are not production persistence or policy implementations.
+It demonstrates project-scoped reads, closed task/activity filters, native task creation, `422` validation, and `POST + 303` navigation. Activity is read-only. Its in-memory data and allow-all demo authorization are not production persistence or policy implementations.
 
 ## Quick path
 

@@ -23,7 +23,7 @@ The meaningful gaps are documented below. The next product-facing slices should 
 | Global search | Missing | Candidate next slice when cross-resource search has a real consumer |
 | Export | Contract + demo slice | `docs/gelium-ui-export-recipe.md`; Ops Queue has a bounded CSV demo; production async/export policy still waits for a real consumer dataset |
 | Import | Contract + demo slice | `docs/gelium-ui-import-recipe.md`; Admin Resource has a bounded synchronous CSV demo; production async/import policy remains consumer-owned |
-| Relationship managers / nested resources | Contract documented | `docs/gelium-ui-relationships-recipe.md`; implementation waits for a real consumer and relationship |
+| Relationship managers / nested resources | Contract + demo slice | `docs/gelium-ui-relationships-recipe.md`; Admin Resource demonstrates Project → Tasks; production persistence and policy remain consumer-owned |
 | Multi-tenancy | Boundary only | Add explicit tenant-scope and URL/data-leakage guidance; never implement tenancy in Gelium |
 | Authentication / MFA | Intentionally out of scope | Consumer owns identity, sessions, MFA, recovery, and security policy |
 | Authorization | Boundary documented | Consumer checks permissions at render and mutation boundaries, including per-record and bulk actions |
@@ -71,7 +71,7 @@ Do not add a client-only command palette as a substitute for a server contract.
 
 ### 4. Relationships and nested resources
 
-Filament exposes relationship managers and nested resources. Gelium currently documents optional fields and deliberately avoids inventing relationships. A future generic contract should define:
+Filament exposes relationship managers and nested resources. Gelium now demonstrates one explicit Project → Tasks consumer slice without turning it into a generic relationship runtime. The framework-neutral contract defines:
 
 - which relation is declared by the consumer;
 - how relation data is loaded and authorized;
