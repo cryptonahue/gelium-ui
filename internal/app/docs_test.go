@@ -71,6 +71,27 @@ func TestDocsIndexIsOrientationHub(t *testing.T) {
 	}
 }
 
+func TestAdminRecipesDocsPageIsDiscoverable(t *testing.T) {
+	res := httptest.NewRecorder()
+	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/docs/admin-recipes", nil))
+
+	if res.Code != http.StatusOK {
+		t.Fatalf("admin recipes docs status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		">Admin recipes</h1>",
+		`href="/recipes/ops-queue"`,
+		`href="/docs/server-contracts"`,
+		`href="/docs/feedback"`,
+		`href="/docs/admin-recipes"`,
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("admin recipes docs page missing %q", contract)
+		}
+	}
+}
+
 func TestDocsIndexInNav(t *testing.T) {
 	res := httptest.NewRecorder()
 	New().ServeHTTP(res, httptest.NewRequest(http.MethodGet, "/components/button", nil))

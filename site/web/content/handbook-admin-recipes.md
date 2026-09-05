@@ -10,14 +10,10 @@ Gelium UI provides server-rendered admin recipes for applications that own their
 
 ## Contract guides
 
-- [Application integration](/docs/application-integration) — consumer-owned authentication, authorization, audit, and tenant isolation.
-- [Dashboard metrics](/docs/dashboard-metrics) — source, period, unit, freshness, delta, and metric visibility.
-- [Feedback recipe](/docs/feedback-recipe) — Toast, Banner, Inline alert, validation summary, Error state, and Empty state.
-- [Recipe testing](/docs/recipe-testing) — HTTP, authorization, tenant scope, no-JS, HTMX, accessibility, and responsive checks.
-- [Export recipe](/docs/export-recipe) — allowlists, limits, sync/async boundaries, downloads, and security.
-- [Import recipe](/docs/import-recipe) — upload, mapping, validation, partial failure, and job states.
-- [Relationships](/docs/relationships-recipe) — nested URLs, independent authorization, tenant scope, and related-record states.
-- [Extensibility](/docs/extensibility) — recipe-first extension order and component/theme boundaries.
+- [Server contracts](/docs/server-contracts) — GET state, POST + 303 mutations, and 422 validation.
+- [Feedback](/docs/feedback) — Toast, Banner, Inline alert, validation summary, Error state, and Empty state.
+- [Accessibility](/docs/accessibility) — semantics, focus, live regions, reduced motion, and forced colors.
+- Repository contracts: `docs/gelium-ui-application-integration.md`, `docs/gelium-ui-dashboard-metrics.md`, `docs/gelium-ui-recipe-testing.md`, `docs/gelium-ui-export-recipe.md`, `docs/gelium-ui-import-recipe.md`, `docs/gelium-ui-relationships-recipe.md`, and `docs/gelium-ui-extensibility.md`.
 
 ## Ownership rule
 
