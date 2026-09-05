@@ -1786,6 +1786,7 @@ func newWithRecipeAdminAuthorizer(authorize recipeAdminAuthorizer) http.Handler 
 	// status/kind + server-side pagination), every transition is a POST+303
 	// mutation with a persistent success banner, and refresh is POST-only.
 	mux.HandleFunc("GET /recipes/ops-queue", s.recipeOpsQueueList)
+	mux.HandleFunc("GET /recipes/ops-queue/export.csv", s.recipeOpsQueueExport)
 	mux.HandleFunc("GET /recipes/ops-queue/{id}", s.recipeOpsQueueDetail)
 	mux.HandleFunc("POST /recipes/ops-queue/{id}/advance", s.recipeOpsQueueAdvance)
 	mux.HandleFunc("POST /recipes/ops-queue/{id}/dequeue", s.recipeOpsQueueDequeue)

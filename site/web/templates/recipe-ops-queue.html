@@ -40,6 +40,10 @@
 
       <form class="recipe-oq-filter" method="get" action="{{.FilterAction}}"
             hx-get="{{.FilterAction}}" hx-target="#queue-panel" hx-swap="outerHTML">
+            <div class="ui-text-field ui-text-field-outlined recipe-oq-search">
+              <input id="recipe-oq-search" name="q" type="search" value="{{.SearchValue}}" placeholder=" " autocomplete="off">
+              <label for="recipe-oq-search">Search ID, subject, or requester</label>
+            </div>
         <div class="ui-select ui-select-outlined">
           <select id="recipe-oq-status" name="status">
             <option value="">All statuses</option>
@@ -57,6 +61,7 @@
           <span class="ui-select-caret" aria-hidden="true"><svg focusable="false" viewBox="0 0 24 24" width="20" height="20" fill="currentColor"><path d="m7 10 5 5 5-5z"></path></svg></span>
         </div>
         <button class="ui-button ui-button-outline" type="submit">Filter</button>
+         <a class="ui-button ui-button-text" href="{{.ExportHref}}">Export CSV</a>
       </form>
 
       <section class="recipe-oq-panel" aria-label="Work queue">

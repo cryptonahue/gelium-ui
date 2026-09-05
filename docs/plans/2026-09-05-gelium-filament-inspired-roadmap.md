@@ -367,13 +367,9 @@ Gelium comunica el resultado mediante sus primitives de feedback, pero no agrega
 
 ## Fase B — Profundizar Record Detail
 
-### B1. Segundo consumidor de detalle
+### B1. Segundo consumidor de detalle — implementado
 
-Elegir uno real:
-
-- detalle de Ops Queue item;
-- detalle de una entidad pública;
-- otra entidad administrativa.
+Se implementó el detalle de un Ops Queue item en `GET /recipes/ops-queue/{id}`. El detalle reutiliza la anatomía semántica, estados, tokens y contratos server-first de la recipe Admin Resource sin extraer todavía `ui-infolist`.
 
 Objetivo: comprobar si `<dl>` + grouped sections + status badge se repite con el mismo contrato.
 
@@ -392,36 +388,26 @@ La extracción debe esperar hasta que existan:
 - mismos requisitos responsive/a11y;
 - tests comunes.
 
-### B2. Relaciones y campos opcionales
+### B2. Relaciones y campos opcionales — contrato resuelto
 
-Definir antes de implementar:
+El detalle de Ops Queue documenta y prueba:
 
-- valores ausentes;
-- campos sensibles;
-- timestamps y timezone;
-- relaciones;
-- links a entidades relacionadas;
-- permisos por campo;
-- longitudes extremas.
+- valores ausentes (`Unassigned`);
+- timestamps con timezone explícita;
+- textos largos con wrapping seguro;
+- ausencia de relaciones inventadas;
+- ausencia de campos sensibles por defecto;
+- permisos por registro/campo delegados al consumer.
 
 Nunca mostrar campos por defecto solo porque existen en el modelo.
 
 ## Fase C — Dashboard
 
-### C1. Data contract de métricas
+### C1. Data contract de métricas — contrato documentado
 
-El KPI dashboard actual usa datos del demo store. Para producción falta definir:
+El contrato genérico está documentado en `docs/gelium-ui-dashboard-metrics.md`.
 
-- fuente autorizada;
-- período temporal;
-- unidad;
-- `updated-at`/freshness;
-- comparación contra período anterior;
-- significado de delta positivo/negativo;
-- permisos por métrica;
-- empty/error semantics.
-
-No agregar charts hasta resolver esto.
+El KPI dashboard actual sigue usando datos del demo store y no se presenta como producción. Antes de agregar charts o métricas reales deben definirse fuente autorizada, período, timezone, unidad, freshness, delta, permisos y estados empty/error.
 
 ### C2. Dashboard con filtros
 
@@ -444,7 +430,7 @@ Diferidos. Antes requieren decidir:
 - fuente de datos;
 - no-JS path.
 
-## Fase D — Feedback integrado
+## Fase D — Feedback integrado — recipe documentada
 
 Crear documentación/recipe de decisión para:
 
@@ -457,9 +443,11 @@ Crear documentación/recipe de decisión para:
 | Error de recurso | Error state |
 | Sin datos | Empty state |
 
-Los primitives ya existen; falta que la composición quede uniforme en las recipes.
+La matriz de decisión y la composición server-rendered están documentadas en `docs/gelium-ui-feedback-recipe.md`.
 
-## Fase E — Extensibilidad tipo Filament
+La recipe consolida Toast, Banner, Inline alert, 422 + validation summary, Error state y Empty state; además fija fallback no-JS, accesibilidad y el boundary consumer-owned. Los primitives existentes no cambian.
+
+## Fase E — Extensibilidad tipo Filament — contrato documentado
 
 Antes de pensar en plugins runtime, documentar:
 
@@ -479,11 +467,13 @@ Antes de pensar en plugins runtime, documentar:
 - `docs/gelium-ui-screen-recipes.md`
 - `lib/README.md`
 
+La guía de extensibilidad está documentada en `docs/gelium-ui-extensibility.md`.
+
 No crear un sistema de plugins de ejecución hasta que exista un consumer real.
 
-## Fase F — Package/release hygiene
+## Fase F — Package/release hygiene — gate verificado
 
-Antes de publicar una versión:
+La gate actual fue verificada sin publicar: `npm run release:check` pasó para `gelium-ui@0.6.5`. Antes de publicar una versión:
 
 ```bash
 go test ./...
@@ -506,18 +496,18 @@ Además:
 
 ## 5. Próximo trabajo recomendado
 
-El próximo slice recomendado es **A1 — autorización de acciones destructivas**, no otro widget.
+El gap auditado está en `docs/plans/2026-09-05-filament-gap-audit.md`.
 
-Razón: el sistema ya puede listar, inspeccionar y eliminar; el riesgo principal ahora es que una recipe demo se interprete como segura para producción sin boundary de permisos.
+El boundary multi-tenant y el template de testing transversal ya están documentados en `docs/gelium-ui-application-integration.md` y `docs/gelium-ui-recipe-testing.md`.
 
-Secuencia sugerida:
+El próximo slice de implementación debe ser **uno** de estos problemas respaldados por un consumer real:
 
-1. Definir contrato consumer-owned de autorización.
-2. Agregar tests de `403`, acción no visible/no ejecutable y revalidación.
-3. Mantener el demo con una política explícita/documentada.
-4. Agregar auditoría de acción.
-5. Luego implementar el segundo consumidor de Record Detail.
-6. Recién después considerar extraer `ui-infolist`.
+1. Global search server-rendered para Ops Queue — implementado como primer consumer.
+2. Export seguro — contrato documentado y demo CSV acotada en Ops Queue; export production/async pendiente de consumer real.
+3. Import seguro — contrato documentado en `docs/gelium-ui-import-recipe.md`; implementación pendiente de consumer real.
+4. Relaciones/nested resources — contrato documentado en `docs/gelium-ui-relationships-recipe.md`; implementación pendiente de consumer real.
+
+No implementar todos a la vez. Elegir un caso real, escribir primero el contrato framework-neutral y recién después construir la recipe.
 
 ---
 
@@ -530,7 +520,9 @@ Las verificaciones completas ejecutadas durante los slices fueron:
 - `npm run build` — PASS;
 - `bash scripts/ux-detect.sh` — PASS;
 - `git diff --check` — PASS;
-- reviews independientes Gentle AI — PASS por slice, con correcciones aplicadas cuando correspondía.
+- `npm run release:check` — PASS para `gelium-ui@0.6.5`;
+- audit de capacidades contrastado con la documentación pública de Filament;
+- review Gentle AI del candidato actual — BLOQUEADA por `candidate-view-invalid`; RDD queda desactivado solo a nivel de este clon hasta resolver el runtime.
 
 El worktree contiene cambios acumulados de los slices anteriores, cambios previos de landing/footer y archivos de tooling (`.atl/`, `.pi/`). Otro agente debe revisar `git status --short` antes de editar y no asumir que todos los cambios pertenecen a una sola tarea.
 

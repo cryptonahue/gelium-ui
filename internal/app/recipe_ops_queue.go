@@ -1,6 +1,7 @@
 package app
 
 import (
+	"encoding/csv"
 	"fmt"
 	"geliumui/lib"
 	"net/http"
@@ -176,8 +177,10 @@ type recipeOpsQueueView struct {
 	Title         string
 	Description   string
 	FilterAction  string
+	ExportHref    string
 	StatusValue   string
 	KindValue     string
+	SearchValue   string
 	StatusOptions []recipeQueueOption
 	KindOptions   []recipeQueueOption
 	Items         []recipeQueueItemView
@@ -216,7 +219,7 @@ type recipeQueueItemView struct {
 
 func (s *server) recipeOpsQueueList(w http.ResponseWriter, r *http.Request) {
 	q := r.URL.Query()
-	view := newRecipeOpsQueueView(q.Get("status"), q.Get("kind"), q.Get("page"), queueDemoStore.takeBanner())
+	view := newRecipeOpsQueueView(q.Get("status"), q.Get("kind"), q.Get("page"), q.Get("q"), queueDemoStore.takeBanner())
 	applyRequestChrome(r, view)
 
 	if strings.EqualFold(r.Header.Get("HX-Request"), "true") {
@@ -243,6 +246,41 @@ type recipeOpsQueueDetailView struct {
 	DequeueAction string
 	CanAdvance    bool
 	ListHref      string
+}
+
+func (s *server) recipeOpsQueueExport(w http.ResponseWriter, r *http.Request) {
+	q := r.URL.Query()
+	statusValue := recipeClosedValue(q.Get("status"), recipeQueueStatuses)
+	kindValue := recipeClosedValue(q.Get("kind"), recipeQueueKinds)
+	searchValue := strings.ToLower(strings.TrimSpace(q.Get("q")))
+
+	items := queueDemoStore.snapshot()
+	filtered := items[:0]
+	for _, it := range items {
+		if statusValue != "" && it.Status != statusValue || kindValue != "" && it.Kind != kindValue {
+			continue
+		}
+		if searchValue != "" && !recipeQueueItemMatches(it, searchValue) {
+			continue
+		}
+		filtered = append(filtered, it)
+	}
+	sort.SliceStable(filtered, func(i, j int) bool {
+		ri, rj := recipeQueueRank(filtered[i].Status), recipeQueueRank(filtered[j].Status)
+		if ri != rj {
+			return ri < rj
+		}
+		return filtered[i].ReceivedAt.Before(filtered[j].ReceivedAt)
+	})
+
+	w.Header().Set("Content-Type", "text/csv; charset=utf-8")
+	w.Header().Set("Content-Disposition", `attachment; filename="ops-queue.csv"`)
+	writer := csv.NewWriter(w)
+	_ = writer.Write([]string{"id", "subject", "requester", "kind", "status", "assignee", "received_at", "sla_deadline"})
+	for _, it := range filtered {
+		_ = writer.Write([]string{it.ID, it.Subject, it.Requester, it.Kind, it.Status, it.Assignee, it.ReceivedAt.Format(time.RFC3339), it.SLADeadline.Format(time.RFC3339)})
+	}
+	writer.Flush()
 }
 
 func (s *server) recipeOpsQueueDetail(w http.ResponseWriter, r *http.Request) {
@@ -317,7 +355,7 @@ func (s *server) recipeOpsQueueRefresh(w http.ResponseWriter, r *http.Request) {
 	}
 	isHX := strings.EqualFold(r.Header.Get("HX-Request"), "true")
 
-	view := newRecipeOpsQueueView("", "", "", queueDemoStore.takeBanner())
+	view := newRecipeOpsQueueView("", "", "", "", queueDemoStore.takeBanner())
 	applyRequestChrome(r, view)
 	view.Refreshed = true
 
@@ -344,12 +382,14 @@ func (s *server) recipeQueueNotFound(w http.ResponseWriter, title, body string) 
 // ----- view builders -----
 
 // newRecipeOpsQueueView validates the request against the closed vocabularies
-// (status/kind/page), filters, applies the operational sort (status rank then
-// FIFO) and paginates the slice into a view model.
-func newRecipeOpsQueueView(statusParam, kindParam, page string, banner *bannerView) *recipeOpsQueueView {
+// (status/kind/page), searches the declared queue fields, filters, applies the
+// operational sort (status rank then FIFO) and paginates the slice into a view model.
+func newRecipeOpsQueueView(statusParam, kindParam, page, searchParam string, banner *bannerView) *recipeOpsQueueView {
 	statusValue := recipeClosedValue(statusParam, recipeQueueStatuses)
 	kindValue := recipeClosedValue(kindParam, recipeQueueKinds)
 	pageNum := recipeParsePage(page)
+	searchValue := strings.TrimSpace(searchParam)
+	searchNormalized := strings.ToLower(searchValue)
 
 	now := time.Now()
 	snapshot := queueDemoStore.snapshot()
@@ -359,6 +399,9 @@ func newRecipeOpsQueueView(statusParam, kindParam, page string, banner *bannerVi
 			continue
 		}
 		if kindValue != "" && it.Kind != kindValue {
+			continue
+		}
+		if searchNormalized != "" && !recipeQueueItemMatches(it, searchNormalized) {
 			continue
 		}
 		items = append(items, it)
@@ -395,7 +438,7 @@ func newRecipeOpsQueueView(statusParam, kindParam, page string, banner *bannerVi
 	var pagination *paginationView
 	if totalPages > 1 {
 		pagination = newPaginationView(pageNum, totalPages, func(n int) string {
-			return recipeOpsQueueHref(statusValue, kindValue, n)
+			return recipeOpsQueueHref(statusValue, kindValue, searchValue, n)
 		})
 	}
 
@@ -412,14 +455,16 @@ func newRecipeOpsQueueView(statusParam, kindParam, page string, banner *bannerVi
 		Title:         "Work queue",
 		Description:   "The Ops Queue screen recipe: a server-rendered work queue composed from List, Avatar, badge tones, Button, Toast, Empty state and Banner primitives. Order is operational state, not presentation.",
 		FilterAction:  "/recipes/ops-queue",
+		ExportHref:    recipeOpsQueueExportHref(statusValue, kindValue, searchValue),
 		StatusValue:   statusValue,
 		KindValue:     kindValue,
+		SearchValue:   searchValue,
 		StatusOptions: recipeQueueOptions(recipeQueueStatuses, recipeQueueStatusLabels),
 		KindOptions:   recipeQueueOptions(recipeQueueKinds, recipeQueueKindLabels),
 		Items:         rows,
 		Caption:       fmt.Sprintf("%d items · page %d of %d", total, pageNum, totalPages),
 		Pagination:    pagination,
-		EmptyState:    recipeQueueEmptyState(statusValue, kindValue),
+		EmptyState:    recipeQueueEmptyState(statusValue, kindValue, searchValue),
 		Banner:        banner,
 	}
 }
@@ -444,6 +489,14 @@ func recipeQueueRow(it recipeQueueItem, now time.Time) recipeQueueItemView {
 		DequeueAction: "/recipes/ops-queue/" + it.ID + "/dequeue",
 		CanAdvance:    next != it.Status,
 	}
+}
+
+// recipeQueueItemMatches searches only the declared operational fields. Search is
+// case-insensitive and intentionally excludes assignee, SLA and hidden fields.
+func recipeQueueItemMatches(it recipeQueueItem, query string) bool {
+	return strings.Contains(strings.ToLower(it.ID), query) ||
+		strings.Contains(strings.ToLower(it.Subject), query) ||
+		strings.Contains(strings.ToLower(it.Requester), query)
 }
 
 // recipeQueueRank is the operational priority of a status: pending items are
@@ -538,14 +591,18 @@ func recipeHumanDuration(d time.Duration) string {
 
 // recipeQueueEmptyState offers a real CTA: clear the filters when filtering
 // hides everything, otherwise surface the completed work.
-func recipeQueueEmptyState(statusValue, kindValue string) emptyStateView {
-	if statusValue != "" || kindValue != "" {
+func recipeQueueEmptyState(statusValue, kindValue, searchValue string) emptyStateView {
+	if statusValue != "" || kindValue != "" || searchValue != "" {
+		label := "Clear filters"
+		if searchValue != "" && statusValue == "" && kindValue == "" {
+			label = "Clear search"
+		}
 		return emptyStateView{
 			Title:    "No matching items",
-			Body:     "No queue items match the selected filters. Clear them to see the full queue.",
+			Body:     "No queue items match the current search or filters. Clear them to see the full queue.",
 			CTA:      true,
 			CTAHref:  "/recipes/ops-queue",
-			CTALabel: "Clear filters",
+			CTALabel: label,
 		}
 	}
 	return emptyStateView{
@@ -557,9 +614,13 @@ func recipeQueueEmptyState(statusValue, kindValue string) emptyStateView {
 	}
 }
 
-// recipeOpsQueueHref builds a real GET link preserving the current filters and
-// page (parameter order is stable: status, kind, page).
-func recipeOpsQueueHref(status, kind string, page int) string {
+// recipeOpsQueueHref builds a real GET link preserving the current search,
+// filters and page (parameter order is stable: q, status, kind, page).
+func recipeOpsQueueExportHref(status, kind, search string) string {
+	return "/recipes/ops-queue/export.csv" + recipeOpsQueueHref(status, kind, search, 0)
+}
+
+func recipeOpsQueueHref(status, kind, search string, page int) string {
 	var b strings.Builder
 	b.WriteByte('?')
 	write := func(key, value string) {
@@ -569,6 +630,9 @@ func recipeOpsQueueHref(status, kind string, page int) string {
 		b.WriteString(key)
 		b.WriteByte('=')
 		b.WriteString(url.QueryEscape(value))
+	}
+	if search != "" {
+		write("q", search)
 	}
 	if status != "" {
 		write("status", status)

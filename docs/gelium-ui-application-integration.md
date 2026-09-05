@@ -24,6 +24,31 @@ Gelium UI renders server-driven screens. The consuming application owns identity
 
 Gelium must not require a particular authentication package, permission vocabulary, ORM, middleware stack, or audit database.
 
+## Tenant isolation contract
+
+Tenancy is consumer-owned, but it is a mandatory scope boundary whenever the application serves more than one tenant. Resolve the active tenant from the authenticated request before querying or rendering any recipe. Never accept tenant identity from a hidden field, row selection, client-only state, or an unvalidated URL parameter.
+
+The consumer must apply the active tenant scope independently to:
+
+- collection reads, search, filters, pagination, and sorting;
+- record detail and related records;
+- metrics, exports, and imports;
+- single and bulk actions;
+- background jobs and download URLs;
+- error, empty, and authorization responses.
+
+A tenant-scoped request should satisfy:
+
+```text
+tenant_scope(request) -> active tenant or access failure
+query(active tenant, resource, filters) -> authorized records
+can(actor, active tenant, action, resource, record) -> allowed
+```
+
+The application must re-check tenant scope at mutation and asynchronous-job boundaries. A record that is not visible to the active tenant should normally produce the application's chosen non-disclosing response, commonly `404`, rather than reveal that it exists elsewhere.
+
+Gelium renders the scoped result and does not resolve tenants, store tenant policy, or provide isolation middleware.
+
 ## Authorization contract
 
 The consumer supplies an authorization decision for the current request, action, resource, and optional record:

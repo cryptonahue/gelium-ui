@@ -126,9 +126,10 @@ Rutas vivas (`internal/app/server.go`):
 
 | Operación | Ruta | Contrato |
 |---|---|---|
-| Listar/filtrar/paginar | `GET /recipes/ops-queue` | GET params estables `?status=&kind=&page=` (vocabularios cerrados, sanitizados); `HX-Request` bifurca el fragmento `#queue-panel` |
+| Listar/buscar/filtrar/paginar | `GET /recipes/ops-queue` | GET params estables `?q=&status=&kind=&page=`; `q` busca case-insensitivamente por ID, subject o requester; status/kind usan vocabularios cerrados sanitizados; `HX-Request` bifurca el fragmento `#queue-panel` |
 | Avanzar al siguiente estado | `POST /recipes/ops-queue/{id}/advance` | 303 a la cola + banner success persistente (`pending→in_progress→done`; `blocked→in_progress`; `done` terminal → banner info) |
 | Sacar de la cola | `POST /recipes/ops-queue/{id}/dequeue` | 303 a la cola + banner success; 404 con `error-state` si el id no existe |
+| Exportar CSV | `GET /recipes/ops-queue/export.csv` | Descarga síncrona acotada; respeta `q`, `status` y `kind`; allowlist explícita de campos operativos |
 | Refresh remoto | `POST /recipes/ops-queue/refresh` | POST-only; HX → fragmento + `HX-Trigger gelium:toast`; no-JS → página con toast inline + progress |
 
 ### SURFACE
@@ -145,7 +146,7 @@ Atender el "siguiente a atender": ver el estado y SLA de cada ítem (con avatar 
 
 ### SECONDARY_TASKS
 
-Filtrar la cola por estado y categoría (GET con vocabularios cerrados), paginar (partial standalone), remover ítems de la cola, refresco remoto con progress + toast.
+Buscar por ID, subject o requester; filtrar la cola por estado y categoría (GET con vocabularios cerrados), paginar (partial standalone), remover ítems de la cola, refresco remoto con progress + toast.
 
 ### UX_PATTERN
 
@@ -186,11 +187,11 @@ Contenido factual citado del vocabulario del sistema (estados pending/in_progres
 
 ### SERVER_CONTRACT
 
-`GET ?status=&kind=&page=` con vocabularios cerrados sanitizados (`recipeQueueStatuses`, `recipeQueueKinds`, page ≥ 1 → defaults seguros); `POST + 303 SeeOther` para cada transición (advance/dequeue) con banner flash consumido en el siguiente render; el orden operativo y el tone se derivan **server-side** (`recipeQueueRank`, `recipeQueueItemTone`); `HX-Trigger: {"gelium:toast":{...}}` solo para refresh; `HX-Request` bifurca `#queue-panel` vs página completa; `/recipes/ops-queue/refresh` en `postOnlyPaths()` → GET responde 405 con `Allow: POST`.
+`GET ?q=&status=&kind=&page=`; `q` se normaliza con trim y case-fold y busca únicamente ID, subject y requester declarados; vocabularios cerrados sanitizados (`recipeQueueStatuses`, `recipeQueueKinds`, page ≥ 1 → defaults seguros); `POST + 303 SeeOther` para cada transición (advance/dequeue) con banner flash consumido en el siguiente render; el orden operativo y el tone se derivan **server-side** (`recipeQueueRank`, `recipeQueueItemTone`); `HX-Trigger: {"gelium:toast":{...}}` solo para refresh; `HX-Request` bifurca `#queue-panel` vs página completa; `/recipes/ops-queue/refresh` en `postOnlyPaths()` → GET responde 405 con `Allow: POST`.
 
 ### NO_JS_FLOW
 
-Completo: filtro = form GET real (URL es el estado), paginación = links reales, avance/remoción = form POST + 303 con banner success persistente, refresh = reload con toast inline (`toast.go` fallback no-JS), 404 = `error-state` con retry real.
+Completo: búsqueda y filtros = form GET real (URL es el estado), paginación = links reales, avance/remoción = form POST + 303 con banner success persistente, refresh = reload con toast inline (`toast.go` fallback no-JS), 404 = `error-state` con retry real.
 
 ### HTMX_ENHANCEMENT
 
@@ -307,7 +308,17 @@ Es la recipe que obliga a resolver **loading + novedad + avatar/paginación** �
 
 ---
 
-## 4. Auth — PROPOSED
+## 4. Ops Queue item detail — IMPLEMENTED
+
+Ruta viva: `GET /recipes/ops-queue/{id}`.
+
+El detalle es una pantalla `Operate/detail` para que el operador entienda un ítem, revise su estado y SLA y decida la próxima acción. Reutiliza el shell y los tokens de Ops Queue, con `<dl>` para campos operativos y una única acción primaria `Advance item`. `Remove from queue` y `Back to queue` son acciones secundarias.
+
+El contrato de datos es deliberadamente acotado: subject, requester, kind, status, assignee, received time y SLA deadline. Un assignee ausente se muestra como `Unassigned`; los timestamps incluyen timezone; los textos largos deben envolver sin clipping. No se muestran relaciones ni campos sensibles por defecto. Los permisos por registro o campo pertenecen al consumer.
+
+Estados: ítem inexistente → `404` con `error-state` y regreso a la cola; ítem `done` → estado terminal visible sin acción falsa; carga inicial → no aplica por ser server-rendered. Las mutaciones existentes mantienen `POST + 303` y banner persistente.
+
+## 5. Auth — PROPOSED
 
 > This recipe is documented in English per consumer request. It is a **proposal** (not yet implemented): it composes only registered components over an explicit server contract, targeting the auth screens LLM consumers most often hand-roll badly (duplicated CTAs, no error states, no navigation between steps).
 

@@ -104,6 +104,7 @@
     min-width: 0;
   }
   .recipe-oq-filter .ui-select { flex: 1 1 12rem; min-width: 0; }
+   .recipe-oq-filter .recipe-oq-search { flex: 2 1 18rem; min-width: min(100%, 18rem); }
 
   /* Queue panel */
   .recipe-oq-panel {

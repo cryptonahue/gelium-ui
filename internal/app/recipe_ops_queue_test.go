@@ -116,6 +116,90 @@ func TestRecipeOpsQueueFiltersSanitizeAndPaginate(t *testing.T) {
 
 // TestRecipeOpsQueueListHXFragment proves the HX-Request bifurcation: HTMX swaps
 // only the #queue-panel fragment, not the whole page.
+func TestRecipeOpsQueueGlobalSearchMatchesIDSubjectAndRequester(t *testing.T) {
+	resetRecipeQueueStore()
+
+	for _, tc := range []struct {
+		query string
+		want  string
+		avoid string
+	}{
+		{query: "q=invoice", want: "Invoice reconciliation for Q2", avoid: "Credit note for cancelled plan"},
+		{query: "q=SUPPORT-TICKET-221", want: "Refund request for batch purchase", avoid: "Invoice reconciliation for Q2"},
+		{query: "q=dev+ops", want: "Payment webhook verification", avoid: "Invoice reconciliation for Q2"},
+	} {
+		res := getRecipe(t, "/recipes/ops-queue?"+tc.query)
+		if res.Code != http.StatusOK {
+			t.Fatalf("search %q status = %d, want %d", tc.query, res.Code, http.StatusOK)
+		}
+		body := res.Body.String()
+		if !strings.Contains(body, tc.want) {
+			t.Errorf("search %q is missing %q", tc.query, tc.want)
+		}
+		if strings.Contains(body, tc.avoid) {
+			t.Errorf("search %q must not include %q", tc.query, tc.avoid)
+		}
+	}
+}
+
+func TestRecipeOpsQueueGlobalSearchEmptyState(t *testing.T) {
+	resetRecipeQueueStore()
+	res := getRecipe(t, "/recipes/ops-queue?q=does-not-exist")
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{"No matching items", "Clear search"} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("search empty state is missing %q", contract)
+		}
+	}
+}
+
+func TestRecipeOpsQueueExportCSVUsesCurrentSearchAndFilters(t *testing.T) {
+	resetRecipeQueueStore()
+
+	res := getRecipe(t, "/recipes/ops-queue/export.csv?q=invoice&status=pending")
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	if got := res.Header().Get("Content-Type"); got != "text/csv; charset=utf-8" {
+		t.Errorf("Content-Type = %q, want CSV", got)
+	}
+	if got := res.Header().Get("Content-Disposition"); !strings.Contains(got, "ops-queue.csv") {
+		t.Errorf("Content-Disposition = %q, want ops-queue.csv", got)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		"id,subject,requester,kind,status,assignee,received_at,sla_deadline",
+		"billing-invoice-77,Invoice reconciliation for Q2,Carla M.,billing,pending",
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("export is missing %q", contract)
+		}
+	}
+	if strings.Contains(body, "billing-credit-12") {
+		t.Error("search-filtered export must not include unrelated rows")
+	}
+}
+
+func TestRecipeOpsQueueExportCSVEscapesValues(t *testing.T) {
+	resetRecipeQueueStore()
+	queueDemoStore.mu.Lock()
+	queueDemoStore.items = []recipeQueueItem{{
+		ID: "csv-item", Subject: "Subject, with \"quotes\"", Requester: "Carla M.", Kind: "support", Status: "pending", ReceivedAt: time.Now(), SLADeadline: time.Now().Add(time.Hour),
+	}}
+	queueDemoStore.mu.Unlock()
+
+	res := getRecipe(t, "/recipes/ops-queue/export.csv")
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	if !strings.Contains(res.Body.String(), `"Subject, with ""quotes"""`) {
+		t.Error("CSV export must escape commas and quotes according to RFC 4180")
+	}
+}
+
 func TestRecipeOpsQueueListHXFragment(t *testing.T) {
 	resetRecipeQueueStore()
 
@@ -157,6 +241,30 @@ func TestRecipeOpsQueueDetailRendersItemContextAndActions(t *testing.T) {
 	} {
 		if !strings.Contains(body, contract) {
 			t.Errorf("detail is missing %q", contract)
+		}
+	}
+}
+
+func TestRecipeOpsQueueDetailHandlesOptionalAndLongFields(t *testing.T) {
+	resetRecipeQueueStore()
+	queueDemoStore.mu.Lock()
+	queueDemoStore.items = []recipeQueueItem{{
+		ID: "long-item", Subject: "A very long queue subject that must wrap without exposing hidden overflow", Requester: "Carla M.", Kind: "support", Status: "pending", ReceivedAt: time.Now().Add(-time.Hour), SLADeadline: time.Now().Add(time.Hour),
+	}}
+	queueDemoStore.mu.Unlock()
+
+	res := getRecipe(t, "/recipes/ops-queue/long-item")
+	if res.Code != http.StatusOK {
+		t.Fatalf("status = %d, want %d", res.Code, http.StatusOK)
+	}
+	body := res.Body.String()
+	for _, contract := range []string{
+		"A very long queue subject that must wrap without exposing hidden overflow",
+		"<dt>Assignee</dt><dd>Unassigned</dd>",
+		"datetime=\"",
+	} {
+		if !strings.Contains(body, contract) {
+			t.Errorf("detail is missing optional-field contract %q", contract)
 		}
 	}
 }
