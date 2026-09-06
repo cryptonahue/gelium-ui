@@ -20,7 +20,7 @@ The meaningful gaps are documented below. The next product-facing slices should 
 | Dashboard stats | Contract documented | Real metrics require a consumer-owned source and period model |
 | Chart widgets | Deferred | Add only with accessible table/text alternative and real data contract |
 | Custom pages/widgets | Partial | Recipe composition is documented; widget layout contract is not yet a product need |
-| Global search | Missing | Candidate next slice when cross-resource search has a real consumer |
+| Global search | Demo slice | `/recipes/search?q=` searches Admin Resource + Ops Queue; production authorization/indexing remain consumer-owned |
 | Export | Contract + demo slice | `docs/gelium-ui-export-recipe.md`; Ops Queue has a bounded CSV demo; production async/export policy still waits for a real consumer dataset |
 | Import | Contract + demo slice | `docs/gelium-ui-import-recipe.md`; Admin Resource has a bounded synchronous CSV demo; production async/import policy remains consumer-owned |
 | Relationship managers / nested resources | Contract + demo slice | `docs/gelium-ui-relationships-recipe.md`; Admin Resource demonstrates Project → Tasks; production persistence and policy remain consumer-owned |

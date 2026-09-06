@@ -27,6 +27,7 @@ Rutas vivas (`internal/app/server.go`):
 
 | Operación | Ruta | Contrato |
 |---|---|---|
+| Global Search cross-resource | `GET /recipes/search?q=` | Resultados agrupados entre Admin Resource y Ops Queue; navegación no-JS y estado sin resultados |
 | Listar/filtrar/ordenar/paginar/seleccionar | `GET /recipes/admin-resource` | GET params estables `?q=&status=&sort=&dir=&page=&selection=`; `status` usa el vocabulario cerrado de estados; `HX-Request` bifurca el fragmento `#resource-panel` |
 | Ver detalle (read-only) | `GET /recipes/admin-resource/{id}` | `<article>` + `<dl>` server-rendered; 404 con `error-state` si el id no existe |
 | Avanzar estado | `POST /recipes/admin-resource/{id}/transition` | Demo `Pending → Active → Done`; 303 + banner o 422 para transición inválida |

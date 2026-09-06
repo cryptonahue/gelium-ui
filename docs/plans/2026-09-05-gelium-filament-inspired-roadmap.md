@@ -502,7 +502,7 @@ El boundary multi-tenant y el template de testing transversal ya están document
 
 El próximo slice de implementación debe ser **uno** de estos problemas respaldados por un consumer real:
 
-1. Global search server-rendered para Ops Queue — implementado como primer consumer.
+1. Global search server-rendered cross-resource — demo implementado para Admin Resource + Ops Queue.
 2. Export seguro — contrato documentado y demo CSV acotada en Ops Queue; export production/async pendiente de consumer real.
 3. Import seguro — contrato documentado y demo CSV síncrona en Admin Resource; import production/async pendiente de consumer real.
 4. Relaciones/nested resources — contrato documentado y demo explícita Project → Tasks en Admin Resource; persistencia/policy productiva sigue siendo consumer-owned.

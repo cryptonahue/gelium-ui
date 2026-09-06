@@ -1792,6 +1792,7 @@ func newWithRecipeAdminAuthorizer(authorize recipeAdminAuthorizer) http.Handler 
 	// Ops Queue screen recipe (Phase G): the list is a GET page (filter by
 	// status/kind + server-side pagination), every transition is a POST+303
 	// mutation with a persistent success banner, and refresh is POST-only.
+	mux.HandleFunc("GET /recipes/search", s.recipeGlobalSearch)
 	mux.HandleFunc("GET /recipes/ops-queue", s.recipeOpsQueueList)
 	mux.HandleFunc("GET /recipes/ops-queue/export.csv", s.recipeOpsQueueExport)
 	mux.HandleFunc("GET /recipes/ops-queue/{id}", s.recipeOpsQueueDetail)

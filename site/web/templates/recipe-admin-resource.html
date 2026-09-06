@@ -4,6 +4,15 @@
      real .ui-* primitive. No-JS flow is complete; hx-* attributes enhance the
      list (sort/filter/page/refresh) without inventing new contracts. */}}
 
+{{define "recipe-global-search"}}<!doctype html>
+<html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}">
+<head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>{{.Meta.Title}}</title><link rel="stylesheet" href="/static/app.css?v={{.AssetsVersion}}"></head>
+<body class="recipe-ar-root"><main class="recipe-ar-main">
+  <header class="recipe-ar-form-head"><h1 class="recipe-ar-title">Global search</h1><p class="recipe-ar-desc">Search authorized demo resources with a stable GET URL.</p></header>
+  <form class="recipe-ar-filter" method="get" action="/recipes/search"><label for="global-search-q">Search</label><input id="global-search-q" name="q" type="search" value="{{.Query}}" placeholder="Project, ticket, requester"><button class="ui-button ui-button-primary" type="submit">Search</button></form>
+  {{if .Query}}<h2 class="recipe-ar-section-title">Results for “{{.Query}}”</h2>{{if .Results}}<div class="recipe-ar-detail-section"><ul>{{range .Results}}<li><a href="{{.Href}}">{{.Title}}</a> <span>{{.Resource}} · {{.Detail}}</span></li>{{end}}</ul></div>{{else}}<p role="status">No results found. Try another search.</p>{{end}}{{else}}<p role="status">Enter a term to search Admin Resource and Ops Queue.</p>{{end}}
+</main></body></html>{{end}}
+
 {{define "recipe-admin-resource-list"}}<!doctype html>
 <html lang="{{or .Meta.Lang "en"}}" class="{{.ThemeClass}}"{{if .DataTheme}} data-theme="{{.DataTheme}}"{{end}}>
 <head>
