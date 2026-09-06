@@ -29,3 +29,28 @@ func TestInstallAgentsInstallsCanonicalRouting(t *testing.T) {
 		}
 	}
 }
+
+func TestInstallAgentsDefaultsToProjectLocalSkill(t *testing.T) {
+	project := t.TempDir()
+	script := filepath.Join(repositoryRoot(t), "lib", "install-agents.sh")
+	cmd := exec.Command("bash", script)
+	cmd.Dir = project
+	output, err := cmd.CombinedOutput()
+	if err != nil {
+		t.Fatalf("default project-local install failed: %v\n%s", err, output)
+	}
+
+	target := filepath.Join(project, ".agents", "skills", "gelium-ui")
+	for _, path := range []string{
+		filepath.Join(target, "SKILL.md"),
+		filepath.Join(target, "AGENTS.md"),
+		filepath.Join(target, "skills", "00-agent-routing.md"),
+	} {
+		if _, err := os.Stat(path); err != nil {
+			t.Fatalf("default installer did not install %s: %v", path, err)
+		}
+	}
+	if !strings.Contains(string(output), "Project-local skill installed") {
+		t.Fatalf("installer must report project-local installation, output=%s", output)
+	}
+}

@@ -1,18 +1,21 @@
 ---
 name: gelium-ui
-description: Use when composing or reviewing Gelium UI work. Select the smallest outcome-first route, then load the applicable Gelium contracts.
+description: "Trigger: gelium-ui, Gelium UI, UI screen, UI component, Tailwind, HTMX. Load Gelium's project-local guidance before planning or implementing server-rendered HTML UI."
 version: 0.6.5
 license: MIT
 ---
 
 # Gelium UI agent skill
 
-Use `skills/00-agent-routing.md` as the canonical first decision layer. It
-selects `direct-exempt`, `delegated-direct`, `design-gated`, `escalate`, or
-`full-sdd` and defines the boundary between verification and repository
-delivery.
+## Activation Contract
 
-After routing, read `AGENTS.md`, `llms-ux.txt`, `SKILLS.md`, and only the
-applicable downstream skills. This wrapper exists so agent registries such as
-Gentle AI can discover Gelium; the routing and UX rules remain in their linked
-source files and are not duplicated here.
+Activate when Gelium UI is installed, mentioned, or used to build a Tailwind/HTMX interface. This skill is project-local guidance, not optional package documentation.
+
+## Hard Rules
+
+1. Before planning or writing UI, read `AGENTS.md`, `llms-ux.txt`, and `SKILLS.md` from this skill directory.
+2. Use `skills/00-agent-routing.md` first. It selects the smallest safe route: `direct-exempt`, `delegated-direct`, `design-gated`, `escalate`, or `full-sdd`.
+3. After routing, read only the downstream skills required by that route.
+4. Never claim Gelium guidance was applied unless the required files were actually loaded; report missing or unreadable files and stop when the route requires them.
+
+Gelium is server-rendered HTML + Tailwind CSS + HTMX, not a client-side framework. The linked files remain the source of truth for UX and delivery contracts.

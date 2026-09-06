@@ -14,7 +14,7 @@ action, and delivery remains under ordinary repository policy.
 ## Ethos (non-negotiable)
 
 | Do | Don’t |
-|---|---|
+| --- | --- |
 | Prefer `ui-*` partials + `--ui-*` tokens | Invent a parallel CSS design system per screen |
 | Map `FEED-*` / `DATA-*` / `JOURNEY-*` | Toast-only validation; blank tables |
 | One theme class on `<html>` | Random hex, purple gradients “for polish” |
@@ -26,7 +26,7 @@ action, and delivery remains under ordinary repository policy.
 Choose **one mode per URL/surface** (not per product company). Same product can have a Persuade landing and an Operate admin.
 
 | Mode | Visitor success | Bias | Gelium defaults |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **Operate** | Finish a task | Scan, density, consistency, native controls | Admin recipes, data-table, forms, FEED-VAL, compact/cozy |
 | **Read** | Understand | Measure 65ch, clear H1, in-page nav | Handbook-style docs, long prose |
 | **Persuade** | Decide and act | One primary CTA, honest hierarchy | Hub/start, hero, short proof — still tokens, not stock SaaS gradients |
@@ -39,7 +39,7 @@ Choose **one mode per URL/surface** (not per product company). Same product can 
 Do **not** open-ended self-QA loops. Fixed passes:
 
 | Pass | ID | Goal | Exit when |
-|---|---|---|---|
+| --- | --- | --- | --- |
 | **1. Brief** | `WF-BRIEF` | Audience, job, constraints; optional PRODUCT.md / DESIGN.md | Job sentence + surface mode written |
 | **2. Shape** | `WF-SHAPE` | Screen type, journey, data pattern, FEED plan — **no markup yet** | IDs listed (SCREEN / JOURNEY / DATA / FEED) |
 | **3. Architecture** | `WF-ARCH` | Major-region purpose, hierarchy, action, revelation, and recovery — **no components yet** | Every major region has a `SECTION-CONTRACT` ([Page + section architecture](/docs/page-section-architecture)) |
@@ -56,7 +56,7 @@ Do **not** open-ended self-QA loops. Fixed passes:
 Adapted from common AI-frontend failure modes; **scoped so they don’t ban the design system itself**.
 
 | Avoid | Why | Prefer |
-|---|---|---|
+| --- | --- | --- |
 | Nested cards inside cards for simple forms | Noise, false hierarchy | One surface; `divider` / sections |
 | Stock purple→blue hero gradients | Generic AI marketing look | Theme primary/surface tokens |
 | Icon-in-rounded-square above every heading | Cliché template | Icon only when it carries meaning |
@@ -73,13 +73,32 @@ Adapted from common AI-frontend failure modes; **scoped so they don’t ban the 
 For apps **using** gelium-ui (not the monorepo itself):
 
 | File | Purpose |
-|---|---|
+| --- | --- |
 | `PRODUCT.md` | Who it’s for, jobs, voice, non-goals |
 | `DESIGN.md` | Lane (Operate/Persuade/…), theme choice (`theme-material` / `theme-basecoat`), anti-references, density |
 
 Templates: [`/docs/templates/product`](/docs/templates/product) and [`/docs/templates/design`](/docs/templates/design) (also under `site/web/content/templates/`).
 
 Agents: load these before `WF-SHAPE` when present.
+
+## Install the agent skill
+
+Install Gelium UI's guidance as a project-local skill so every agent working in
+an application can discover the same contract:
+
+```bash
+npm install gelium-ui
+bash node_modules/gelium-ui/install-agents.sh
+```
+
+This creates `.agents/skills/gelium-ui/` with the canonical `SKILL.md`,
+`AGENTS.md`, `llms-ux.txt`, `SKILLS.md`, and downstream routing skills. Commit
+that directory when the project shares its agent guidance.
+
+For a global host installation, use an explicit target such as
+`--claude`, `--cursor`, or `--codex`; use `--target <path>` for other hosts.
+The skill must be loaded before planning or implementing Gelium UI, and its
+linked guidance files are the source of truth for the UX contracts.
 
 ## Detectors
 
@@ -94,7 +113,7 @@ Deterministic checks for handbook contracts, agent pack IDs, and hard anti-patte
 ## Map to existing docs
 
 | Pass | Deep links |
-|---|---|
+| --- | --- |
 | Shape | [Screens](/docs/screens), [Page + section architecture](/docs/page-section-architecture), [Journeys](/docs/journeys), [Data display](/docs/data-display), [Patterns](/docs/patterns) |
 | Architecture | [Page + section architecture](/docs/page-section-architecture) — `SECTION-CONTRACT` before components or tokens |
 | Build | Components sidebar, [Forms](/docs/forms), [Server contracts](/docs/server-contracts) |

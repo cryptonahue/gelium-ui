@@ -90,7 +90,7 @@ Copyable HTML partials live under `templates/` (e.g. `templates/button.html`). W
 ## What this package is / is not
 
 | Is | Is not |
-|----|--------|
+| --- | --- |
 | CSS + HTML open-code components | A React/Vue runtime |
 | Token + class themes | A full app framework |
 | Optional small JS enhancements | Required hydration |
@@ -110,11 +110,17 @@ write UI with an AI agent, start with the canonical routing layer:
 - `llms-ux.txt` — the compact decision-id pack (SURFACE / SCREEN / WF / DATA /
   FEED / JOURNEY / MEDIA / SKEL) for fast agent lookup.
 
-Install into your agent's skill directory so the LLM loads it in any project:
+Install the guidance as a project-local skill so every agent working in the
+consumer project can discover the same contract:
 
 ```bash
-bash node_modules/gelium-ui/install-agents.sh   # auto-detects hermes/cursor/claude
+bash node_modules/gelium-ui/install-agents.sh
+# writes .agents/skills/gelium-ui/
 ```
+
+To install into a specific host's global skill directory instead, pass an
+explicit host option such as `--claude`, `--cursor`, or `--codex`. Use
+`--target <path>` for an agent host not covered by the shortcuts.
 
 For projects using Gentle AI, refresh its project-local registry after
 installation:
