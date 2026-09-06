@@ -103,6 +103,19 @@ Bulk authorization is not equivalent to checking one global permission:
 
 The application decides whether a partial operation is acceptable, atomic, retryable, or forbidden by policy.
 
+## Reference consumer
+
+This repository includes a SQLite reference consumer in `internal/referenceconsumer`. It demonstrates the boundary without adding persistence to `lib/`:
+
+- `DB` owns SQLite connection, schema, and deterministic seed data;
+- repositories require an explicit `tenantID` for every project, task, and activity query;
+- `Policy` receives tenant, actor, action, and project context;
+- `AuditSink` records consequential mutations;
+- the reference HTTP handler reads `X-Consumer-Tenant` and `X-Consumer-Actor` as test-only consumer context;
+- task creation uses `POST + 303`, `422` validation, and one SQLite transaction for the task and audit event.
+
+The reference consumer is an integration example, not a production authentication, tenancy, migration, or audit-retention system.
+
 ## Framework integration
 
 A framework integration should be a thin adapter around the consumer's existing authentication, authorization, domain, and audit services. It may map framework-native policies to the contract above, but Gelium's public contract must remain framework-neutral.
