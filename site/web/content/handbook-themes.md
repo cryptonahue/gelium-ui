@@ -15,7 +15,7 @@ Gelium UI separates *structure* from *visual direction* with six ownership layer
 Themes own **visual direction values**. Core owns structural defaults. Components own anatomy scoped to their root. The split is intentional and enforced by contract tests.
 
 | Layer | Owns | Does not own |
-|---|---|---|
+| --- | --- | --- |
 | **Core** | Structural defaults: spacing scale, breakpoints, z-index ladder, focus geometry defaults, motion/easing defaults, type *composition* aliases, neutral fallbacks | Product brand color, typeface choice, radius personality |
 | **Theme** | Direction values for color, typeface and type scale steps, radius, elevation (shadows), motion timing when the direction needs it, state opacities, and every component surface family the matrix requires | Markup, class names, HTMX contracts, component anatomy (heights, paddings that stay structural) |
 | **Component** | Scoped anatomy tokens on the component root (`--ui-list-*`, `--ui-menu-*`, dialog/toast/card structure defaults) | Replacing the public `--ui-*` vocabulary with third-party prefixes |
@@ -54,7 +54,7 @@ primary on dark surfaces.
 Themes ship **flat** under the library package — one CSS file per direction, not a nested folder:
 
 | Location | Path |
-|---|---|
+| --- | --- |
 | Repository | `lib/themes/<name>.css` (e.g. `lib/themes/theme-material.css`) |
 | npm package export | `gelium-ui/themes/<name>.css` (e.g. `@import "gelium-ui/themes/theme-material.css"`) |
 
@@ -62,8 +62,8 @@ The site entry imports every theme explicitly (`@import "gelium-ui/themes/….cs
 
 ## Selecting a theme
 
-- **Query route** — append `?theme=<slug>` to any docs or component URL (`?theme=material`, `?theme=basecoat`). Only allowlisted slugs apply; unknown values keep the default direction.
-- **Class route** — set the direction on the document root directly: `<html class="theme-material">` or `<html class="theme-basecoat">`.
+- **Query route** — append `?theme=<slug>` to any docs or component URL (`?theme=material`, `?theme=basecoat`, `?theme=neubrutalism`). Only allowlisted slugs apply; unknown values keep the default direction.
+- **Class route** — set the direction on the document root directly: `<html class="theme-material">`, `<html class="theme-basecoat">`, or `<html class="theme-neubrutalism">`.
 - **Docs topbar** — the Theme control in the docs topbar rewrites the current URL's query, and in-shell navigation preserves your selection.
 
 ## Dark mode
