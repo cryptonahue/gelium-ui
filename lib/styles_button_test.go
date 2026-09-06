@@ -74,3 +74,20 @@ func TestButtonConsumesTokenizedStateTransforms(t *testing.T) {
 		}
 	}
 }
+
+func TestNeubrutalismDefinesButtonDepthEffects(t *testing.T) {
+	css := themeCSS(t, "theme-neubrutalism")
+	for _, contract := range []string{
+		`--ui-button-primary-shadow: var(--ui-shadow-2);`,
+		`--ui-button-primary-hover-shadow: none;`,
+		`--ui-button-primary-hover-transform: translate(4px, 4px);`,
+		`--ui-button-primary-active-shadow: none;`,
+		`--ui-button-primary-active-transform: translate(5px, 5px);`,
+		`--ui-button-secondary-shadow: var(--ui-shadow-2);`,
+		`--ui-button-outline-shadow: var(--ui-shadow-2);`,
+	} {
+		if !strings.Contains(css, contract) {
+			t.Errorf("Neubrutalism button effect contract is missing %q", contract)
+		}
+	}
+}

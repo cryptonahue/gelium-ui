@@ -148,3 +148,31 @@ func TestProseContrastMeetsWcagAA(t *testing.T) {
 		}
 	}
 }
+
+// TestNeubrutalismPrimaryContrastMeetsWcagAA guards both semantic uses of the
+// primary pair: primary is rendered directly as interactive text on a surface,
+// while primary-fg is rendered on primary-filled controls. Both combinations
+// must remain readable in light and dark routes.
+func TestNeubrutalismPrimaryContrastMeetsWcagAA(t *testing.T) {
+	css := themeCSS(t, "theme-neubrutalism")
+	for _, dark := range []bool{false, true} {
+		route := "light"
+		if dark {
+			route = "dark"
+		}
+		t.Run(route, func(t *testing.T) {
+			primary := tokenHex(t, css, "--ui-color-primary", dark)
+			primaryFG := tokenHex(t, css, "--ui-color-primary-fg", dark)
+
+			for _, backgroundToken := range []string{"--ui-color-canvas", "--ui-color-surface", "--ui-color-surface-container"} {
+				background := tokenHex(t, css, backgroundToken, dark)
+				if ratio := contrastRatio(t, primary, background); ratio < 4.5 {
+					t.Errorf("primary text %s on %s %s = %.2f:1, want >= 4.5:1", primary, backgroundToken, background, ratio)
+				}
+			}
+			if ratio := contrastRatio(t, primaryFG, primary); ratio < 4.5 {
+				t.Errorf("primary foreground %s on primary %s = %.2f:1, want >= 4.5:1", primaryFG, primary, ratio)
+			}
+		})
+	}
+}

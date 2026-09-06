@@ -116,6 +116,7 @@ var availableThemes = []themeDirection{
 	{Class: "theme-linear", Slug: "linear", Label: "Linear"},
 	{Class: "theme-vercel", Slug: "vercel", Label: "Vercel"},
 	{Class: "theme-baseui", Slug: "baseui", Label: "Base UI-inspired"},
+	{Class: "theme-neubrutalism", Slug: "neubrutalism", Label: "Neubrutalism"},
 	{
 		Class: "theme-alden", Slug: "alden", Label: "Alden",
 		// Self-hosted fonts shipped in lib/fonts/ (WOFF2, subsetted latin +

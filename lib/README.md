@@ -54,7 +54,11 @@ The prebuilt bundle includes Tailwind preflight, **theme-material**, **theme-bas
 @import "gelium-ui/themes/theme-basecoat.css";
 ```
 
-Pick themes you need; both ship with the package.
+Pick themes you need; Material, Basecoat, and the optional Neubrutalism direction ship with the package. For Neubrutalism:
+
+```css
+@import "gelium-ui/themes/theme-neubrutalism.css";
+```
 
 ### Theme selection
 

@@ -32,6 +32,23 @@ Material is the default direction, built on **Material 3 (M3)**: role-based colo
 
 Basecoat is the alternative direction: the Basecoat UI "Vega" style pack translated into the `--ui-*` vocabulary — near-black ink on white, hairline borders, soft shadows, a 0.625rem base radius, Geist typography, and 2.25rem control density. It ships in the same bundle as Material, selected the same way (`lib/themes/theme-basecoat.css`).
 
+## Neubrutalism
+
+Neubrutalism is an optional editorial direction with warm paper surfaces, hard
+ink borders, zero-radius geometry, offset shadows, and saturated accents. It
+keeps Gelium's semantic HTML, component anatomy, server contracts, and no-JS
+behavior unchanged; the direction is expressed through theme tokens only. Its
+light and dark routes are explicit class routes, like the other themes:
+
+```html
+<html class="theme-neubrutalism">
+<html class="theme-neubrutalism theme-dark" data-theme="dark">
+```
+
+The light route uses an AA-safe blue for the shared `--ui-color-primary` role;
+yellow remains the secondary and warning accent. The dark route uses yellow as
+primary on dark surfaces.
+
 ## Where theme files live
 
 Themes ship **flat** under the library package — one CSS file per direction, not a nested folder:

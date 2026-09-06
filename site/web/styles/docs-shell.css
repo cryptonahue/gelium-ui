@@ -30,6 +30,7 @@
     padding-right: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-right));
     padding-bottom: .75rem;
     padding-left: max(clamp(1rem, 3vw, 1.5rem), env(safe-area-inset-left));
+    border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
     background: var(--ui-color-surface);
     box-shadow: var(--ui-shadow-1);
   }
@@ -69,7 +70,7 @@
     list-style: none;
     max-height: 18rem;
     overflow-y: auto;
-    border: 1px solid var(--ui-color-border);
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
     border-radius: var(--ui-radius-md);
     background: var(--ui-color-surface-container, var(--ui-color-surface));
     box-shadow: var(--ui-shadow-1, none);
@@ -101,7 +102,7 @@
     margin: 0;
     padding: .5rem clamp(1rem, 3vw, 1.5rem);
     background: var(--ui-color-surface);
-    border-bottom: 1px solid var(--ui-color-border);
+    border-bottom: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
   }
   .docs-nav-mobile > summary {
     cursor: pointer;
@@ -195,7 +196,7 @@
     gap: 1rem;
     margin-top: 3rem;
     padding-top: 1.5rem;
-    border-top: 1px solid var(--ui-color-border);
+    border-top: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
   }
   .docs-prev-next-link {
     flex: 1 1 0;
@@ -237,7 +238,7 @@
       max-height: calc(100vh - var(--docs-chrome-height));
       overflow: auto;
       padding: 1rem .5rem 2rem;
-      border-inline-end: 1px solid var(--ui-color-border);
+      border-inline-end: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
       background: var(--ui-color-surface);
     }
     .docs-shell-main {
@@ -255,7 +256,7 @@
       max-height: calc(100vh - var(--docs-chrome-height));
       overflow: auto;
       padding: 1.5rem 1rem 2rem .75rem;
-      border-inline-start: 1px solid var(--ui-color-border);
+      border-inline-start: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-color-border);
       font: var(--ui-type-body-sm);
       letter-spacing: var(--ui-type-body-sm-letter-spacing);
     }

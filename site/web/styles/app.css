@@ -8,6 +8,7 @@
 @import "gelium-ui/themes/theme-linear.css" layer(gelium.reference);
 @import "gelium-ui/themes/theme-vercel.css" layer(gelium.reference);
 @import "gelium-ui/themes/theme-baseui.css" layer(gelium.reference);
+@import "gelium-ui/themes/theme-neubrutalism.css" layer(gelium.reference);
 @import "./selection-contract.css" layer(gelium.reference);
 @import "./accordion-reference.css" layer(gelium.reference);
 @import "./component-reference.css" layer(gelium.reference);

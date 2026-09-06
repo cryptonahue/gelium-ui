@@ -1,4 +1,18 @@
 {
+  "theme-alden": {
+    "body-lg": "400 1rem/1.5 var(--ui-font-sans)",
+    "body-md": "400 1rem/1.5 var(--ui-font-sans)",
+    "body-sm": "400 .875rem/1.5 var(--ui-font-sans)",
+    "dialog-body": "400 .875rem/1.4 var(--ui-font-sans)",
+    "dialog-headline": "400 1.5rem/1.3 var(--ui-font-sans)",
+    "display-lg": "400 3.5rem/1.0 var(--ui-font-display)",
+    "display-sm": "400 2.25rem/1.0 var(--ui-font-display)",
+    "headline-sm": "400 1.75rem/1.2 var(--ui-font-display)",
+    "label-lg": "600 .875rem/1.25 var(--ui-font-sans)",
+    "label-sm": "500 .75rem/1 var(--ui-font-sans)",
+    "title-lg": "500 1.25rem/1.4 var(--ui-font-sans)",
+    "title-md": "500 1rem/1.5 var(--ui-font-sans)"
+  },
   "theme-basecoat": {
     "body-lg": "400 1rem/1.5rem var(--ui-font-sans)",
     "body-md": "400 .875rem/1.375rem var(--ui-font-sans)",
@@ -27,20 +41,6 @@
     "title-lg": "600 1.125rem/1.625rem var(--ui-font-sans)",
     "title-md": "600 1rem/1.5rem var(--ui-font-sans)"
   },
-  "theme-material": {
-    "body-lg": "400 1rem/1.5rem var(--ui-font-sans)",
-    "body-md": "400 1rem/1.5rem var(--ui-font-sans)",
-    "body-sm": "400 .75rem/1rem var(--ui-font-sans)",
-    "dialog-body": "400 .875rem/1.25rem var(--ui-font-sans)",
-    "dialog-headline": "400 1.5rem/2rem var(--ui-font-sans)",
-    "display-lg": "400 3.5rem/4rem var(--ui-font-sans)",
-    "display-sm": "400 2.25rem/2.75rem var(--ui-font-sans)",
-    "headline-sm": "400 1.5rem/2rem var(--ui-font-sans)",
-    "label-lg": "600 .875rem/1.25rem var(--ui-font-sans)",
-    "label-sm": "500 .75rem/1rem var(--ui-font-sans)",
-    "title-lg": "500 1.375rem/1.75rem var(--ui-font-sans)",
-    "title-md": "500 1rem/1.5rem var(--ui-font-sans)"
-  },
   "theme-linear": {
     "body-lg": "400 1rem/1.5 var(--ui-font-sans)",
     "body-md": "400 1rem/1.5 var(--ui-font-sans)",
@@ -55,19 +55,33 @@
     "title-lg": "600 1.125rem/1.4 var(--ui-font-sans)",
     "title-md": "600 1rem/1.5 var(--ui-font-sans)"
   },
-  "theme-alden": {
-    "body-lg": "400 1rem/1.5 var(--ui-font-sans)",
-    "body-md": "400 1rem/1.5 var(--ui-font-sans)",
-    "body-sm": "400 .875rem/1.5 var(--ui-font-sans)",
-    "dialog-body": "400 .875rem/1.4 var(--ui-font-sans)",
-    "dialog-headline": "400 1.5rem/1.3 var(--ui-font-sans)",
-    "display-lg": "400 3.5rem/1.0 var(--ui-font-display)",
-    "display-sm": "400 2.25rem/1.0 var(--ui-font-display)",
-    "headline-sm": "400 1.75rem/1.2 var(--ui-font-display)",
+  "theme-material": {
+    "body-lg": "400 1rem/1.5rem var(--ui-font-sans)",
+    "body-md": "400 1rem/1.5rem var(--ui-font-sans)",
+    "body-sm": "400 .75rem/1rem var(--ui-font-sans)",
+    "dialog-body": "400 .875rem/1.25rem var(--ui-font-sans)",
+    "dialog-headline": "400 1.5rem/2rem var(--ui-font-sans)",
+    "display-lg": "400 3.5rem/4rem var(--ui-font-sans)",
+    "display-sm": "400 2.25rem/2.75rem var(--ui-font-sans)",
+    "headline-sm": "400 1.5rem/2rem var(--ui-font-sans)",
+    "label-lg": "600 .875rem/1.25rem var(--ui-font-sans)",
+    "label-sm": "500 .75rem/1rem var(--ui-font-sans)",
+    "title-lg": "500 1.375rem/1.75rem var(--ui-font-sans)",
+    "title-md": "500 1rem/1.5rem var(--ui-font-sans)"
+  },
+  "theme-neubrutalism": {
+    "body-lg": "500 1rem/1.5 var(--ui-font-sans)",
+    "body-md": "500 1rem/1.5 var(--ui-font-sans)",
+    "body-sm": "500 .875rem/1.5 var(--ui-font-sans)",
+    "dialog-body": "500 1rem/1.5 var(--ui-font-sans)",
+    "dialog-headline": "700 1.25rem/1.4 var(--ui-font-sans)",
+    "display-lg": "700 4rem/1 var(--ui-font-sans)",
+    "display-sm": "700 3.5rem/1 var(--ui-font-sans)",
+    "headline-sm": "700 1.875rem/1.1 var(--ui-font-sans)",
     "label-lg": "600 .875rem/1.25 var(--ui-font-sans)",
-    "label-sm": "500 .75rem/1 var(--ui-font-sans)",
-    "title-lg": "500 1.25rem/1.4 var(--ui-font-sans)",
-    "title-md": "500 1rem/1.5 var(--ui-font-sans)"
+    "label-sm": "500 .75rem/1 var(--ui-font-mono)",
+    "title-lg": "700 1.25rem/1.4 var(--ui-font-sans)",
+    "title-md": "700 1rem/1.5 var(--ui-font-sans)"
   },
   "theme-vercel": {
     "body-lg": "400 1rem/1.5 var(--ui-font-sans)",

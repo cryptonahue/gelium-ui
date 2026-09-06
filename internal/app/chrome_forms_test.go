@@ -22,6 +22,7 @@ func TestChromeFormViewModels(t *testing.T) {
 			{Label: "Linear", Value: "linear", Class: "theme-linear", Selected: false},
 			{Label: "Vercel", Value: "vercel", Class: "theme-vercel", Selected: false},
 			{Label: "Base UI-inspired", Value: "baseui", Class: "theme-baseui", Selected: false},
+			{Label: "Neubrutalism", Value: "neubrutalism", Class: "theme-neubrutalism", Selected: false},
 			{Label: "Alden", Value: "alden", Class: "theme-alden", Selected: false},
 		}
 		if len(sw.Options) != len(want) {
