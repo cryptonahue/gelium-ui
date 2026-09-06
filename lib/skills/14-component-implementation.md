@@ -1,7 +1,7 @@
 ---
 name: gelium-ui-component-implementation
 description: Use when implementing or reviewing a new Gelium UI component in the library. Apply the canonical route, component contract, TDD, ownership, no-JS, and verification workflow.
-version: 0.6.5
+version: 0.6.6
 license: MIT
 ---
 
@@ -150,5 +150,3 @@ Use one truthful status:
   decision is missing.
 - `ABORTED_ON_DRIFT`: an owned baseline changed unexpectedly; report path,
   expected state, observed state, and stop.
-
-

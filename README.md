@@ -2,7 +2,7 @@
 
 > Themeable, open-code UI components for Tailwind CSS and HTMX.
 
-Current release: **v0.6.5** (prepared; npm publication pending) — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui).
+Current release: **v0.6.6** (prepared; npm publication pending) — [npm `gelium-ui`](https://www.npmjs.com/package/gelium-ui).
 
 Gelium UI is an open-code, server-rendered UI library for HTML-first products.
 It gives teams reusable components, token-based themes, accessible states, and
@@ -12,7 +12,7 @@ client-side component runtime.
 ## Is Gelium for you?
 
 | Choose Gelium if you need… | Gelium may not be the right fit if you need… |
-|---|---|
+| --- | --- |
 | Go, Rails, Laravel, Django, or plain HTML integration | A React/Vue component runtime or hydration-first architecture |
 | Copyable HTML and server-rendered templates | A closed, JavaScript-only component abstraction |
 | HTML forms and URLs that work without JavaScript | Client-only state with no server-rendered fallback |
@@ -214,7 +214,7 @@ agent workflow. The roles are different, and the table below records the
 adaptation rather than implying affiliation or runtime dependency.
 
 | Area | Sources studied | Gelium adaptation |
-|---|---|---|
+| --- | --- | --- |
 | Design foundations | [Material Design 3](https://m3.material.io), [USWDS](https://designsystem.digital.gov), [GOV.UK Design System](https://design-system.service.gov.uk), [Mozilla Protocol](https://protocol.mozilla.org) | Semantic `--ui-*` tokens, content guidance, accessibility, readable measure, state/elevation/type rules |
 | Component behavior and open code | [Base UI](https://base-ui.com), [Basecoat UI](https://basecoatui.com), [Naive UI](https://naiveui.com), [shadcn/ui](https://ui.shadcn.com), [templ](https://templ.guide) | Composable behavior, copyable HTML, demos-first docs, and server-rendered/no-JS adaptations—not their React runtime |
 | Naming, references, and icons | [Name That UI](https://namethatui.com), [Material Web](https://github.com/material-components/material-web), [Material Symbols](https://github.com/google/material-design-icons), [Tabler Icons](https://github.com/tabler/tabler-icons) | Alternative names, agent-readable references, audited token families, curated inline SVG icons |
@@ -334,14 +334,14 @@ You can also mount the docs site from your own app with `internal/app.New()`:
 package main
 
 import (
-	"log"
-	"net/http"
+ "log"
+ "net/http"
 
-	"geliumui/internal/app"
+ "geliumui/internal/app"
 )
 
 func main() {
-	log.Fatal(http.ListenAndServe(":8787", app.New()))
+ log.Fatal(http.ListenAndServe(":8787", app.New()))
 }
 ```
 
