@@ -41,6 +41,10 @@ func (s *server) recipeAdminResourceTransition(w http.ResponseWriter, r *http.Re
 		s.recipeAdminResourceNotFound(w, "Project not found", "The project whose status you are trying to change does not exist.")
 		return
 	}
+	if s.recipeAdminAuthorize != nil && !s.recipeAdminAuthorize(r, recipeAdminTransitionAction, &item) {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
 	if err := r.ParseForm(); err != nil {
 		http.Error(w, "invalid form", http.StatusBadRequest)
 		return

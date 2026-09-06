@@ -8,7 +8,10 @@ import (
 	"sync"
 )
 
-const recipeTaskCreateAction = "recipes.admin-resource.tasks.create"
+const (
+	recipeTaskReadAction   = "recipes.admin-resource.tasks.read"
+	recipeTaskCreateAction = "recipes.admin-resource.tasks.create"
+)
 
 type recipeTask struct {
 	ID        string
@@ -75,6 +78,10 @@ func (s *server) recipeAdminResourceTasks(w http.ResponseWriter, r *http.Request
 		s.recipeAdminResourceNotFound(w, "Project not found", "The project whose tasks you are trying to view does not exist.")
 		return
 	}
+	if s.recipeAdminAuthorize != nil && !s.recipeAdminAuthorize(r, recipeTaskReadAction, &project) {
+		http.Error(w, "forbidden", http.StatusForbidden)
+		return
+	}
 	view := recipeAdminTasksView{
 		AssetsVersion: lib.AssetsVersion,
 		Meta:          recipeAdminMeta(project.Name+" tasks · Admin Resource recipe", "Nested project tasks in the Admin Resource recipe.", "/recipes/admin-resource/"+projectID+"/tasks"),
@@ -100,6 +107,10 @@ func (s *server) recipeAdminResourceTaskCreate(w http.ResponseWriter, r *http.Re
 	project, ok := resourceDemoStore.get(projectID)
 	if !ok {
 		s.recipeAdminResourceNotFound(w, "Project not found", "The project for this task does not exist.")
+		return
+	}
+	if s.recipeAdminAuthorize != nil && !s.recipeAdminAuthorize(r, recipeTaskCreateAction, &project) {
+		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
 	if err := r.ParseForm(); err != nil {

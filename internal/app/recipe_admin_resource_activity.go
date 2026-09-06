@@ -15,6 +15,8 @@ type recipeActivity struct {
 	CreatedAt string
 }
 
+const recipeActivityReadAction = "recipes.admin-resource.activity.read"
+
 var recipeActivityTypes = []string{"status", "comment", "system"}
 
 var activityDemoStore = []recipeActivity{
@@ -37,6 +39,10 @@ func (s *server) recipeAdminResourceActivity(w http.ResponseWriter, r *http.Requ
 	project, ok := resourceDemoStore.get(projectID)
 	if !ok {
 		s.recipeAdminResourceNotFound(w, "Project not found", "The project activity you are trying to view does not exist.")
+		return
+	}
+	if s.recipeAdminAuthorize != nil && !s.recipeAdminAuthorize(r, recipeActivityReadAction, &project) {
+		http.Error(w, "forbidden", http.StatusForbidden)
 		return
 	}
 	activityType := strings.TrimSpace(r.URL.Query().Get("type"))
