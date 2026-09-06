@@ -24,7 +24,20 @@ Ethos: server HTML + gelium-ui tokens/themes; sourced criteria; JS optional. NOT
 9. THEME: theme-* on html (no one-off hex chrome)
 10. NARROW: stack; min-width:0; no overflow-x:hidden on body
 11. DoD: /docs/ui-definition-of-done
-12. If present: read consumer PRODUCT.md + DESIGN.md; if absent, stop and ask first
+12. Read consumer PRODUCT.md + DESIGN.md when present. If either is absent, run the plain-language brief below before choosing screen architecture.
+
+## PLAIN-LANGUAGE BRIEF
+
+Do not require product or design vocabulary from the user. Ask one question at a time:
+
+1. What are you trying to build or improve?
+2. Who will use it, and when?
+3. What should that person be able to accomplish?
+4. What is definitely out of scope for this slice?
+
+Turn the answers into a draft PRODUCT.md/DESIGN.md, read back the interpretation, and ask only conditional follow-ups (roles, objects/states, URLs, navigation, references, or success criteria). Accept `Unknown`, `To decide`, and `N/A` with a reason. Record assumptions and open decisions; never fill missing product intent with invented SaaS patterns.
+
+Before markup, the brief must establish a user job, a surface mode or an explicit unresolved choice, a visual direction or an explicit unresolved choice, and the scope boundary. Stop only when an unresolved decision would change page/flow architecture.
 
 For design-gated work, use
 `ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE`.
@@ -51,7 +64,7 @@ proof of cognitive reading or delivery authority.
 
 | ID | Do | Don't |
 |---|---|---|
-| WF-BRIEF | job, mode, constraints; if no PRODUCT.md/DESIGN.md: STOP and ask user (job, SURFACE mode, theme+skin) | skip questions or invent design decisions |
+| WF-BRIEF | plain-language job, audience, outcome, scope; derive mode/theme and ask only unresolved architecture decisions | skip questions, require jargon, or invent design decisions |
 | WF-SHAPE | list SCREEN/JOURNEY/DATA/FEED ids | write markup in shape |
 | WF-ARCH | apply ARCH-PRODUCT → ARCH-PAGE → ARCH-SECTION; outline major regions and complete SECTION-CONTRACT before components | use cards, spacing, or CSS to invent a missing section purpose |
 | WF-BUILD | partials + server; page shells compose registered components | invent parallel design system or hand-roll nav/page shells |
@@ -83,7 +96,7 @@ existing `/recipes/public-feed` and `/recipes/rich-article` routes only.
 ## ANTI-SLOP (Gelium-aware)
 
 Avoid: nested cards for simple forms; stock purple-blue heroes; icon-tile above every H1; gray on saturated fills; bounce motion; bolder-for-its-own-sake on Operate tables; new font per feature; layout tables for non-data.
-OK: Material/Basecoat stacks from theme; brand fonts if DESIGN.md says so.
+OK: Material/Basecoat/Neubrutalism stacks from theme; brand fonts if DESIGN.md says so.
 
 ## SCREEN types → blocks
 

@@ -6,7 +6,7 @@ layout blocks, not aesthetics.
 ## SURFACE modes
 
 | Mode | Bias | When |
-|---|---|---|
+| --- | --- | --- |
 | Operate | task, scan, table/form | default for admin/tools |
 | Read | 65ch prose, structure | articles, docs, essays |
 | Persuade | one CTA, hub/start | marketing/landing (still tokens, not stock gradients) |
@@ -30,7 +30,7 @@ naming conflicts.
 ## Screen types → blocks
 
 | Type | Blocks |
-|---|---|
+| --- | --- |
 | hub | title, short context, **one primary button** |
 | list | data-table OR list/card, filters, pagination, empty-state |
 | detail | title, status badge, body, secondary actions |
@@ -47,13 +47,15 @@ else is secondary/link.
 
 ## Workflow before drawing
 
-0. Artifacts gate: no `PRODUCT.md`/`DESIGN.md` in the consumer repo? STOP and ask
-   the user for (a) user job, (b) SURFACE mode, (c) visual direction/theme+skin.
-   Do not invent them silently.
+0. Brief gate: read consumer `PRODUCT.md`/`DESIGN.md` when present. If either
+   is absent or incomplete, run the plain-language brief in `llms-ux.txt`.
+   Accept `Unknown`/`To decide`, record assumptions, and stop only when an
+   unresolved decision would change page or flow architecture. Do not invent
+   product intent, chrome, or visual direction silently.
 1. USER JOB → one sentence.
 2. SURFACE mode + SCREEN type.
 3. ONE primary action.
-4. JOURNEY-* if multi-step; DATA-* if collection; FEED-* for feedback.
+4. JOURNEY-*if multi-step; DATA-* if collection; FEED-* for feedback.
 5. States (empty/error/loading/success).
 6. Shell/chrome inventory — ask explicitly if no user decision exists:
    - Does this product have a footer? What carries it (legal / contact / links)?
@@ -73,7 +75,7 @@ Source: `handbook-journeys.md` (`docs/journeys` in the consumer repo).
 - **Post-submit landing**:
 
   | Outcome | Landing |
-  |---|---|
+  | --- | --- |
   | validation fail | same form re-rendered with **422** + errors |
   | success | **303** redirect to detail/result page |
 
@@ -83,7 +85,7 @@ Source: `handbook-journeys.md` (`docs/journeys` in the consumer repo).
 ## Data display choice
 
 | Display | Use for |
-|---|---|
+| --- | --- |
 | table | tabular comparison data (same fields across many rows) |
 | cards | browsable rich items (varied content per item) |
 | list | scannable homogeneous items |

@@ -186,7 +186,11 @@ func TestLlmsUXTxtServesAgentDecisionPack(t *testing.T) {
 		"first-plane priority",
 		"progressive disclosure",
 		"reference diversity",
+		"PLAIN-LANGUAGE BRIEF",
+		"Unknown",
+		"open decisions",
 	} {
+
 		if !strings.Contains(body, contract) {
 			t.Errorf("llms-ux.txt missing %q", contract)
 		}
@@ -205,6 +209,7 @@ func TestDocsAgentWorkflowEthosSafe(t *testing.T) {
 		"Operate",
 		"Anti-slop",
 		"ux-detect",
+		"plain-language brief",
 		`href="/docs/templates/product"`,
 		`href="/docs/ui-definition-of-done"`,
 	} {
@@ -227,6 +232,26 @@ func TestConsumerDesignTemplatesRender(t *testing.T) {
 	}
 	if body := getOKBody(t, "/docs/templates/design"); !strings.Contains(body, "theme-material") {
 		t.Error("design template missing theme-material")
+	}
+	for _, contract := range []string{
+		"plain language",
+		"Unknown",
+		"Success criteria",
+		"theme-neubrutalism",
+	} {
+		if body := getOKBody(t, "/docs/templates/product"); !strings.Contains(body, contract) {
+			t.Errorf("product template missing %q", contract)
+		}
+	}
+	for _, contract := range []string{
+		"Screen inventory",
+		"Chrome and navigation",
+		"Anti-slop checklist",
+		"theme-neubrutalism",
+	} {
+		if body := getOKBody(t, "/docs/templates/design"); !strings.Contains(body, contract) {
+			t.Errorf("design template missing %q", contract)
+		}
 	}
 }
 

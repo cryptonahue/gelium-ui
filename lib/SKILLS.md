@@ -6,7 +6,7 @@ direct-exempt work. The full decision-id pack (SURFACE / SCREEN / ARCH / SECTION
 FEED / JOURNEY / MEDIA / SKEL) is in `llms-ux.txt`.
 
 | # | Skill | What it answers |
-|---|---|---|
+| --- | --- | --- |
 | 00 | `00-agent-routing.md` | outcome-first route selection and delegation boundary |
 | 01 | `01-foundations.md` | tokens, themes by class, 0-JS, layout, mobile guardrails |
 | 02 | `02-surface-and-screens.md` | SURFACE mode + screen types → layout blocks |
@@ -53,8 +53,10 @@ For a design-gated change, keep the gates in order: foundations → surface →
 product reasoning → page/section → design criteria §1–§3 → conditional
 wireframe approval → registered components → tokens/skin → rendered design
 criteria audit → usability → DoD. A direct-exempt change uses the narrowest
-relevant skills and checks. If `PRODUCT.md` or `DESIGN.md` is absent in a
-consumer repo, stop and ask before a design-gated sequence.
+relevant skills and checks. If `PRODUCT.md` or `DESIGN.md` is absent or
+incomplete in a consumer repo, run the plain-language brief before a
+design-gated sequence; stop only for unresolved decisions that change page or
+flow architecture.
 
 Protocol IDs: `ARCH-PRODUCT`, `ARCH-PAGE`, `ARCH-SECTION`, `ARCH-COMPONENTS`,
 `ARCH-TOKENS`, `SECTION-CONTRACT`, `SECTION-HIERARCHY`, `SECTION-ACTION`,

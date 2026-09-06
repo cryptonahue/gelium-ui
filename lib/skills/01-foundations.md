@@ -11,9 +11,10 @@ Top-level theme lives on the document root (`<html>`), not in component markup:
 <html class="theme-material theme-dark" data-theme="dark">  <!-- dark -->
 ```
 
-`theme-material` (Material 3, default) and `theme-basecoat` ship in the package.
+`theme-material` (Material 3, default), `theme-basecoat`, and
+`theme-neubrutalism` ship in the package.
 Light/dark is a **class route** — there is no media-only dark toggle. Pick themes
-you need at install; both are in `dist/gelium.css`.
+you need at install; all shipped themes are in `dist/gelium.css`.
 
 ## Use `--ui-*` tokens, no literals
 
@@ -46,7 +47,7 @@ the **semantic relationship** between elements — never invent a value, never
 eyeball it:
 
 | Relationship | Token | Rationale |
-|---|---|---|
+| --- | --- | --- |
 | Element → its own metadata (title → summary, label → hint) | `--ui-space-1` / `--ui-space-2` | same unit; proximity binds them |
 | Item → item inside one list/feed | `--ui-space-3` | siblings of the same group |
 | Group → group within a section | `--ui-space-4` / `--ui-space-6` | Gestalt: related groups sit closer than unrelated ones |

@@ -63,9 +63,9 @@ Golden rules that apply to every task:
 
 1. **HTML-first** — native elements before ARIA; `div`/`span` never replace
    controls (`<button>`, `<input>`, `<select>`, `<dialog>`, `<a>`).
-2. **Theme by class, never hex** — put `theme-material | theme-basecoat` (and
-   `theme-dark` for dark) on `<html>`. No one-off color literals; use `--ui-*`
-   tokens.
+2. **Theme by class, never hex** — put `theme-material | theme-basecoat |
+   theme-neubrutalism` (and `theme-dark` for dark) on `<html>`. No one-off color
+   literals; use `--ui-*` tokens.
 3. **0-JS first** — the main flow must complete with JS disabled. Progressive
    enhancement only.
 4. **Server-first state** — navigable state = URL; validation = 422 +
@@ -74,8 +74,9 @@ Golden rules that apply to every task:
 6. **Mobile** — touch targets ≥ 44px (`--ui-touch-target`), `min-width: 0` on
    scroll children, **never** `overflow-x: hidden` on `body` (no masking).
 7. **DoD before done** — every surface passes `skills/07-dod-and-antislop.md`, starting
-   from its step-0 artifacts gate (no `PRODUCT.md`/`DESIGN.md` → ask the user first),
-   plus the per-screen usability checklist in `skills/09-usability-checklist.md`.
+   from its step-0 brief gate (read `PRODUCT.md`/`DESIGN.md` when present; otherwise
+   run the plain-language brief), plus the per-screen usability checklist in
+   `skills/09-usability-checklist.md`.
 8. **Registry-first shells** — page-level layouts compose registered components
    (`ui-container`, nav primitives); custom shell CSS is spacing/width only.
 9. **Verify mechanically** — run `scripts/ux-detect.sh` before claiming a surface done.
@@ -113,7 +114,7 @@ Packs are SVG server-rendered, never icon-fonts.
 
 - `dist/gelium.css` — drop-in prebuilt bundle (themes + tokens + components).
 - `styles/` — source CSS (`index.css` manifest, component sheets, `tokens.css`).
-- `themes/` — `theme-material.css`, `theme-basecoat.css`.
+- `themes/` — `theme-material.css`, `theme-basecoat.css`, `theme-neubrutalism.css`.
 - `templates/` — server-rendered partials (Go `html/template` blocks).
 - `js/gelium.js` — optional enhancement (422 swap, toast, VT guard, slider fill).
 - `llms-ux.txt` — the agent decision pack (SURFACE / SCREEN / WF / DATA / FEED /

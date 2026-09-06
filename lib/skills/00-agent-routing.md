@@ -11,7 +11,7 @@ all downstream workflow material. File count is a discovery signal, not a risk
 score and never an automatic reason to use SDD.
 
 | Route | Use when | Required behavior |
-|---|---|---|
+| --- | --- | --- |
 | `direct-exempt` | The change is already understood, bounded, and does not change screen/flow architecture. Typical examples are copy, token, selector, accessibility, bug, or existing-contract corrections. | Work inline. Load only the narrow skills and checks. No wireframe or ledger ceremony. |
 | `delegated-direct` | Understanding needs four or more files, broad read-only research, a writer changing two or more non-trivial files, or fresh context materially improves the action. | Delegate one bounded exploration or one focused writer. Pass exact paths and applicable skill files. The parent owns scope, integration, and verification. No SDD state is created merely by delegating. |
 | `design-gated` | A new screen, new flow, or substantial redesign changes hierarchy, major regions, primary action, reading order, or ownership boundary. | Use `ROUTE → ORIENT → PLAN → ARCHITECT → APPROVE → BUILD → AUDIT → RELEASE`. Build waits for the visible, human-approved Architecture packet. |
@@ -69,8 +69,10 @@ the repository, or replaces the agent's own startup hooks.
 Only after the route is `design-gated`:
 
 1. **Orient** — read the relevant Gelium entrypoint, decision pack, skills,
-   vocabulary/registry, consumer `PRODUCT.md`/`DESIGN.md`, and hard route,
-   permission, server, and no-JS contracts. Record missing artifacts honestly.
+   vocabulary/registry, consumer `PRODUCT.md`/`DESIGN.md` when present, and hard
+   route, permission, server, and no-JS contracts. If either consumer artifact is
+   missing or incomplete, run the plain-language brief and record missing decisions
+   honestly.
 2. **Plan** — state the user job, audience, SURFACE/SCREEN, primary action,
    states, constraints, non-goals, and intent wireframe. Do not fabricate
    components, data, identities, or media metadata.

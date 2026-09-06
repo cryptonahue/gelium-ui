@@ -20,7 +20,7 @@ npm install gelium-ui
 @import "gelium-ui/dist/gelium.css";
 ```
 
-Prebuilt bundle: Tailwind preflight + theme-material + theme-basecoat + tokens + components (~169KB CSS).
+Prebuilt bundle: Tailwind preflight + theme-material + theme-basecoat + theme-neubrutalism + tokens + components (~208KB CSS).
 
 ### CSS (source + your Tailwind)
 
@@ -28,6 +28,7 @@ Prebuilt bundle: Tailwind preflight + theme-material + theme-basecoat + tokens +
 @import "tailwindcss";
 @import "gelium-ui/themes/theme-material.css";
 @import "gelium-ui/themes/theme-basecoat.css";
+@import "gelium-ui/themes/theme-neubrutalism.css";
 @import "gelium-ui/styles/index.css";
 ```
 
@@ -39,6 +40,7 @@ Class on document root (no JS required):
 <html class="theme-material">
 <html class="theme-material theme-dark" data-theme="dark">
 <html class="theme-basecoat">
+<html class="theme-neubrutalism">
 ```
 
 ### Optional JS
@@ -105,8 +107,9 @@ Copyable HTML under `node_modules/gelium-ui/templates/<name>.html` (e.g. `button
 
 Before inventing markup, fetch **/llms-ux.txt** (SURFACE + `ARCH-*` / `SECTION-*` +
 `WF-ARCH` / `WF-SECTION-AUDIT` + WF-SHAPE/BUILD/AUDIT/POLISH + FEED/DATA/JOURNEY/SKEL
-+ DoD). Preserve the existing artifact gate: read consumer `PRODUCT.md` and
-`DESIGN.md`, or stop and ask for the job, surface mode, and visual direction.
++ DoD). Read consumer `PRODUCT.md` and `DESIGN.md` when present; otherwise run
+the plain-language brief in `/llms-ux.txt`. Preserve unknowns and assumptions,
+and stop only when an unresolved decision would change page or flow architecture.
 Then follow `Product intent → Page/Surface → Section → Components → Tokens/Skin`:
 section purpose first, components second. The installed normative skill is
 `skills/10-page-section-architecture.md`; the human companion is

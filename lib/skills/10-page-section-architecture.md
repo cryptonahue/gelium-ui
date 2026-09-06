@@ -10,7 +10,7 @@ Follow this order. Do not skip a layer or use a later layer to replace an earlie
 decision.
 
 | ID | Decide | Record |
-|---|---|---|
+| --- | --- | --- |
 | `ARCH-PRODUCT` | Product intent | audience, user job, outcome, non-goal, and relevant lifecycle/event consequences from `skills/08-product-reasoning.md` |
 | `ARCH-PAGE` | Page/Surface | URL, SURFACE mode, SCREEN type, one primary action, JOURNEY/DATA/FEED IDs, chrome, and server/no-JS contract |
 | `ARCH-SECTION` | Section purpose | one purpose-bound contract for every major page region |
@@ -23,10 +23,12 @@ The chain is:
 Product intent → Page/Surface → Section → Components → Tokens/Skin
 ```
 
-`skills/07-dod-and-antislop.md` remains the entry gate: if a consumer repository
-has no `PRODUCT.md` or `DESIGN.md`, stop and ask for the user job, SURFACE mode,
-and visual direction/theme before proceeding. This protocol extends the existing
-product, registry-first, token, and DoD gates; it does not replace them.
+`skills/07-dod-and-antislop.md` remains the entry gate: read consumer
+`PRODUCT.md`/`DESIGN.md` when present, or run the plain-language brief from
+`llms-ux.txt` when they are absent or incomplete. Record unknowns and assumptions;
+stop only when an unresolved decision would change page or flow architecture.
+This protocol extends the existing product, registry-first, token, and DoD gates;
+it does not replace them.
 
 ## SECTION-CONTRACT
 
@@ -97,8 +99,9 @@ Verification evidence: rendered-HTML assertions and mechanical checks that prove
 
 ### WF-ARCH — between `WF-SHAPE` and `WF-BUILD`
 
-1. Confirm `PRODUCT.md` and `DESIGN.md`, then run the `skills/08` product-reasoning
-   inventory.
+1. Read `PRODUCT.md` and `DESIGN.md` when present; otherwise run the
+   plain-language brief from `llms-ux.txt`, then run the `skills/08`
+   product-reasoning inventory.
 2. Name the URL, SURFACE mode, SCREEN type, one primary action, and relevant
    `JOURNEY-*`, `DATA-*`, and `FEED-*` IDs.
 3. Draw a numbered DOM outline of major regions only. Do not choose CSS or
@@ -130,7 +133,7 @@ component, or token/skin misuse.
 `internal/app/recipe_public_feed.go`
 
 | Ordered section | Purpose and existing contract |
-|---|---|
+| --- | --- |
 | Page context | Establish scanning context with `recipe-pf-header`, its H1, and concise description before interaction or list content. |
 | View selection | Change the feed lens with `nav.ui-tabs`, real GET links, `aria-current`, and `?view=` state; it does not replace the page’s read/scan job. |
 | Activity feed | Deliver the primary task through `ol.recipe-pf-list` of `article.ui-card` items in reverse chronology. |
@@ -148,7 +151,7 @@ its header, body, and footer are card anatomy, not automatic page sections.
 `internal/app/recipe_rich_article.go`
 
 | Ordered section | Purpose and existing contract |
-|---|---|
+| --- | --- |
 | Context and identity | Article header, eyebrow, one H1, lead, and byline identify the post and reading promise before prose. |
 | Primary reading body | `recipe-rich-article-prose` provides readable structured content with descriptive H2/H3 headings. |
 | Evidence/media | Local picture, native video/captions/fallback, audio/transcript, and safe-embed fallback support comprehension. |

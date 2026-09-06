@@ -40,7 +40,7 @@ Do **not** open-ended self-QA loops. Fixed passes:
 
 | Pass | ID | Goal | Exit when |
 | --- | --- | --- | --- |
-| **1. Brief** | `WF-BRIEF` | Audience, job, constraints; optional PRODUCT.md / DESIGN.md | Job sentence + surface mode written |
+| **1. Brief** | `WF-BRIEF` | Plain-language audience, job, outcome, scope; generate/read PRODUCT.md + DESIGN.md and ask only missing decisions | Job sentence + surface mode or explicit open decision |
 | **2. Shape** | `WF-SHAPE` | Screen type, journey, data pattern, FEED plan — **no markup yet** | IDs listed (SCREEN / JOURNEY / DATA / FEED) |
 | **3. Architecture** | `WF-ARCH` | Major-region purpose, hierarchy, action, revelation, and recovery — **no components yet** | Every major region has a `SECTION-CONTRACT` ([Page + section architecture](/docs/page-section-architecture)) |
 | **4. Build** | `WF-BUILD` | Partials, theme, server contracts | Renders; happy path works |
@@ -74,12 +74,23 @@ For apps **using** gelium-ui (not the monorepo itself):
 
 | File | Purpose |
 | --- | --- |
-| `PRODUCT.md` | Who it’s for, jobs, voice, non-goals |
-| `DESIGN.md` | Lane (Operate/Persuade/…), theme choice (`theme-material` / `theme-basecoat`), anti-references, density |
+| `PRODUCT.md` | Product outcome, audience/situation, jobs, roles, lifecycle, onboarding, voice, scope, success criteria |
+| `DESIGN.md` | URL-to-job inventory, surface/screen choices, chrome, theme, density, states, references, anti-slop |
 
 Templates: [`/docs/templates/product`](/docs/templates/product) and [`/docs/templates/design`](/docs/templates/design) (also under `site/web/content/templates/`).
 
-Agents: load these before `WF-SHAPE` when present.
+Agents: read these before `WF-SHAPE` when present. If either is absent or incomplete,
+run the plain-language brief in `/llms-ux.txt`; do not demand product vocabulary
+or invent the missing decisions silently.
+
+### When the answers are incomplete
+
+The person does not need product or design vocabulary. Start with four plain
+questions: what are you building or improving, who uses it and when, what should
+they accomplish, and what is out of scope. The agent drafts the two context files,
+reads its interpretation back, and asks only follow-ups that affect architecture.
+`Unknown`, `To decide`, and `N/A` are valid answers when the reason and impact are
+recorded. This keeps the process accessible without allowing invented product intent.
 
 ## Install the agent skill
 

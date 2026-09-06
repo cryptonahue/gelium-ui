@@ -28,7 +28,10 @@ fi
 
 fail=0
 note() { printf '%s\n' "$*"; }
-bad() { note "FAIL: $*"; fail=1; }
+bad() {
+  note "FAIL: $*"
+  fail=1
+}
 ok() { note "OK: $*"; }
 # Truncate each match so a minified one-line bundle can't flood stdout.
 clip() { cut -c1-200; }
@@ -36,10 +39,10 @@ clip() { cut -c1-200; }
 note "== Gelium UX detectors (consumer) =="
 
 # Step-0 gate reminder: artifacts are not required to exist, but if they are absent
-# you must have asked the user before generating UI. The script cannot verify a
-# conversation; it only reminds.
-if [[ ! -f PRODUCT.md && ! -f DESIGN.md ]]; then
-  note "NOTE: no PRODUCT.md/DESIGN.md found — confirm you asked the user about job, SURFACE mode, and visual direction before generating UI."
+# the plain-language brief must establish the job, scope, and unresolved design
+# decisions before generating UI. The script cannot verify a conversation; it only reminds.
+if [[ ! -f PRODUCT.md || ! -f DESIGN.md ]]; then
+  note "NOTE: no PRODUCT.md/DESIGN.md found — confirm the plain-language brief established job, scope, and unresolved design decisions before generating UI."
 fi
 
 # F-2: dark mode is class-routed; no media-query-only dark overrides with literals.
@@ -65,8 +68,8 @@ fi
 shell_hits=""
 for f in "${css_sources[@]:-}"; do
   [[ -z "$f" || ! -f "$f" ]] && continue
-  hits=$(rg -n --no-heading '\.[a-zA-Z][a-zA-Z0-9_-]*(site-header|site-nav|page-header|topbar|appbar|navbar)[a-zA-Z0-9_-]*\s*\{' "$f" 2>/dev/null \
-    | rg -v '\.ui-' | clip || true)
+  hits=$(rg -n --no-heading '\.[a-zA-Z][a-zA-Z0-9_-]*(site-header|site-nav|page-header|topbar|appbar|navbar)[a-zA-Z0-9_-]*\s*\{' "$f" 2>/dev/null |
+    rg -v '\.ui-' | clip || true)
   [[ -n "$hits" ]] && shell_hits+="$hits"$'\n'
 done
 if [[ -n "$shell_hits" ]]; then
