@@ -13,9 +13,9 @@ func TestCardPrimitiveCSSMapsVariantsToThemeTokens(t *testing.T) {
 	for _, contract := range []string{
 		`.ui-card {`,
 		`border-radius: var(--ui-card-radius, 12px);`,
-		`.ui-card-elevated { background: var(--ui-card-container-elevated); box-shadow: var(--ui-shadow-1);`,
-		`.ui-card-filled { background: var(--ui-card-container-filled);`,
-		`.ui-card-outlined { background: var(--ui-card-container-outlined); border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-card-outline-color);`,
+		`.ui-card-elevated { background: var(--ui-card-container-elevated); border: var(--ui-card-elevated-border, 0); box-shadow: var(--ui-card-elevated-shadow, var(--ui-shadow-1));`,
+		`.ui-card-filled { background: var(--ui-card-container-filled); border: var(--ui-card-filled-border, 0); box-shadow: var(--ui-card-filled-shadow, none);`,
+		`.ui-card-outlined { background: var(--ui-card-container-outlined); border: var(--ui-card-outlined-border, var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-card-outline-color)); box-shadow: var(--ui-card-outlined-shadow, none);`,
 		`.ui-card:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset);`,
 	} {
 		if !strings.Contains(css, contract) {

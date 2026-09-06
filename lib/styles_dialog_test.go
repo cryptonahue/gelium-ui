@@ -47,8 +47,8 @@ func TestDialogSourceCSSImplementsMaterialGeometryStatesAndProgressiveMotion(t *
 	for _, contract := range []string{
 		`.ui-dialog {`, `min-width: var(--ui-dialog-min-width, 280px);`, `min-height: var(--ui-dialog-min-height, 140px);`,
 		`max-width: min(var(--ui-dialog-max-width, 560px), calc(100% - 48px));`, `max-height: min(var(--ui-dialog-max-width, 560px), calc(100% - 48px));`,
-		`width: fit-content;`, `height: fit-content;`, `margin: auto;`, `border-radius: var(--ui-dialog-radius, 28px);`,
-		`background: var(--ui-dialog-container);`, `color: var(--ui-dialog-fg);`,
+		`width: fit-content;`, `height: fit-content;`, `margin: auto;`, `border: var(--ui-dialog-border, 0);`, `border-radius: var(--ui-dialog-radius, 28px);`,
+		`background: var(--ui-dialog-container);`, `color: var(--ui-dialog-fg);`, `box-shadow: var(--ui-dialog-shadow, none);`,
 		`.ui-dialog-headline { margin: 0; padding: var(--ui-space-6) var(--ui-space-6) 0; font: var(--ui-type-dialog-headline);`,
 		`.ui-dialog-content { padding: var(--ui-space-6); color: var(--ui-dialog-body); font: var(--ui-type-dialog-body);`,
 		`.ui-dialog-actions { display: flex; flex-wrap: nowrap; justify-content: flex-end; gap: var(--ui-space-2); padding: var(--ui-space-4) var(--ui-space-6) var(--ui-space-6);`,
@@ -67,8 +67,8 @@ func TestDialogSourceCSSImplementsMaterialGeometryStatesAndProgressiveMotion(t *
 	if dialogRule == nil {
 		t.Fatal("source CSS is missing .ui-dialog rule")
 	}
-	if strings.Contains(dialogRule[1], "box-shadow") {
-		t.Error("dialog container must not add box-shadow/elevation")
+	if !strings.Contains(dialogRule[1], "box-shadow: var(--ui-dialog-shadow, none)") {
+		t.Error("dialog elevation must remain theme-controlled and default to none")
 	}
 }
 

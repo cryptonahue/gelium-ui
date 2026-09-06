@@ -75,7 +75,7 @@ func TestIconButtonToggleSelectedRaisesEmphasisToPrimary(t *testing.T) {
 func TestIconButtonKeepsFixedTouchTargetDimensions(t *testing.T) {
 	css := regexp.MustCompile(`\s+`).ReplaceAllString(sourceIconButtonCSS(t), " ")
 	for _, contract := range []string{
-		`.ui-icon-button { position: relative; display: inline-flex; width: var(--ui-touch-target); height: var(--ui-touch-target); align-items: center; justify-content: center; border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent; border-radius: var(--ui-icon-button-radius, var(--ui-radius-full)); padding: 0; flex: none; cursor: pointer; text-decoration: none;`,
+		`.ui-icon-button { position: relative; display: inline-flex; width: var(--ui-touch-target); height: var(--ui-touch-target); align-items: center; justify-content: center; border: var(--ui-icon-button-border, var(--ui-border-width-1) var(--ui-border-style-solid) transparent); border-radius: var(--ui-icon-button-radius, var(--ui-radius-full)); padding: 0; flex: none; cursor: pointer; text-decoration: none;`,
 		`.ui-icon-button .ui-icon { width: var(--ui-size-icon); height: var(--ui-size-icon);`,
 	} {
 		if !strings.Contains(css, contract) {

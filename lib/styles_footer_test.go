@@ -24,7 +24,7 @@ func TestFooterPrimitiveCSSMapsTokens(t *testing.T) {
 		`.ui-footer-list {`,
 		`.ui-footer-list a {`,
 		`.ui-footer-legal {`,
-		`border-top: 1px solid var(--ui-footer-border);`,
+		`border-top: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-footer-border);`,
 		`--ui-footer-surface: var(--ui-color-surface);`,
 		`--ui-footer-fg: var(--ui-color-fg-muted);`,
 		`--ui-footer-heading-color: var(--ui-color-fg);`,

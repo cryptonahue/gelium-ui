@@ -8,11 +8,12 @@
     height: fit-content;
     margin: auto;
     overflow: auto;
-    border: 0;
+    border: var(--ui-dialog-border, 0);
     border-radius: var(--ui-dialog-radius, 28px);
     padding: 0;
     background: var(--ui-dialog-container);
     color: var(--ui-dialog-fg);
+    box-shadow: var(--ui-dialog-shadow, none);
     translate: 0 -50px;
     scale: .35;
     opacity: 0;
@@ -49,9 +50,11 @@
     width: min(100%, var(--ui-dialog-max-width, 560px));
     box-sizing: border-box;
     margin: 0;
+    border: var(--ui-dialog-page-border, var(--ui-dialog-border, 0));
     border-radius: var(--ui-dialog-radius, 28px);
     background: var(--ui-dialog-container);
     color: var(--ui-dialog-fg);
+    box-shadow: var(--ui-dialog-page-shadow, var(--ui-dialog-shadow, none));
   }
   .ui-dialog-page .ui-dialog-actions form { margin: 0; }
 }

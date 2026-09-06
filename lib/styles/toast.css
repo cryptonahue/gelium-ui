@@ -3,7 +3,7 @@
   .toast-demo-type-label { font: var(--ui-type-label-lg); color: var(--ui-field-label); }
   .toast-demo-type {
     min-height: 2.5rem;
-    border: 1px solid var(--ui-color-border-strong);
+    border: var(--ui-toast-border, 1px solid var(--ui-color-border-strong));
     border-radius: var(--ui-radius-sm);
     padding: .5rem;
     background: var(--ui-field-container);

@@ -26,9 +26,10 @@
     gap: var(--ui-hero-gap);
     padding: var(--ui-hero-padding);
     overflow: hidden;
-    border: 1px solid var(--ui-hero-border);
+    border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-hero-border);
     border-radius: var(--ui-hero-radius);
     background: var(--ui-hero-surface);
+    box-shadow: var(--ui-hero-shadow, none);
   }
 
   .ui-hero-media {

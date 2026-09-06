@@ -55,3 +55,22 @@ func TestReducedMotionDisablesButtonSpinnerAnimation(t *testing.T) {
 		t.Error("reduced-motion CSS must disable the spinner with animation: none")
 	}
 }
+func TestButtonConsumesTokenizedStateTransforms(t *testing.T) {
+	css := regexp.MustCompile(`\s+`).ReplaceAllString(readSourceStyle(t, "button.css"), " ")
+	for _, contract := range []string{
+		`transform: var(--ui-button-transform, none);`,
+		`transform var(--ui-motion-short) var(--ui-easing-standard);`,
+		`.ui-button:hover:not(:disabled):not([aria-disabled="true"]) {`,
+		`transform: var(--ui-button-hover-transform, var(--ui-button-transform, none));`,
+		`.ui-button:active:not(:disabled):not([aria-disabled="true"]) {`,
+		`transform: var(--ui-button-active-transform, var(--ui-button-hover-transform, var(--ui-button-transform, none)));`,
+		`.ui-button-primary { --ui-button-shadow: var(--ui-button-primary-shadow, none); --ui-button-transform: var(--ui-button-primary-transform, none);`,
+		`.ui-button-secondary { --ui-button-shadow: var(--ui-button-secondary-shadow, none); --ui-button-transform: var(--ui-button-secondary-transform, none);`,
+		`.ui-button-outline { --ui-button-shadow: var(--ui-button-outline-shadow, none); --ui-button-transform: var(--ui-button-outline-transform, none);`,
+		`@media (prefers-reduced-motion: reduce) { .ui-button { transform: none; } }`,
+	} {
+		if !strings.Contains(css, contract) {
+			t.Errorf("button transform contract is missing %q", contract)
+		}
+	}
+}

@@ -19,7 +19,9 @@
     flex-direction: column;
     gap: var(--ui-footer-gap);
     padding: var(--ui-space-6) var(--ui-space-4) var(--ui-space-8);
+    border-top: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-footer-border);
     background: var(--ui-footer-surface);
+    box-shadow: var(--ui-footer-shadow, none);
     color: var(--ui-footer-fg);
   }
 
@@ -68,7 +70,7 @@
   .ui-footer-legal {
     margin: 0;
     padding-top: var(--ui-space-3);
-    border-top: 1px solid var(--ui-footer-border);
+    border-top: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-footer-border);
     font: var(--ui-footer-type);
   }
 

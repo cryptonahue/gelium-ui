@@ -19,9 +19,9 @@
     text-decoration: none;
     font: var(--ui-type-body-lg);
   }
-  .ui-card-elevated { background: var(--ui-card-container-elevated); box-shadow: var(--ui-shadow-1); }
-  .ui-card-filled { background: var(--ui-card-container-filled); }
-  .ui-card-outlined { background: var(--ui-card-container-outlined); border: var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-card-outline-color); }
+  .ui-card-elevated { background: var(--ui-card-container-elevated); border: var(--ui-card-elevated-border, 0); box-shadow: var(--ui-card-elevated-shadow, var(--ui-shadow-1)); }
+  .ui-card-filled { background: var(--ui-card-container-filled); border: var(--ui-card-filled-border, 0); box-shadow: var(--ui-card-filled-shadow, none); }
+  .ui-card-outlined { background: var(--ui-card-container-outlined); border: var(--ui-card-outlined-border, var(--ui-border-width-1) var(--ui-border-style-solid) var(--ui-card-outline-color)); box-shadow: var(--ui-card-outlined-shadow, none); }
   .ui-card:focus-visible { outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring); outline-offset: var(--ui-focus-offset); }
   .ui-card-title { margin: 0 0 var(--ui-space-1); font: var(--ui-type-headline-sm); }
   .ui-card-action { margin-top: var(--ui-space-4); }

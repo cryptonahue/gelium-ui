@@ -6,35 +6,39 @@
     height: var(--ui-touch-target);
     align-items: center;
     justify-content: center;
-    border: var(--ui-border-width-1) var(--ui-border-style-solid) transparent;
+    border: var(--ui-icon-button-border, var(--ui-border-width-1) var(--ui-border-style-solid) transparent);
     border-radius: var(--ui-icon-button-radius, var(--ui-radius-full));
     padding: 0;
     flex: none;
     cursor: pointer;
     text-decoration: none;
-    transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard), border-color var(--ui-motion-short) var(--ui-easing-standard);
+    box-shadow: var(--ui-icon-button-shadow, none);
+    transform: var(--ui-icon-button-transform, none);
+    transition: background-color var(--ui-motion-short) var(--ui-easing-standard), box-shadow var(--ui-motion-short) var(--ui-easing-standard), border-color var(--ui-motion-short) var(--ui-easing-standard), transform var(--ui-motion-short) var(--ui-easing-standard);
   }
   .ui-icon-button .ui-icon {
     width: var(--ui-size-icon);
     height: var(--ui-size-icon);
   }
   .ui-icon-button:hover:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-hover-opacity) * 100%), transparent);
+    box-shadow: var(--ui-icon-button-hover-shadow, inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-hover-opacity) * 100%), transparent));
+    transform: var(--ui-icon-button-hover-transform, var(--ui-icon-button-transform, none));
   }
   .ui-icon-button:active:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+    box-shadow: var(--ui-icon-button-active-shadow, inset 0 0 0 999px color-mix(in oklab, var(--ui-color-fg-muted) calc(var(--ui-state-pressed-opacity) * 100%), transparent));
+    transform: var(--ui-icon-button-active-transform, var(--ui-icon-button-hover-transform, var(--ui-icon-button-transform, none)));
   }
   .ui-icon-button-filled:hover:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent);
+    box-shadow: var(--ui-icon-button-filled-hover-shadow, var(--ui-icon-button-hover-shadow, inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)));
   }
   .ui-icon-button-filled:active:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+    box-shadow: var(--ui-icon-button-filled-active-shadow, var(--ui-icon-button-active-shadow, inset 0 0 0 999px color-mix(in oklab, var(--ui-color-primary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent)));
   }
   .ui-icon-button-filled-tonal:hover:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent);
+    box-shadow: var(--ui-icon-button-tonal-hover-shadow, var(--ui-icon-button-hover-shadow, inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-hover-opacity) * 100%), transparent)));
   }
   .ui-icon-button-filled-tonal:active:not(:disabled):not([aria-disabled="true"]) {
-    box-shadow: inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent);
+    box-shadow: var(--ui-icon-button-tonal-active-shadow, var(--ui-icon-button-active-shadow, inset 0 0 0 999px color-mix(in oklab, var(--ui-color-secondary-fg) calc(var(--ui-state-pressed-opacity) * 100%), transparent)));
   }
   .ui-icon-button:focus-visible {
     outline: var(--ui-focus-thickness) solid var(--ui-color-focus-ring);
@@ -104,7 +108,7 @@
 }
 
 @media (prefers-reduced-motion: reduce) {
-  .ui-icon-button { transition: none; }
+  .ui-icon-button { transition: none; transform: none; }
 }
 
 @media (forced-colors: active) {
