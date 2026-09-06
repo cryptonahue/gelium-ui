@@ -10,5 +10,6 @@ loom.exe
 .hermes/
 .worktrees/
 lib/gelium-ui-*.tgz
-# Local Pi runtime state
+# Local agent runtime state
 .atl/
+.pi/

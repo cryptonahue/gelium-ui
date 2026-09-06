@@ -1,8 +1,8 @@
 schema: spec-driven
 
 # Gelium UI (repo path: gelium-ui; module: geliumui)
-# Persistence: hybrid (Engram + openspec files)
-# Session: interactive | chained PR: auto-forecast | review budget: 800 lines
+# Persistence: openspec files
+# Session: auto | delivery: ask-on-risk | review budget: 400 lines
 
 context: |
   Product: Gelium UI (path gelium-ui, module geliumui). Embeddable server-rendered UI system, not SPA.
@@ -11,27 +11,76 @@ context: |
   Layout: internal/app (handlers/routes/tests), web/{templates,styles,content,static}, themes/{theme-material,theme-basecoat}, docs/ contracts.
   Contracts: GET+query state; POST+303 mutations; 422+X-Loom-Validation; HX-Trigger loom:toast. Brand Gelium; wire prefixes keep loom:*.
   Style: native HTML first, 0 required component JS, open-code copy, theme=tokens only, dogfood docs.
-  Tests: go test ./... (httptest + CSS/token contract tests); go vet ./...; npm run build for CSS/htmx.
+  Tests: Go tests and httptest are available; JavaScript workspaces expose build commands but no test runner.
 
-strict_tdd: true
+strict_tdd: false
 
 testing:
-  strict_tdd: true
-  detected: "2026-08-13"
-  runner:
-    command: go test ./...
-    framework: go test
+  strict_tdd: false
+  detected: "2026-09-06"
+  workspace_test_command: null
+  workspace_test_command_covers_all_projects: false
+  fallback_reason: "No explicit workspace-level test command covers the Go module and both npm workspace projects. Downstream SDD execution must use the project-local commands listed below."
+  projects:
+    - path: "."
+      stack: "Go 1.24 + npm workspace root"
+      test_command: "go test ./..."
+      framework: "go test"
+      build_command: "npm run build"
+      quality:
+        linter: "go vet ./..."
+        type_checker: "go build ./..."
+        formatter: "gofmt -w ."
+        ux_detector: "bash scripts/ux-detect.sh"
+    - path: "lib"
+      stack: "Node.js 20 package; Tailwind CSS 4 component sources"
+      test_command: null
+      framework: null
+      build_command: null
+      quality:
+        linter: null
+        type_checker: null
+        formatter: null
+    - path: "site"
+      stack: "Node.js 20 site; Tailwind CSS 4 + HTMX"
+      test_command: null
+      framework: null
+      build_command: "npm run build"
+      quality:
+        linter: null
+        type_checker: null
+        formatter: null
   layers:
-    unit: { available: true, tool: "go test (internal/app, web package contract tests)" }
-    integration: { available: true, tool: "net/http/httptest handler/route/contract tests" }
-    e2e: { available: false, tool: null }
+    - path: "."
+      layer: "Unit"
+      available: true
+      tool: "go test"
+    - path: "."
+      layer: "Integration"
+      available: true
+      tool: "net/http/httptest"
+    - path: "lib"
+      layer: "Unit"
+      available: false
+      tool: null
+    - path: "site"
+      layer: "Unit"
+      available: false
+      tool: null
+    - path: "."
+      layer: "E2E"
+      available: false
+      tool: null
   coverage:
-    available: true
-    command: go test ./... -cover
-  quality:
-    linter: { available: true, command: go vet ./... }
-    type_checker: { available: true, command: "go build ./... (Go compiler)" }
-    formatter: { available: true, command: gofmt -w . }
+    - path: "."
+      available: true
+      command: "go test ./... -cover"
+    - path: "lib"
+      available: false
+      command: null
+    - path: "site"
+      available: false
+      command: null
 
 rules:
   proposal:
@@ -56,14 +105,15 @@ rules:
       - Native HTML first; no required component JS; overlays need server-rendered fallback.
       - Commit built web/static assets when CSS/htmx build output changes.
       - Run npm run build before verifying style-affecting changes.
-    tdd: true
-    test_command: go test ./...
+    tdd: false
+    test_command: "go test ./..."
   verify:
-    test_command: go test ./...
-    build_command: go build -o /tmp/gelium ./cmd/gelium
+    test_command: "go test ./..."
+    build_command: "go build -o /tmp/gelium ./cmd/gelium"
     coverage_threshold: 0
     extra_commands:
       - go vet ./...
       - npm run build
+      - bash scripts/ux-detect.sh
   archive:
     - Warn before merging destructive deltas (removed routes, wire contract renames, theme drops).
